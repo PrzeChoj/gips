@@ -9,6 +9,6 @@ gips - Gaussian model Invariant by Permutation Symmetry
 1. Exploratory Data Analysis - with `gips`, you can find the permutation of features that does not change the covariance matrix.
 2. Modeling - with `gips`, you can accurately use the found permutation to fit the model.
 
-# Creddits
+# Credits
 
 It will be developped by Przemysław Chojecki and Paweł Morgen under the leadership of Ph.D. Bartosz Kołodziejek.
