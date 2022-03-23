@@ -1,8 +1,7 @@
 #' Get Representative of a cyclic permutation group
 #'
 #' Essentially a "nu" function from paper (section 4.1.1, eq 28)
-#'
-#' @export
+
 get_representative <- function(perm){
     p_order <- permutations::permorder(perm)
     coprimes <- get_coprimes(p_order)
