@@ -1,0 +1,30 @@
+#' Get Representative of a cyclic permutation group
+#'
+#' Essentially a "nu" function from paper (section 4.1.1, eq 28)
+#'
+#' @export
+get_representative <- function(perm){
+    p_order <- permutations::permorder(perm)
+    coprimes <- get_coprimes(p_order)
+    all_perms <- lapply(coprimes, function(cp)
+        permutations::cycle_power(perm, cp))
+    if(length(all_perms) == 0)
+        return(permutations::nullword)
+    all_perms_as_vectors <- lapply(all_perms, function(p)
+        as.integer(permutations::cycle2word(p)))
+    all_perms_as_strings <- sapply(all_perms_as_vectors, function(v)
+        paste(v, collapse=" "))
+    min_index <- stringi::stri_order(all_perms_as_strings)[1]
+    all_perms[[min_index]]
+}
+
+#' Get Coprime numbers
+#'
+#' @param n single integer
+#' @return all integers smaller than n, that are coprime to n
+
+get_coprimes <- function(n){
+    smaller_ints <- 1:(n-1)
+    are_coprime <- sapply(smaller_ints, function(m) numbers::coprime(n, m))
+    smaller_ints[are_coprime]
+}
