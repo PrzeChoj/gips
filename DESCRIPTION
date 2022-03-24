@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Pawel", "Morgen", email="seriousmorgen@protonmail.com", 
     role = c("aut", "cre")),
-    person("Przemysław", "Chojecki", role=c("aut")),
+    person("Przemyslaw", "Chojecki", email="premysl.choj@gmail.com", role=c("aut")),
     person("Bartosz", "Kolodziejek", role=c("aut"))
     )
 Description: Find the permutation symmetry group such that 
@@ -14,7 +14,7 @@ Description: Find the permutation symmetry group such that
     That means that with `gips`, it is possible to find 
     a Gaussian model with more parameters than the number 
     of observations. Sometimes, even if the number of observations 
-    is smaller than the number of parameters, the covariance matrix 
+    is bigger than the number of parameters, the covariance matrix 
     found with `gips` better approximates the actual covariance 
     behind the data.
 License: MIT + file LICENSE

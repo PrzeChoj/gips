@@ -1,2 +1,4 @@
 .Rproj.user
 gips.Rproj
+.DS_Store
+tests/.DS_Store

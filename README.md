@@ -2,7 +2,7 @@
 
 gips - Gaussian model Invariant by Permutation Symmetry
 
-`gips` is an R package that finds the permutation symmetry group such that the covariance matrix of the given data is invariant under it. Knowledge of such a permutation can drastically decrease the number of parameters needed to fit the model. That means that with `gips`, it is possible to find the Gaussian model with more parameters than the number of observations. Sometimes, even if the number of observations is smaller than the number of parameters, the covariance matrix found with `gips` better approximates the actual covariance behind the data.
+`gips` is an R package that finds the permutation symmetry group such that the covariance matrix of the given data is invariant under it. Knowledge of such a permutation can drastically decrease the number of parameters needed to fit the model. That means that with `gips`, it is possible to find the Gaussian model with more parameters than the number of observations. Sometimes, even if the number of observations is bigger than the number of parameters, the covariance matrix found with `gips` better approximates the actual covariance behind the data.
 
 
 ## `gips` will help you with two things:
