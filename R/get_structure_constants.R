@@ -2,7 +2,7 @@
 #'
 #' Theorem 5 from the paper
 #'
-#' @return r,d,k - constants from theorem 1
+#' @return r,d,k - vectors of constants from theorem 1
 
 get_structure_constants <- function(perm){
     l <- get_cycle_represesentatives_and_lenghts(perm)
