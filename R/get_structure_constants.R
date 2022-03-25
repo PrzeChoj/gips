@@ -1,8 +1,15 @@
 #' Get Structure Constants
 #'
-#' Theorem 5 from the paper
+#' Get Structure Constants from theorem 5 of the paper
 #'
-#' @return r,d,k - vectors of constants from theorem 1
+#' @param perm an element of class "cycle"
+#'
+#' @return list of 4 items: r, d, k, L - vectors of constants from theorem 1
+#' @export
+#' 
+#' @examples
+#' perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
+#' get_structure_constants(perm)
 
 get_structure_constants <- function(perm){
     l <- get_cycle_represesentatives_and_lenghts(perm)
@@ -17,6 +24,8 @@ get_structure_constants <- function(perm){
 #' Get cycle representatives and lengths
 #'
 #' Essentially get iC, pC from paper
+#'
+#' @param perm an element of class "cycle"
 #'
 #' @return list with 2 items: 'representatives' and 'cycle_lengths'
 #'

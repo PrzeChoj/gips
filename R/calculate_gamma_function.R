@@ -2,6 +2,11 @@
 #'
 #' Theorem 8 from the paper, using the formula (19) from the paper
 #'
+#' @param perm an element of class "cycle"
+#' @param lambda positive real number
+#' 
+#' @export
+#'
 #' @return Value of Gamma function
 
 calculate_gamma_function <- function(perm, lambda){
@@ -31,9 +36,14 @@ calculate_gamma_function <- function(perm, lambda){
 #'
 #' Using the formula (12) from the paper
 #'
+#' @param lambda positive real number
+#' @param dim_omega from `get_structure_constants`
+#' @param r from `get_structure_constants`
+#' @param d from `get_structure_constants`
+#'
 #' @return Value of Gamma function
 
-calculate_gamma_omega <- function(dim_omega, lambda, r, d){
+calculate_gamma_omega <- function(lambda, dim_omega, r, d){
   if(lambda <= dim_omega/r - 1){
     return(Inf)  # the integral does not converge
   }
