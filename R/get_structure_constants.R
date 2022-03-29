@@ -4,7 +4,7 @@
 #'
 #' @param perm an element of class "cycle"
 #'
-#' @return list of 4 items: r, d, k, L - vectors of constants from theorem 1
+#' @return list of 4 items: `r`, `d`, `k`, `L` - vectors of constants from theorem 1
 #' @export
 #' 
 #' @examples
@@ -27,7 +27,7 @@ get_structure_constants <- function(perm){
 #'
 #' @param perm an element of class "cycle"
 #'
-#' @return list with 2 items: 'representatives' and 'cycle_lengths'
+#' @return list with 2 items: `representatives` and `cycle_lengths`
 #'
 
 get_cycle_represesentatives_and_lenghts <-function(perm){

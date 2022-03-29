@@ -10,7 +10,7 @@ get_structure_constants(perm)
 \item{perm}{an element of class "cycle"}
 }
 \value{
-list of 4 items: r, d, k, L - vectors of constants from theorem 1
+list of 4 items: \code{r}, \code{d}, \code{k}, \code{L} - vectors of constants from theorem 1
 }
 \description{
 Get Structure Constants from theorem 5 of the paper

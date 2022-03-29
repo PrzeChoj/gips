@@ -10,7 +10,7 @@ get_cycle_represesentatives_and_lenghts(perm)
 \item{perm}{an element of class "cycle"}
 }
 \value{
-list with 2 items: 'representatives' and 'cycle_lengths'
+list with 2 items: \code{representatives} and \code{cycle_lengths}
 }
 \description{
 Essentially get iC, pC from paper
