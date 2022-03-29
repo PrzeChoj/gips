@@ -1,17 +1,13 @@
-to_perm <- function(v) permutations::as.cycle(permutations::as.word(v))
+source('setup_example.R')
 perm_nofixed <- to_perm(c(2,1,5,3,4))
 perm_somefixed <- to_perm(c(2,1,3,5,4))
 perm_firstfixed <- to_perm(c(1,5,2,3,4))
 perm_lastfixed <- to_perm(c(2,1,4,3,5))
 perm_allfixed <- to_perm(1:5)
-example_perm <- to_perm(c(3,1,2,5,4,6))
 
 test_that('get_structure_constants for example from paper',{
     expect_equal(get_structure_constants(example_perm, 6),
-                 list('r'=c(3,1,1),
-                      'd'=c(1,2,1),
-                      'k'=c(1,2,1),
-                      'L'=3))
+                 example_structure_constants)
 })
 
 test_that('get_cycle_rep_lengths works for no fixed elements',{
