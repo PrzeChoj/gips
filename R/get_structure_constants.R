@@ -5,7 +5,7 @@
 #' @param perm an element of class "cycle"
 #' @param perm_size size of permutation
 #'
-#' @return list of 4 items: r, d, k, L - vectors of constants from theorem 1
+#' @return list of 4 items: `r`, `d`, `k`, `L` - vectors of constants from theorem 1
 #' @export
 #'
 #' @examples
@@ -38,7 +38,7 @@ get_structure_constants <- function(perm, perm_size) {
 #' @param perm an element of class "cycle". Can't be an identity.
 #' @param perm_size size of permutation
 #'
-#' @return list with 2 items: 'representatives' and 'cycle_lengths'
+#' @return list with 2 items: `representatives` and `cycle_lengths`
 #' @noRd
 
 get_cycle_representatives_and_lengths <- function(perm, perm_size) {
