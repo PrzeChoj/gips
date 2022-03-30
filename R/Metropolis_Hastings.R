@@ -10,7 +10,7 @@
 #' @export
 #' 
 #' @examples
-#' start <- as.cycle(as.word(c(2,3,1,4,6,5,7,8)))
+#' start <- permutations::id
 #' mh <- MH(start = start, 8, 100)
 
 MH <- function(start, p, max_iter){
@@ -28,7 +28,8 @@ MH <- function(start, p, max_iter){
       
     goal_function_q <- goal_function(q)
     
-    if(U2[i] < goal_function_q/goal_function_values[i]){ # if goal_function_q > goal_function[i], then it is true
+    # if goal_function_q > goal_function[i], then it is true
+    if(U2[i] < goal_function_q/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- q
       goal_function_values[i+1] <- goal_function_q
       acceptance[i] <- TRUE

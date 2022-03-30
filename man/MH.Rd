@@ -20,6 +20,6 @@ list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{poin
 Perform the algorithm on the permutations
 }
 \examples{
-start <- as.cycle(as.word(c(2,3,1,4,6,5,7,8)))
+start <- permutations::id
 mh <- MH(start = start, 8, 100)
 }
