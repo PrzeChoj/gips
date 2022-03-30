@@ -4,10 +4,12 @@
 \alias{get_structure_constants}
 \title{Get Structure Constants}
 \usage{
-get_structure_constants(perm)
+get_structure_constants(perm, perm_size)
 }
 \arguments{
 \item{perm}{an element of class "cycle"}
+
+\item{perm_size}{size of permutation}
 }
 \value{
 list of 4 items: \code{r}, \code{d}, \code{k}, \code{L} - vectors of constants from theorem 1

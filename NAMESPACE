@@ -3,3 +3,4 @@
 export(MH)
 export(calculate_gamma_function)
 export(get_structure_constants)
+export(prepare_orthogonal_matrix)
