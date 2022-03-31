@@ -7,6 +7,8 @@
 prepare_orthogonal_matrix(perm, perm_size, basis = NULL)
 }
 \arguments{
+\item{perm}{permuations::cycle object}
+
 \item{basis}{matrix with basis vectors in COLUMNS. Identity by default}
 }
 \value{
@@ -14,6 +16,6 @@ matrix p x p with columns from V object elements, sorted according to
 Theorem 6
 }
 \description{
-Based on structure constants, calculate orthogonal matrix U_Gamma
+Calculate orthogonal matrix U_Gamma
 for decomposition in Theorem 1. To calculate it, we use Theorem 6.
 }

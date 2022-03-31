@@ -1,5 +1,3 @@
-source('setup_example.R')
-
 matrix_invariant_by_example_perm <- matrix(c(
     2, 1, 1, 3, 3, 4,
     1, 2, 1, 3, 3, 4,
