@@ -87,7 +87,7 @@ get_cycle_representatives_and_lengths <- function(perm, perm_size) {
 
 #' Calculate structure constant r
 #'
-#' @return integer vector. Structure constant r WITH 0 elements.
+#' @return integer vector. Structure constant r WITH elements equal to 0.
 #' @noRd
 calculate_r <- function(cycle_lengths, perm_order) {
     M <- floor(perm_order / 2)
@@ -98,8 +98,13 @@ calculate_r <- function(cycle_lengths, perm_order) {
     # for a in 0,1,...,floor(perm_order/2)
     # r_a = #{1:C such that a*p_c is a multiple of N}
     # AKA a*p_c %% N == 0
-    r <- apply(outer(1:M, cycle_lengths) %% perm_order == 0,
-               1, sum)
+    # Corollary: N %% p_c == 0 for each p_c
+    raw_alphas <- perm_order / cycle_lengths
+    filtered_alphas <- raw_alphas[raw_alphas <= M]
+    alpha_count <- table(filtered_alphas)
+
+    r <- rep(0, M)
+    r[as.integer(names(alpha_count))] <- as.integer(alpha_count)
     # correct for alpha == 0
     r <- c(length(cycle_lengths), r)
     r
