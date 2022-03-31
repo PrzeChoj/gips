@@ -20,6 +20,7 @@ test_that('orthogonal matrix fulfills condition from example 6',{
     expect_equal(tested_elements,
                  matrix(rep(0, 6*6), ncol=6))
     expect_true(isSymmetric(tested_matrix[1:3, 1:3]))
+    expect_equal(tested_matrix[4,4], tested_matrix[5,5])
 })
 
 test_that('prepare_orthogonal_matrix works for example', {
