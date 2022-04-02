@@ -14,9 +14,8 @@ project_matrix <- function(U, perm, perm_size){
     mean_values <- sapply(equal_indices_by_perm, function(indices)
         mean(U[indices]))
     means <- rep(mean_values, sapply(equal_indices_by_perm, length))
-    projected_matrix <- matrix(
-        means[unlist(equal_indices_by_perm)], nrow=nrow(U)
-    )# that's not it. WIP
+    projected_matrix <- matrix(nrow=nrow(U), ncol=ncol(U))
+    projected_matrix[unlist(equal_indices_by_perm)] <- means
     projected_matrix
 }
 
@@ -51,5 +50,67 @@ get_equal_indices_by_perm <- function(perm, perm_size){
     original_matrix_elements <- matrix(1:(perm_size^2), nrow=perm_size)
     permuted_matrix_elements <- original_matrix_elements[permuted_indices,][,permuted_indices]
     large_perm <- permutations::as.cycle(permutations::as.word(as.integer(permuted_matrix_elements)))
-    get_subcycles(large_perm, perm_size^2)
+    subcycles <- get_subcycles(large_perm, perm_size^2)
+
+    # Correct for symmetry
+    subcycle_representatives <- sapply(subcycles, function(cyc){
+        get_diagonal_representative(cyc, perm_size)
+    })
+    is_subcycle_symmetrical <- is.null(subcycle_representatives)
+    nonsymmetrical_subcycle_representatives <- get_double_from_single_indices(
+        subcycle_representatives[!is_subcycle_symmetrical]
+    )
+    lower_triangle_representatives <-
+       nonsymmetrical_subcycle_representatives[nonsymmetrical_subcycle_representatives[,1] >
+                                                   nonsymmetrical_subcycle_representatives[,2]]
+    upper_triangle_counterparts <- lower_triangle_representatives[,2:1]
+    join_pairs <- matrix(c(get_single_from_double_indices(lower_triangle_representatives, perm_size),
+                         get_single_from_double_indices(upper_triangle_counterparts, perm_size)),
+                         ncol=2)
+    joined_subcycles <- lapply(1:sum(!is_subcycle_symmetrical), function(i){
+        pair <- join_pairs[i,]
+        c(subcycles[!is_subcycle_symmetrical][[pair[1]]],
+          subcycles[!is_subcycle_symmetrical][[pair[2]]])
+    })
+    append(joined_subcycles, subcycles[is_subcycle_symmetrical])
 }
+
+#' Get representative based on diagonal
+#'
+#' Select index corresponding to place in matrix, which is
+#' a) closest to main diagonal
+#' b) if a) equal-> closest to (1,1)
+#'
+#' @param indices integer vector interpreted as SINGLE indices of matrix with
+#' matix_size rows columns
+#'
+#' @return Either single integer or NULL if places corresponding to them are
+#' placed in symmetrical way (when there is an index on main diagonal
+#' or when selection above does not yield single index)
+#' @noRd
+
+get_diagonal_representative <- function(indices, matrix_size){
+    double_indices <- get_double_from_single_indices(indices, matrix_size)
+    which_diag <- abs(double_indices[,1] - double_indices[,2])
+    if (min(which_diag) == 0) return(NULL)
+    considered_indices <- which(which_diag == min(which_diag))
+    diag_positions <- apply(double_indices[considered_indices,], 2, min)
+    representative_index <- which(diag_positions == min(diag_positions))
+    if (length(repsesentative_index) > 1){
+        return(NULL)
+    }
+    indices[considered_indices,][representative_index]
+}
+
+get_double_from_single_indices <- function(indices, matrix_size){
+    row_indices <- indices %% matrix_size
+    row_indices[row_indices == 0] <- matrix_size
+    matrix(c(row_indices,
+             ceiling(indices / matrix_size)), ncol=2)
+}
+
+get_single_from_double_indices <- function(indices, matrix_size){
+    (indices[,2] - 1) * matrix_size + indices[,1]
+}
+
+

@@ -1,12 +1,3 @@
-matrix_invariant_by_example_perm <- matrix(c(
-    2, 1, 1, 3, 3, 4,
-    1, 2, 1, 3, 3, 4,
-    1, 1, 2, 3, 3, 4,
-    3, 3, 3, 5, 6, 7,
-    3, 3, 3, 6, 5, 7,
-    4, 4, 4, 7, 7, 8
-), byrow=TRUE, ncol=6)
-
 test_that('orthogonal matrix fulfills condition from example 6',{
     U_Gamma <- prepare_orthogonal_matrix(example_perm, 6, example_basis)
     tested_matrix <- t(U_Gamma) %*% matrix_invariant_by_example_perm %*% U_Gamma
