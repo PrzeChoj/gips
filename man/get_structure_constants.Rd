@@ -19,5 +19,5 @@ Get Structure Constants from theorem 5 of the paper
 }
 \examples{
 perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
-get_structure_constants(perm)
+get_structure_constants(perm, 5)
 }

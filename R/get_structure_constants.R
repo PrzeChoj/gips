@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
-#' get_structure_constants(perm)
+#' get_structure_constants(perm, 5)
 
 get_structure_constants <- function(perm, perm_size) {
     l <- get_cycle_representatives_and_lengths(perm, perm_size)

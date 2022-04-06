@@ -10,6 +10,8 @@ project_matrix(U, perm, perm_size)
 \item{U}{matrix to be projected}
 
 \item{perm}{permutation. Generator of a permutation group}
+
+\item{perm_size}{size of permutation}
 }
 \value{
 projected matrix

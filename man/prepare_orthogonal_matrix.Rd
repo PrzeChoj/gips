@@ -9,6 +9,8 @@ prepare_orthogonal_matrix(perm, perm_size, basis = NULL)
 \arguments{
 \item{perm}{permuations::cycle object}
 
+\item{perm_size}{size of permutation}
+
 \item{basis}{matrix with basis vectors in COLUMNS. Identity by default}
 }
 \value{

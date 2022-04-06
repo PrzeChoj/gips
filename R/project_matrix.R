@@ -5,6 +5,7 @@
 #'
 #' @param U matrix to be projected
 #' @param perm permutation. Generator of a permutation group
+#' @param perm_size size of permutation
 #'
 #' @return projected matrix
 #' @export
@@ -81,8 +82,8 @@ get_equal_indices_by_perm <- function(perm, perm_size){
 #' a) closest to main diagonal
 #' b) if a) equal-> closest to (1,1)
 #'
-#' @param indices integer vector interpreted as SINGLE indices of matrix with
-#' matix_size rows columns
+#' @param indices integer vector interpreted as SINGLE indices of matrix
+#' @param matrix_size number of rows of square matrix
 #'
 #' @return Either single integer or NULL if places corresponding to them are
 #' placed in symmetrical way (when there is an index on main diagonal
@@ -96,7 +97,7 @@ get_diagonal_representative <- function(indices, matrix_size){
     considered_indices <- which(which_diag == min(which_diag))
     diag_positions <- apply(double_indices[considered_indices,], 2, min)
     representative_index <- which(diag_positions == min(diag_positions))
-    if (length(repsesentative_index) > 1){
+    if (length(representative_index) > 1){
         return(NULL)
     }
     indices[considered_indices,][representative_index]

@@ -4,6 +4,7 @@
 #' for decomposition in Theorem 1. To calculate it, we use Theorem 6.
 #'
 #' @param perm permuations::cycle object
+#' @param perm_size size of permutation
 #' @param basis matrix with basis vectors in COLUMNS. Identity by default
 #' @return matrix p x p with columns from V object elements, sorted according to
 #'     Theorem 6
