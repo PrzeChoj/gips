@@ -4,12 +4,12 @@
 \alias{MH}
 \title{Metropolis-Hastings algorithm}
 \usage{
-MH(start, p, max_iter)
+MH(start, perm_size, max_iter)
 }
 \arguments{
 \item{start}{Start of the algorithm; an element of class "cycle"}
 
-\item{p}{The dimension of interest}
+\item{perm_size}{The dimension of interest}
 
 \item{max_iter}{Number of iterations}
 }

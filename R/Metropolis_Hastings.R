@@ -3,7 +3,7 @@
 #' Perform the algorithm on the permutations
 #'
 #' @param start Start of the algorithm; an element of class "cycle"
-#' @param p The dimension of interest
+#' @param perm_size The dimension of interest
 #' @param max_iter Number of iterations
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
@@ -13,7 +13,7 @@
 #' start <- permutations::id
 #' mh <- MH(start = start, 8, 100)
 
-MH <- function(start, p, max_iter){
+MH <- function(start, perm_size, max_iter){
   acceptance <- rep(FALSE, max_iter)
   goal_function_values <- rep(0, max_iter)
   points <- list()
@@ -23,7 +23,7 @@ MH <- function(start, p, max_iter){
   U2 <- stats::runif(max_iter, min = 0, max = 1)
   
   for (i in 1:(max_iter-1)){
-    e <- runif_transposition(p)
+    e <- runif_transposition(perm_size)
     q <- points[[i]] * e
       
     goal_function_q <- goal_function(q)
@@ -52,6 +52,9 @@ goal_function <- function(perm){
   permutations::permorder(perm) + 1 # example function
 }
 
-runif_transposition <- function(p){
-  permutations::as.cycle(sample(p, 2, replace=FALSE))
+#' Uniformly random transposition of perm_size elements
+#' 
+#' @param perm_size size from which take transpositions
+runif_transposition <- function(perm_size){
+  permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
 }
