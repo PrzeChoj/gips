@@ -37,10 +37,9 @@ test_that('get_equal_indices_by_perm works for identity', {
 })
 
 test_that('which_subcycles_merge works', {
-    expect_equal(which_subcycles_merge(list(c(2,3),
-                                            c(4,7)),
+    expect_equal(which_subcycles_merge(c(2,3,4,7),
                                        3),
-                 matrix(c(1,2), nrow=1))
+                 matrix(c(1,3,2,4), ncol=2, byrow=TRUE))
 })
 
 test_that('get_diagonal_representative works',{

@@ -37,7 +37,7 @@ project_matrix <- function(U, perm, perm_size){
 #' 4, 4, 4, 7, 7, 8
 #' ), byrow=TRUE, ncol=6)
 #' out <- get_equal_indices_by_perm(perm, 6)
-#' all(sapply(out, function(v) all.equal(matrix_symvariant[v]))) == TRUE
+#' all(sapply(out, function(v) all.equal(matrix_symvariant[v]))) # TRUE
 #'
 #' @noRd
 get_equal_indices_by_perm <- function(perm, perm_size){
@@ -63,7 +63,7 @@ get_equal_indices_by_perm <- function(perm, perm_size){
         return(subcycles)
     }
     nonsymmetric_subcycles <- subcycles[!is_subcycle_symmetrical]
-    merge_pairs <- which_subcycles_merge(nonsymmetric_subcycles,
+    merge_pairs <- which_subcycles_merge(subcycle_representatives[!is_subcycle_symmetrical],
                                          perm_size)
     merged_subcycles <- lapply(1:nrow(merge_pairs), function(i){
         pair <- merge_pairs[i,]
@@ -75,27 +75,22 @@ get_equal_indices_by_perm <- function(perm, perm_size){
 
 #' Which subcycles should be merged
 #'
-#' When looking for equal indices in a symvariant matrix, some indices are not
-#' symmetrical. We need to correct for that
-#'
-#' @param subcycles list of vectors of indices, that point to equal values in
-#' a symvariant matrix. Each has their symmetrical counterpart.
+#' @param subcycle_representatives vector of indices, that point to equal values in
+#' a matrix invariant by a permutation. Each element has its symmetrical
+#' counterpart also in that vector.
 #'
 #' @return matrix with two columns, each row are indices of subcycles to be
-#' merged. Those pairs are symmetrical with regard to main diagonal
+#' merged. Those pairs are symmetrical with regard to main diagonal.
 #' @noRd
 
-which_subcycles_merge <- function(subcycles, perm_size){
-    subcycle_representatives <- sapply(subcycles, function(cyc){
-        get_diagonal_representative(cyc, perm_size)
-    })
-    nonsymmetrical_subcycle_representatives <- get_double_from_single_indices(
+which_subcycles_merge <- function(subcycle_representatives, perm_size){
+    double_indices_of_representatives <- get_double_from_single_indices(
         subcycle_representatives,
         perm_size
     )
     lower_triangle_representatives <-
-        nonsymmetrical_subcycle_representatives[nonsymmetrical_subcycle_representatives[,1] >
-                                                    nonsymmetrical_subcycle_representatives[,2],,drop=FALSE]
+        double_indices_of_representatives[double_indices_of_representatives[,1] >
+                                                    double_indices_of_representatives[,2],,drop=FALSE]
     upper_triangle_counterparts <- lower_triangle_representatives[,2:1,drop=FALSE]
     representative_pairs <- matrix(c(
         get_single_from_double_indices(lower_triangle_representatives, perm_size),
@@ -107,7 +102,9 @@ which_subcycles_merge <- function(subcycles, perm_size){
 #'
 #' Select index corresponding to place in matrix, which is
 #' a) closest to main diagonal
-#' b) if a) equal-> closest to (1,1)
+#' b) if a) equal-> closest to (1,1).
+#' Essentially two cycles are symmetrical to each other with regard to main
+#' diagonal iff their indices are symmetrical.
 #'
 #' @param indices integer vector interpreted as SINGLE indices of matrix
 #' @param matrix_size number of rows of square matrix
