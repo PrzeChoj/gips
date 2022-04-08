@@ -44,6 +44,7 @@ get_equal_indices_by_perm <- function(perm, perm_size){
     # We are essentially looking for cycles of permutation defined on elements
     # of matrix (perm_size^2 -> perm_size^2)
     permuted_indices <- as.integer(permutations::as.word((perm)))
+    # correct for last fixed elements
     l <- length(permuted_indices)
     if (l < perm_size){
         permuted_indices[(l+1):perm_size] <- (l+1):perm_size
@@ -57,23 +58,49 @@ get_equal_indices_by_perm <- function(perm, perm_size){
     subcycle_representatives <- sapply(subcycles, function(cyc){
         get_diagonal_representative(cyc, perm_size)
     })
-    is_subcycle_symmetrical <- is.null(subcycle_representatives)
+    is_subcycle_symmetrical <- is.na(subcycle_representatives)
+    if (all(is_subcycle_symmetrical)){
+        return(subcycles)
+    }
+    nonsymmetric_subcycles <- subcycles[!is_subcycle_symmetrical]
+    merge_pairs <- which_subcycles_merge(nonsymmetric_subcycles,
+                                         perm_size)
+    merged_subcycles <- lapply(1:nrow(merge_pairs), function(i){
+        pair <- merge_pairs[i,]
+        c(nonsymmetric_subcycles[[pair[1]]],
+          nonsymmetric_subcycles[[pair[2]]])
+    })
+    append(merged_subcycles, subcycles[is_subcycle_symmetrical])
+}
+
+#' Which subcycles should be merged
+#'
+#' When looking for equal indices in a symvariant matrix, some indices are not
+#' symmetrical. We need to correct for that
+#'
+#' @param subcycles list of vectors of indices, that point to equal values in
+#' a symvariant matrix. Each has their symmetrical counterpart.
+#'
+#' @return matrix with two columns, each row are indices of subcycles to be
+#' merged. Those pairs are symmetrical with regard to main diagonal
+#' @noRd
+
+which_subcycles_merge <- function(subcycles, perm_size){
+    subcycle_representatives <- sapply(subcycles, function(cyc){
+        get_diagonal_representative(cyc, perm_size)
+    })
     nonsymmetrical_subcycle_representatives <- get_double_from_single_indices(
-        subcycle_representatives[!is_subcycle_symmetrical]
+        subcycle_representatives,
+        perm_size
     )
     lower_triangle_representatives <-
-       nonsymmetrical_subcycle_representatives[nonsymmetrical_subcycle_representatives[,1] >
-                                                   nonsymmetrical_subcycle_representatives[,2]]
-    upper_triangle_counterparts <- lower_triangle_representatives[,2:1]
-    join_pairs <- matrix(c(get_single_from_double_indices(lower_triangle_representatives, perm_size),
-                         get_single_from_double_indices(upper_triangle_counterparts, perm_size)),
-                         ncol=2)
-    joined_subcycles <- lapply(1:sum(!is_subcycle_symmetrical), function(i){
-        pair <- join_pairs[i,]
-        c(subcycles[!is_subcycle_symmetrical][[pair[1]]],
-          subcycles[!is_subcycle_symmetrical][[pair[2]]])
-    })
-    append(joined_subcycles, subcycles[is_subcycle_symmetrical])
+        nonsymmetrical_subcycle_representatives[nonsymmetrical_subcycle_representatives[,1] >
+                                                    nonsymmetrical_subcycle_representatives[,2],,drop=FALSE]
+    upper_triangle_counterparts <- lower_triangle_representatives[,2:1,drop=FALSE]
+    representative_pairs <- matrix(c(
+        get_single_from_double_indices(lower_triangle_representatives, perm_size),
+        get_single_from_double_indices(upper_triangle_counterparts, perm_size)),ncol=2)
+    matrix(match(representative_pairs, subcycle_representatives),ncol=2)
 }
 
 #' Get representative based on diagonal
@@ -85,22 +112,26 @@ get_equal_indices_by_perm <- function(perm, perm_size){
 #' @param indices integer vector interpreted as SINGLE indices of matrix
 #' @param matrix_size number of rows of square matrix
 #'
-#' @return Either single integer or NULL if places corresponding to them are
+#' @return Either single integer or NA if places corresponding to them are
 #' placed in symmetrical way (when there is an index on main diagonal
 #' or when selection above does not yield single index)
 #' @noRd
 
-get_diagonal_representative <- function(indices, matrix_size){
-    double_indices <- get_double_from_single_indices(indices, matrix_size)
-    which_diag <- abs(double_indices[,1] - double_indices[,2])
-    if (min(which_diag) == 0) return(NULL)
-    considered_indices <- which(which_diag == min(which_diag))
-    diag_positions <- apply(double_indices[considered_indices,], 2, min)
-    representative_index <- which(diag_positions == min(diag_positions))
-    if (length(representative_index) > 1){
-        return(NULL)
+get_diagonal_representative <- function(indices, matrix_size) {
+    double_indices <-
+        get_double_from_single_indices(indices, matrix_size)
+    which_diag <- abs(double_indices[, 1] - double_indices[, 2])
+    if (min(which_diag) == 0)
+        return(NA)
+    indices_on_middlest_diag <- which(which_diag == min(which_diag))
+    distances_from_lupper_corner <-
+        apply(double_indices[indices_on_middlest_diag, , drop = FALSE], 1, min)
+    closest_to_lupper_corner <-
+        which(distances_from_lupper_corner == min(distances_from_lupper_corner))
+    if (length(closest_to_lupper_corner) > 1) {
+        return(NA)
     }
-    indices[considered_indices,][representative_index]
+    indices[indices_on_middlest_diag][closest_to_lupper_corner]
 }
 
 get_double_from_single_indices <- function(indices, matrix_size){
