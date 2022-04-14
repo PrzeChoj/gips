@@ -26,7 +26,8 @@ calculate_gamma_function <- function(perm, lambda){
   
   gamma_omega <- sapply(1:L, function(i){calculate_gamma_omega(dim_gamma[i],
                                                                k[i]*lambda,
-                                                               r[i], d[i])})
+                                                               r[i],
+                                                               d[i])})
   
   exp(-A_Gamma * lambda + B_Gamma) * prod(gamma_omega)
 }

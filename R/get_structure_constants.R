@@ -11,7 +11,6 @@
 #' @examples
 #' perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
 #' get_structure_constants(perm, 5)
-
 get_structure_constants <- function(perm, perm_size) {
     l <- get_cycle_representatives_and_lengths(perm, perm_size)
     representatives <- l[['representatives']]
@@ -28,7 +27,8 @@ get_structure_constants <- function(perm, perm_size) {
     list ('r'=r,
           'd'=d,
           'k'=k,
-          'L'=L)
+          'L'=L
+          )  # do we want additionally 'dim_omega'=r + r*(r-1)*d/2 ?
 }
 
 #' Get cycle representatives and lengths

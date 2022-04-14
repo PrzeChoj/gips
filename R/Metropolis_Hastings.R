@@ -2,23 +2,50 @@
 #'
 #' Perform the algorithm on the permutations
 #'
+#' @param U Matrix that the projection of is wanted
 #' @param start Start of the algorithm; an element of class "cycle"
-#' @param perm_size The dimension of interest
 #' @param max_iter Number of iterations
+#' @param perm_size The dimension of interest. When NULL, the size of U is taken
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
 #' 
 #' @examples
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' # sigma is a permutation (1,2,3,4,5,6)
+#' sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                          0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                          0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                          0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                          0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                          0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                 nrow=perm_size, byrow = TRUE)
+#' N <- 6
+#' Z <- MASS::mvrnorm(N, mu = mu, Sigma = sigma )
+#' U <- (t(Z) %*% Z)/N
 #' start <- permutations::id
-#' mh <- MH(start = start, 8, 100)
+#' mh <- MH(U=U, start=start, max_iter=100, perm_size=perm_size,
+#'          delta=3, D=diag(nrow = perm_size))
 
-MH <- function(start, perm_size, max_iter){
+MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
+  if(is.null(perm_size)){
+    perm_size <- dim(U)[1]
+  }
+  stopifnot(perm_size == dim(U)[1])
+  if(is.null(D)){
+    D <- diag(nrow = perm_size)
+  }
+  
   acceptance <- rep(FALSE, max_iter)
   goal_function_values <- rep(0, max_iter)
   points <- list()
   points[[1]] <- start
-  goal_function_values[1] <- goal_function(points[[1]])
+  
+  goal_function_values[1] <- test_goal_function(points[[1]])
+  #goal_function_values[1] <- goal_function(points[[1]])  # TODO
   
   U2 <- stats::runif(max_iter, min = 0, max = 1)
   
@@ -26,7 +53,8 @@ MH <- function(start, perm_size, max_iter){
     e <- runif_transposition(perm_size)
     q <- points[[i]] * e
       
-    goal_function_q <- goal_function(q)
+    goal_function_q <- test_goal_function(q)
+    #goal_function_q <- goal_function(q)  # TODO
     
     # if goal_function_q > goal_function[i], then it is true
     if(U2[i] < goal_function_q/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
@@ -45,11 +73,32 @@ MH <- function(start, perm_size, max_iter){
 
 
 
+#' goal_function for MH
+#' 
+#' @export
+#' 
+#' @param perm_proposal Permutation of interest
+#' @param perm_size size of a permutation
+#' @param n Size of a sample
+#' @param U Matrix that the projection of is wanted
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
+goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
+  if(is.null(D)){
+    D <- diag(nrow = perm_size)
+  }
+  
+  #params_for_perm_proposal <- get_params_for_perm(perm_proposal)
+  
+  4 # TODO()
+}
 
-
-
-goal_function <- function(perm){
-  permutations::permorder(perm) + 1 # example function
+#' example goal function
+#' Used just for testing
+#' 
+#' @param perm_proposal permutation of interest
+test_goal_function <- function(perm_proposal){
+  permutations::permorder(perm_proposal) + 1
 }
 
 #' Uniformly random transposition of perm_size elements

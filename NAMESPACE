@@ -3,5 +3,6 @@
 export(MH)
 export(calculate_gamma_function)
 export(get_structure_constants)
+export(goal_function)
 export(prepare_orthogonal_matrix)
 export(project_matrix)

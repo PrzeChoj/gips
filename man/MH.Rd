@@ -4,14 +4,20 @@
 \alias{MH}
 \title{Metropolis-Hastings algorithm}
 \usage{
-MH(start, perm_size, max_iter)
+MH(U, start, max_iter, perm_size = NULL, delta = 3, D = NULL)
 }
 \arguments{
+\item{U}{Matrix that the projection of is wanted}
+
 \item{start}{Start of the algorithm; an element of class "cycle"}
 
-\item{perm_size}{The dimension of interest}
-
 \item{max_iter}{Number of iterations}
+
+\item{perm_size}{The dimension of interest. When NULL, the size of U is taken}
+
+\item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
+
+\item{D}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
 }
 \value{
 list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{points}
@@ -20,6 +26,20 @@ list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{poin
 Perform the algorithm on the permutations
 }
 \examples{
+perm_size <- 6
+mu <- numeric(perm_size)
+# sigma is a permutation (1,2,3,4,5,6)
+sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+                         0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+                         0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+                         0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+                         0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+                         0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+                nrow=perm_size, byrow = TRUE)
+N <- 6
+Z <- MASS::mvrnorm(N, mu = mu, Sigma = sigma )
+U <- (t(Z) \%*\% Z)/N
 start <- permutations::id
-mh <- MH(start = start, 8, 100)
+mh <- MH(U=U, start=start, max_iter=100, perm_size=perm_size,
+         delta=3, D=diag(nrow = perm_size))
 }

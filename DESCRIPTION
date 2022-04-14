@@ -24,7 +24,8 @@ RoxygenNote: 7.1.2
 URL: https://github.com/PrzeChoj/gips
 BugReports: https://github.com/PrzeChoj/gips/issues
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    MASS
 Config/testthat/edition: 3
 Imports: 
     numbers,
