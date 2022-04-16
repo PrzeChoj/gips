@@ -45,7 +45,7 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
   points[[1]] <- start
   
   goal_function_values[1] <- test_goal_function(points[[1]])
-  #goal_function_values[1] <- goal_function(points[[1]])  # TODO
+  #goal_function_values[1] <- goal_function(points[[1]])  # TODO(goal_function is work in progress)
   
   U2 <- stats::runif(max_iter, min = 0, max = 1)
   
@@ -54,7 +54,7 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
     q <- points[[i]] * e
       
     goal_function_q <- test_goal_function(q)
-    #goal_function_q <- goal_function(q)  # TODO
+    #goal_function_q <- goal_function(q)  # TODO(goal_function is work in progress)
     
     # if goal_function_q > goal_function[i], then it is true
     if(U2[i] < goal_function_q/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
@@ -85,12 +85,32 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
 #' @param D hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
 goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
   if(is.null(D)){
-    D <- diag(nrow = perm_size)
+    D <- diag(nrow = perm_size)  # identity matrix
   }
   
-  #params_for_perm_proposal <- get_params_for_perm(perm_proposal)
+  structure_constants <- get_structure_constants(perm_proposal, perm_size)
   
-  4 # TODO()
+  # exp_part
+  Ac <- sum(r*k*log(k))  # (20)
+  exp_part <- exp(-n/2*Ac)
+  
+  # G_part
+  # TODO
+  G_part <- 7  # G(perm_proposal, delta + n) / G(perm_proposal, delta)
+  
+  # projection of matrices on perm_proposal
+  # TODO
+  Dc <- D
+  Uc <- U
+  
+  # det_part
+  det_part <- det(Dc+Uc)^(-(n+delta-2)/2) * det(Dc)^((delta-2)/2)  # when D = I identity matrix, then Dc=I, then the second part is 1
+  
+  # phi_part
+  # TODO
+  phi_part <- 4  # phi(perm_proposal, D + U) / phi(perm_proposal, D)
+  
+  exp_part * G_part * det_part * phi_part
 }
 
 #' example goal function
