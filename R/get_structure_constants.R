@@ -5,7 +5,7 @@
 #' @param perm an element of class "cycle"
 #' @param perm_size size of permutation
 #'
-#' @return list of 4 items: `r`, `d`, `k`, `L` - vectors of constants from theorem 1
+#' @return list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1
 #' @export
 #'
 #' @examples
@@ -24,11 +24,14 @@ get_structure_constants <- function(perm, perm_size) {
     d <- d[r>0]
     r <- r[r>0]
     k <- d
+    dim_omega <- r + r*(r-1)*d/2
+    
     list ('r'=r,
           'd'=d,
           'k'=k,
-          'L'=L
-          )  # do we want additionally 'dim_omega'=r + r*(r-1)*d/2 ?
+          'L'=L,
+          'dim_omega'=dim_omega
+          )
 }
 
 #' Get cycle representatives and lengths

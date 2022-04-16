@@ -66,11 +66,11 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 #' structure_constants <- get_structure_constants(perm, perm_size)
 #' gips:::G_function(perm, structure_constants, 3)
 G_function <- function(perm, structure_constants, delta=3){
-  dim_omega <- structure_constants[['r']] + structure_constants[['r']]*(structure_constants[['r']]-1)*structure_constants[['d']]/2
+  
   single_G_i <- sapply(1:structure_constants[['L']], function(i){
-    lambda_i <- structure_constants[['r']][i] * (delta-2)/2 + dim_omega[i]/structure_constants[['r']][i]
+    lambda_i <- structure_constants[['r']][i] * (delta-2)/2 + structure_constants[['dim_omega']][i]/structure_constants[['r']][i]
     
-    calculate_gamma_omega(lambda_i, dim_omega[i], structure_constants[['r']][i], structure_constants[['d']])
+    calculate_gamma_omega(lambda_i, structure_constants[['dim_omega']][i], structure_constants[['r']][i], structure_constants[['d']])
   })
   
   prod(single_G_i)

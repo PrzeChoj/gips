@@ -6,7 +6,8 @@ example_basis <- diag(6)
 example_structure_constants <- list('r'=c(3,1,1),
                                     'd'=c(1,2,1),
                                     'k'=c(1,2,1),
-                                    'L'=3)
+                                    'L'=3,
+                                    'dim_omega'=c(6,1,1))
 example_v_object <- list(matrix(c(rep(1/sqrt(3), 3), rep(0, 3),
                                   sqrt(2/3), rep(-sqrt(1/6),2), rep(0,3),
                                   0, 1/sqrt(2), -1/sqrt(2), rep(0, 3)), nrow=6),
