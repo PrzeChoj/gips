@@ -15,7 +15,7 @@ test_that('calculate_r works for identity', {
 })
 
 test_that('calculate_d works for even perm_order', {
-    expect_equal(calculate_d(6),c(1,2,2,1))
+    expect_equal(calculate_d(6), c(1,2,2,1))
     expect_equal(calculate_d(4), c(1,2,1))
     expect_equal(calculate_d(2), c(1,1))
 })

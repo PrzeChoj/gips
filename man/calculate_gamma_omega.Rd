@@ -4,16 +4,16 @@
 \alias{calculate_gamma_omega}
 \title{Calculate single Gamma omega function}
 \usage{
-calculate_gamma_omega(lambda, dim_omega, r, d)
+calculate_gamma_omega(lambda, dim_omega_i, r_i, d_i)
 }
 \arguments{
 \item{lambda}{positive real number}
 
-\item{dim_omega}{from \code{get_structure_constants}}
+\item{dim_omega_i}{single element from \code{get_structure_constants}}
 
-\item{r}{from \code{get_structure_constants}}
+\item{r_i}{single element  from \code{get_structure_constants}}
 
-\item{d}{from \code{get_structure_constants}}
+\item{d_i}{single element  from \code{get_structure_constants}}
 }
 \value{
 Value of Gamma function

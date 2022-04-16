@@ -95,8 +95,7 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
   exp_part <- exp(-n/2*Ac)
   
   # G_part
-  # TODO
-  G_part <- 7  # G(perm_proposal, delta + n) / G(perm_proposal, delta)
+  G_part <- G_function(perm_proposal, structure_constants, delta + n) / G_function(perm_proposal, structure_constants, delta)
   
   # projection of matrices on perm_proposal
   # TODO
