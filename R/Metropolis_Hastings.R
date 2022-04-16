@@ -91,7 +91,7 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
   
   # exp_part
-  Ac <- sum(r*k*log(k))  # (20)
+  Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
   exp_part <- exp(-n/2*Ac)
   
   # G_part
