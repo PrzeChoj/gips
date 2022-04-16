@@ -7,7 +7,7 @@
 #' @param max_iter Number of iterations
 #' @param perm_size The dimension of interest. When NULL, the size of U is taken
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
@@ -28,15 +28,14 @@
 #' U <- (t(Z) %*% Z)/N
 #' start <- permutations::id
 #' mh <- MH(U=U, start=start, max_iter=100, perm_size=perm_size,
-#'          delta=3, D=diag(nrow = perm_size))
-
-MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
+#'          delta=3, D_matrix=diag(nrow = perm_size))
+MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
   if(is.null(perm_size)){
     perm_size <- dim(U)[1]
   }
   stopifnot(perm_size == dim(U)[1])
-  if(is.null(D)){
-    D <- diag(nrow = perm_size)
+  if(is.null(D_matrix)){
+    D_matrix <- diag(nrow = perm_size)
   }
   
   acceptance <- rep(FALSE, max_iter)
@@ -82,10 +81,10 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D=NULL){
 #' @param n Size of a sample
 #' @param U Matrix that the projection of is wanted
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
-goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
-  if(is.null(D)){
-    D <- diag(nrow = perm_size)  # identity matrix
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
+goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL){
+  if(is.null(D_matrix)){
+    D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
   
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
@@ -99,15 +98,15 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D=NULL){
   
   # projection of matrices on perm_proposal
   # TODO
-  Dc <- D
+  Dc <- D_matrix
   Uc <- U
   
   # det_part
-  det_part <- det(Dc+Uc)^(-(n+delta-2)/2) * det(Dc)^((delta-2)/2)  # when D = I identity matrix, then Dc=I, then the second part is 1
+  det_part <- det(Dc+Uc)^(-(n+delta-2)/2) * det(Dc)^((delta-2)/2)  # when D_matrix = I identity matrix, then Dc=I, then the second part is 1
   
   # phi_part
   # TODO
-  phi_part <- 4  # phi(perm_proposal, D + U) / phi(perm_proposal, D)
+  phi_part <- 4  # phi(perm_proposal, Dc + Uc) / phi(perm_proposal, Dc)
   
   exp_part * G_part * det_part * phi_part
 }

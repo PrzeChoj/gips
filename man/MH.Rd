@@ -4,7 +4,7 @@
 \alias{MH}
 \title{Metropolis-Hastings algorithm}
 \usage{
-MH(U, start, max_iter, perm_size = NULL, delta = 3, D = NULL)
+MH(U, start, max_iter, perm_size = NULL, delta = 3, D_matrix = NULL)
 }
 \arguments{
 \item{U}{Matrix that the projection of is wanted}
@@ -17,7 +17,7 @@ MH(U, start, max_iter, perm_size = NULL, delta = 3, D = NULL)
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
 }
 \value{
 list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{points}
@@ -41,5 +41,5 @@ Z <- MASS::mvrnorm(N, mu = mu, Sigma = sigma )
 U <- (t(Z) \%*\% Z)/N
 start <- permutations::id
 mh <- MH(U=U, start=start, max_iter=100, perm_size=perm_size,
-         delta=3, D=diag(nrow = perm_size))
+         delta=3, D_matrix=diag(nrow = perm_size))
 }

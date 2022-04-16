@@ -4,7 +4,7 @@
 \alias{goal_function}
 \title{goal_function for MH}
 \usage{
-goal_function(perm_proposal, perm_size, n, U, delta = 3, D = NULL)
+goal_function(perm_proposal, perm_size, n, U, delta = 3, D_matrix = NULL)
 }
 \arguments{
 \item{perm_proposal}{Permutation of interest}
@@ -17,7 +17,7 @@ goal_function(perm_proposal, perm_size, n, U, delta = 3, D = NULL)
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
 }
 \description{
 goal_function for MH
