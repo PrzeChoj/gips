@@ -97,18 +97,30 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL
   G_part <- G_function(perm_proposal, structure_constants, delta + n) / G_function(perm_proposal, structure_constants, delta)
 
   # projection of matrices on perm_proposal
-  # TODO
   Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
   Uc <- project_matrix(U, perm_proposal, perm_size)
 
-  # det_part
-  det_part <- det(Dc+Uc)^(-(n+delta-2)/2) * det(Dc)^((delta-2)/2)  # when D_matrix = I identity matrix, then Dc=I, then the second part is 1
+  # diagonalisation
+  # TODO add basis argument
+  diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
+                                                    perm_size)
+  Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
+  DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
 
-  # phi_part
-  # TODO
-  phi_part <- 4  # phi(perm_proposal, Dc + Uc) / phi(perm_proposal, Dc)
+  # det_phi_part
+  block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
+  Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
+                                                            block_ends)
+  DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
+                                                              block_ends)
+  Dc_exponent <- -(n+delta-2)/2 - structure_constants[['dim_omega']] /
+      (structure_constants[['r']] * structure_constants[['k']])
+  DcUc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
+      (structure_constants[['r']] * structure_constants[['k']])
 
-  exp_part * G_part * det_part * phi_part
+  det_phi_part <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
+
+  exp_part * G_part * det_phi_part
 }
 
 #' example goal function
@@ -125,3 +137,26 @@ test_goal_function <- function(perm_proposal){
 runif_transposition <- function(perm_size){
   permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
 }
+
+#' Calculate determinants of matrices from block decomposition
+#'
+#' Block decomposition 1 from paper
+#'
+#' @param diagonalized_matrix middle matrix from decomposition 1
+#' @param block_ends indices of last columns of block matrices.
+#' Last element equals size of matrix
+#'
+#' @return numeric vector
+#' @noRd
+
+calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
+                                                     block_ends){
+    block_starts <- c(0, block_ends[-length(block_ends)]+1)
+    sapply(1:length(block_starts), function(i){
+        slice <- block_starts[i]:block_ends[i]
+        block_matrix <- diagonalised_matrix[slice, slice, drop=FALSE]
+        det(block_matrix)
+    })
+}
+
+
