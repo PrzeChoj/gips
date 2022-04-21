@@ -48,7 +48,7 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
     return(Inf)  # the integral does not converge
   }
   
-  prod(gamma(0:(r_i-1)*d_i/2 + lambda)) * (2*pi)^((dim_omega_i - r_i)/2)
+  prod(gamma((0:(r_i-1))*d_i/2 + lambda)) * (2*pi)^((dim_omega_i - r_i)/2)
 }
 
 
@@ -70,7 +70,7 @@ G_function <- function(perm, structure_constants, delta=3){
   single_G_i <- sapply(1:structure_constants[['L']], function(i){
     lambda_i <- structure_constants[['r']][i] * (delta-2)/2 + structure_constants[['dim_omega']][i]/structure_constants[['r']][i]
     
-    calculate_gamma_omega(lambda_i, structure_constants[['dim_omega']][i], structure_constants[['r']][i], structure_constants[['d']])
+    calculate_gamma_omega(lambda_i, structure_constants[['dim_omega']][i], structure_constants[['r']][i], structure_constants[['d']][i])
   })
   
   prod(single_G_i)

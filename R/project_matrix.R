@@ -9,7 +9,10 @@
 #'
 #' @return projected matrix
 #' @export
-
+#' 
+#' @examples project_matrix(U = matrix(rnorm(49), nrow = 7),
+#'                          perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
+#'                          perm_size = 7)
 project_matrix <- function(U, perm, perm_size){
     equal_indices_by_perm <- get_equal_indices_by_perm(perm, perm_size)
     mean_values <- sapply(equal_indices_by_perm, function(indices)

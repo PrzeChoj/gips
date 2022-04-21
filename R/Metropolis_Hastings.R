@@ -72,7 +72,9 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
 
 
 
-#' goal_function for MH
+#' goal function for MH
+#'
+#' If infinite value is reached, produces a warning
 #'
 #' @export
 #'
@@ -120,7 +122,13 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL
 
   det_phi_part <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
 
-  exp_part * G_part * det_phi_part
+  out <- exp_part * G_part * det_phi_part
+  
+  if(is.infinite(out)){
+    warning("Infinite value of a goal function")
+  }
+  
+  out
 }
 
 #' example goal function

@@ -42,8 +42,10 @@ get_structure_constants <- function(perm, perm_size) {
 #' @param perm_size size of permutation
 #'
 #' @return list with 2 items: `representatives` and `cycle_lengths`
+#' 
+#' @example get_cycle_representatives_and_lengths(permutations::as.cycle(permutations::as.word(c(4,3,6,5,1,2))), 6)
+#' 
 #' @noRd
-
 get_cycle_representatives_and_lengths <- function(perm, perm_size) {
     cycles <- get_subcycles(perm, perm_size)
     list('representatives' = sapply(cycles, min),

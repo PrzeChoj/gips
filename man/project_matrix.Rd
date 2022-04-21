@@ -20,3 +20,8 @@ projected matrix
 Project matrix on the space of symmetrical matrices invariant
 by a cyclic group of permutations.
 }
+\examples{
+project_matrix(U = matrix(rnorm(49), nrow = 7),
+                         perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
+                         perm_size = 7)
+}

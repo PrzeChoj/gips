@@ -2,7 +2,7 @@
 % Please edit documentation in R/Metropolis_Hastings.R
 \name{goal_function}
 \alias{goal_function}
-\title{goal_function for MH}
+\title{goal function for MH}
 \usage{
 goal_function(perm_proposal, perm_size, n, U, delta = 3, D_matrix = NULL)
 }
@@ -20,5 +20,5 @@ goal_function(perm_proposal, perm_size, n, U, delta = 3, D_matrix = NULL)
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
 }
 \description{
-goal_function for MH
+If infinite value is reached, produces a warning
 }

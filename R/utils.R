@@ -5,7 +5,7 @@
 #'
 #' @param perm permutations::cycle object
 #'
-#' @example get_subcycles(as.cycle(as.word(c(4,3,2,1,5))), 10)
+#' @example get_subcycles(permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))), 7)
 #'
 #' @return list of integer vectors - cycles INCLUDING cycles of length 1
 #' @noRd
