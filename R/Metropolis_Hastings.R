@@ -11,7 +11,7 @@
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
-#' 
+#'
 #' @examples
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
@@ -37,24 +37,24 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
-  
+
   acceptance <- rep(FALSE, max_iter)
   goal_function_values <- rep(0, max_iter)
   points <- list()
   points[[1]] <- start
-  
+
   goal_function_values[1] <- test_goal_function(points[[1]])
   #goal_function_values[1] <- goal_function(points[[1]])  # TODO(goal_function is work in progress)
-  
+
   U2 <- stats::runif(max_iter, min = 0, max = 1)
-  
+
   for (i in 1:(max_iter-1)){
     e <- runif_transposition(perm_size)
     q <- points[[i]] * e
-      
+
     goal_function_q <- test_goal_function(q)
     #goal_function_q <- goal_function(q)  # TODO(goal_function is work in progress)
-    
+
     # if goal_function_q > goal_function[i], then it is true
     if(U2[i] < goal_function_q/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- q
@@ -66,16 +66,16 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
       goal_function_values[i+1] <- goal_function_values[i]
     }
   }
-  
+
   list("acceptance_rate"=mean(acceptance), "goal_function_values"=goal_function_values, "points"=points)
 }
 
 
 
 #' goal_function for MH
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param perm_proposal Permutation of interest
 #' @param perm_size size of a permutation
 #' @param n Size of a sample
@@ -86,41 +86,41 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
-  
+
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
-  
+
   # exp_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
   exp_part <- exp(-n/2*Ac)
-  
+
   # G_part
   G_part <- G_function(perm_proposal, structure_constants, delta + n) / G_function(perm_proposal, structure_constants, delta)
-  
+
   # projection of matrices on perm_proposal
   # TODO
-  Dc <- D_matrix
-  Uc <- U
-  
+  Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
+  Uc <- project_matrix(U, perm_proposal, perm_size)
+
   # det_part
   det_part <- det(Dc+Uc)^(-(n+delta-2)/2) * det(Dc)^((delta-2)/2)  # when D_matrix = I identity matrix, then Dc=I, then the second part is 1
-  
+
   # phi_part
   # TODO
   phi_part <- 4  # phi(perm_proposal, Dc + Uc) / phi(perm_proposal, Dc)
-  
+
   exp_part * G_part * det_part * phi_part
 }
 
 #' example goal function
 #' Used just for testing
-#' 
+#'
 #' @param perm_proposal permutation of interest
 test_goal_function <- function(perm_proposal){
   permutations::permorder(perm_proposal) + 1
 }
 
 #' Uniformly random transposition of perm_size elements
-#' 
+#'
 #' @param perm_size size from which take transpositions
 runif_transposition <- function(perm_size){
   permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
