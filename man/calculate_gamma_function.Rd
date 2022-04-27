@@ -4,10 +4,12 @@
 \alias{calculate_gamma_function}
 \title{Calculate Gamma function}
 \usage{
-calculate_gamma_function(perm, lambda)
+calculate_gamma_function(perm, perm_size, lambda)
 }
 \arguments{
 \item{perm}{an element of class "cycle"}
+
+\item{perm_size}{size of permutation}
 
 \item{lambda}{positive real number}
 }
@@ -16,4 +18,10 @@ Value of Gamma function
 }
 \description{
 Theorem 8 from the paper, using the formula (19) from the paper
+}
+\examples{
+calculate_gamma_function(permutations::id, 2, 0.5001)
+calculate_gamma_function(permutations::id, 2, 0.50000001)
+calculate_gamma_function(permutations::id, 2, 0.500000000001)
+calculate_gamma_function(permutations::id, 2, 0.5) # integral diverges
 }

@@ -3,29 +3,36 @@
 #' Theorem 8 from the paper, using the formula (19) from the paper
 #'
 #' @param perm an element of class "cycle"
+#' @param perm_size size of permutation
 #' @param lambda positive real number
 #' 
 #' @export
 #'
 #' @return Value of Gamma function
-
-calculate_gamma_function <- function(perm, lambda){
-  constants <- get_structure_constants(perm)
-  r <- constants$r
-  k <- constants$k
-  d <- constants$d
-  L <- constants$L
+#' 
+#' @examples
+#' calculate_gamma_function(permutations::id, 2, 0.5001)
+#' calculate_gamma_function(permutations::id, 2, 0.50000001)
+#' calculate_gamma_function(permutations::id, 2, 0.500000000001)
+#' calculate_gamma_function(permutations::id, 2, 0.5) # integral diverges
+calculate_gamma_function <- function(perm, perm_size, lambda){
+  constants <- get_structure_constants(perm, perm_size)
+  r <- constants[['r']]
+  k <- constants[['k']]
+  d <- constants[['d']]
+  L <- constants[['L']]
+  dim_gamma <- constants[['dim_omega']]
   
   if(lambda <= max((r-1)*d/(2*k))){
+    warning("Gamma integral does not convarge for a given lambda value")
     return(Inf)  # the integral does not converge
   }
   
   A_Gamma <- sum(r*k*log(k))
-  dim_gamma <- r + r*(r-1)*d/2
   B_Gamma <- sum(dim_gamma*log(k))/2
   
-  gamma_omega <- sapply(1:L, function(i){calculate_gamma_omega(dim_gamma[i],
-                                                               k[i]*lambda,
+  gamma_omega <- sapply(1:L, function(i){calculate_gamma_omega(k[i]*lambda,
+                                                               dim_gamma[i],
                                                                r[i],
                                                                d[i])})
   
@@ -45,6 +52,7 @@ calculate_gamma_function <- function(perm, lambda){
 #' @return Value of Gamma function
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
   if(lambda <= dim_omega_i/r_i - 1){
+    warning("Gamma omega integral does not convarge for a given lambda value")
     return(Inf)  # the integral does not converge
   }
   
