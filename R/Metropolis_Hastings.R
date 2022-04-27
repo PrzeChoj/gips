@@ -2,12 +2,13 @@
 #'
 #' Perform the algorithm on the permutations
 #'
-#' @param U Matrix that the projection of is wanted
-#' @param start Start of the algorithm; an element of class "cycle"
-#' @param max_iter Number of iterations
-#' @param perm_size The dimension of interest. When NULL, the size of U is taken
+#' @param U matrix that the projection of is wanted.
+#' @param n_number number of random variables that `U` is based on.
+#' @param max_iter number of iterations.
+#' @param start start of the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
+#' @param perm_size the dimension of interest. When NULL, the size of U is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
@@ -23,13 +24,16 @@
 #'                          0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                          0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                 nrow=perm_size, byrow = TRUE)
-#' N <- 6
-#' Z <- MASS::mvrnorm(N, mu = mu, Sigma = sigma )
-#' U <- (t(Z) %*% Z)/N
+#' n_number <- 6
+#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
+#' U <- (t(Z) %*% Z)/n_number
 #' start <- permutations::id
-#' mh <- MH(U=U, start=start, max_iter=100, perm_size=perm_size,
+#' mh <- MH(U=U, n_number=10, max_iter=100, start=start, perm_size=perm_size,
 #'          delta=3, D_matrix=diag(nrow = perm_size))
-MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
+MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_matrix=NULL){
+  if(is.null(start)){
+    start <- permutations::id
+  }
   if(is.null(perm_size)){
     perm_size <- dim(U)[1]
   }
@@ -44,21 +48,25 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
   points[[1]] <- start
 
   goal_function_values[1] <- test_goal_function(points[[1]])
-  #goal_function_values[1] <- goal_function(points[[1]])  # TODO(goal_function is work in progress)
+  #goal_function_values[1] <- goal_function(points[[1]],  # TODO(goal_function is work in progress; sometimes returns NaN because of 0^(-50) situation )
+  #                                         perm_size, n_number, U,
+  #                                         delta=3, D_matrix)
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
     e <- runif_transposition(perm_size)
-    q <- points[[i]] * e
+    perm_proposal <- points[[i]] * e
 
-    goal_function_q <- test_goal_function(q)
-    #goal_function_q <- goal_function(q)  # TODO(goal_function is work in progress)
-
-    # if goal_function_q > goal_function[i], then it is true
-    if(U2[i] < goal_function_q/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
-      points[[i+1]] <- q
-      goal_function_values[i+1] <- goal_function_q
+    goal_function_perm_proposal <- test_goal_function(perm_proposal)
+    #goal_function_perm_proposal <- goal_function(perm_proposal,  # TODO(goal_function is work in progress; sometimes returns NaN because of 0^(-50) situation )
+    #                                             perm_size, n_number, U,
+    #                                             delta=3, D_matrix)
+    
+    # if goal_function_perm_proposal > goal_function[i], then it is true
+    if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
+      points[[i+1]] <- perm_proposal
+      goal_function_values[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
     }
     else{
@@ -78,13 +86,18 @@ MH <- function(U, start, max_iter, perm_size=NULL, delta=3, D_matrix=NULL){
 #'
 #' @export
 #'
-#' @param perm_proposal Permutation of interest
-#' @param perm_size size of a permutation
-#' @param n Size of a sample
-#' @param U Matrix that the projection of is wanted
+#' @param perm_proposal permutation of interest.
+#' @param perm_size size of a permutation.
+#' @param n_number number of random variables that `U` is based on.
+#' @param U matrix that the projection of is wanted.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken
-goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL){
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
+#' 
+#' @examples 
+#' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
+#' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
+#' goal_function(c, 2, 100, U1)
+goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matrix=NULL){
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
@@ -93,10 +106,10 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL
 
   # exp_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
-  exp_part <- exp(-n/2*Ac)
+  exp_part <- exp(-n_number/2*Ac)
 
   # G_part
-  G_part <- G_function(perm_proposal, structure_constants, delta + n) / G_function(perm_proposal, structure_constants, delta)
+  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) / G_function(perm_proposal, structure_constants, delta)
 
   # projection of matrices on perm_proposal
   Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
@@ -115,7 +128,7 @@ goal_function <- function(perm_proposal, perm_size, n, U, delta=3, D_matrix=NULL
                                                             block_ends)
   DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
                                                               block_ends)
-  Dc_exponent <- -(n+delta-2)/2 - structure_constants[['dim_omega']] /
+  Dc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
       (structure_constants[['r']] * structure_constants[['k']])
   DcUc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
       (structure_constants[['r']] * structure_constants[['k']])

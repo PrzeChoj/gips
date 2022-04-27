@@ -4,21 +4,33 @@
 \alias{goal_function}
 \title{goal function for MH}
 \usage{
-goal_function(perm_proposal, perm_size, n, U, delta = 3, D_matrix = NULL)
+goal_function(
+  perm_proposal,
+  perm_size,
+  n_number,
+  U,
+  delta = 3,
+  D_matrix = NULL
+)
 }
 \arguments{
-\item{perm_proposal}{Permutation of interest}
+\item{perm_proposal}{permutation of interest.}
 
-\item{perm_size}{size of a permutation}
+\item{perm_size}{size of a permutation.}
 
-\item{n}{Size of a sample}
+\item{n_number}{number of random variables that \code{U} is based on.}
 
-\item{U}{Matrix that the projection of is wanted}
+\item{U}{matrix that the projection of is wanted.}
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken.}
 }
 \description{
 If infinite value is reached, produces a warning
+}
+\examples{
+c <- permutations::as.cycle(permutations::as.word(c(2,1)))
+U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
+goal_function(c, 2, 100, U1)
 }

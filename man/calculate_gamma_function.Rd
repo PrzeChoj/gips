@@ -23,5 +23,5 @@ Theorem 8 from the paper, using the formula (19) from the paper
 calculate_gamma_function(permutations::id, 2, 0.5001)
 calculate_gamma_function(permutations::id, 2, 0.50000001)
 calculate_gamma_function(permutations::id, 2, 0.500000000001)
-calculate_gamma_function(permutations::id, 2, 0.5) # integral diverges
+#calculate_gamma_function(permutations::id, 2, 0.5) # integral diverges; returns Inf and warning
 }
