@@ -20,8 +20,6 @@ test_that('calculate_block_determinants works', {
 })
 
 test_that('goal_function returns proper values', {
-  skip("Fix not yet implemented")  # PC: I think the variables Dc_exponent and DcUc_exponent in goal_function should be swapped
-  
   expect_equal(goal_function(c, 2, 100, U1),
                6^(-103/2) * gamma(103/2) * gamma(103/2) / (pi / 4))
   expect_equal(goal_function(cprim, 2, 100, U1),

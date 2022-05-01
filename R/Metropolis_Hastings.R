@@ -128,9 +128,9 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
                                                             block_ends)
   DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
                                                               block_ends)
-  Dc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
+  Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
       (structure_constants[['r']] * structure_constants[['k']])
-  DcUc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
+  DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
       (structure_constants[['r']] * structure_constants[['k']])
 
   det_phi_part <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
