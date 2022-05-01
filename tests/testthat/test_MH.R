@@ -27,6 +27,33 @@ test_that('goal_function returns proper values', {
 })
 
 
+test_that('goal_function has desired property', {
+  skip("Not yet work; see issue#4")
+  
+  p <- 10
+  n <- 20
+  
+  mu <- numeric(p)
+  sigma <- matrix(numeric(p*p), nrow=p)
+  for(i in 1:p){
+    for(j in 1:p){
+      sigma[i,j] <- 1 - abs(i-j) / p
+    }
+    sigma[i,i] <- 1 + 1/p
+  }
+  
+  Z <- MASS::mvrnorm(n, mu = mu, Sigma = sigma)
+  U <- t(Z) %*% Z
+  
+  
+  real_permutation_function_value <- gips::goal_function(permutations::as.cycle(permutations::as.word(c(2:p, 1))),
+                                                         p, n, U/n)
+  another_permutation_function_value <- gips::goal_function(permutations::id, p, n, U/n)
+  
+  # We want the goal function to have a bigger value for the real permutation than for the another
+  expect_gt(real_permutation_function_value,
+            another_permutation_function_value)
+})
 
 
 
