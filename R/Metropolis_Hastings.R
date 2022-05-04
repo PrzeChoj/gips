@@ -62,7 +62,7 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
     #goal_function_perm_proposal <- goal_function(perm_proposal,  # TODO(goal_function is work in progress; sometimes returns NaN because of 0^(-50) situation )
     #                                             perm_size, n_number, U,
     #                                             delta=3, D_matrix)
-    
+
     # if goal_function_perm_proposal > goal_function[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
@@ -92,8 +92,8 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
 #' @param U matrix that the projection of is wanted.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
-#' 
-#' @examples 
+#'
+#' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
 #' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
 #' goal_function(c, 2, 100, U1)
@@ -111,36 +111,14 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
   # G_part
   G_part <- G_function(perm_proposal, structure_constants, delta + n_number) / G_function(perm_proposal, structure_constants, delta)
 
-  # projection of matrices on perm_proposal
-  Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
-  Uc <- project_matrix(U, perm_proposal, perm_size)
-
-  # diagonalisation
-  # TODO add basis argument
-  diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
-                                                    perm_size)
-  Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
-  DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
-
-  # det_phi_part
-  block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
-  Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
-                                                            block_ends)
-  DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
-                                                              block_ends)
-  Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
-      (structure_constants[['r']] * structure_constants[['k']])
-  DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
-      (structure_constants[['r']] * structure_constants[['k']])
-
-  det_phi_part <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
+  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta, D_matrix)
 
   out <- exp_part * G_part * det_phi_part
-  
+
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
   }
-  
+
   out
 }
 
@@ -157,6 +135,39 @@ test_goal_function <- function(perm_proposal){
 #' @param perm_size size from which take transpositions
 runif_transposition <- function(perm_size){
   permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
+}
+
+#' Calculate phi_part of goal_function
+#'
+#' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
+#' Rest of params as in goal_function
+#'
+#' @noRd
+
+calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
+                               D_matrix, structure_constants){
+    # projection of matrices on perm_proposal
+    Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
+    Uc <- project_matrix(U, perm_proposal, perm_size)
+
+    # diagonalisation
+    # TODO add basis argument
+    diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
+                                                      perm_size)
+    Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
+    DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
+
+    # det_phi_part
+    block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
+    Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
+                                                              block_ends)
+    DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
+                                                                block_ends)
+    Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
+        (structure_constants[['r']] * structure_constants[['k']])
+    DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
+        (structure_constants[['r']] * structure_constants[['k']])
+    prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
 }
 
 #' Calculate determinants of matrices from block decomposition
@@ -179,5 +190,6 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
         det(block_matrix)
     })
 }
+
 
 
