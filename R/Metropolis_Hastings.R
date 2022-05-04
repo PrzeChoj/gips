@@ -47,21 +47,22 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   points <- list()
   points[[1]] <- start
 
-  goal_function_values[1] <- test_goal_function(points[[1]])
-  #goal_function_values[1] <- goal_function(points[[1]],  # TODO(goal_function is work in progress; sometimes returns NaN because of 0^(-50) situation )
-  #                                         perm_size, n_number, U,
-  #                                         delta=3, D_matrix)
+  #goal_function_values[1] <- test_goal_function(points[[1]])
+  goal_function_values[1] <- goal_function(points[[1]],
+                                           perm_size, n_number, U,
+                                           delta=3, D_matrix=D_matrix)
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
+    if(i%%100 == 0){print(i)}
     e <- runif_transposition(perm_size)
     perm_proposal <- points[[i]] * e
 
-    goal_function_perm_proposal <- test_goal_function(perm_proposal)
-    #goal_function_perm_proposal <- goal_function(perm_proposal,  # TODO(goal_function is work in progress; sometimes returns NaN because of 0^(-50) situation )
-    #                                             perm_size, n_number, U,
-    #                                             delta=3, D_matrix)
+    #goal_function_perm_proposal <- test_goal_function(perm_proposal)
+    goal_function_perm_proposal <- goal_function(perm_proposal,
+                                                 perm_size, n_number, U,
+                                                 delta=3, D_matrix=D_matrix)
     
     # if goal_function_perm_proposal > goal_function[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
@@ -134,6 +135,10 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
       (structure_constants[['r']] * structure_constants[['k']])
 
   det_phi_part <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
+  
+  if(is.nan(det_phi_part)){ # TODO This is temporary solution, see issue#5
+    det_phi_part <- 0
+  }
 
   out <- exp_part * G_part * det_phi_part
   

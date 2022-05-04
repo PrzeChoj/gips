@@ -36,8 +36,6 @@ test_that('goal_function returns proper values', {
 
 
 test_that('goal_function has desired property', {
-  skip("Not yet work; see issue#4")
-  
   # Example from the paper chapter 5
   
   p <- 10
@@ -56,18 +54,13 @@ test_that('goal_function has desired property', {
   U <- t(Z) %*% Z
   
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
-  actual_permutation_function_value <- goal_function(real_permutation,
-                                                           p, n, U/n)
+  actual_permutation_function_value <- goal_function(actual_permutation,
+                                                           p, n, U)
   another_permutation_function_value <- goal_function(permutations::id,
-                                                      p, n, U/n)
-  
-  # Example from the paper's Table 4:
-  #another_permutation2 <- permutations::as.cycle(permutations::as.word(c(6,7,5,8,9,2,1,10,3,4)))
-  #another_permutation2_function_value <- goal_function(another_permutation2,
-  #                                                     p, n, U/n)
+                                                      p, n, U)
   
   # We want the goal function to have a bigger value for the real permutation than for the another
-  expect_gt(real_permutation_function_value,
+  expect_gt(actual_permutation_function_value,
             another_permutation_function_value)
 })
 
