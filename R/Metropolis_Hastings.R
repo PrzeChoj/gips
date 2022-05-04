@@ -109,7 +109,8 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
   exp_part <- exp(-n_number/2*Ac)
 
   # G_part
-  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) / G_function(perm_proposal, structure_constants, delta)
+  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) /
+      G_function(perm_proposal, structure_constants, delta)
 
   phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta, D_matrix)
 
@@ -151,7 +152,7 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     Uc <- project_matrix(U, perm_proposal, perm_size)
 
     # diagonalisation
-    # TODO add basis argument
+    # TODO add basis argument?
     diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
                                                       perm_size)
     Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
