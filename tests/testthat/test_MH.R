@@ -20,10 +20,18 @@ test_that('calculate_block_determinants works', {
 })
 
 test_that('goal_function returns proper values', {
+  # The value of goal_function on matrix should the same as the projection of the matrix
+  # and U2 == pi_c(U1)
+  expect_equal(goal_function(c, 2, 100, U1),
+               goal_function(c, 2, 100, U2))
+  
+  # Those values were calculated by hand:
   expect_equal(goal_function(c, 2, 100, U1),
                6^(-103/2) * gamma(103/2) * gamma(103/2) / (pi / 4))
   expect_equal(goal_function(cprim, 2, 100, U1),
                (23/4)^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
+  expect_equal(goal_function(cprim, 2, 100, U2),
+               6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
 
