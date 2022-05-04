@@ -49,7 +49,7 @@ test_that('goal_function has desired property', {
 
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
   actual_permutation_function_value <- goal_function(actual_permutation,
-                                                           p, n, U)
+                                                     p, n, U)
   another_permutation_function_value <- goal_function(permutations::id,
                                                       p, n, U)
   

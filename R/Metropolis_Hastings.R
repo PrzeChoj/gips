@@ -113,9 +113,10 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
   G_part <- G_function(perm_proposal, structure_constants, delta + n_number) /
       G_function(perm_proposal, structure_constants, delta)
 
-  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta, D_matrix)
+  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
+                                 D_matrix, structure_constants)
 
-  out <- exp_part * G_part * det_phi_part
+  out <- exp_part * G_part * phi_part
 
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
@@ -159,7 +160,7 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
     DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
 
-    # det_phi_part
+    # block part
     block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
     Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
                                                               block_ends)
