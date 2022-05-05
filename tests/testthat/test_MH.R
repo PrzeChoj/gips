@@ -6,30 +6,33 @@ block_diagonal_matrix <- matrix(c(
     0,0,0,0,0.2
 ), byrow=TRUE, ncol=5)
 
-c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-cprim <- permutations::as.cycle(permutations::as.word(c(1,2)))
+c_perm <- permutations::as.cycle(permutations::as.word(c(2,1)))
+id_perm <- permutations::id
 
 U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
 U2 <- matrix(c(1.5,0.5,0.5,1.5), nrow=2,byrow = TRUE)
+D_matrix <- diag(nrow = 2)
 
 
 test_that('goal_function returns proper values', {
   # The value of goal_function on matrix should the same as the projection of the matrix
   # and U2 == pi_c(U1)
-  expect_equal(goal_function(c, 2, 100, U1),
-               goal_function(c, 2, 100, U2))
+  expect_equal(goal_function(c_perm, 2, 100, U1, D_matrix=D_matrix),
+               goal_function(c_perm, 2, 100, U2, D_matrix=D_matrix))
 
   # Those values were calculated by hand:
-  expect_equal(goal_function(c, 2, 100, U1),
+  expect_equal(goal_function(c_perm, 2, 100, U1, D_matrix=D_matrix),
                6^(-103/2) * gamma(103/2) * gamma(103/2) / (pi / 4))
-  expect_equal(goal_function(cprim, 2, 100, U1),
+  expect_equal(goal_function(id_perm, 2, 100, U1, D_matrix=D_matrix),
                (23/4)^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
-  expect_equal(goal_function(cprim, 2, 100, U2),
+  expect_equal(goal_function(id_perm, 2, 100, U2, D_matrix=D_matrix),
                6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
 
 test_that('goal_function has desired property', {
+  #skip("Stopped working after the division by 2 error correcting in `calculate_phi_part`")
+  
   # Example from the paper chapter 5
 
   p <- 10
@@ -50,7 +53,7 @@ test_that('goal_function has desired property', {
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
   actual_permutation_function_value <- goal_function(actual_permutation,
                                                      p, n, U)
-  another_permutation_function_value <- goal_function(permutations::id,
+  another_permutation_function_value <- goal_function(id_perm,
                                                       p, n, U)
   
   # We want the goal function to have a bigger value for the real permutation than for the another
