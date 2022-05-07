@@ -1,6 +1,10 @@
-test_that('get_structure_constants for example from paper',{
+test_that('get_structure_constants for examples from paper',{
     expect_equal(get_structure_constants(example_perm, 6),
                  example_structure_constants)
+    
+    skip("See Issue#7")
+    expect_equal(get_structure_constants(example_perm2, 5),
+                 example_structure_constants2)
 })
 
 # Example 6 from paper
