@@ -149,9 +149,14 @@ runif_transposition <- function(perm_size){
 
 calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
                                D_matrix, structure_constants){
+
     # projection of matrices on perm_proposal
     Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
     Uc <- project_matrix(U, perm_proposal, perm_size)
+
+    # divide by 2 - refer to OneNote paper
+    Dc <- Dc / 2
+    Uc <- Uc / 2
 
     # diagonalisation
     # TODO add basis argument?
