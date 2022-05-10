@@ -25,7 +25,7 @@ get_structure_constants <- function(perm, perm_size) {
     r <- r[r>0]
     k <- d
     dim_omega <- r + r*(r-1)*d/2
-    
+
     list ('r'=r,
           'd'=d,
           'k'=k,
@@ -42,9 +42,9 @@ get_structure_constants <- function(perm, perm_size) {
 #' @param perm_size size of permutation
 #'
 #' @return list with 2 items: `representatives` and `cycle_lengths`
-#' 
+#'
 #' @example get_cycle_representatives_and_lengths(permutations::as.cycle(permutations::as.word(c(4,3,6,5,1,2))), 6)
-#' 
+#'
 #' @noRd
 get_cycle_representatives_and_lengths <- function(perm, perm_size) {
     cycles <- get_subcycles(perm, perm_size)
@@ -65,10 +65,20 @@ calculate_r <- function(cycle_lengths, perm_order) {
     # for a in 0,1,...,floor(perm_order/2)
     # r_a = #{1:C such that a*p_c is a multiple of N}
     # AKA a*p_c %% N == 0
-    # Corollary: N %% p_c == 0 for each p_c
+
+    # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
     raw_alphas <- perm_order / cycle_lengths
+
+    # Now we have to adjust for 2 cases:
+    # 1) some alphas are too large
     filtered_alphas <- raw_alphas[raw_alphas <= M]
-    alpha_count <- table(filtered_alphas)
+    # 2) some alphas are so small, that we can include their multiples
+    #   (if a*p_c %% N == 0, then for any natural k  k*a*p_c %% N == 0)
+    all_alphas <- unlist(lapply(filtered_alphas, function(alpha){
+        max_alpha_multiple <- floor(M/alpha)
+        alpha * 1:max_alpha_multiple
+    }))
+    alpha_count <- table(all_alphas)
 
     r <- rep(0, M)
     r[as.integer(names(alpha_count))] <- as.integer(alpha_count)
