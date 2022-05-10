@@ -11,11 +11,12 @@ MH(
   start = NULL,
   perm_size = NULL,
   delta = 3,
-  D_matrix = NULL
+  D_matrix = NULL,
+  use_progress_bar = TRUE
 )
 }
 \arguments{
-\item{U}{matrix that the projection of is wanted.}
+\item{U}{matrix, sum of outer products of data. \code{U} = sum(t(Z) \%*\% Z), where Z is observed data.}
 
 \item{n_number}{number of random variables that \code{U} is based on.}
 
@@ -28,12 +29,14 @@ MH(
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken.}
+
+\item{use_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
 list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{points}
 }
 \description{
-Perform the algorithm on the permutations
+Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 }
 \examples{
 perm_size <- 6

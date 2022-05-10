@@ -1,14 +1,15 @@
 #' Metropolis-Hastings algorithm
 #'
-#' Perform the algorithm on the permutations.
+#' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param U matrix that the projection of is wanted.
-#' @param n_number number of random variables that `U` is based on.
-#' @param max_iter number of iterations.
-#' @param start start of the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
+#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
+#' @param n_number number of data points that `U` is based on.
+#' @param max_iter number of iterations for an algorithm to perform.
+#' @param start starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param perm_size the dimension of interest. When NULL, the size of U is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
+#' @param use_progress_bar boolean, indicate weather or not show the progress bar.
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
@@ -30,7 +31,8 @@
 #' start <- permutations::id
 #' mh <- MH(U=U, n_number=10, max_iter=100, start=start, perm_size=perm_size,
 #'          delta=3, D_matrix=diag(nrow = perm_size))
-MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_matrix=NULL){
+MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL,
+               delta=3, D_matrix=NULL, use_progress_bar=TRUE){
   if(is.null(start)){
     start <- permutations::id
   }
@@ -47,7 +49,8 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   points <- list()
   points[[1]] <- start
 
-  #goal_function_values[1] <- test_goal_function(points[[1]])
+  if(use_progress_bar)
+    progressBar = txtProgressBar(min = 0, max = max_iter, initial = 1)
   goal_function_values[1] <- goal_function(points[[1]],
                                            perm_size, n_number, U,
                                            delta=3, D_matrix=D_matrix)
@@ -55,11 +58,12 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
-    if(i%%100 == 0){print(paste0("Iter ", i, " of ", max_iter))} # TODO(Progress bar? See ISSUE#8)
+    if(use_progress_bar)
+      setTxtProgressBar(progressBar, i)
+    
     e <- runif_transposition(perm_size)
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
-    #goal_function_perm_proposal <- test_goal_function(perm_proposal)
     goal_function_perm_proposal <- goal_function(perm_proposal,
                                                  perm_size, n_number, U,
                                                  delta=3, D_matrix=D_matrix)
@@ -75,6 +79,9 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
       goal_function_values[i+1] <- goal_function_values[i]
     }
   }
+  
+  if(use_progress_bar)
+    close(progressBar)
 
   list("acceptance_rate"=mean(acceptance), "goal_function_values"=goal_function_values, "points"=points)
 }
