@@ -57,7 +57,7 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   for (i in 1:(max_iter-1)){
     if(i%%100 == 0){print(i)}
     e <- runif_transposition(perm_size)
-    perm_proposal <- as.cycle(points[[i]] * e)
+    perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
     #goal_function_perm_proposal <- test_goal_function(perm_proposal)
     goal_function_perm_proposal <- goal_function(perm_proposal,
@@ -154,12 +154,12 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
     Uc <- project_matrix(U, perm_proposal, perm_size)
 
-    # divide by 2 - refer to OneNote paper
+    # divide by 2 - refer to newest version of the paper
     Dc <- Dc / 2
     Uc <- Uc / 2
 
-    # diagonalisation
-    # TODO add basis argument?
+    # diagonalization
+    # TODO add basis argument? ISSUE#6
     diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
                                                       perm_size)
     Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
