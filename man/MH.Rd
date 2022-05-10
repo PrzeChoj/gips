@@ -18,11 +18,11 @@ MH(
 \arguments{
 \item{U}{matrix, sum of outer products of data. \code{U} = sum(t(Z) \%*\% Z), where Z is observed data.}
 
-\item{n_number}{number of random variables that \code{U} is based on.}
+\item{n_number}{number of data points that \code{U} is based on.}
 
-\item{max_iter}{number of iterations.}
+\item{max_iter}{number of iterations for an algorithm to perform.}
 
-\item{start}{start of the algorithm; an element of class "cycle". When NULL, identity permutation is taken.}
+\item{start}{starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.}
 
 \item{perm_size}{the dimension of interest. When NULL, the size of U is taken.}
 

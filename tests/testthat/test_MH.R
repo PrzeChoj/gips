@@ -31,8 +31,6 @@ test_that('goal_function returns proper values', {
 
 
 test_that('goal_function has desired property', {
-  #skip("Stopped working after the division by 2 error correcting in `calculate_phi_part`")
-
   # Example from the paper chapter 5
 
   p <- 10
@@ -61,8 +59,9 @@ test_that('goal_function has desired property', {
             another_permutation_function_value)
 })
 
-#TODO
 test_that('calculate phi_part works', {
+    skip("TODO")
+    
     expect_true(TRUE)
 })
 

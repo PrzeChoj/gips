@@ -27,7 +27,7 @@ goal_function(
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken.}
 }
 \description{
-If infinite value is reached, produces a warning
+Calculate the function proportional to a posteriori distribution, according to equation (33) and (27). If \code{Inf} or \code{NaN} is reached, produces a warning.
 }
 \examples{
 c <- permutations::as.cycle(permutations::as.word(c(2,1)))

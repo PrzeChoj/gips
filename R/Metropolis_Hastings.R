@@ -90,7 +90,7 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL,
 
 #' goal function for MH
 #'
-#' If infinite value is reached, produces a warning
+#' Calculate the function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
 #'
 #' @export
 #'
@@ -128,16 +128,11 @@ goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matr
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
   }
+  if(is.nan(out)){
+    warning("NaN value of a goal function")
+  }
 
   out
-}
-
-#' example goal function
-#' Used just for testing
-#'
-#' @param perm_proposal permutation of interest
-test_goal_function <- function(perm_proposal){
-  permutations::permorder(perm_proposal) + 1
 }
 
 #' Uniformly random transposition of perm_size elements
@@ -153,7 +148,6 @@ runif_transposition <- function(perm_size){
 #' Rest of params as in goal_function
 #'
 #' @noRd
-
 calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
                                D_matrix, structure_constants){
 
@@ -203,7 +197,6 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
 #'
 #' @return numeric vector
 #' @noRd
-
 calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
                                                      block_ends){
     block_starts <- c(0, block_ends[-length(block_ends)]+1)
