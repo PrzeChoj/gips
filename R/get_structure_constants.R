@@ -67,23 +67,20 @@ calculate_r <- function(cycle_lengths, perm_order) {
     # AKA a*p_c %% N == 0
 
     # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
-    raw_alphas <- perm_order / cycle_lengths
+    multiples <- perm_order / cycle_lengths
 
     # Now we have to adjust for 2 cases:
     # 1) some alphas are too large
-    filtered_alphas <- raw_alphas[raw_alphas <= M]
     # 2) some alphas are so small, that we can include their multiples
     #   (if a*p_c %% N == 0, then for any natural k  k*a*p_c %% N == 0)
-    all_alphas <- unlist(lapply(filtered_alphas, function(alpha){
-        max_alpha_multiple <- floor(M/alpha)
-        alpha * 1:max_alpha_multiple
+    alphas <- unlist(lapply(multiples, function(cycle_multiple){
+        max_multiple <- floor(M/cycle_multiple)
+        cycle_multiple * 0:max_multiple
     }))
-    alpha_count <- table(all_alphas)
 
-    r <- rep(0, M)
-    r[as.integer(names(alpha_count))] <- as.integer(alpha_count)
-    # correct for alpha == 0
-    r <- c(length(cycle_lengths), r)
+    alpha_count <- table(alphas)
+    r <- rep(0, M+1)
+    r[as.integer(names(alpha_count))+1] <- as.integer(alpha_count)
     r
 }
 
