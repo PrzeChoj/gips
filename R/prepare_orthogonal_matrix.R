@@ -26,25 +26,41 @@ prepare_orthogonal_matrix <- function(perm, perm_size, basis=NULL){
 #' @noRd
 
 get_v_object <- function(perm, cycle_representatives, cycle_lengths, basis){
+    permuted_representatives <- get_permuted_representatives(perm, cycle_representatives,
+                                                             cycle_lengths)
     v_object <- lapply(1:length(cycle_representatives), function(i){
-        curr_representative <- cycle_representatives[i]
         curr_cycle_length <- cycle_lengths[i]
-        get_v_matrix_for_subcycle(perm, curr_representative, curr_cycle_length,
-                                  basis)
+        relevant_permutation_power_indices <- 1:curr_cycle_length
+        curr_permuted_representatives <- permuted_representatives[relevant_permutation_power_indices,i]
+        get_v_matrix_for_subcycle(curr_permuted_representatives, basis)
     })
     v_object
 }
 
-get_v_matrix_for_subcycle <- function(perm, cycle_representative, cycle_length,
-                                      basis){
-    # first element
-    k_s <- 1:cycle_length - 1
-    if(cycle_length > 1)
-        # does not work for cycle_length == 1
-        permuted_representative <- as.function(perm ^ k_s)(cycle_representative)
-    else
-        permuted_representative <- cycle_representative
+get_permuted_representatives <- function(perm, cycle_representatives, cycle_lengths){
+    # perm ignores last fixed elements
+    if(permutations::is.id(perm)){
+        out <- matrix(1:max(cycle_representatives), nrow=1)
+        return(out)
+    }
+    perm_size <- permutations::size(perm)
+    last_fixed_representatives <- cycle_representatives[cycle_representatives > perm_size]
+    other_representatives <- cycle_representatives[cycle_representatives <= perm_size]
+    other_permuted_representatives <- as.function(perm ^ (1:max(cycle_lengths)-1))(other_representatives)
+    if(!is.matrix(other_permuted_representatives)){
+        other_permuted_representatives <- matrix(other_permuted_representatives,
+                                                ncol=length(other_representatives))
+    }
+    if(length(last_fixed_representatives) == 0) return(other_permuted_representatives)
+    last_permuted_representatives <- matrix(rep(last_fixed_representatives,
+                                                each = nrow(other_permuted_representatives)),
+                                            nrow = nrow(other_permuted_representatives))
+    cbind(other_permuted_representatives, last_permuted_representatives)
+}
 
+get_v_matrix_for_subcycle <- function(permuted_representative, basis){
+    cycle_length <- length(permuted_representative)
+    k_s <- 1:cycle_length - 1
     chosen_basis_columns <- basis[,permuted_representative, drop=FALSE] # matrix p x curr_cycle_length
 
     first_element <- apply(chosen_basis_columns, 1, sum) /
@@ -72,6 +88,17 @@ get_v_matrix_for_subcycle <- function(perm, cycle_representative, cycle_length,
         v_matrix[, cycle_length] <- last_element
     }
     v_matrix
+}
+
+#' Execute multiple permutations on a single object
+#' @noRd
+permute_vectorized <- function(perms, x){
+    cycles <- get_cyc(perms, x)
+    sapply(unclass(cycles), function(l){
+        cycle <- l[[1]]
+        index <- which(cycle == x) + 1 %% length(cycle)
+        cycle[index]
+    })
 }
 
 #' Arrange V object
