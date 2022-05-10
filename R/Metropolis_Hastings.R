@@ -57,13 +57,13 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   for (i in 1:(max_iter-1)){
     if(i%%100 == 0){print(i)}
     e <- runif_transposition(perm_size)
-    perm_proposal <- points[[i]] * e
+    perm_proposal <- as.cycle(points[[i]] * e)
 
     #goal_function_perm_proposal <- test_goal_function(perm_proposal)
     goal_function_perm_proposal <- goal_function(perm_proposal,
                                                  perm_size, n_number, U,
                                                  delta=3, D_matrix=D_matrix)
-    
+
     # if goal_function_perm_proposal > goal_function[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
@@ -170,14 +170,14 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
         (structure_constants[['r']] * structure_constants[['k']])
     DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
         (structure_constants[['r']] * structure_constants[['k']])
-    
+
     out <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
-    
+
     if(is.nan(out)){ # TODO This is temporary solution, see issue#5
       warning("NaN value of a calculate_phi_part function")
       out <- 0
     }
-    
+
     out
 }
 
