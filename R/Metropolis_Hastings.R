@@ -1,6 +1,6 @@
 #' Metropolis-Hastings algorithm
 #'
-#' Perform the algorithm on the permutations
+#' Perform the algorithm on the permutations.
 #'
 #' @param U matrix that the projection of is wanted.
 #' @param n_number number of random variables that `U` is based on.
@@ -55,7 +55,7 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL, delta=3, D_mat
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
-    if(i%%100 == 0){print(i)}
+    if(i%%100 == 0){print(paste0("Iter ", i, " of ", max_iter))} # TODO(Progress bar? See ISSUE#8)
     e <- runif_transposition(perm_size)
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
