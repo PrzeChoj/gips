@@ -9,7 +9,7 @@
 #'
 #' @return projected matrix
 #' @export
-#' 
+#'
 #' @examples project_matrix(U = matrix(rnorm(49), nrow = 7),
 #'                          perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
 #'                          perm_size = 7)
@@ -124,10 +124,14 @@ get_diagonal_representative <- function(indices, matrix_size) {
     if (min(which_diag) == 0)
         return(NA)
     indices_on_middlest_diag <- which(which_diag == min(which_diag))
-    distances_from_lupper_corner <-
-        apply(double_indices[indices_on_middlest_diag, , drop = FALSE], 1, min)
+
+    # contrdiag is a diagonal parallel to main contrdiag
+    # main contrdiag is going from right-upper to left-bottom corner
+    which_contrdiag <- double_indices[indices_on_middlest_diag, 1] +
+        double_indices[indices_on_middlest_diag, 2]
+
     closest_to_lupper_corner <-
-        which(distances_from_lupper_corner == min(distances_from_lupper_corner))
+        which(which_contrdiag == min(which_contrdiag))
     if (length(closest_to_lupper_corner) > 1) {
         return(NA)
     }
