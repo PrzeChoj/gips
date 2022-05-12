@@ -6,10 +6,9 @@
 #' @param n_number number of data points that `U` is based on.
 #' @param max_iter number of iterations for an algorithm to perform.
 #' @param start starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
-#' @param perm_size the dimension of interest. When NULL, the size of U is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
-#' @param use_progress_bar boolean, indicate weather or not show the progress bar.
+#' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
 #' @export
@@ -29,10 +28,10 @@
 #' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
 #' U <- (t(Z) %*% Z)/n_number
 #' start <- permutations::id
-#' mh <- MH(U=U, n_number=10, max_iter=100, start=start, perm_size=perm_size,
+#' mh <- MH(U=U, n_number=10, max_iter=100, start=start,
 #'          delta=3, D_matrix=diag(nrow = perm_size))
-MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL,
-               delta=3, D_matrix=NULL, use_progress_bar=TRUE){
+MH <- function(U, n_number, max_iter, start=NULL,
+               delta=3, D_matrix=NULL, show_progress_bar=TRUE){
   if(is.null(start)){
     start <- permutations::id
   }
@@ -49,24 +48,24 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL,
   points <- list()
   points[[1]] <- start
 
-  if(use_progress_bar)
-    progressBar = txtProgressBar(min = 0, max = max_iter, initial = 1)
+  if(show_progress_bar)
+    progressBar = utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   goal_function_values[1] <- goal_function(points[[1]],
                                            perm_size, n_number, U,
-                                           delta=3, D_matrix=D_matrix)
+                                           delta=delta, D_matrix=D_matrix)
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
-    if(use_progress_bar)
-      setTxtProgressBar(progressBar, i)
+    if(show_progress_bar)
+      utils::setTxtProgressBar(progressBar, i)
     
     e <- runif_transposition(perm_size)
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
     goal_function_perm_proposal <- goal_function(perm_proposal,
                                                  perm_size, n_number, U,
-                                                 delta=3, D_matrix=D_matrix)
+                                                 delta=delta, D_matrix=D_matrix)
 
     # if goal_function_perm_proposal > goal_function[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
@@ -80,7 +79,7 @@ MH <- function(U, n_number, max_iter, start=NULL, perm_size=NULL,
     }
   }
   
-  if(use_progress_bar)
+  if(show_progress_bar)
     close(progressBar)
 
   list("acceptance_rate"=mean(acceptance), "goal_function_values"=goal_function_values, "points"=points)
