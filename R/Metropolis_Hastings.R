@@ -7,7 +7,7 @@
 #' @param max_iter number of iterations for an algorithm to perform.
 #' @param start starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
 #' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
@@ -29,15 +29,13 @@
 #' U <- (t(Z) %*% Z)/n_number
 #' start <- permutations::id
 #' mh <- MH(U=U, n_number=10, max_iter=100, start=start,
-#'          delta=3, D_matrix=diag(nrow = perm_size))
+#'          delta=3, D_matrix=diag(nrow=dim(U)[1]))
 MH <- function(U, n_number, max_iter, start=NULL,
                delta=3, D_matrix=NULL, show_progress_bar=TRUE){
   if(is.null(start)){
     start <- permutations::id
   }
-  if(is.null(perm_size)){
-    perm_size <- dim(U)[1]
-  }
+  perm_size <- dim(U)[1]
   stopifnot(perm_size == dim(U)[1])
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)

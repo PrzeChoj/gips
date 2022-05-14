@@ -25,7 +25,7 @@ MH(
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{dim(U)[1]}. When NULL, the identity matrix is taken.}
 
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
@@ -51,5 +51,5 @@ Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
 U <- (t(Z) \%*\% Z)/n_number
 start <- permutations::id
 mh <- MH(U=U, n_number=10, max_iter=100, start=start,
-         delta=3, D_matrix=diag(nrow = perm_size))
+         delta=3, D_matrix=diag(nrow=dim(U)[1]))
 }

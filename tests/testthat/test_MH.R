@@ -30,8 +30,11 @@ test_that('goal_function returns proper values', {
 })
 
 
-test_that('goal_function has desired property', {
+test_that('goal_function has the desired property', {
   # Example from the paper chapter 5
+  # This test is randomized. 6% of the time it will fail. See ISSUE#9
+  
+  set.seed(1234)
 
   p <- 10
   n <- 20
