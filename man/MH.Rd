@@ -50,6 +50,6 @@ n_number <- 6
 Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
 U <- (t(Z) \%*\% Z)/n_number
 start <- permutations::id
-mh <- MH(U=U, n_number=10, max_iter=100, start=start,
-         delta=3, D_matrix=diag(nrow=dim(U)[1]))
+mh <- MH(U=U, n_number=10, max_iter=10, start=start,
+         show_progress_bar=FALSE)
 }

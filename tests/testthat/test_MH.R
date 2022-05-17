@@ -72,5 +72,6 @@ test_that('calculate_block_determinants works', {
                  c(3,2,1))
 })
 
+test_examples("../..") # example for MH is here
 
 
