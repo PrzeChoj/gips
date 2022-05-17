@@ -51,6 +51,9 @@ MH <- function(U, n_number, max_iter, start=NULL,
   goal_function_values[1] <- goal_function(points[[1]],
                                            perm_size, n_number, U,
                                            delta=delta, D_matrix=D_matrix)
+  
+  found_point <- start
+  found_point_function_value <- goal_function_values[1]
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -64,12 +67,26 @@ MH <- function(U, n_number, max_iter, start=NULL,
     goal_function_perm_proposal <- goal_function(perm_proposal,
                                                  perm_size, n_number, U,
                                                  delta=delta, D_matrix=D_matrix)
-
+    if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
+      #browser()  # needs further investigation. See ISSUE#5
+      warning("gips is unable to process this U matrix right now. See ISSUE#5 for more information")
+      return(list("acceptance_rate"=mean(acceptance),
+                  "goal_function_values"=goal_function_values,
+                  "points"=points,
+                  "found_point"=found_point,
+                  "found_point_function_value"=found_point_function_value))
+    }
+    
     # if goal_function_perm_proposal > goal_function[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
       goal_function_values[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
+      
+      if(found_point_function_value < goal_function_values[i+1]){
+        found_point_function_value <- goal_function_values[i+1]
+        found_point <- points[[i+1]]
+      }
     }
     else{
       points[[i+1]] = points[[i]]
@@ -80,7 +97,11 @@ MH <- function(U, n_number, max_iter, start=NULL,
   if(show_progress_bar)
     close(progressBar)
 
-  list("acceptance_rate"=mean(acceptance), "goal_function_values"=goal_function_values, "points"=points)
+  list("acceptance_rate"=mean(acceptance),
+       "goal_function_values"=goal_function_values,
+       "points"=points,
+       "found_point"=found_point,
+       "found_point_function_value"=found_point_function_value)
 }
 
 
