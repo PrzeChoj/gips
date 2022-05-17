@@ -35,8 +35,8 @@ MH <- function(U, n_number, max_iter, start=NULL,
   if(is.null(start)){
     start <- permutations::id
   }
+  stopifnot(dim(U)[2] == dim(U)[1])
   perm_size <- dim(U)[1]
-  stopifnot(perm_size == dim(U)[1])
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
@@ -49,7 +49,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
   if(show_progress_bar)
     progressBar = utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   goal_function_values[1] <- goal_function(points[[1]],
-                                           perm_size, n_number, U,
+                                           n_number, U,
                                            delta=delta, D_matrix=D_matrix)
   
   found_point <- start
@@ -65,11 +65,11 @@ MH <- function(U, n_number, max_iter, start=NULL,
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
     goal_function_perm_proposal <- goal_function(perm_proposal,
-                                                 perm_size, n_number, U,
+                                                 n_number, U,
                                                  delta=delta, D_matrix=D_matrix)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
       #browser()  # needs further investigation. See ISSUE#5
-      warning("gips is unable to process this U matrix right now. See ISSUE#5 for more information")
+      warning("gips is yet unable to process this U matrix. See ISSUE#5 for more information")
       return(list("acceptance_rate"=mean(acceptance),
                   "goal_function_values"=goal_function_values,
                   "points"=points,
@@ -77,7 +77,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
                   "found_point_function_value"=found_point_function_value))
     }
     
-    # if goal_function_perm_proposal > goal_function[i], then it is true
+    # if goal_function_perm_proposal > goal_function_values[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
       goal_function_values[i+1] <- goal_function_perm_proposal
@@ -113,7 +113,6 @@ MH <- function(U, n_number, max_iter, start=NULL,
 #' @export
 #'
 #' @param perm_proposal permutation of interest.
-#' @param perm_size size of a permutation.
 #' @param n_number number of random variables that `U` is based on.
 #' @param U matrix that the projection of is wanted.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
@@ -122,8 +121,11 @@ MH <- function(U, n_number, max_iter, start=NULL,
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
 #' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
-#' goal_function(c, 2, 100, U1)
-goal_function <- function(perm_proposal, perm_size, n_number, U, delta=3, D_matrix=NULL){
+#' goal_function(c, 100, U1)
+goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
+  stopifnot(dim(U)[1] == dim(U)[2])
+  perm_size <- dim(U)[1]
+  
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }

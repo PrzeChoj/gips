@@ -25,7 +25,7 @@ MH(
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{dim(U)[1]}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
 
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }

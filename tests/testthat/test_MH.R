@@ -17,15 +17,15 @@ D_matrix <- diag(nrow = 2)
 test_that('goal_function returns proper values', {
   # The value of goal_function on matrix should the same as the projection of the matrix
   # and U2 == pi_c(U1)
-  expect_equal(goal_function(c_perm, 2, 100, U1, D_matrix=D_matrix),
-               goal_function(c_perm, 2, 100, U2, D_matrix=D_matrix))
+  expect_equal(goal_function(c_perm, 100, U1, D_matrix=D_matrix),
+               goal_function(c_perm, 100, U2, D_matrix=D_matrix))
 
   # Those values were calculated by hand:
-  expect_equal(goal_function(c_perm, 2, 100, U1*2, D_matrix=D_matrix*2),
+  expect_equal(goal_function(c_perm, 100, U1*2, D_matrix=D_matrix*2),
                6^(-103/2) * gamma(103/2) * gamma(103/2) / (pi / 4))
-  expect_equal(goal_function(id_perm, 2, 100, U1*2, D_matrix=D_matrix*2),
+  expect_equal(goal_function(id_perm, 100, U1*2, D_matrix=D_matrix*2),
                (23/4)^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
-  expect_equal(goal_function(id_perm, 2, 100, U2*2, D_matrix=D_matrix*2),
+  expect_equal(goal_function(id_perm, 100, U2*2, D_matrix=D_matrix*2),
                6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
@@ -52,10 +52,8 @@ test_that('goal_function has the desired property', {
   U <- t(Z) %*% Z
 
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
-  actual_permutation_function_value <- goal_function(actual_permutation,
-                                                     p, n, U)
-  another_permutation_function_value <- goal_function(id_perm,
-                                                      p, n, U)
+  actual_permutation_function_value <- goal_function(actual_permutation, n, U)
+  another_permutation_function_value <- goal_function(id_perm, n, U)
 
   # We want the goal function to have a bigger value for the real permutation than for the another
   expect_gt(actual_permutation_function_value,
