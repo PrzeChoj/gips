@@ -51,7 +51,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
   goal_function_values[1] <- goal_function(points[[1]],
                                            n_number, U,
                                            delta=delta, D_matrix=D_matrix)
-  
+
   found_point <- start
   found_point_function_value <- goal_function_values[1]
 
@@ -60,7 +60,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
   for (i in 1:(max_iter-1)){
     if(show_progress_bar)
       utils::setTxtProgressBar(progressBar, i)
-    
+
     e <- runif_transposition(perm_size)
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
@@ -76,13 +76,13 @@ MH <- function(U, n_number, max_iter, start=NULL,
                   "found_point"=found_point,
                   "found_point_function_value"=found_point_function_value))
     }
-    
+
     # if goal_function_perm_proposal > goal_function_values[i], then it is true
     if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
       goal_function_values[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
-      
+
       if(found_point_function_value < goal_function_values[i+1]){
         found_point_function_value <- goal_function_values[i+1]
         found_point <- points[[i+1]]
@@ -93,7 +93,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
       goal_function_values[i+1] <- goal_function_values[i]
     }
   }
-  
+
   if(show_progress_bar)
     close(progressBar)
 
@@ -125,7 +125,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
 goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
   stopifnot(dim(U)[1] == dim(U)[2])
   perm_size <- dim(U)[1]
-  
+
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
@@ -136,14 +136,16 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
   exp_part <- exp(-n_number/2*Ac)
 
-  # G_part
-  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) /
+  # G_part and phi_part
+  # since G_part tends to be large and phi_parte tends to be small,
+  # we have to multiply them term-wise and then over l=1:L
+  G_parts <- G_function(perm_proposal, structure_constants, delta + n_number) /
       G_function(perm_proposal, structure_constants, delta)
 
-  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
+  phi_parts <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
                                  D_matrix, structure_constants)
 
-  out <- exp_part * G_part * phi_part
+  out <- prod(exp_part^(1/length(G_parts)) * G_parts * phi_parts)
 
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
@@ -197,12 +199,7 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
         (structure_constants[['r']] * structure_constants[['k']])
 
-    out <- prod(Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent)
-
-    if(is.nan(out)){ # TODO This is temporary solution, see issue#5
-      warning("NaN value of a calculate_phi_part function")
-      out <- 0
-    }
+    out <- Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent
 
     out
 }
