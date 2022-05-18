@@ -21,11 +21,11 @@ test_that('goal_function returns proper values', {
                goal_function(c_perm, 100, U2, D_matrix=D_matrix))
 
   # Those values were calculated by hand:
-  expect_equal(goal_function(c_perm, 100, U1*2, D_matrix=D_matrix*2),
+  expect_equal(exp(goal_function(c_perm, 100, U1*2, D_matrix=D_matrix*2)),
                6^(-103/2) * gamma(103/2) * gamma(103/2) / (pi / 4))
-  expect_equal(goal_function(id_perm, 100, U1*2, D_matrix=D_matrix*2),
+  expect_equal(exp(goal_function(id_perm, 100, U1*2, D_matrix=D_matrix*2)),
                (23/4)^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
-  expect_equal(goal_function(id_perm, 100, U2*2, D_matrix=D_matrix*2),
+  expect_equal(exp(goal_function(id_perm, 100, U2*2, D_matrix=D_matrix*2)),
                6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
@@ -33,7 +33,7 @@ test_that('goal_function returns proper values', {
 test_that('goal_function has the desired property', {
   # Example from the paper chapter 5
   # This test is randomized. 6% of the time it will fail. See ISSUE#9
-  
+
   set.seed(1234)
 
   p <- 10
@@ -62,7 +62,7 @@ test_that('goal_function has the desired property', {
 
 test_that('calculate phi_part works', {
     skip("TODO")
-    
+
     expect_true(TRUE)
 })
 

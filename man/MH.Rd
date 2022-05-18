@@ -30,7 +30,8 @@ MH(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
-list of 3 items: \code{acceptance_rate}, \code{goal_function_values}, \code{points}
+list of 3 items: \code{acceptance_rate}, \code{goal_function_logvalues},
+\code{points}, \code{found_point}, \code{found_point_function_logvalue}
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
