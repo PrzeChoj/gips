@@ -14,7 +14,7 @@ G_function(perm, structure_constants, delta = 3)
 \item{delta}{parameter of a method}
 }
 \value{
-Product of \code{calculate_gamma_omega} from i to L. It is a product part of equation (27). For more information, see Issue #3 on \code{gips}' GitHub
+Elements of \code{calculate_gamma_omega} from i to L. It is a product part of equation (27). For more information, see Issue #3 on \code{gips}' GitHub
 }
 \description{
 G_function for goal_function
