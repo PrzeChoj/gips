@@ -134,7 +134,8 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
 
   # Ac_part
-  Ac_part <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
+  Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
+  Ac_part <- (-n_number/2*Ac)
 
   # G_part and phi_part
   G_part <- G_function(perm_proposal, structure_constants, delta + n_number) -
