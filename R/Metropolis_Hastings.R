@@ -37,11 +37,15 @@ MH <- function(U, n_number, max_iter, start=NULL,
   if(is.null(start)){
     start <- permutations::id
   }
-  stopifnot(dim(U)[2] == dim(U)[1])
+  stopifnot(permutations::is.cycle(start),
+            is.matrix(U),
+            dim(U)[1] == dim(U)[2])
   perm_size <- dim(U)[1]
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
+  stopifnot(is.matrix(D_matrix),
+            dim(D_matrix)[1] == dim(D_matrix)[2])
 
   acceptance <- rep(FALSE, max_iter)
   goal_function_logvalues <- rep(0, max_iter)
@@ -126,12 +130,16 @@ MH <- function(U, n_number, max_iter, start=NULL,
 #' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
 #' goal_function(c, 100, U1)
 goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
-  stopifnot(dim(U)[1] == dim(U)[2])
+  stopifnot(permutations::is.cycle(perm_proposal),
+            is.matrix(U),
+            dim(U)[1] == dim(U)[2])
   perm_size <- dim(U)[1]
 
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
+  stopifnot(is.matrix(D_matrix),
+            dim(D_matrix)[1] == dim(D_matrix)[2])
 
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
 

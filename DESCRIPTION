@@ -30,4 +30,5 @@ Config/testthat/edition: 3
 Imports: 
     numbers,
     permutations,
-    stringi
+    stringi,
+    utils
