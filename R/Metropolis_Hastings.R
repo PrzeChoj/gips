@@ -145,7 +145,7 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
   phi_parts <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
                                  D_matrix, structure_constants)
 
-  out <- exp_part * prod(G_parts * phi_parts)
+  out <- prod(exp_part^(1/length(G_parts)) * G_parts * phi_parts)
 
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
