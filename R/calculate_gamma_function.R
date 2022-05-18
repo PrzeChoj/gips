@@ -49,14 +49,15 @@ calculate_gamma_function <- function(perm, perm_size, lambda){
 #' @param r_i single element  from `get_structure_constants`
 #' @param d_i single element  from `get_structure_constants`
 #'
-#' @return Value of Gamma function
+#' @return Logarithm of value of Gamma function
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
   if(lambda <= dim_omega_i/r_i - 1){
     warning("Gamma omega integral does not convarge for a given lambda value")
     return(Inf)  # the integral does not converge
   }
 
-  prod(gamma((0:(-(r_i-1)))*d_i/2 + lambda)) * (2*pi)^((dim_omega_i - r_i)/2)
+  #prod(gamma((0:(-(r_i-1)))*d_i/2 + lambda)) * (2*pi)^((dim_omega_i - r_i)/2)
+  sum(lgamma((0:(-(r_i-1)))*d_i/2 + lambda)) + (dim_omega_i - r_i)/2 * log(2*pi)
 }
 
 
@@ -66,7 +67,8 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 #' @param delta parameter of a method
 #' @param structure_constants constants from `get_structure_constants` function
 #'
-#' @return Elements of `calculate_gamma_omega` from i to L. It is a product part of equation (27). For more information, see Issue #3 on `gips`' GitHub
+#' @return Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
+#' It is log of a product part of equation (27). For more information, see Issue #3 on `gips`' GitHub
 #'
 #' @examples
 #' perm_size <- 6
@@ -81,7 +83,7 @@ G_function <- function(perm, structure_constants, delta=3){
     calculate_gamma_omega(lambda_i, structure_constants[['dim_omega']][i], structure_constants[['r']][i], structure_constants[['d']][i])
   })
 
-  single_G_i
+  sum(single_G_i)
 }
 
 
