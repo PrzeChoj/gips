@@ -19,7 +19,7 @@ MH(
 
 \item{n_number}{number of data points that \code{U} is based on.}
 
-\item{max_iter}{number of iterations for an algorithm to perform.}
+\item{max_iter}{number of iterations for an algorithm to perform. At least 2.}
 
 \item{start}{starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.}
 
@@ -30,8 +30,9 @@ MH(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
-list of 5 items: \code{acceptance_rate}, \code{goal_function_logvalues},
-\code{points}, \code{found_point}, \code{found_point_function_logvalue}
+object of class MH; list of 5 items: \code{acceptance_rate},
+\code{goal_function_logvalues}, \code{points}, \code{found_point},
+\code{found_point_function_logvalue}
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
@@ -39,7 +40,7 @@ Uses Metropolis-Hastings algorithm to find the permutation that maximizes the li
 \examples{
 perm_size <- 6
 mu <- numeric(perm_size)
-# sigma is a permutation (1,2,3,4,5,6)
+# sigma is a matrix invariant under permutation (1,2,3,4,5,6)
 sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                          0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
                          0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
@@ -47,10 +48,11 @@ sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                          0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
                          0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
                 nrow=perm_size, byrow = TRUE)
-n_number <- 6
+n_number <- 13
 Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
-U <- (t(Z) \%*\% Z)/n_number
+U <- (t(Z) \%*\% Z)
 start <- permutations::id
-mh <- MH(U=U, n_number=10, max_iter=10, start=start,
+mh <- MH(U=U, n_number=n_number, max_iter=10, start=start,
          show_progress_bar=FALSE)
+plot(mh)
 }

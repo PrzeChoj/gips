@@ -4,21 +4,22 @@
 #'
 #' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
 #' @param n_number number of data points that `U` is based on.
-#' @param max_iter number of iterations for an algorithm to perform.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2.
 #' @param start starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
-#' @return list of 5 items: `acceptance_rate`, `goal_function_logvalues`,
-#' `points`, `found_point`, `found_point_function_logvalue`
+#' @return object of class MH; list of 5 items: `acceptance_rate`,
+#' `goal_function_logvalues`, `points`, `found_point`,
+#' `found_point_function_logvalue`
 #' 
 #' @export
 #'
 #' @examples
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
-#' # sigma is a permutation (1,2,3,4,5,6)
+#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
 #' sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
 #'                          0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
 #'                          0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
@@ -26,12 +27,13 @@
 #'                          0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                          0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                 nrow=perm_size, byrow = TRUE)
-#' n_number <- 6
+#' n_number <- 13
 #' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
-#' U <- (t(Z) %*% Z)/n_number
+#' U <- (t(Z) %*% Z)
 #' start <- permutations::id
-#' mh <- MH(U=U, n_number=10, max_iter=10, start=start,
+#' mh <- MH(U=U, n_number=n_number, max_iter=10, start=start,
 #'          show_progress_bar=FALSE)
+#' plot(mh)
 MH <- function(U, n_number, max_iter, start=NULL,
                delta=3, D_matrix=NULL, show_progress_bar=TRUE){
   if(is.null(start)){
@@ -39,7 +41,8 @@ MH <- function(U, n_number, max_iter, start=NULL,
   }
   stopifnot(permutations::is.cycle(start),
             is.matrix(U),
-            dim(U)[1] == dim(U)[2])
+            dim(U)[1] == dim(U)[2],
+            max_iter >= 2) # TODO(Make it work for max_iter == 1)
   perm_size <- dim(U)[1]
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
@@ -104,11 +107,15 @@ MH <- function(U, n_number, max_iter, start=NULL,
   if(show_progress_bar)
     close(progressBar)
 
-  list("acceptance_rate"=mean(acceptance),
-       "goal_function_logvalues"=goal_function_logvalues,
-       "points"=points,
-       "found_point"=found_point,
-       "found_point_function_logvalue"=found_point_function_logvalue)
+  out <- list("acceptance_rate"=mean(acceptance),
+              "goal_function_logvalues"=goal_function_logvalues,
+              "points"=points,
+              "found_point"=found_point,
+              "found_point_function_logvalue"=found_point_function_logvalue)
+  
+  class(out) <- c("MH", "list")
+  
+  out
 }
 
 
