@@ -10,8 +10,9 @@
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
-#' @return list of 3 items: `acceptance_rate`, `goal_function_logvalues`,
+#' @return list of 5 items: `acceptance_rate`, `goal_function_logvalues`,
 #' `points`, `found_point`, `found_point_function_logvalue`
+#' 
 #' @export
 #'
 #' @examples
@@ -69,16 +70,17 @@ MH <- function(U, n_number, max_iter, start=NULL,
                                                  n_number, U,
                                                  delta=delta, D_matrix=D_matrix)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
-      #browser()  # needs further investigation. See ISSUE#5
+      #browser()  # See ISSUE#5; We hope the introduction of log calculations
+                    # will stop this problem.
       warning("gips is yet unable to process this U matrix. See ISSUE#5 for more information")
       return(list("acceptance_rate"=mean(acceptance),
-                  "goal_function_values"=goal_function_values,
+                  "goal_function_logvalues"=goal_function_logvalues,
                   "points"=points,
                   "found_point"=found_point,
-                  "found_point_function_value"=found_point_function_value))
+                  "found_point_function_logvalue"=found_point_function_logvalue))
     }
 
-    # if goal_function_perm_proposal > goal_function_values[i], then it is true
+    # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true
     if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
       goal_function_logvalues[i+1] <- goal_function_perm_proposal

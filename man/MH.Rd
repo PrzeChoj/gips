@@ -30,7 +30,7 @@ MH(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
-list of 3 items: \code{acceptance_rate}, \code{goal_function_logvalues},
+list of 5 items: \code{acceptance_rate}, \code{goal_function_logvalues},
 \code{points}, \code{found_point}, \code{found_point_function_logvalue}
 }
 \description{
