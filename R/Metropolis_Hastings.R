@@ -10,7 +10,8 @@
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
-#' @return list of 3 items: `acceptance_rate`, `goal_function_values`, `points`
+#' @return list of 3 items: `acceptance_rate`, `goal_function_logvalues`,
+#' `points`, `found_point`, `found_point_function_logvalue`
 #' @export
 #'
 #' @examples
@@ -42,18 +43,18 @@ MH <- function(U, n_number, max_iter, start=NULL,
   }
 
   acceptance <- rep(FALSE, max_iter)
-  goal_function_values <- rep(0, max_iter)
+  goal_function_logvalues <- rep(0, max_iter)
   points <- list()
   points[[1]] <- start
 
   if(show_progress_bar)
     progressBar = utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
-  goal_function_values[1] <- goal_function(points[[1]],
-                                           n_number, U,
-                                           delta=delta, D_matrix=D_matrix)
+  goal_function_logvalues[1] <- goal_function(points[[1]],
+                                              n_number, U,
+                                              delta=delta, D_matrix=D_matrix)
 
   found_point <- start
-  found_point_function_value <- goal_function_values[1]
+  found_point_function_logvalue <- goal_function_logvalues[1]
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -78,19 +79,19 @@ MH <- function(U, n_number, max_iter, start=NULL,
     }
 
     # if goal_function_perm_proposal > goal_function_values[i], then it is true
-    if(U2[i] < goal_function_perm_proposal/goal_function_values[i]){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
+    if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
       points[[i+1]] <- perm_proposal
-      goal_function_values[i+1] <- goal_function_perm_proposal
+      goal_function_logvalues[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
 
-      if(found_point_function_value < goal_function_values[i+1]){
-        found_point_function_value <- goal_function_values[i+1]
+      if(found_point_function_logvalue < goal_function_logvalues[i+1]){
+        found_point_function_logvalue <- goal_function_logvalues[i+1]
         found_point <- points[[i+1]]
       }
     }
     else{
       points[[i+1]] = points[[i]]
-      goal_function_values[i+1] <- goal_function_values[i]
+      goal_function_logvalues[i+1] <- goal_function_logvalues[i]
     }
   }
 
@@ -98,17 +99,17 @@ MH <- function(U, n_number, max_iter, start=NULL,
     close(progressBar)
 
   list("acceptance_rate"=mean(acceptance),
-       "goal_function_values"=goal_function_values,
+       "goal_function_logvalues"=goal_function_logvalues,
        "points"=points,
        "found_point"=found_point,
-       "found_point_function_value"=found_point_function_value)
+       "found_point_function_logvalue"=found_point_function_logvalue)
 }
 
 
 
 #' goal function for MH
 #'
-#' Calculate the function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
+#' Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
 #'
 #' @export
 #'
@@ -132,20 +133,18 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
 
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
 
-  # exp_part
-  Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
-  exp_part <- exp(-n_number/2*Ac)
+  # Ac_part
+  Ac_part <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
 
   # G_part and phi_part
-  # since G_part tends to be large and phi_parte tends to be small,
-  # we have to multiply them term-wise and then over l=1:L
-  G_parts <- G_function(perm_proposal, structure_constants, delta + n_number) /
+  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) -
       G_function(perm_proposal, structure_constants, delta)
 
-  phi_parts <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
+  # phi_part
+  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
                                  D_matrix, structure_constants)
 
-  out <- prod(exp_part^(1/length(G_parts)) * G_parts * phi_parts)
+  out <- Ac_part + G_part + phi_part
 
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
@@ -164,7 +163,7 @@ runif_transposition <- function(perm_size){
   permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
 }
 
-#' Calculate phi_part of goal_function
+#' Calculate log phi_part of goal_function
 #'
 #' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
 #' Rest of params as in goal_function
@@ -199,7 +198,7 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
         (structure_constants[['r']] * structure_constants[['k']])
 
-    out <- Dc_block_dets ^ Dc_exponent * DcUc_block_dets ^ DcUc_exponent
+    out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)
 
     out
 }

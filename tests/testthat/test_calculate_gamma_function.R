@@ -13,10 +13,10 @@ test_that('calculate_gamma_omega returns proper value',{
 
   lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i # 2
 
-  expect_equal(calculate_gamma_omega(lambda=lambda,
+  expect_equal(exp(calculate_gamma_omega(lambda=lambda,
                                      dim_omega_i=dim_omega_i,
                                      r_i=r_i,
-                                     d_i=d_i),
+                                     d_i=d_i)),
                pi / sqrt(2))
 
   # perm = (1,2)
@@ -29,10 +29,10 @@ test_that('calculate_gamma_omega returns proper value',{
 
   lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i # 2
 
-  expect_equal(calculate_gamma_omega(lambda=lambda,
+  expect_equal(exp(calculate_gamma_omega(lambda=lambda,
                                      dim_omega_i=dim_omega_i,
                                      r_i=r_i,
-                                     d_i=d_i),
+                                     d_i=d_i)),
                sqrt(pi / 4)) # gamma(1.5)
 })
 
@@ -53,7 +53,7 @@ test_that("G_function example from documentation", {
   perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
   structure_constants <- get_structure_constants(perm, perm_size)
 
-  expect_true(abs(prod(G_function(perm, structure_constants, 3)) - 16.443561) < 0.0001)
+  expect_true(abs(exp(G_function(perm, structure_constants, 3)) - 16.443561) < 0.0001)
 })
 
 test_that("calculate_gamma_function has desired properties", {
