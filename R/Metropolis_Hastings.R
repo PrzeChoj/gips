@@ -10,9 +10,10 @@
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
-#' @return object of class MH; list of 5 items: `acceptance_rate`,
+#' @return object of class MH; list of 7 items: `acceptance_rate`,
 #' `goal_function_logvalues`, `points`, `found_point`,
-#' `found_point_function_logvalue`
+#' `found_point_function_logvalue`, `last_point`,
+#' `last_point_function_logvalue`
 #' 
 #' @export
 #'
@@ -20,15 +21,15 @@
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
 #' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
-#' sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-#'                          0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-#'                          0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-#'                          0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-#'                          0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-#'                          0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
-#'                 nrow=perm_size, byrow = TRUE)
+#' sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                                 0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                                 0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                                 0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                        nrow=perm_size, byrow = TRUE)
 #' n_number <- 13
-#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
+#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 #' U <- (t(Z) %*% Z)
 #' start <- permutations::id
 #' mh <- MH(U=U, n_number=n_number, max_iter=10, start=start,
@@ -56,7 +57,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
   points[[1]] <- start
 
   if(show_progress_bar)
-    progressBar = utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
+    progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   goal_function_logvalues[1] <- goal_function(points[[1]],
                                               n_number, U,
                                               delta=delta, D_matrix=D_matrix)
@@ -79,12 +80,9 @@ MH <- function(U, n_number, max_iter, start=NULL,
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
       #browser()  # See ISSUE#5; We hope the introduction of log calculations
                     # will stop this problem.
-      warning("gips is yet unable to process this U matrix. See ISSUE#5 for more information")
-      return(list("acceptance_rate"=mean(acceptance),
-                  "goal_function_logvalues"=goal_function_logvalues,
-                  "points"=points,
-                  "found_point"=found_point,
-                  "found_point_function_logvalue"=found_point_function_logvalue))
+      warning("gips is yet unable to process this U matrix. We think it can only happen for dim(U)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
+      
+      break()
     }
 
     # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true
@@ -103,15 +101,19 @@ MH <- function(U, n_number, max_iter, start=NULL,
       goal_function_logvalues[i+1] <- goal_function_logvalues[i]
     }
   }
-
+  
   if(show_progress_bar)
     close(progressBar)
+  
+  function_calls <- length(goal_function_logvalues)
 
   out <- list("acceptance_rate"=mean(acceptance),
               "goal_function_logvalues"=goal_function_logvalues,
               "points"=points,
               "found_point"=found_point,
-              "found_point_function_logvalue"=found_point_function_logvalue)
+              "found_point_function_logvalue"=found_point_function_logvalue,
+              "last_point"=points[[function_calls]],
+              "last_point_function_logvalue"=found_point_function_logvalue[function_calls])
   
   class(out) <- c("MH", "list")
   

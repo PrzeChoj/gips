@@ -32,23 +32,23 @@ test_that('goal_function returns proper values', {
 
 test_that('goal_function has the desired property', {
   # Example from the paper chapter 5
-  # This test is randomized. 6% of the time it will fail. See ISSUE#9
-
-  set.seed(1234)
-
+  # This test is randomized.
+    # It is mathematically possible the Z variables will be drawn such that
+    # the test fails. See ISSUE#9 for discussion.
+  
   p <- 10
   n <- 20
 
   mu <- numeric(p)
-  sigma <- matrix(numeric(p*p), nrow=p)
+  sigma_matrix <- matrix(numeric(p*p), nrow=p)
   for(i in 1:p){
     for(j in 1:p){
-      sigma[i,j] <- 1 - abs(i-j) / p
+      sigma_matrix[i,j] <- 1 - min(abs(i-j), p-abs(i-j)) / p
     }
-    sigma[i,i] <- 1 + 1/p
+    sigma_matrix[i,i] <- 1 + 1/p
   }
 
-  Z <- MASS::mvrnorm(n, mu = mu, Sigma = sigma)
+  Z <- MASS::mvrnorm(n, mu = mu, Sigma = sigma_matrix)
   U <- t(Z) %*% Z
 
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
