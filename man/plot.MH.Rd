@@ -7,25 +7,25 @@
 \method{plot}{MH}(
   x,
   logarithmic = TRUE,
-  type = "max",
   title_text = "Convergence plot",
   xlabel = "number of function calls",
   ylabel = NULL,
+  show_legend = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{object of class MH. Output of MH function.}
+\item{x}{Object of class MH. Output of MH function.}
 
 \item{logarithmic}{boolean.}
-
-\item{type}{To plot the maximum found value or all found values.}
 
 \item{title_text}{Text to be in a title of the plot.}
 
 \item{xlabel}{Text to be on the bottom of the plot.}
 
 \item{ylabel}{Text to be on the left of the plot.}
+
+\item{show_legend}{boolean.}
 
 \item{...}{additional arguments passed to \code{\link{print}}.}
 }

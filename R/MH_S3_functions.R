@@ -23,7 +23,6 @@ print.MH <- function(x, ...){
 #' Plot method for MH objects returned by \code{\link{MH}}.
 #' @param x Object of class MH. Output of MH function.
 #' @param logarithmic boolean.
-#' @param type To plot the maximum found value or all found values.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
@@ -70,11 +69,11 @@ plot.MH <- function(x, logarithmic=TRUE,
   graphics::box(...)
   
   if(show_legend)
-    legend("bottomright", inset=.02,
-           legend = c("All calculated function values",
-                      "Maximum function values calculated"),
-           col = c("blue", "red"), lty = 1:2, cex = 0.7, box.lty=0,
-           lwd = c(1, 3))
+    graphics::legend("bottomright", inset=.02,
+                     legend = c("All calculated function values",
+                                "Maximum function values calculated"),
+                     col = c("blue", "red"), lty = 1:2, cex = 0.7,
+                     box.lty=0, lwd = c(1, 3))
   
   invisible(NULL)
 }
