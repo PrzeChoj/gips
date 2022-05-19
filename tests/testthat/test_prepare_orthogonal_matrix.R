@@ -19,55 +19,10 @@ test_that('prepare_orthogonal_matrix works for example', {
     )
 })
 
-expected_permuted_representatives <- matrix(c(
-    1,4,6,
-    2,5,6,
-    3,4,6
-), nrow=3, byrow=TRUE)
-
-test_that('get_permuted_representatives works for example_perm', {
-    expect_equal(
-        get_permuted_representatives(
-            example_perm,
-            example_cycle_representatives,
-            example_cycle_lengths
-        ),
-        expected_permuted_representatives
-    )})
-
-perm_with_1_cycle_with_fixed <- to_perm(c(2,1,3))
-perm_with_1_cycle <- to_perm(c(2,3,1))
-
-test_that('get_permuted_representatives works for 1-cycle perm', {
-    expect_equal(
-        get_permuted_representatives(
-            perm_with_1_cycle_with_fixed,
-            c(1,3),
-            c(2,1)
-        ),
-        matrix(c(
-            1,3,
-            2,3
-        ),nrow=2, byrow = TRUE)
-    )
-    expect_equal(
-        get_permuted_representatives(
-            perm_with_1_cycle,
-            1,
-            3
-        ),
-        matrix(c(
-            1,
-            2,
-            3
-        ),nrow=3, byrow = TRUE)
-    )
-})
-
 test_that('get_v_matrix_for_subcycle works for 3-length cycle', {
     expect_equal(
         get_v_matrix_for_subcycle(
-            expected_permuted_representatives[1:3,1],
+            1:3,
             example_basis
         ),
         example_v_object[[1]]
@@ -75,7 +30,7 @@ test_that('get_v_matrix_for_subcycle works for 3-length cycle', {
 test_that('get_v_matrix_for_subcycle works for 2-length cycle', {
     expect_equal(
         get_v_matrix_for_subcycle(
-            expected_permuted_representatives[1:2,2],
+            4:5,
             example_basis
         ),
         example_v_object[[2]]
@@ -83,7 +38,7 @@ test_that('get_v_matrix_for_subcycle works for 2-length cycle', {
 test_that('get_v_matrix_for_subcycle works for identity', {
     expect_equal(
         get_v_matrix_for_subcycle(
-            expected_permuted_representatives[1,3],
+            6,
             example_basis
         ),
         example_v_object[[3]]

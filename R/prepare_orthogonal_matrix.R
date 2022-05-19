@@ -7,61 +7,30 @@
 #' @param perm_size size of permutation
 #' @param basis matrix with basis vectors in COLUMNS. Identity by default
 #' @return matrix p x p with columns from V object elements, sorted according to
-#'     Theorem 6
+#'     Theorem 6.
 #' @export
 prepare_orthogonal_matrix <- function(perm, perm_size, basis=NULL){
     if(is.null(basis))
         basis <- diag(nrow=perm_size)
-    l <- get_cycle_representatives_and_lengths(perm, perm_size)
-    v_object <- get_v_object(perm, l[['representatives']], l[['cycle_lengths']],
-                             basis)
+    subcycles <- get_subcycles(perm, perm_size)
+    v_object <- lapply(subcycles, function(subcycle){
+        get_v_matrix_for_subcycle(subcycle, basis)})
     arrange_v_object(v_object)
 }
 
-#' Get V object defined before theorem 6
+#' Get V matrix
 #'
+#' @param subcycle integer vector interpreted as cycle of a permutation
 #' @param basis matrix
-#' @return list of length(cycle_lengths) length. ith element is a
-#'    matrix p x cycle_lengths[i].
+#' @return matrix p x length(subcycle).
+#' Essentially a object v_k^c for one c value from paper, defined right before
+#' Theorem 6.
 #' @noRd
 
-get_v_object <- function(perm, cycle_representatives, cycle_lengths, basis){
-    permuted_representatives <- get_permuted_representatives(perm, cycle_representatives,
-                                                             cycle_lengths)
-    v_object <- lapply(1:length(cycle_representatives), function(i){
-        curr_cycle_length <- cycle_lengths[i]
-        relevant_permutation_power_indices <- 1:curr_cycle_length
-        curr_permuted_representatives <- permuted_representatives[relevant_permutation_power_indices,i]
-        get_v_matrix_for_subcycle(curr_permuted_representatives, basis)
-    })
-    v_object
-}
-
-get_permuted_representatives <- function(perm, cycle_representatives, cycle_lengths){
-    # perm ignores last fixed elements
-    if(permutations::is.id(perm)){
-        out <- matrix(1:max(cycle_representatives), nrow=1)
-        return(out)
-    }
-    perm_size <- permutations::size(perm)
-    last_fixed_representatives <- cycle_representatives[cycle_representatives > perm_size]
-    other_representatives <- cycle_representatives[cycle_representatives <= perm_size]
-    other_permuted_representatives <- as.function(perm ^ (1:max(cycle_lengths)-1))(other_representatives)
-    if(!is.matrix(other_permuted_representatives)){
-        other_permuted_representatives <- matrix(other_permuted_representatives,
-                                                ncol=length(other_representatives))
-    }
-    if(length(last_fixed_representatives) == 0) return(other_permuted_representatives)
-    last_permuted_representatives <- matrix(rep(last_fixed_representatives,
-                                                each = nrow(other_permuted_representatives)),
-                                            nrow = nrow(other_permuted_representatives))
-    cbind(other_permuted_representatives, last_permuted_representatives)
-}
-
-get_v_matrix_for_subcycle <- function(permuted_representative, basis){
-    cycle_length <- length(permuted_representative)
+get_v_matrix_for_subcycle <- function(subcycle, basis){
+    cycle_length <- length(subcycle)
     k_s <- 1:cycle_length - 1
-    chosen_basis_columns <- basis[,permuted_representative, drop=FALSE] # matrix p x curr_cycle_length
+    chosen_basis_columns <- basis[,subcycle, drop=FALSE] # matrix p x curr_cycle_length
 
     first_element <- apply(chosen_basis_columns, 1, sum) /
         sqrt(cycle_length)
