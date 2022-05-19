@@ -88,12 +88,11 @@ arrange_v_object <- function(v_object){
         f_1 <- floor(1:cycle_length / 2) / cycle_length
         f_2 <- rep(i, cycle_length)
         f_3 <- 1:cycle_length %% 2
-        data.frame('f_1' = f_1,
-                   'f_2' = f_2,
-                   'f_3' = f_3)
+        matrix(c(f_1, f_2, f_3), ncol=3)
     })
 
-    df <- do.call(rbind, features_list)
-    sorting_indices <- order(df$f_1, df$f_2, df$f_3)
+    feature_matrix <- do.call(rbind, features_list)
+    sorting_indices <- order(feature_matrix[,1], feature_matrix[,2],
+                             feature_matrix[,3])
     v_matrix[,sorting_indices]
 }
