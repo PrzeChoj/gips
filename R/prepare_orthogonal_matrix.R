@@ -59,17 +59,6 @@ get_v_matrix_for_subcycle <- function(subcycle, basis){
     v_matrix
 }
 
-#' Execute multiple permutations on a single object
-#' @noRd
-permute_vectorized <- function(perms, x){
-    cycles <- get_cyc(perms, x)
-    sapply(unclass(cycles), function(l){
-        cycle <- l[[1]]
-        index <- which(cycle == x) + 1 %% length(cycle)
-        cycle[index]
-    })
-}
-
 #' Arrange V object
 #'
 #' @return matrix p x p with columns from V object elements, sorted according to
