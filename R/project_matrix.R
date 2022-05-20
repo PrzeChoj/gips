@@ -27,7 +27,7 @@ project_matrix <- function(U, perm, perm_size){
 #'
 #' @return a list of integer vectors. Each vector contatins SINGLE indices
 #' of elements, which should be equal in symmetrical matrix invariant
-#' by permutation
+#' by permutation `perm`.
 #'
 #' @examples
 #' perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
@@ -41,7 +41,6 @@ project_matrix <- function(U, perm, perm_size){
 #' ), byrow=TRUE, ncol=6)
 #' out <- get_equal_indices_by_perm(perm, 6)
 #' all(sapply(out, function(v) all.equal(matrix_symvariant[v]))) # TRUE
-#'
 #' @noRd
 get_equal_indices_by_perm <- function(perm, perm_size){
     # We are essentially looking for cycles of permutation defined on elements
