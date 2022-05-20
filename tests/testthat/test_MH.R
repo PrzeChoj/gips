@@ -29,7 +29,6 @@ test_that('goal_function returns proper values', {
                6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
-
 test_that('goal_function has the desired property', {
   # Example from the paper chapter 5
   # This test is randomized.

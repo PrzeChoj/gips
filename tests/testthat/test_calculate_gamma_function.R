@@ -36,7 +36,6 @@ test_that('calculate_gamma_omega returns proper value',{
                sqrt(pi / 4)) # gamma(1.5)
 })
 
-
 test_that("when L is 1, G_function returns the same value as calculate_gamma_omega", {
   structure_constants <- get_structure_constants(cprim, 2)
   lambda <- 1/2 * structure_constants[['k']][1] * (delta-2) + structure_constants[['dim_omega']][1]/structure_constants[['r']][1]

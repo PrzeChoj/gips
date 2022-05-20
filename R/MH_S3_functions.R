@@ -3,6 +3,8 @@
 #' Printing function for MH.
 #' @param x object of class MH. Output of MH function.
 #' @param ... additional arguments passed to \code{\link{cat}}.
+#' 
+#' @return Invisible NULL.
 #' @export
 print.MH <- function(x, ...){
   # TODO(Change it)
@@ -69,7 +71,7 @@ plot.MH <- function(x, logarithmic=TRUE,
   graphics::box(...)
   
   if(show_legend)
-    graphics::legend("bottomright", inset=.02,
+    graphics::legend("bottomright", inset=.002,
                      legend = c("All calculated function values",
                                 "Maximum function values calculated"),
                      col = c("blue", "red"), lty = 1:2, cex = 0.7,

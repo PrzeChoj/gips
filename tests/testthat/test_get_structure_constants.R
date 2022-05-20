@@ -5,7 +5,7 @@ test_that('get_structure_constants for examples from paper',{
                  example_structure_constants2)
 })
 
-# Example 6 from paper
+# Example 6 from the paper
 test_that('calculate_r works for example from paper', {
     expect_equal(calculate_r(c(3,2,1), 6),
                  c(3,0,1,1))

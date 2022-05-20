@@ -27,6 +27,7 @@ test_that('get_v_matrix_for_subcycle works for 3-length cycle', {
         ),
         example_v_object[[1]]
     )})
+
 test_that('get_v_matrix_for_subcycle works for 2-length cycle', {
     expect_equal(
         get_v_matrix_for_subcycle(
@@ -35,6 +36,7 @@ test_that('get_v_matrix_for_subcycle works for 2-length cycle', {
         ),
         example_v_object[[2]]
     )})
+
 test_that('get_v_matrix_for_subcycle works for identity', {
     expect_equal(
         get_v_matrix_for_subcycle(
@@ -43,8 +45,6 @@ test_that('get_v_matrix_for_subcycle works for identity', {
         ),
         example_v_object[[3]]
     )})
-
-
 
 test_that('arrange_v_object works for example', {
     expect_equal(arrange_v_object(example_v_object),

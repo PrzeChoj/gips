@@ -7,6 +7,7 @@ full_double_indices <- matrix(c(rep(1:4, times=4),
                               ncol=2)
 U <- matrix(rnorm(36), ncol=6)
 
+
 test_that('projected matrix is symvariant by example_perm', {
     projected <- project_matrix(U, example_perm, 6)
     expect_true(isSymmetric(projected))
@@ -48,7 +49,6 @@ test_that('get_diagonal_representative works',{
     expect_true(is.na(get_diagonal_representative(c(3,7), 3)))
     expect_true(is.na(get_diagonal_representative(c(1,5), 3)))
 })
-
 
 test_that('get_single_from_double_indices works',{
     expect_equal(get_single_from_double_indices(full_double_indices, 4),
