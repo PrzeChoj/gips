@@ -7,45 +7,30 @@
 #' @param perm_size size of permutation
 #' @param basis matrix with basis vectors in COLUMNS. Identity by default
 #' @return matrix p x p with columns from V object elements, sorted according to
-#'     Theorem 6
+#'     Theorem 6.
 #' @export
 prepare_orthogonal_matrix <- function(perm, perm_size, basis=NULL){
     if(is.null(basis))
         basis <- diag(nrow=perm_size)
-    l <- get_cycle_representatives_and_lengths(perm, perm_size)
-    v_object <- get_v_object(perm, l[['representatives']], l[['cycle_lengths']],
-                             basis)
+    subcycles <- get_subcycles(perm, perm_size)
+    v_object <- lapply(subcycles, function(subcycle){
+        get_v_matrix_for_subcycle(subcycle, basis)})
     arrange_v_object(v_object)
 }
 
-#' Get V object defined before theorem 6
+#' Get V matrix
 #'
+#' @param subcycle integer vector interpreted as cycle of a permutation
 #' @param basis matrix
-#' @return list of length(cycle_lengths) length. ith element is a
-#'    matrix p x cycle_lengths[i].
+#' @return matrix p x length(subcycle).
+#' Essentially a object v_k^c for one c value from paper, defined right before
+#' Theorem 6.
 #' @noRd
 
-get_v_object <- function(perm, cycle_representatives, cycle_lengths, basis){
-    v_object <- lapply(1:length(cycle_representatives), function(i){
-        curr_representative <- cycle_representatives[i]
-        curr_cycle_length <- cycle_lengths[i]
-        get_v_matrix_for_subcycle(perm, curr_representative, curr_cycle_length,
-                                  basis)
-    })
-    v_object
-}
-
-get_v_matrix_for_subcycle <- function(perm, cycle_representative, cycle_length,
-                                      basis){
-    # first element
+get_v_matrix_for_subcycle <- function(subcycle, basis){
+    cycle_length <- length(subcycle)
     k_s <- 1:cycle_length - 1
-    if(cycle_length > 1)
-        # does not work for cycle_length == 1
-        permuted_representative <- as.function(perm ^ k_s)(cycle_representative)
-    else
-        permuted_representative <- cycle_representative
-
-    chosen_basis_columns <- basis[,permuted_representative, drop=FALSE] # matrix p x curr_cycle_length
+    chosen_basis_columns <- basis[,subcycle, drop=FALSE] # matrix p x curr_cycle_length
 
     first_element <- apply(chosen_basis_columns, 1, sum) /
         sqrt(cycle_length)
@@ -92,12 +77,11 @@ arrange_v_object <- function(v_object){
         f_1 <- floor(1:cycle_length / 2) / cycle_length
         f_2 <- rep(i, cycle_length)
         f_3 <- 1:cycle_length %% 2
-        data.frame('f_1' = f_1,
-                   'f_2' = f_2,
-                   'f_3' = f_3)
+        matrix(c(f_1, f_2, f_3), ncol=3)
     })
 
-    df <- do.call(rbind, features_list)
-    sorting_indices <- order(df$f_1, df$f_2, df$f_3)
+    feature_matrix <- do.call(rbind, features_list)
+    sorting_indices <- order(feature_matrix[,1], feature_matrix[,2],
+                             feature_matrix[,3])
     v_matrix[,sorting_indices]
 }

@@ -15,7 +15,7 @@ prepare_orthogonal_matrix(perm, perm_size, basis = NULL)
 }
 \value{
 matrix p x p with columns from V object elements, sorted according to
-Theorem 6
+Theorem 6.
 }
 \description{
 Calculate orthogonal matrix U_Gamma
