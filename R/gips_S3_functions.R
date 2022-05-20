@@ -1,14 +1,14 @@
-#' Printing MH
+#' Printing gips object
 #' 
-#' Printing function for MH.
-#' @param x object of class MH. Output of MH function.
+#' Printing function for gips class.
+#' @param x object of class gips. Output of MH function.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
 #' @export
-print.MH <- function(x, ...){
+print.gips <- function(x, ...){
   # TODO(Change it)
-  cat(paste0("Metropolis-Hastings algorithm after ",
+  cat(paste0("Optimization algorithm after ",
              length(x[["goal_function_logvalues"]]),
              " iterations found permutation ",
              x[["found_point"]],
@@ -20,10 +20,10 @@ print.MH <- function(x, ...){
 
 
 
-#' Plot Metropolis-Hasting convergence
+#' Plot optimization convergence
 #' 
-#' Plot method for MH objects returned by \code{\link{MH}}.
-#' @param x Object of class MH. Output of MH function.
+#' Plot method for gips objects returned by \code{\link{MH}}.
+#' @param x Object of class gips. Output of MH function.
 #' @param logarithmic boolean.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
@@ -33,12 +33,11 @@ print.MH <- function(x, ...){
 #' 
 #' @return Invisible NULL.
 #' @export
-plot.MH <- function(x, logarithmic=TRUE,
+plot.gips <- function(x, logarithmic=TRUE,
                     title_text="Convergence plot",
                     xlabel="number of function calls",
                     ylabel=NULL, show_legend=TRUE,
                     ...){
-  stopifnot("MH" %in% class(x))
   if(is.null(ylabel)){
     ylabel <- ifelse(logarithmic,
                      "log of a function",

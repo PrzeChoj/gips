@@ -115,7 +115,7 @@ MH <- function(U, n_number, max_iter, start=NULL,
               "last_point"=points[[function_calls]],
               "last_point_function_logvalue"=found_point_function_logvalue[function_calls])
   
-  class(out) <- c("MH", "list")
+  class(out) <- c("gips", "list")
   
   out
 }
