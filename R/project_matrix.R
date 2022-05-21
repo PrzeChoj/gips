@@ -68,16 +68,17 @@ get_equal_indices_by_perm <- function(perm, perm_size){
                                                length(subcycle_2))
         number_of_matrix_subcycles <- length(subcycle_1)*length(subcycle_2)/
             matrix_subcycle_length
+
+        cycle_indices <- 1:matrix_subcycle_length
+        subcycle_1_indices <- cycle_indices %% length(subcycle_1)
+        subcycle_1_indices[subcycle_1_indices==0] <- length(subcycle_1)
+        subcycle_1_elements <- subcycle_1[subcycle_1_indices]
+
+        subcycle_2_indices <- cycle_indices %% length(subcycle_2)
+        subcycle_2_indices[subcycle_2_indices==0] <- length(subcycle_2)
+
         lapply(1:(number_of_matrix_subcycles),function(k){
-            cycle_indices <- 1:matrix_subcycle_length
-
-            subcycle_1_indices <- cycle_indices %% length(subcycle_1)
-            subcycle_1_indices[subcycle_1_indices==0] <- length(subcycle_1)
-            subcycle_1_elements <- subcycle_1[subcycle_1_indices]
-
-            subcycle_2_indices <- (cycle_indices + k - 1) %% length(subcycle_2)
-            subcycle_2_indices[subcycle_2_indices==0] <- length(subcycle_2)
-            subcycle_2_elements <- subcycle_2[subcycle_2_indices]
+            subcycle_2_elements <- subcycle_2[shift(subcycle_2_indices, k-1)]
 
             double_indices <- matrix(c(
                 subcycle_1_elements, subcycle_2_elements,
@@ -86,7 +87,8 @@ get_equal_indices_by_perm <- function(perm, perm_size){
             single_indices <- get_single_from_double_indices(double_indices,
                                                              perm_size)
 
-            if(i == j && single_indices[matrix_subcycle_length+1] %in% single_indices[1:matrix_subcycle_length]){
+            if(i == j && single_indices[matrix_subcycle_length+1] %in%
+               single_indices[1:matrix_subcycle_length]){
                 single_indices <- single_indices[1:matrix_subcycle_length]
             }
             shift_vector(single_indices, which.min(single_indices)-1)
