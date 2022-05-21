@@ -13,7 +13,7 @@
 #' @return object of class MH; list of 5 items: `acceptance_rate`,
 #' `goal_function_logvalues`, `points`, `found_point`,
 #' `found_point_function_logvalue`
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -112,9 +112,9 @@ MH <- function(U, n_number, max_iter, start=NULL,
               "points"=points,
               "found_point"=found_point,
               "found_point_function_logvalue"=found_point_function_logvalue)
-  
+
   class(out) <- c("MH", "list")
-  
+
   out
 }
 
@@ -191,8 +191,11 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
                                D_matrix, structure_constants){
 
     # projection of matrices on perm_proposal
-    Dc <- project_matrix(D_matrix, perm_proposal, perm_size)
-    Uc <- project_matrix(U, perm_proposal, perm_size)
+    equal_indices <- get_equal_indices_by_perm(perm_proposal, perm_size)
+    Dc <- project_matrix(D_matrix, perm_proposal, perm_size,
+                         precomputed_equal_indices=equal_indices)
+    Uc <- project_matrix(U, perm_proposal, perm_size,
+                         precomputed_equal_indices=equal_indices)
 
     # divide by 2 - refer to newest version of the paper
     Dc <- Dc / 2

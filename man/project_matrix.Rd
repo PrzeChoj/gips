@@ -4,7 +4,7 @@
 \alias{project_matrix}
 \title{Project matrix}
 \usage{
-project_matrix(U, perm, perm_size)
+project_matrix(U, perm, perm_size, precomputed_equal_indices = NULL)
 }
 \arguments{
 \item{U}{matrix to be projected}

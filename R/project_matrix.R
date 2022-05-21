@@ -13,8 +13,11 @@
 #' @examples project_matrix(U = matrix(rnorm(49), nrow = 7),
 #'                          perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
 #'                          perm_size = 7)
-project_matrix <- function(U, perm, perm_size){
-    equal_indices_by_perm <- get_equal_indices_by_perm(perm, perm_size)
+project_matrix <- function(U, perm, perm_size, precomputed_equal_indices=NULL){
+    if(is.null(precomputed_equal_indices))
+        equal_indices_by_perm <- get_equal_indices_by_perm(perm, perm_size)
+    else
+        equal_indices_by_perm <- precomputed_equal_indices
     mean_values <- sapply(equal_indices_by_perm, function(indices)
         mean(U[indices]))
     means <- rep(mean_values, sapply(equal_indices_by_perm, length))
@@ -45,34 +48,51 @@ project_matrix <- function(U, perm, perm_size){
 get_equal_indices_by_perm <- function(perm, perm_size){
     # We are essentially looking for cycles of permutation defined on elements
     # of matrix (perm_size^2 -> perm_size^2)
-    permuted_indices <- as.integer(permutations::as.word((perm)))
-    # correct for last fixed elements
-    l <- length(permuted_indices)
-    if (l < perm_size){
-        permuted_indices[(l+1):perm_size] <- (l+1):perm_size
-    }
-    original_matrix_elements <- matrix(1:(perm_size^2), nrow=perm_size)
-    permuted_matrix_elements <- original_matrix_elements[permuted_indices,][,permuted_indices]
-    large_perm <- permutations::as.cycle(permutations::as.word(as.integer(permuted_matrix_elements)))
-    subcycles <- get_subcycles(large_perm, perm_size^2)
+    subcycles <- get_subcycles(perm, perm_size)
 
-    # Correct for symmetry
-    subcycle_representatives <- sapply(subcycles, function(cyc){
-        get_diagonal_representative(cyc, perm_size)
+    # Let's go
+    subcycle_indice_pairs <- matrix(c(rep(1:length(subcycles), each=length(subcycles)),
+                                      rep(1:length(subcycles), times=length(subcycles))),
+                                    ncol=2)
+    subcycle_indice_pairs <- subcycle_indice_pairs[subcycle_indice_pairs[,1] <=
+                                                       subcycle_indice_pairs[,2],,
+                                                   drop=FALSE]
+
+    nested_list <- lapply(1:nrow(subcycle_indice_pairs), function(pair_index){
+        i <- subcycle_indice_pairs[pair_index, 1]
+        j <- subcycle_indice_pairs[pair_index, 2]
+        subcycle_1 <- subcycles[[i]]
+        subcycle_2 <- subcycles[[j]]
+
+        matrix_subcycle_length <- numbers::LCM(length(subcycle_1),
+                                               length(subcycle_2))
+        number_of_matrix_subcycles <- length(subcycle_1)*length(subcycle_2)/
+            matrix_subcycle_length
+        lapply(1:(number_of_matrix_subcycles),function(k){
+            cycle_indices <- 1:matrix_subcycle_length
+
+            subcycle_1_indices <- cycle_indices %% length(subcycle_1)
+            subcycle_1_indices[subcycle_1_indices==0] <- length(subcycle_1)
+            subcycle_1_elements <- subcycle_1[subcycle_1_indices]
+
+            subcycle_2_indices <- (cycle_indices + k - 1) %% length(subcycle_2)
+            subcycle_2_indices[subcycle_2_indices==0] <- length(subcycle_2)
+            subcycle_2_elements <- subcycle_2[subcycle_2_indices]
+
+            double_indices <- matrix(c(
+                subcycle_1_elements, subcycle_2_elements,
+                subcycle_2_elements, subcycle_1_elements
+            ), ncol=2)
+            single_indices <- get_single_from_double_indices(double_indices,
+                                                             perm_size)
+
+            if(i == j && single_indices[matrix_subcycle_length+1] %in% single_indices[1:matrix_subcycle_length]){
+                single_indices <- single_indices[1:matrix_subcycle_length]
+            }
+            shift_vector(single_indices, which.min(single_indices)-1)
+        })
     })
-    is_subcycle_symmetrical <- is.na(subcycle_representatives)
-    if (all(is_subcycle_symmetrical)){
-        return(subcycles)
-    }
-    nonsymmetric_subcycles <- subcycles[!is_subcycle_symmetrical]
-    merge_pairs <- which_subcycles_merge(subcycle_representatives[!is_subcycle_symmetrical],
-                                         perm_size)
-    merged_subcycles <- lapply(1:nrow(merge_pairs), function(i){
-        pair <- merge_pairs[i,]
-        c(nonsymmetric_subcycles[[pair[1]]],
-          nonsymmetric_subcycles[[pair[2]]])
-    })
-    append(merged_subcycles, subcycles[is_subcycle_symmetrical])
+    unlist(nested_list, recursive = FALSE)
 }
 
 #' Which subcycles should be merged
