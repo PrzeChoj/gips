@@ -4,6 +4,7 @@ perm_firstfixed <- to_perm(c(1,3,4,5,2))
 perm_lastfixed <- to_perm(c(2,1,4,3,5))
 perm_allfixed <- to_perm(1:5)
 
+
 test_that('get_subcycles works for no fixed elements',{
     expect_equal(get_subcycles(perm_nofixed, 5),
                  list(1:2, 3:5))

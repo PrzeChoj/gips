@@ -7,6 +7,7 @@ full_double_indices <- matrix(c(rep(1:4, times=4),
                               ncol=2)
 U <- matrix(rnorm(36), ncol=6)
 
+
 test_that('projected matrix is symvariant by example_perm', {
     projected <- project_matrix(U, example_perm, 6)
     expect_true(isSymmetric(projected))

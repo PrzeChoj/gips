@@ -30,9 +30,10 @@ MH(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
-object of class MH; list of 5 items: \code{acceptance_rate},
+object of class MH; list of 7 items: \code{acceptance_rate},
 \code{goal_function_logvalues}, \code{points}, \code{found_point},
-\code{found_point_function_logvalue}
+\code{found_point_function_logvalue}, \code{last_point},
+\code{last_point_function_logvalue}
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
@@ -41,15 +42,15 @@ Uses Metropolis-Hastings algorithm to find the permutation that maximizes the li
 perm_size <- 6
 mu <- numeric(perm_size)
 # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
-sigma <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-                         0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-                         0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-                         0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-                         0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-                         0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
-                nrow=perm_size, byrow = TRUE)
+sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+                                0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+                                0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+                                0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+                                0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+                                0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+                       nrow=perm_size, byrow = TRUE)
 n_number <- 13
-Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma)
+Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 U <- (t(Z) \%*\% Z)
 start <- permutations::id
 mh <- MH(U=U, n_number=n_number, max_iter=10, start=start,
