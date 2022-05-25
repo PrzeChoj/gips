@@ -3,6 +3,7 @@
 S3method(plot,gips)
 S3method(print,gips)
 export(MH)
+export(best_growth)
 export(calculate_gamma_function)
 export(get_structure_constants)
 export(goal_function)

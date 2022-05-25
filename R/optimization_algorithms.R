@@ -10,7 +10,7 @@
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
-#' @return object of class MH; list of 8 items: `acceptance_rate`,
+#' @return object of class gips; list of 8 items: `acceptance_rate`,
 #' `goal_function_logvalues`, `points`, `found_point`,
 #' `found_point_function_logvalue`, `last_point`,
 #' `last_point_function_logvalue`, `iterations_performed`.
@@ -32,7 +32,7 @@
 #' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 #' U <- (t(Z) %*% Z)
 #' start_perm <- permutations::id
-#' mh <- MH(U=U, n_number=n_number, max_iter=100, start_perm=start_perm,
+#' mh <- MH(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
 #'          show_progress_bar=FALSE)
 #' plot(mh)
 MH <- function(U, n_number, max_iter, start_perm=NULL,
@@ -120,6 +120,127 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
   
   out
 }
+
+
+#' Best growth algorithm
+#'
+#' Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
+#'
+#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
+#' @param n_number number of data points that `U` is based on.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2.
+#' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
+#' @param show_progress_bar boolean, indicate weather or not show the progress bar.
+#'
+#' @return object of class gips; list of 8 items: `acceptance_rate`,
+#' `goal_function_logvalues`, `points`, `found_point`,
+#' `found_point_function_logvalue`, `last_point`,
+#' `last_point_function_logvalue`, `iterations_performed`.
+#' 
+#' @export
+#'
+#' @examples
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                                 0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                                 0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                                 0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                        nrow=perm_size, byrow = TRUE)
+#' n_number <- 13
+#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
+#' U <- (t(Z) %*% Z)
+#' start_perm <- permutations::id
+#' bg <- best_growth(U=U, n_number=n_number, max_iter=4, start_perm=start_perm,
+#'                   show_progress_bar=FALSE)
+#' plot(bg)
+best_growth <- function(U, n_number, max_iter=5,
+                        start_perm=NULL,
+                        delta=3, D_matrix=NULL,
+                        show_progress_bar=TRUE){
+  if(show_progress_bar)
+    progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
+  
+  stopifnot(dim(U)[1] == dim(U)[2], max_iter > 1)
+  perm_size <- dim(U)[1]
+  
+  if(is.null(D_matrix)){
+    D_matrix <- diag(nrow = perm_size)
+  }
+  if(is.null(start_perm)){
+    start_perm <- permutations::id
+  }
+  
+  my_goal_function <- function(perm){
+    goal_function(perm, n_number, U,
+                  delta=delta, D_matrix=D_matrix)
+  }
+  
+  f_values <- numeric(max_iter)
+  
+  # init
+  speciments <- list()
+  speciments[[1]] <- start_perm
+  f_values[1] <- my_goal_function(speciments[[1]])
+  
+  # mail loop
+  for(iteration in 2:max_iter){
+    if(show_progress_bar)
+      utils::setTxtProgressBar(progressBar, iteration)
+    
+    best_neighbour <- NULL
+    best_neighbour_value <- -Inf
+    for(i in 1:(perm_size-1)){
+      for(j in (i+1):perm_size){
+        neighbour <- permutations::as.cycle(speciments[[iteration - 1]] * permutations::as.cycle(c(i, j)))
+        neighbour_value <- my_goal_function(neighbour)
+        
+        if(neighbour_value > best_neighbour_value){
+          best_neighbour_value <- neighbour_value
+          best_neighbour <- neighbour
+        }
+      }
+    }
+    
+    if(best_neighbour_value > f_values[iteration - 1]){
+      f_values[iteration] <- best_neighbour_value
+      speciments[[iteration]] <- best_neighbour
+    }else{
+      iteration <- iteration-1
+      break
+    }
+  }
+  
+  if(show_progress_bar)
+    close(progressBar)
+  
+  if(iteration == max_iter)
+    warning("Algorithm did not converge! Try with bigger max_iter and starting_perm == output$found_perm") # TODO(there will be a function `continue(bg)`; see ISSUE#11)
+  else{
+    f_values <- f_values[1:iteration]
+    print(paste0("Algorithm did converge in ", iteration, " iterations"))
+  }
+  
+  
+  out <- list("acceptance_rate" = 1/choose(perm_size, 2),
+              "goal_function_logvalues" = f_values,
+              "points" = speciments,
+              "found_point" = speciments[[iteration]],
+              "found_point_function_logvalue" = f_values[iteration],
+              "last_point" = speciments[[iteration]],
+              "last_point_function_logvalue" = f_values[iteration],
+              "iterations_performed" = iteration)
+  
+  class(out) <- c("gips", "list")
+  
+  out
+}
+
 
 
 
