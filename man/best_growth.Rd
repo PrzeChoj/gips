@@ -53,7 +53,7 @@ n_number <- 13
 Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 U <- (t(Z) \%*\% Z)
 start_perm <- permutations::id
-bg <- best_growth(U=U, n_number=n_number, max_iter=4, start_perm=start_perm,
-                  show_progress_bar=FALSE)
+bg <- best_growth(U=U, n_number=n_number, max_iter=5, start_perm=start_perm,
+                  show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 plot(bg)
 }

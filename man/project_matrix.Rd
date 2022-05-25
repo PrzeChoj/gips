@@ -4,7 +4,7 @@
 \alias{project_matrix}
 \title{Project matrix}
 \usage{
-project_matrix(U, perm, perm_size)
+project_matrix(U, perm, perm_size, precomputed_equal_indices = NULL)
 }
 \arguments{
 \item{U}{matrix to be projected}
@@ -12,6 +12,8 @@ project_matrix(U, perm, perm_size)
 \item{perm}{permutation. Generator of a permutation group}
 
 \item{perm_size}{size of permutation}
+
+\item{precomputed_equal_indices}{used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed}
 }
 \value{
 projected matrix

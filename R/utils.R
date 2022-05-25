@@ -33,3 +33,14 @@ get_subcycles <- function(perm, perm_size){
     representatives <- sapply(subcycles, min)
     subcycles[order(representatives)]
 }
+
+#' Shift vector
+#'
+#' Move k elements from the start of a vector to its end.
+#'
+#' @noRd
+
+shift_vector <- function(v, k){
+    if(k==0) return(v)
+    c(v[-(1:k)], v[1:k])
+}

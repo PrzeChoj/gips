@@ -37,19 +37,6 @@ test_that('get_equal_indices_by_perm works for identity', {
                  list(1, c(2,4), c(3,7), 5, c(6,8), 9))
 })
 
-test_that('which_subcycles_merge works', {
-    expect_equal(which_subcycles_merge(c(2,3,4,7),
-                                       3),
-                 matrix(c(1,3,2,4), ncol=2, byrow=TRUE))
-})
-
-test_that('get_diagonal_representative works',{
-    expect_equal(get_diagonal_representative(c(2,3), 3), 2)
-    expect_equal(get_diagonal_representative(3, 3), 3)
-    expect_true(is.na(get_diagonal_representative(c(3,7), 3)))
-    expect_true(is.na(get_diagonal_representative(c(1,5), 3)))
-})
-
 test_that('get_single_from_double_indices works',{
     expect_equal(get_single_from_double_indices(full_double_indices, 4),
                  1:16)

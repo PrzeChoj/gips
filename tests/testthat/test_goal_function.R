@@ -71,6 +71,4 @@ test_that('calculate_block_determinants returns proper values', {
                  c(3,2,1))
 })
 
-test_examples("../..") # example for MH is here
-
 
