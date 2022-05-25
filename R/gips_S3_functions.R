@@ -1,19 +1,25 @@
 #' Printing gips object
 #' 
 #' Printing function for gips class.
-#' @param x object of class gips. Output of MH function.
+#' @param x object of class gips.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link{goal_function}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
 #' @export
-print.gips <- function(x, ...){
+print.gips <- function(x, log_value = FALSE, ...){
   # TODO(Change it)
+  
+  value_part <- ifelse(log_value,
+                       paste0(" with function log value ",
+                              x[["found_point_function_logvalue"]]),
+                       paste0(" with function value ",
+                              exp(x[["found_point_function_logvalue"]])))
   cat(paste0("Optimization algorithm after ",
              length(x[["goal_function_logvalues"]]),
              " iterations found permutation ",
              x[["found_point"]],
-             " with function value ",
-             exp(x[["found_point_function_logvalue"]])),
+             value_part),
       ...)
 }
 
@@ -22,22 +28,23 @@ print.gips <- function(x, ...){
 
 #' Plot optimization convergence
 #' 
-#' Plot method for gips objects returned by \code{\link{MH}}.
-#' @param x Object of class gips. Output of MH function.
+#' Plot method for gips objects.
+#' @param x Object of class gips.
 #' @param logarithmic boolean.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.
 #' @param ... additional arguments passed to \code{\link{print}}.
 #' 
 #' @return Invisible NULL.
 #' @export
 plot.gips <- function(x, logarithmic=TRUE,
-                    title_text="Convergence plot",
-                    xlabel="number of function calls",
-                    ylabel=NULL, show_legend=TRUE,
-                    ...){
+                      title_text="Convergence plot",
+                      xlabel="number of function calls",
+                      ylabel=NULL, show_legend=TRUE,
+                      ylim=NULL, ...){
   if(is.null(ylabel)){
     ylabel <- ifelse(logarithmic,
                      "log of a function",
@@ -55,10 +62,13 @@ plot.gips <- function(x, logarithmic=TRUE,
   num_of_steps <- length(y_values_max)
   
   xlim <- c(1, num_of_steps)
-  ylim <- c(y_values_max[1], y_values_max[num_of_steps])
+  if(is.null(ylim))
+    ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
+  else
+    ylim_plot <- ylim
   
   graphics::plot.new()
-  graphics::plot.window(xlim, ylim)
+  graphics::plot.window(xlim, ylim_plot)
   graphics::lines.default(1:num_of_steps, y_values_all, type = "l",
                           col = "blue", ...)
   graphics::lines.default(1:num_of_steps, y_values_max, lwd=3,
@@ -80,4 +90,5 @@ plot.gips <- function(x, logarithmic=TRUE,
 }
 
 
+# TODO(summary)
 

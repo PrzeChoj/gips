@@ -9,8 +9,8 @@ block_diagonal_matrix <- matrix(c(
 c_perm <- permutations::as.cycle(permutations::as.word(c(2,1)))
 id_perm <- permutations::id
 
-U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
-U2 <- matrix(c(1.5,0.5,0.5,1.5), nrow=2,byrow = TRUE)
+U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
+U2 <- matrix(c(1.5,0.5,0.5,1.5), nrow=2, byrow = TRUE)
 D_matrix <- diag(nrow = 2)
 
 
@@ -59,13 +59,13 @@ test_that('goal_function has the desired property', {
             another_permutation_function_value)
 })
 
-test_that('calculate phi_part works', {
+test_that('calculate phi_part returns proper values', {
     skip("TODO")
 
     expect_true(TRUE)
 })
 
-test_that('calculate_block_determinants works', {
+test_that('calculate_block_determinants returns proper values', {
     expect_equal(calculate_determinants_of_block_matrices(block_diagonal_matrix,
                                                           c(2,3,5)),
                  c(3,2,1))

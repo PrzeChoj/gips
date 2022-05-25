@@ -11,11 +11,12 @@
   xlabel = "number of function calls",
   ylabel = NULL,
   show_legend = TRUE,
+  ylim = NULL,
   ...
 )
 }
 \arguments{
-\item{x}{Object of class gips. Output of MH function.}
+\item{x}{Object of class gips.}
 
 \item{logarithmic}{boolean.}
 
@@ -27,11 +28,13 @@
 
 \item{show_legend}{boolean.}
 
+\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.}
+
 \item{...}{additional arguments passed to \code{\link{print}}.}
 }
 \value{
 Invisible NULL.
 }
 \description{
-Plot method for gips objects returned by \code{\link{MH}}.
+Plot method for gips objects.
 }

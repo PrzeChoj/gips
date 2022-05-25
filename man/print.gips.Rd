@@ -4,10 +4,12 @@
 \alias{print.gips}
 \title{Printing gips object}
 \usage{
-\method{print}{gips}(x, ...)
+\method{print}{gips}(x, log_value = FALSE, ...)
 }
 \arguments{
-\item{x}{object of class gips. Output of MH function.}
+\item{x}{object of class gips.}
+
+\item{log_value}{logical. Weather to print the exp of a value of a \code{\link{goal_function}} or leave it in logarithmic form.}
 
 \item{...}{additional arguments passed to \code{\link{cat}}.}
 }
