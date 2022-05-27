@@ -19,36 +19,36 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
             is.matrix(U),
             dim(U)[1] == dim(U)[2])
   perm_size <- dim(U)[1]
-  
+
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
   stopifnot(is.matrix(D_matrix),
             dim(D_matrix)[1] == dim(D_matrix)[2])
-  
+
   structure_constants <- get_structure_constants(perm_proposal, perm_size)
-  
+
   # Ac_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
   Ac_part <- (-n_number/2*Ac)
-  
+
   # G_part and phi_part
   G_part <- G_function(perm_proposal, structure_constants, delta + n_number) -
     G_function(perm_proposal, structure_constants, delta)
-  
+
   # phi_part
   phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
                                  D_matrix, structure_constants)
-  
+
   out <- Ac_part + G_part + phi_part
-  
+
   if(is.infinite(out)){
     warning("Infinite value of a goal function")
   }
   if(is.nan(out)){
     warning("NaN value of a goal function")
   }
-  
+
   out
 }
 
@@ -67,25 +67,25 @@ runif_transposition <- function(perm_size){
 #' @noRd
 calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
                                D_matrix, structure_constants){
-  
+
   # projection of matrices on perm_proposal
   equal_indices <- get_equal_indices_by_perm(perm_proposal, perm_size)
   Dc <- project_matrix(D_matrix, perm_proposal, perm_size,
                        precomputed_equal_indices=equal_indices)
   Uc <- project_matrix(U, perm_proposal, perm_size,
                        precomputed_equal_indices=equal_indices)
-  
+
   # divide by 2 - refer to newest version of the paper
   Dc <- Dc / 2
   Uc <- Uc / 2
-  
+
   # diagonalization
   # TODO add basis argument? ISSUE#6
   diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
                                                     perm_size)
   Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
   DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
-  
+
   # block part
   block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
   Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
@@ -96,9 +96,9 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
     (structure_constants[['r']] * structure_constants[['k']])
   DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
     (structure_constants[['r']] * structure_constants[['k']])
-  
+
   out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)
-  
+
   out
 }
 
@@ -121,6 +121,3 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
     det(block_matrix)
   })
 }
-
-
-
