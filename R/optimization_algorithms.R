@@ -122,7 +122,7 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 
   if(return_probabilities){
       probabilities <- estimate_probabilities(points)
-      out$post_probabilities <- estimate_probabilities(out)
+      out$post_probabilities <- probabilities
     }
   out
 }
