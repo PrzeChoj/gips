@@ -3,17 +3,18 @@
 #' Calculate orthogonal matrix U_Gamma
 #' for decomposition in Theorem 1. To calculate it, we use Theorem 6.
 #'
-#' @param perm permuations::cycle object
-#' @param perm_size size of permutation
+#' @param perm `gips_perm` or `permutaions::cycle` object
+#' @param perm_size size of permutation. Required if `perm` is of `permutations::cycle` class
 #' @param basis matrix with basis vectors in COLUMNS. Identity by default
 #' @return matrix p x p with columns from V object elements, sorted according to
 #'     Theorem 6.
 #' @export
-prepare_orthogonal_matrix <- function(perm, perm_size, basis=NULL){
+prepare_orthogonal_matrix <- function(perm, perm_size=NULL, basis=NULL){
+    if(!inherits(perm, 'gips_perm'))
+        perm <- gips_perm(perm, perm_size)
     if(is.null(basis))
-        basis <- diag(nrow=perm_size)
-    subcycles <- get_subcycles(perm, perm_size)
-    v_object <- lapply(subcycles, function(subcycle){
+        basis <- diag(nrow=attr(perm, 'size'))
+    v_object <- lapply(perm, function(subcycle){
         get_v_matrix_for_subcycle(subcycle, basis)})
     arrange_v_object(v_object)
 }

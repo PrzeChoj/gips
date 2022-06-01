@@ -2,7 +2,7 @@
 #'
 #' Theorem 8 from the paper, using the formula (19) from the paper
 #'
-#' @param perm an element of class "cycle"
+#' @param perm an element of class "gips_perm"
 #' @param perm_size size of permutation
 #' @param lambda positive real number
 #'
@@ -11,12 +11,13 @@
 #' @return Value of Gamma function
 #'
 #' @examples
-#' calculate_gamma_function(permutations::id, 2, 0.5001)
-#' calculate_gamma_function(permutations::id, 2, 0.50000001)
-#' calculate_gamma_function(permutations::id, 2, 0.500000000001)
-#' #calculate_gamma_function(permutations::id, 2, 0.5) # integral diverges; returns Inf and warning
-calculate_gamma_function <- function(perm, perm_size, lambda){
-  constants <- get_structure_constants(perm, perm_size)
+#' id_perm <- gips_perm(permutations::id, 2)
+#' calculate_gamma_function(id_perm, 0.5001)
+#' calculate_gamma_function(id_perm, 0.50000001)
+#' calculate_gamma_function(id_perm, 0.500000000001)
+#' #calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
+calculate_gamma_function <- function(perm, lambda){
+  constants <- get_structure_constants(perm)
   r <- constants[['r']]
   k <- constants[['k']]
   d <- constants[['d']]
@@ -63,7 +64,6 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 
 #' G_function for goal_function
 #'
-#' @param perm permutation of interest, object of `cycle` class
 #' @param delta parameter of a method
 #' @param structure_constants constants from `get_structure_constants` function
 #'
@@ -73,9 +73,10 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 #' @examples
 #' perm_size <- 6
 #' perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
-#' structure_constants <- get_structure_constants(perm, perm_size)
-#' gips:::G_function(perm, structure_constants, 3)
-G_function <- function(perm, structure_constants, delta=3){
+#' gips_perm <- gips_perm(perm, perm_size)
+#' structure_constants <- get_structure_constants(gips_perm)
+#' gips:::G_function(structure_constants, 3)
+G_function <- function(structure_constants, delta=3){
 
   single_G_i <- sapply(1:structure_constants[['L']], function(i){
     lambda_i <- structure_constants[['k']][i] * (delta-2)/2 + structure_constants[['dim_omega']][i]/structure_constants[['r']][i]

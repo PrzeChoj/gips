@@ -4,12 +4,12 @@
 \alias{prepare_orthogonal_matrix}
 \title{Prepare orthogonal matrix}
 \usage{
-prepare_orthogonal_matrix(perm, perm_size, basis = NULL)
+prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
-\item{perm}{permuations::cycle object}
+\item{perm}{\code{gips_perm} or \code{permutaions::cycle} object}
 
-\item{perm_size}{size of permutation}
+\item{perm_size}{size of permutation. Required if \code{perm} is of \code{permutations::cycle} class}
 
 \item{basis}{matrix with basis vectors in COLUMNS. Identity by default}
 }

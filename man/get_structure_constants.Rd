@@ -4,10 +4,10 @@
 \alias{get_structure_constants}
 \title{Get Structure Constants}
 \usage{
-get_structure_constants(perm, perm_size)
+get_structure_constants(perm)
 }
 \arguments{
-\item{perm}{an element of class "cycle"}
+\item{perm}{an element of class "gips_perm"}
 
 \item{perm_size}{size of permutation}
 }
@@ -18,6 +18,6 @@ list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vect
 Get Structure Constants from theorem 5 of the paper
 }
 \examples{
-perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
-get_structure_constants(perm, 5)
+perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(1,2,3,5,4))), 5)
+get_structure_constants(perm)
 }

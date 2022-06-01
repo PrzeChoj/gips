@@ -4,11 +4,9 @@
 \alias{G_function}
 \title{G_function for goal_function}
 \usage{
-G_function(perm, structure_constants, delta = 3)
+G_function(structure_constants, delta = 3)
 }
 \arguments{
-\item{perm}{permutation of interest, object of \code{cycle} class}
-
 \item{structure_constants}{constants from \code{get_structure_constants} function}
 
 \item{delta}{parameter of a method}
@@ -23,6 +21,7 @@ G_function for goal_function
 \examples{
 perm_size <- 6
 perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
-structure_constants <- get_structure_constants(perm, perm_size)
-gips:::G_function(perm, structure_constants, 3)
+gips_perm <- gips_perm(perm, perm_size)
+structure_constants <- get_structure_constants(gips_perm)
+gips:::G_function(structure_constants, 3)
 }

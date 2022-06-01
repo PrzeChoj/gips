@@ -1,6 +1,8 @@
 gips_perm <- function(x, size){
     if(!inherits(x, 'permutation'))
         x <- permutations::permutation(x)
+    if(!is.wholenumber(size))
+        rlang::abort('`size` must be an integer.')
     x <- permutations::as.cycle(x)
 
     if (permutations::is.id(x)) {
@@ -27,6 +29,9 @@ gips_perm <- function(x, size){
     representatives <- sapply(subcycles, min)
     structure(subcycles[order(representatives)], size=size, class='gips_perm')
 }
+
+is.wholenumber <-
+    function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
 
 compose_with_transposition <- function(gips_perm, transposition){
     cycle_1_index <- which(sapply(gips_perm, function(cycle)

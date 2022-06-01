@@ -2,20 +2,23 @@
 #'
 #' Get Structure Constants from theorem 5 of the paper
 #'
-#' @param perm an element of class "cycle"
+#' @param perm an element of class "gips_perm"
 #' @param perm_size size of permutation
 #'
 #' @return list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1
 #' @export
 #'
 #' @examples
-#' perm <- permutations::as.cycle(permutations::as.word(c(1,2,3,5,4)))
-#' get_structure_constants(perm, 5)
-get_structure_constants <- function(perm, perm_size) {
-    l <- get_cycle_representatives_and_lengths(perm, perm_size)
+#' perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(1,2,3,5,4))), 5)
+#' get_structure_constants(perm)
+get_structure_constants <- function(perm) {
+    perm_size <- attr(perm, 'size')
+    l <- get_cycle_representatives_and_lengths(perm)
     representatives <- l[['representatives']]
     cycle_lenghts <- l[['cycle_lengths']]
-    perm_order <- permutations::permorder(perm)
+    perm_order <- ifelse(length(cycle_lenghts) >= 2,
+                         numbers::mLCM(cycle_lenghts),
+                         cycle_lenghts)
 
     r <- calculate_r(cycle_lenghts, perm_order)
     d <- calculate_d(perm_order)
@@ -38,18 +41,18 @@ get_structure_constants <- function(perm, perm_size) {
 #'
 #' Essentially get iC, pC from paper
 #'
-#' @param perm an element of class "cycle". Can't be an identity.
-#' @param perm_size size of permutation
+#' @param perm an element of class "gips_perm".
 #'
 #' @return list with 2 items: `representatives` and `cycle_lengths`
 #'
-#' @example get_cycle_representatives_and_lengths(permutations::as.cycle(permutations::as.word(c(4,3,6,5,1,2))), 6)
+#' @examples
+#' perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(4,3,6,5,1,2))), 6)
+#' get_cycle_representatives_and_lengths(perm)
 #'
 #' @noRd
-get_cycle_representatives_and_lengths <- function(perm, perm_size) {
-    cycles <- get_subcycles(perm, perm_size)
-    list('representatives' = sapply(cycles, min),
-         'cycle_lengths' = sapply(cycles, length))
+get_cycle_representatives_and_lengths <- function(perm) {
+    list('representatives' = sapply(perm, function(v) v[1]),
+         'cycle_lengths' = sapply(perm, length))
 }
 
 #' Calculate structure constant r

@@ -4,14 +4,15 @@
 \alias{project_matrix}
 \title{Project matrix}
 \usage{
-project_matrix(U, perm, perm_size, precomputed_equal_indices = NULL)
+project_matrix(U, perm, perm_size = NULL, precomputed_equal_indices = NULL)
 }
 \arguments{
 \item{U}{matrix to be projected}
 
-\item{perm}{permutation. Generator of a permutation group}
+\item{perm}{permutation. Generator of a permutation group.
+Either of \code{gips_perm} or \code{permutations::cycle} class.}
 
-\item{perm_size}{size of permutation}
+\item{perm_size}{size of permutation. Required if \code{perm} is of \code{permutations::cycle} class.}
 
 \item{precomputed_equal_indices}{used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed}
 }

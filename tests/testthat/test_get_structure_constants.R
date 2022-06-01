@@ -1,7 +1,10 @@
+gips_example_perm <- gips_perm(example_perm, 6)
+gips_example_perm2 <- gips_perm(example_perm2, 5)
+
 test_that('get_structure_constants for examples from paper',{
-    expect_equal(get_structure_constants(example_perm, 6),
+    expect_equal(get_structure_constants(gips_example_perm),
                  example_structure_constants)
-    expect_equal(get_structure_constants(example_perm2, 5),
+    expect_equal(get_structure_constants(gips_example_perm2),
                  example_structure_constants2)
 })
 
