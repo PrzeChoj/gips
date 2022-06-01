@@ -33,3 +33,20 @@ test_that('gips_perm works for identity',{
     expect_equal(gips_perm(perm_allfixed, 5),
                  gips_perm_allfixed)
 })
+
+gips_example_perm <- gips_perm(example_perm, 6)
+transpositions <- expand.grid(1:6, 1:6)
+transpositions <- as.matrix(transpositions[transpositions$Var1 < transpositions$Var2,])
+for(i in 1:nrow(transpositions)){
+    transposition <- transpositions[i,]
+    test_that(paste0('compose_with_transposition works for (',
+                     transposition[1], ', ', transposition[2], ')'),
+              {
+                  tr_perm <- permutations::as.cycle(transposition)
+                  expected <- gips_perm(example_perm * tr_perm, 6)
+                  actual <- compose_with_transposition(gips_example_perm,
+                                                       transposition)
+                  expect_equal(actual, expected)
+              })
+}
+
