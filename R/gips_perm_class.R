@@ -1,3 +1,24 @@
+#' Permutation object
+#'
+#' Create permutation objects to be passed to functions of `gips` package.
+#'
+#' @param x An object created with `permutations` package, or any object that
+#' can be coerced using \code{\link[permutations]{permutation}} function.
+#' @param size integer. Size of permutation (AKA cardinality of set, on which permutation
+#' is defined).
+#'
+#' @seealso
+#' \code{\link[permutations]{permutation}}
+#'
+#' @examples
+#' gperm <- gips_perm(permutations::as.word(c(1,2,3,5,4)), 5)
+#' gperm <- gips_perm(permutations::as.cycle('(5,4)'), 5)
+#' # note the necessity of `size` parameter
+#' gperm <- gips_perm(permutations::as.cycle('(5,4)'), 7)
+#' gperm <- gips_perm('(1,2)(5,4)', 7)
+#'
+#' @export
+
 gips_perm <- function(x, size){
     if(!inherits(x, 'permutation'))
         x <- permutations::permutation(x)
@@ -7,7 +28,7 @@ gips_perm <- function(x, size){
 
     if (permutations::is.id(x)) {
         x <- as.list(1:size)
-        return(structure(x, size=size, class='gips_perm'))
+        return(new_gips_perm(x, size))
     }
     cycles <- unclass(x)[[1]]
     representatives <- permutations::get1(x)
@@ -23,16 +44,49 @@ gips_perm <- function(x, size){
 
     subcycles <- c(cycles, as.list(fixed_elements))
 
-    # Sort for now - cause it's simple
-    # could be replace by merge-like function (used i.e. in mergesort)
-    # use `findInterval`
-    representatives <- sapply(subcycles, min)
-    structure(subcycles[order(representatives)], size=size, class='gips_perm')
+    new_gips_perm(subcycles, size)
+}
+
+#' @describeIn gips_perm Constructor
+#'
+#' Only intended for low-level use.
+#'
+#' @param cycles list of integer vectors. Each vector corresponds to a single cycle
+#' of a permutation.
+#'
+#' @export
+
+new_gips_perm <- function(cycles, size){
+    rearranged_cycles <- lapply(cycles, rearrange_vector)
+    representatives <- sapply(rearranged_cycles, function(v)v[1])
+    reordered_cycles <- rearranged_cycles[order(representatives)]
+    structure(reordered_cycles, size=size, class='gips_perm')
 }
 
 is.wholenumber <-
     function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
 
+
+#' Compose permutation with transposition
+#'
+#' @param gips_perm Object of `gips_perm` class
+#' @param transposition integer vector of length 2. Transposition in a form of
+#' cycle.
+#'
+#' @return `gips_perm` object. Composition of `gips_perm` parameter and `transposition`.
+#'
+#' @noRd
+#' @examples
+#' perm <- permutations::as.cycle('(1,2,3)(4,5)')
+#' gperm <- gips_perm(perm, 6)
+#' tr <- c(2,3)
+#' tr_perm <- permutations::as.cycle(tr)
+#'
+#' composed <- compose_with_transposition(gperm, tr)
+#' composed2 <- perm * tr_perm
+#'
+#' # composed and composed 2 refer to the same permutation
+#'
 compose_with_transposition <- function(gips_perm, transposition){
     cycle_1_index <- which(sapply(gips_perm, function(cycle)
         transposition[1] %in% cycle))
@@ -56,13 +110,20 @@ compose_with_transposition <- function(gips_perm, transposition){
         new_cycle <- c(fragment_1, fragment_2)
         new_gips_perm <- add_cycle(new_gips_perm, new_cycle)
     }
-    structure(new_gips_perm, size=attr(gips_perm, 'size'), class='gips_perm')
+    new_gips_perm(new_gips_perm, attr(gips_perm, 'size'))
 }
+
+#' Add a new cycle to permutation
+#'
+#' @param cycles list of integer vectors. Each corresponds to cycles of a permutation
+#' @param new_cycle integer vector. None of its elements are present in `cycles`
+#'
+#' @noRd
 
 add_cycle <- function(cycles, new_cycle){
     # Assume, that cycles are sorted by their min element
     # new_cycle - not necessarily
-    new_cycle <- shift_vector(new_cycle, which.min(new_cycle)-1)
+    new_cycle <- rearrange_vector(new_cycle)
     min_representatives <- sapply(cycles, function(v)v[1])
     insert_index <- findInterval(new_cycle[1], min_representatives)
     append(cycles, list(new_cycle), after=insert_index)

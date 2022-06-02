@@ -7,9 +7,7 @@
 get_structure_constants(perm)
 }
 \arguments{
-\item{perm}{an element of class "gips_perm"}
-
-\item{perm_size}{size of permutation}
+\item{perm}{an element of class \code{gips_perm}}
 }
 \value{
 list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from theorem 1 and beginning of section 3.1
@@ -18,6 +16,6 @@ list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vect
 Get Structure Constants from theorem 5 of the paper
 }
 \examples{
-perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(1,2,3,5,4))), 5)
+perm <- gips_perm(permutations::as.word(c(1,2,3,5,4)), 5)
 get_structure_constants(perm)
 }

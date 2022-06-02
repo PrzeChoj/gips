@@ -3,22 +3,27 @@
 #' Project matrix on the space of symmetrical matrices invariant
 #' by a cyclic group of permutations.
 #'
-#' @param U matrix to be projected
+#' @param U matrix to be projected.
 #' @param perm permutation. Generator of a permutation group.
 #'             Either of `gips_perm` or `permutations::cycle` class.
-#' @param perm_size size of permutation. Required if `perm` is of `permutations::cycle` class.
 #' @param precomputed_equal_indices used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed
 #'
 #' @return projected matrix
 #' @export
 #'
-#' @examples project_matrix(U = matrix(rnorm(49), nrow = 7),
-#'                          perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
-#'                          perm_size = 7)
+#' @examples
+#' gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)
+#' U <- matrix(rnorm(49), nrow = 7)
+#' projected_U <- project_matrix(U, perm = gips_perm)
 project_matrix <- function(U, perm, perm_size=NULL, precomputed_equal_indices=NULL){
+    if(!is.matrix(U) || nrow(U) != ncol(U))
+        rlang::abort('`U` must be a square matrix.')
     if(is.null(precomputed_equal_indices)){
-        if(!inherits(perm, 'gips_perm'))
+        perm_size <- ncol(U)
+        if(!inherits(perm, 'gips_perm')){
             perm <- gips_perm(perm, perm_size)
+        } else if(attr(perm, 'size') != ncol(U))
+            rlang::abort('Size of `perm` must be equal to number of columns and rows of `U`.')
         equal_indices_by_perm <- get_equal_indices_by_perm(perm)
     }
     else

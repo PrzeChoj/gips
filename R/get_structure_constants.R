@@ -2,14 +2,13 @@
 #'
 #' Get Structure Constants from theorem 5 of the paper
 #'
-#' @param perm an element of class "gips_perm"
-#' @param perm_size size of permutation
+#' @param perm an element of class `gips_perm`
 #'
 #' @return list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1
 #' @export
 #'
 #' @examples
-#' perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(1,2,3,5,4))), 5)
+#' perm <- gips_perm(permutations::as.word(c(1,2,3,5,4)), 5)
 #' get_structure_constants(perm)
 get_structure_constants <- function(perm) {
     perm_size <- attr(perm, 'size')
