@@ -14,7 +14,7 @@
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)
 #' U <- matrix(rnorm(49), nrow = 7)
-#' projected_U <- project_matrix(U, perm = gips_perm)
+#' projected_U <- project_matrix(U, perm = gperm)
 project_matrix <- function(U, perm, perm_size=NULL, precomputed_equal_indices=NULL){
     if(!is.matrix(U) || nrow(U) != ncol(U))
         rlang::abort('`U` must be a square matrix.')
@@ -45,7 +45,7 @@ project_matrix <- function(U, perm, perm_size=NULL, precomputed_equal_indices=NU
 #' by permutation `perm`.
 #'
 #' @examples
-#' perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
+#' perm <- gips_perm('(1,2,3)(4,5)', 6)
 #' matrix_symvariant <- matrix(c(
 #' 2, 1, 1, 3, 3, 4,
 #' 1, 2, 1, 3, 3, 4,
