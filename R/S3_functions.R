@@ -92,3 +92,70 @@ plot.gips <- function(x, logarithmic=TRUE,
 
 # TODO(summary)
 
+
+#' Plot optimization convergence for `best_growth` algorithm
+#' 
+#' Plot method for gips objects.
+#' @param x Object of class gips.
+#' @param logarithmic boolean.
+#' @param title_text Text to be in a title of the plot.
+#' @param xlabel Text to be on the bottom of the plot.
+#' @param ylabel Text to be on the left of the plot.
+#' @param show_legend boolean.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.
+#' @param ... additional arguments passed to \code{\link{print}}.
+#' 
+#' @return Invisible NULL.
+#' @export
+plot.optimized_best_growth <- function(x, logarithmic=TRUE,
+                      title_text="Convergence plot",
+                      xlabel="number of function calls",
+                      ylabel=NULL, show_legend=TRUE,
+                      ylim=NULL, ...){
+  if(is.null(ylabel)){
+    ylabel <- ifelse(logarithmic,
+                     "log of a function",
+                     "value of a function")
+  }
+  if(logarithmic){  # values of goal function are logarithmic by default
+    y_values_from <- x[["goal_function_logvalues"]]
+  }else{
+    y_values_from <- exp(x[["goal_function_logvalues"]])
+  }
+  
+  # for best_growth algorithm, x[["goal_function_logvalues"]] always increases
+  y_values_all <- y_values_from
+  
+  num_of_neighbours <- choose(dim(x$U_used)[1], 2)
+  num_of_steps <- (length(y_values_all) - 1) * num_of_neighbours + 1 # notice that when algorithm did not converged, x[["iterations_performed"]] + 1 == length(y_values_max); + 1 is for the starting point
+  
+  xlim <- c(1, num_of_steps)
+  if(is.null(ylim))
+    ylim_plot <- c(min(y_values_from), y_values_all[length(y_values_all)])
+  else
+    ylim_plot <- ylim
+  
+  x_axis_points <- (0:(length(y_values_all)-1)) * num_of_neighbours + 1
+  
+  graphics::plot.new()
+  graphics::plot.window(xlim, ylim_plot)
+  graphics::lines.default(x_axis_points, y_values_all, type = "l",
+                          col = "blue", ...)
+  
+  graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
+  graphics::axis(1, ...)
+  graphics::axis(2, ...)
+  graphics::box(...)
+  
+  if(show_legend)
+    graphics::legend("bottomright", inset=.002,
+                     legend = c("Function values of visited nodes"),
+                     col = "blue", lty = 1, cex = 0.7,
+                     box.lty=0, lwd = 1)
+  
+  invisible(NULL)
+}
+
+
+
+

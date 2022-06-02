@@ -30,10 +30,10 @@ MH(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
 \value{
-object of class gips; list of 8 items: \code{acceptance_rate},
+object of class gips; list of 9 items: \code{acceptance_rate},
 \code{goal_function_logvalues}, \code{points}, \code{found_point},
 \code{found_point_function_logvalue}, \code{last_point},
-\code{last_point_function_logvalue}, \code{iterations_performed}.
+\code{last_point_function_logvalue}, \code{iterations_performed}, \code{U_used}.
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.

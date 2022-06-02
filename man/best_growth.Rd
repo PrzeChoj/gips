@@ -19,7 +19,7 @@ best_growth(
 
 \item{n_number}{number of data points that \code{U} is based on.}
 
-\item{max_iter}{number of iterations for an algorithm to perform. At least 2.}
+\item{max_iter}{number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.}
 
 \item{start_perm}{starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.}
 
@@ -27,13 +27,14 @@ best_growth(
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
 
-\item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
+\item{show_progress_bar}{boolean, indicate weather or not show the progress bar. \code{show_progress_bar == TRUE} is not supported for \code{max_iter == Inf}.}
 }
 \value{
-object of class gips; list of 8 items: \code{acceptance_rate},
-\code{goal_function_logvalues}, \code{points}, \code{found_point},
+object of class gips; list of 10 items: \code{acceptance_rate},
+\code{goal_function_logvalues} - of size \code{iterations_performed} + 1, \code{points}, \code{found_point},
 \code{found_point_function_logvalue}, \code{last_point},
-\code{last_point_function_logvalue}, \code{iterations_performed}.
+\code{last_point_function_logvalue}, \code{iterations_performed}, \code{U_used},
+\code{did_converged} - indicates if the algorithm converged.
 }
 \description{
 Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
@@ -53,7 +54,7 @@ n_number <- 13
 Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 U <- (t(Z) \%*\% Z)
 start_perm <- permutations::id
-bg <- best_growth(U=U, n_number=n_number, max_iter=5, start_perm=start_perm,
+bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 plot(bg)
 }
