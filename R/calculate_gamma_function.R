@@ -3,7 +3,6 @@
 #' Theorem 8 from the paper, using the formula (19) from the paper
 #'
 #' @param perm an element of class "gips_perm"
-#' @param perm_size size of permutation
 #' @param lambda positive real number
 #'
 #' @export
@@ -76,6 +75,7 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 #' gips_perm <- gips_perm(perm, perm_size)
 #' structure_constants <- get_structure_constants(gips_perm)
 #' gips:::G_function(structure_constants, 3)
+
 G_function <- function(structure_constants, delta=3){
 
   single_G_i <- sapply(1:structure_constants[['L']], function(i){
