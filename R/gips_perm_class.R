@@ -22,9 +22,13 @@
 gips_perm <- function(x, size){
     if(!inherits(x, 'permutation'))
         x <- permutations::permutation(x)
-    if(!is.wholenumber(size))
+    if(rlang::is_missing(size) || !is.wholenumber(size))
         rlang::abort('`size` must be an integer.')
     x <- permutations::as.cycle(x)
+
+    if(is.null(permutations::is.id(x))){
+        return(new_gips_perm(list(), 0))
+    }
 
     if (permutations::is.id(x)) {
         x <- as.list(1:size)
@@ -66,6 +70,15 @@ new_gips_perm <- function(cycles, size){
 is.wholenumber <-
     function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
 
+#' Coerce gips_perm to character vector
+#'
+#' Implementation of S3 method.
+#'
+#' @param x `gips_perm`
+#'
+#' @export
+as.character.gips_perm <- function(x, ...)
+    as.character(permutations::as.cycle(x))
 
 #' Compose permutation with transposition
 #'

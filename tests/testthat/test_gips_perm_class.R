@@ -34,6 +34,31 @@ test_that('gips_perm works for identity',{
                  gips_perm_allfixed)
 })
 
+test_that('constructor works for empty permutations',{
+    expect_equal(new_gips_perm(list(), 0),
+                 structure(list(), size=0, class='gips_perm'))
+})
+
+test_that('gips_perm works for empty permutation',{
+    expect_equal(gips_perm(permutations::nullword, 0),
+                 structure(list(), size=0, class='gips_perm'))
+})
+
+test_that('gips_perm coerces to permutations::cycle',{
+    expect_equal(permutations::as.cycle(gips_perm_nofixed),
+                 perm_nofixed)
+    expect_equal(permutations::as.cycle(gips_perm_somefixed),
+                 perm_somefixed)
+    expect_equal(permutations::as.cycle(gips_perm_firstfixed),
+                 perm_firstfixed)
+    expect_equal(permutations::as.cycle(gips_perm_lastfixed),
+                 perm_lastfixed)
+    expect_equal(permutations::as.cycle(gips_perm_allfixed),
+                 perm_allfixed)
+})
+
+
+# TODO more exact tests
 gips_example_perm <- gips_perm(example_perm, 6)
 transpositions <- expand.grid(1:6, 1:6)
 transpositions <- as.matrix(transpositions[transpositions$Var1 < transpositions$Var2,])
