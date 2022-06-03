@@ -11,6 +11,7 @@ MH(
   start_perm = NULL,
   delta = 3,
   D_matrix = NULL,
+  return_probabilities = FALSE,
   show_progress_bar = TRUE
 )
 }
@@ -26,6 +27,8 @@ MH(
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
+
+\item{return_probabilities}{boolean. Whether to use MH results to calculate posterior probabilities.}
 
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
 }
