@@ -34,7 +34,7 @@ object of class gips; list of 10 items: \code{acceptance_rate},
 \code{goal_function_logvalues} - of size \code{iterations_performed} + 1, \code{points}, \code{found_point},
 \code{found_point_function_logvalue}, \code{last_point},
 \code{last_point_function_logvalue}, \code{iterations_performed}, \code{U_used},
-\code{did_converged} - indicates if the algorithm converged.
+\code{did_converge} - indicates if the algorithm converged.
 }
 \description{
 Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.

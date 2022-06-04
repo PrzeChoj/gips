@@ -146,7 +146,7 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #' `goal_function_logvalues` - of size `iterations_performed` + 1, `points`, `found_point`,
 #' `found_point_function_logvalue`, `last_point`,
 #' `last_point_function_logvalue`, `iterations_performed`, `U_used`,
-#' `did_converged` - indicates if the algorithm converged.
+#' `did_converge` - indicates if the algorithm converged.
 #' 
 #' @export
 #'
@@ -205,7 +205,7 @@ best_growth <- function(U, n_number, max_iter=5,
 
   # mail loop
   iteration <- 0
-  did_converged <- FALSE
+  did_converge <- FALSE
   while(iteration <= max_iter-1){
     iteration <- iteration + 1
     if(show_progress_bar)
@@ -229,7 +229,7 @@ best_growth <- function(U, n_number, max_iter=5,
       f_values[iteration + 1] <- best_neighbour_value
       speciments[[iteration + 1]] <- best_neighbour
     }else{
-      did_converged <- TRUE
+      did_converge <- TRUE
       break
     }
   }
@@ -237,7 +237,7 @@ best_growth <- function(U, n_number, max_iter=5,
   if(show_progress_bar)
     close(progressBar)
 
-  if(!did_converged){
+  if(!did_converge){
     warning(paste0("Algorithm did not converge in ", iteration, # now, iteration == max_iter
                    " iterations! Try one more time with starting_perm = output$found_perm")) # TODO(there will be a function `continue(bg)`; see ISSUE#11)
   }
@@ -258,7 +258,7 @@ best_growth <- function(U, n_number, max_iter=5,
               "last_point_function_logvalue" = f_values[iteration],
               "iterations_performed" = iteration,
               "U_used" = U,
-              "did_converged" = did_converged)
+              "did_converge" = did_converge)
   
   class(out) <- c("optimized_best_growth", "gips", "list")
   
