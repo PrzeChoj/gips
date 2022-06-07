@@ -6,6 +6,7 @@
 \usage{
 \method{plot}{gips}(
   x,
+  type = "both",
   logarithmic = TRUE,
   title_text = "Convergence plot",
   xlabel = "number of function calls",
@@ -17,6 +18,8 @@
 }
 \arguments{
 \item{x}{Object of class gips.}
+
+\item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.}
 
 \item{logarithmic}{boolean.}
 

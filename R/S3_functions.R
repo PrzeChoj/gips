@@ -30,6 +30,7 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' 
 #' Plot method for gips objects.
 #' @param x Object of class gips.
+#' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.
 #' @param logarithmic boolean.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
@@ -40,11 +41,13 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' 
 #' @return Invisible NULL.
 #' @export
-plot.gips <- function(x, logarithmic=TRUE,
+plot.gips <- function(x, type="both",
+                      logarithmic=TRUE,
                       title_text="Convergence plot",
                       xlabel="number of function calls",
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
+  stopifnot(type %in% c("all", "best", "both"))
   if(is.null(ylabel)){
     ylabel <- ifelse(logarithmic,
                      "log of a function",
@@ -62,17 +65,25 @@ plot.gips <- function(x, logarithmic=TRUE,
   num_of_steps <- length(y_values_max)
   
   xlim <- c(1, num_of_steps)
-  if(is.null(ylim))
+  if(is.null(ylim)){
     ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
+    if(type == "best"){
+      ylim_plot[1] <- y_values_from[1] # for the "best" type this is the smallest point of the graph
+    }
+  }
   else
     ylim_plot <- ylim
   
   graphics::plot.new()
   graphics::plot.window(xlim, ylim_plot)
-  graphics::lines.default(1:num_of_steps, y_values_all, type = "l",
-                          col = "blue", ...)
-  graphics::lines.default(1:num_of_steps, y_values_max, lwd=3,
-                          lty = 2, col = "red", ...)
+  if(type != "best"){
+    graphics::lines.default(1:num_of_steps, y_values_all, type = "l",
+                            col = "blue", ...)
+  }
+  if(type != "all"){
+    graphics::lines.default(1:num_of_steps, y_values_max, lwd=3,
+                            lty = 2, col = "red", ...)
+  }
   
   graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
   graphics::axis(1, ...)
