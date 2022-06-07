@@ -8,6 +8,7 @@
   x,
   type = "both",
   logarithmic = TRUE,
+  color = NULL,
   title_text = "Convergence plot",
   xlabel = "number of function calls",
   ylabel = NULL,
@@ -22,6 +23,8 @@
 \item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.}
 
 \item{logarithmic}{boolean.}
+
+\item{color}{Vector of olors to be used to plot lines.}
 
 \item{title_text}{Text to be in a title of the plot.}
 

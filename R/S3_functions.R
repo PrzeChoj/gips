@@ -32,6 +32,7 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' @param x Object of class gips.
 #' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.
 #' @param logarithmic boolean.
+#' @param color Vector of olors to be used to plot lines.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
@@ -43,6 +44,7 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' @export
 plot.gips <- function(x, type="both",
                       logarithmic=TRUE,
+                      color=NULL,
                       title_text="Convergence plot",
                       xlabel="number of function calls",
                       ylabel=NULL, show_legend=TRUE,
@@ -52,6 +54,13 @@ plot.gips <- function(x, type="both",
     ylabel <- ifelse(logarithmic,
                      "log of a function",
                      "value of a function")
+  }
+  if(is.null(color)){
+    if(type == "both"){
+      color <- c("blue", "red")
+    }else{
+      color <- "blue"
+    }
   }
   if(logarithmic){  # values of goal function are logarithmic by default
     y_values_from <- x[["goal_function_logvalues"]]
@@ -78,11 +87,14 @@ plot.gips <- function(x, type="both",
   graphics::plot.window(xlim, ylim_plot)
   if(type != "best"){
     graphics::lines.default(1:num_of_steps, y_values_all, type = "l",
-                            col = "blue", ...)
+                            col = color[1], # the first color
+                            ...)
   }
   if(type != "all"){
-    graphics::lines.default(1:num_of_steps, y_values_max, lwd=3,
-                            lty = 2, col = "red", ...)
+    graphics::lines.default(1:num_of_steps, y_values_max, lwd=1,
+                            lty = 1,
+                            col = color[length(color)], # the last color
+                            ...)
   }
   
   graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
@@ -90,12 +102,27 @@ plot.gips <- function(x, type="both",
   graphics::axis(2, ...)
   graphics::box(...)
   
-  if(show_legend)
+  if(show_legend){
+    if(type == "both"){
+      legend_text <- c("All calculated function values",
+                       "Maximum function values calculated")
+      lty <- c(1, 1)
+      lwd <- c(1, 1)
+    }else if(type == "all"){
+      legend_text <- c("All calculated function values")
+      lty <- 1
+      lwd <- 1
+    }else if(type == "best"){
+      legend_text <- c("Maximum function values calculated")
+      lty <- 1
+      lwd <- 1
+    }
+    
     graphics::legend("bottomright", inset=.002,
-                     legend = c("All calculated function values",
-                                "Maximum function values calculated"),
-                     col = c("blue", "red"), lty = 1:2, cex = 0.7,
-                     box.lty=0, lwd = c(1, 3))
+                     legend = legend_text,
+                     col = color, lty = lty, cex = 0.7,
+                     box.lty=0, lwd = lwd)
+  }
   
   invisible(NULL)
 }
