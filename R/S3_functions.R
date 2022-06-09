@@ -85,13 +85,25 @@ plot.gips <- function(x, type="both",
   
   graphics::plot.new()
   graphics::plot.window(xlim, ylim_plot)
+  
+  # make the plot stairs-like
+  x_points <- c(1, rep(2:num_of_steps, each = 2))
+  
   if(type != "best"){
-    graphics::lines.default(1:num_of_steps, y_values_all, type = "l",
-                            col = color[1], # the first color
+    # make the plot stairs-like
+    y_points <- c(rep(y_values_all[1:(length(y_values_all)-1)], each = 2),
+                  y_values_all[length(y_values_all)])
+    
+    graphics::lines.default(x_points, y_points, type = "l",
+                            lwd=3, col = color[1], # the first color
                             ...)
   }
   if(type != "all"){
-    graphics::lines.default(1:num_of_steps, y_values_max, lwd=1,
+    # make the plot stairs-like
+    y_points <- c(rep(y_values_max[1:(length(y_values_max)-1)], each = 2),
+                  y_values_max[length(y_values_max)])
+    
+    graphics::lines.default(x_points, y_points, lwd=3,
                             lty = 1,
                             col = color[length(color)], # the last color
                             ...)
@@ -107,15 +119,15 @@ plot.gips <- function(x, type="both",
       legend_text <- c("All calculated function values",
                        "Maximum function values calculated")
       lty <- c(1, 1)
-      lwd <- c(1, 1)
+      lwd <- c(3, 3)
     }else if(type == "all"){
       legend_text <- c("All calculated function values")
       lty <- 1
-      lwd <- 1
+      lwd <- 3
     }else if(type == "best"){
       legend_text <- c("Maximum function values calculated")
       lty <- 1
-      lwd <- 1
+      lwd <- 3
     }
     
     graphics::legend("bottomright", inset=.002,
