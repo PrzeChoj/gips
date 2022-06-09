@@ -30,9 +30,11 @@ best_growth(
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar. \code{show_progress_bar == TRUE} is not supported for \code{max_iter == Inf}.}
 }
 \value{
-object of class gips; list of 10 items: \code{acceptance_rate},
-\code{goal_function_logvalues} - of size \code{iterations_performed} + 1, \code{points}, \code{found_point},
-\code{found_point_function_logvalue}, \code{last_point},
+object of class gips; list of 11 items: \code{acceptance_rate},
+\code{goal_function_logvalues} - all calculated goal function values,
+\code{goal_function_best_logvalues} - goal function values chosen in the iteration,
+\code{points} - permutations chosen in the iteration,
+\code{found_point}, \code{found_point_function_logvalue}, \code{last_point},
 \code{last_point_function_logvalue}, \code{iterations_performed}, \code{U_used},
 \code{did_converge} - indicates if the algorithm converged.
 }
