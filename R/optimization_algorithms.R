@@ -142,9 +142,11 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar. `show_progress_bar == TRUE` is not supported for `max_iter == Inf`.
 #'
-#' @return object of class gips; list of 10 items: `acceptance_rate`,
-#' `goal_function_logvalues` - of size `iterations_performed` + 1, `points`, `found_point`,
-#' `found_point_function_logvalue`, `last_point`,
+#' @return object of class gips; list of 11 items: `acceptance_rate`,
+#' `goal_function_logvalues` - all calculated goal function values,
+#' `goal_function_best_logvalues` - goal function values chosen in the iteration,
+#' `points` - permutations chosen in the iteration,
+#' `found_point`, `found_point_function_logvalue`, `last_point`,
 #' `last_point_function_logvalue`, `iterations_performed`, `U_used`,
 #' `did_converge` - indicates if the algorithm converged.
 #' 
@@ -196,12 +198,14 @@ best_growth <- function(U, n_number, max_iter=5,
                   delta=delta, D_matrix=D_matrix)
   }
 
-  f_values <- numeric(0)
+  goal_function_best_logvalues <- numeric(0)
+  goal_function_logvalues <- numeric(0)
   
   # init
   speciments <- list()
   speciments[[1]] <- start_perm
-  f_values[1] <- my_goal_function(speciments[[1]])
+  goal_function_best_logvalues[1] <- my_goal_function(speciments[[1]])
+  goal_function_logvalues[1] <- goal_function_best_logvalues[1]
 
   # mail loop
   iteration <- 0
@@ -217,6 +221,7 @@ best_growth <- function(U, n_number, max_iter=5,
       for(j in (i+1):perm_size){
         neighbour <- permutations::as.cycle(speciments[[iteration]] * permutations::as.cycle(c(i, j)))
         neighbour_value <- my_goal_function(neighbour)
+        goal_function_logvalues[length(goal_function_logvalues) + 1] <- neighbour_value
 
         if(neighbour_value > best_neighbour_value){
           best_neighbour_value <- neighbour_value
@@ -225,8 +230,8 @@ best_growth <- function(U, n_number, max_iter=5,
       }
     }
 
-    if(best_neighbour_value > f_values[iteration]){
-      f_values[iteration + 1] <- best_neighbour_value
+    if(best_neighbour_value > goal_function_best_logvalues[iteration]){
+      goal_function_best_logvalues[iteration + 1] <- best_neighbour_value
       speciments[[iteration + 1]] <- best_neighbour
     }else{
       did_converge <- TRUE
@@ -243,19 +248,20 @@ best_growth <- function(U, n_number, max_iter=5,
   }
     
   else{
-    f_values <- f_values[1:iteration]
+    goal_function_best_logvalues <- goal_function_best_logvalues[1:iteration]
     if(show_progress_bar)
       print(paste0("Algorithm did converge in ", iteration, " iterations"))
   }
 
 
   out <- list("acceptance_rate" = 1/choose(perm_size, 2),
-              "goal_function_logvalues" = f_values,
+              "goal_function_logvalues" = goal_function_logvalues,
+              "goal_function_best_logvalues" = goal_function_best_logvalues,
               "points" = speciments,
               "found_point" = speciments[[iteration]],
-              "found_point_function_logvalue" = f_values[iteration],
+              "found_point_function_logvalue" = goal_function_best_logvalues[iteration],
               "last_point" = speciments[[iteration]],
-              "last_point_function_logvalue" = f_values[iteration],
+              "last_point_function_logvalue" = goal_function_best_logvalues[iteration],
               "iterations_performed" = iteration,
               "U_used" = U,
               "did_converge" = did_converge)
