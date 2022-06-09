@@ -42,7 +42,9 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
-  stopifnot(permutations::is.cycle(start_perm),
+  stopifnot(!is.null(U),
+            !is.null(n_number),
+            permutations::is.cycle(start_perm),
             is.matrix(U),
             dim(U)[1] == dim(U)[2],
             delta > 2,
@@ -181,7 +183,9 @@ best_growth <- function(U, n_number, max_iter=5,
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
 
-  stopifnot(dim(U)[1] == dim(U)[2],
+  stopifnot(!is.null(U),
+            !is.null(n_number),
+            dim(U)[1] == dim(U)[2],
             delta > 2,
             max_iter > 1)
   perm_size <- dim(U)[1]
