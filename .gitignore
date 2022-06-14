@@ -5,3 +5,4 @@ tests/.DS_Store
 .Rhistory
 R/issue_5.R
 finding_cycles_on_matrix.*
+benchmark*

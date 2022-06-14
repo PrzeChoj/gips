@@ -48,12 +48,14 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
   }
   stopifnot(!is.null(U),
             !is.null(n_number),
-            permutations::is.cycle(start_perm),
+            permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
             is.matrix(U),
             dim(U)[1] == dim(U)[2],
             delta > 2,
             max_iter >= 2) # TODO(Make it work for max_iter == 1)
   perm_size <- dim(U)[1]
+  if(permutations::is.cycle(start_perm))
+      start_perm <- gips_perm(start_perm, perm_size)
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
@@ -81,7 +83,7 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
       utils::setTxtProgressBar(progressBar, i)
     
     e <- runif_transposition(perm_size)
-    perm_proposal <- permutations::as.cycle(points[[i]] * e)
+    perm_proposal <- compose_with_transposition(points[[i]], e)
 
     goal_function_perm_proposal <- goal_function(perm_proposal,
                                                  n_number, U,

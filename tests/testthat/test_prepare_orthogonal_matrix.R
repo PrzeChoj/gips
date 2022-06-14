@@ -1,5 +1,7 @@
+gips_example_perm <- gips_perm(example_perm, 6)
+
 test_that('orthogonal matrix fulfills condition from example 6',{
-    U_Gamma <- prepare_orthogonal_matrix(example_perm, 6, example_basis)
+    U_Gamma <- prepare_orthogonal_matrix(gips_example_perm, example_basis)
     tested_matrix <- t(U_Gamma) %*% matrix_invariant_by_example_perm %*% U_Gamma
     tested_elements <- tested_matrix
     tested_elements[1:3, 1:3] <- 0
@@ -14,7 +16,7 @@ test_that('orthogonal matrix fulfills condition from example 6',{
 
 test_that('prepare_orthogonal_matrix works for example', {
     expect_equal(
-        prepare_orthogonal_matrix(example_perm, 6, example_basis),
+        prepare_orthogonal_matrix(gips_example_perm, example_basis),
         example_orth_matrix
     )
 })

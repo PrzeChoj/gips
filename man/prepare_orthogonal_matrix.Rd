@@ -4,12 +4,12 @@
 \alias{prepare_orthogonal_matrix}
 \title{Prepare orthogonal matrix}
 \usage{
-prepare_orthogonal_matrix(perm, perm_size, basis = NULL)
+prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
-\item{perm}{permuations::cycle object}
+\item{perm}{\code{gips_perm} or \code{permutations::cycle} object}
 
-\item{perm_size}{size of permutation}
+\item{perm_size}{size of permutation. Required if \code{perm} is of \code{permutations::cycle} class}
 
 \item{basis}{matrix with basis vectors in COLUMNS. Identity by default}
 }
@@ -20,4 +20,8 @@ Theorem 6.
 \description{
 Calculate orthogonal matrix U_Gamma
 for decomposition in Theorem 1. To calculate it, we use Theorem 6.
+}
+\examples{
+gperm <- gips_perm('(1,2,3)(4,5)', 6)
+U_g <- prepare_orthogonal_matrix(gperm)
 }

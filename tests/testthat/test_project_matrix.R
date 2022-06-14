@@ -7,9 +7,11 @@ full_double_indices <- matrix(c(rep(1:4, times=4),
                               ncol=2)
 U <- matrix(rnorm(36), ncol=6)
 
+gips_example_perm <- gips_perm(example_perm, 6)
+
 
 test_that('projected matrix is symvariant by example_perm', {
-    projected <- project_matrix(U, example_perm, 6)
+    projected <- project_matrix(U, gips_example_perm)
     expect_true(isSymmetric(projected))
     # now we need to check only lower diagonal
     expect_equal(rep(projected[1,1], 2),
@@ -25,7 +27,7 @@ test_that('projected matrix is symvariant by example_perm', {
 })
 
 test_that('get_equal_indices_by_perm works for example_perm', {
-    actual_l <- lapply(get_equal_indices_by_perm(example_perm, 6),
+    actual_l <- lapply(get_equal_indices_by_perm(gips_example_perm),
                        sort)
     expected_l <- lapply(expected_equal_indices_by_example_perm,
                          sort)
@@ -33,7 +35,7 @@ test_that('get_equal_indices_by_perm works for example_perm', {
 })
 
 test_that('get_equal_indices_by_perm works for identity', {
-    expect_setequal(get_equal_indices_by_perm(to_perm(1:3), 3),
+    expect_setequal(get_equal_indices_by_perm(gips_perm(to_perm(1:3), 3)),
                  list(1, c(2,4), c(3,7), 5, c(6,8), 9))
 })
 

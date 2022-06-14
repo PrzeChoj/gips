@@ -15,10 +15,13 @@
 #' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
 #' goal_function(c, 100, U1)
 goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
-  stopifnot(permutations::is.cycle(perm_proposal),
+  stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
             is.matrix(U),
             dim(U)[1] == dim(U)[2])
   perm_size <- dim(U)[1]
+  if(!inherits(perm_proposal, 'gips_perm'))
+    perm_proposal <- gips_perm(perm_proposal, perm_size)
+
 
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
@@ -26,18 +29,18 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
   stopifnot(is.matrix(D_matrix),
             dim(D_matrix)[1] == dim(D_matrix)[2])
 
-  structure_constants <- get_structure_constants(perm_proposal, perm_size)
+  structure_constants <- get_structure_constants(perm_proposal)
 
   # Ac_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
   Ac_part <- (-n_number/2*Ac)
 
   # G_part and phi_part
-  G_part <- G_function(perm_proposal, structure_constants, delta + n_number) -
-    G_function(perm_proposal, structure_constants, delta)
+  G_part <- G_function(structure_constants, delta + n_number) -
+    G_function(structure_constants, delta)
 
   # phi_part
-  phi_part <- calculate_phi_part(perm_proposal, perm_size, n_number, U, delta,
+  phi_part <- calculate_phi_part(perm_proposal, n_number, U, delta,
                                  D_matrix, structure_constants)
 
   out <- Ac_part + G_part + phi_part
@@ -56,7 +59,7 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
 #'
 #' @param perm_size size from which take transpositions
 runif_transposition <- function(perm_size){
-  permutations::as.cycle(sample(perm_size, 2, replace=FALSE))
+  sample(perm_size, 2, replace=FALSE)
 }
 
 #' Calculate log phi_part of goal_function
@@ -65,14 +68,14 @@ runif_transposition <- function(perm_size){
 #' Rest of params as in goal_function
 #'
 #' @noRd
-calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
+calculate_phi_part <- function(perm_proposal, n_number, U, delta,
                                D_matrix, structure_constants){
 
   # projection of matrices on perm_proposal
-  equal_indices <- get_equal_indices_by_perm(perm_proposal, perm_size)
-  Dc <- project_matrix(D_matrix, perm_proposal, perm_size,
+  equal_indices <- get_equal_indices_by_perm(perm_proposal)
+  Dc <- project_matrix(D_matrix, perm_proposal,
                        precomputed_equal_indices=equal_indices)
-  Uc <- project_matrix(U, perm_proposal, perm_size,
+  Uc <- project_matrix(U, perm_proposal,
                        precomputed_equal_indices=equal_indices)
 
   # divide by 2 - refer to newest version of the paper
@@ -81,8 +84,7 @@ calculate_phi_part <- function(perm_proposal, perm_size, n_number, U, delta,
 
   # diagonalization
   # TODO add basis argument? ISSUE#6
-  diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal,
-                                                    perm_size)
+  diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal)
   Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
   DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
 

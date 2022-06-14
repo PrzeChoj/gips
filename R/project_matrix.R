@@ -3,20 +3,29 @@
 #' Project matrix on the space of symmetrical matrices invariant
 #' by a cyclic group of permutations.
 #'
-#' @param U matrix to be projected
-#' @param perm permutation. Generator of a permutation group
-#' @param perm_size size of permutation
+#' @param U matrix to be projected.
+#' @param perm permutation. Generator of a permutation group.
+#'             Either of `gips_perm` or `permutations::cycle` class.
 #' @param precomputed_equal_indices used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed
 #'
 #' @return projected matrix
 #' @export
 #'
-#' @examples project_matrix(U = matrix(rnorm(49), nrow = 7),
-#'                          perm = permutations::as.cycle(permutations::as.word(c(4,3,2,1,5))),
-#'                          perm_size = 7)
-project_matrix <- function(U, perm, perm_size, precomputed_equal_indices=NULL){
-    if(is.null(precomputed_equal_indices))
-        equal_indices_by_perm <- get_equal_indices_by_perm(perm, perm_size)
+#' @examples
+#' gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)
+#' U <- matrix(rnorm(49), nrow = 7)
+#' projected_U <- project_matrix(U, perm = gperm)
+project_matrix <- function(U, perm, precomputed_equal_indices=NULL){
+    if(!is.matrix(U) || nrow(U) != ncol(U))
+        rlang::abort('`U` must be a square matrix.')
+    if(is.null(precomputed_equal_indices)){
+        perm_size <- ncol(U)
+        if(!inherits(perm, 'gips_perm')){
+            perm <- gips_perm(perm, perm_size)
+        } else if(attr(perm, 'size') != ncol(U))
+            rlang::abort('Size of `perm` must be equal to number of columns and rows of `U`.')
+        equal_indices_by_perm <- get_equal_indices_by_perm(perm)
+    }
     else
         equal_indices_by_perm <- precomputed_equal_indices
     mean_values <- sapply(equal_indices_by_perm, function(indices)
@@ -29,12 +38,14 @@ project_matrix <- function(U, perm, perm_size, precomputed_equal_indices=NULL){
 
 #' Get indices of elements of perm_size x perm_size matrix, which should be equal
 #'
+#' @param perm gips_perm
+#'
 #' @return a list of integer vectors. Each vector contatins SINGLE indices
 #' of elements, which should be equal in symmetrical matrix invariant
 #' by permutation `perm`.
 #'
 #' @examples
-#' perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
+#' perm <- gips_perm('(1,2,3)(4,5)', 6)
 #' matrix_symvariant <- matrix(c(
 #' 2, 1, 1, 3, 3, 4,
 #' 1, 2, 1, 3, 3, 4,
@@ -46,12 +57,11 @@ project_matrix <- function(U, perm, perm_size, precomputed_equal_indices=NULL){
 #' out <- get_equal_indices_by_perm(perm, 6)
 #' all(sapply(out, function(v) all.equal(matrix_symvariant[v]))) # TRUE
 #' @noRd
-get_equal_indices_by_perm <- function(perm, perm_size){
-    subcycles <- get_subcycles(perm, perm_size)
-
+get_equal_indices_by_perm <- function(perm){
+    perm_size <- attr(perm, 'size')
     # We'll be iterating over pairs of subcycles
-    subcycle_indice_pairs <- matrix(c(rep(1:length(subcycles), each=length(subcycles)),
-                                      rep(1:length(subcycles), times=length(subcycles))),
+    subcycle_indice_pairs <- matrix(c(rep(1:length(perm), each=length(perm)),
+                                      rep(1:length(perm), times=length(perm))),
                                     ncol=2)
     subcycle_indice_pairs <- subcycle_indice_pairs[subcycle_indice_pairs[,1] <=
                                                        subcycle_indice_pairs[,2],,
@@ -60,8 +70,8 @@ get_equal_indices_by_perm <- function(perm, perm_size){
     nested_list <- lapply(1:nrow(subcycle_indice_pairs), function(pair_index){
         i <- subcycle_indice_pairs[pair_index, 1]
         j <- subcycle_indice_pairs[pair_index, 2]
-        subcycle_1 <- subcycles[[i]]
-        subcycle_2 <- subcycles[[j]]
+        subcycle_1 <- perm[[i]]
+        subcycle_2 <- perm[[j]]
 
         # matrix_subcycle is a subcycle of permutation P defined as
         # P(k,l) = (perm(k), perm(l))

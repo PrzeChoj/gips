@@ -58,7 +58,7 @@ n_number <- 13
 Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 U <- (t(Z) \%*\% Z)
 start_perm <- permutations::id
-mh <- MH(U=U, n_number=n_number, max_iter=1000, start_perm=start_perm,
+mh <- MH(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
          show_progress_bar=FALSE)
 if (require(graphics)) {
   plot(mh)

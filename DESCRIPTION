@@ -1,6 +1,6 @@
 Package: gips
 Title: Gaussian Models Invariant by Permutation Symmetry
-Version: 0.0.0.9000
+Version: 0.1.0.9000
 Authors@R: c(
     person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = c("aut", "cre")),
     person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = "aut"),
@@ -13,13 +13,15 @@ Description: Find the permutation symmetry group such that the covariance
     a Gaussian model with more parameters than the number of observations.
     Sometimes, even if the number of observations is bigger than the
     number of parameters, the covariance matrix found with `gips` better
-    approximates the actual covariance behind the data and is less variance.
+    approximates the actual covariance behind the data and is less
+    variance.
 License: MIT + file LICENSE
 URL: https://github.com/PrzeChoj/gips
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 
     numbers,
     permutations,
+    rlang,
     stringi,
     utils
 Suggests: 
