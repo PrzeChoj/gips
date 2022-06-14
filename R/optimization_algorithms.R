@@ -19,6 +19,8 @@
 #' @export
 #'
 #' @examples
+#' require(MASS)
+#' 
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
 #' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -35,7 +37,9 @@
 #' start_perm <- permutations::id
 #' mh <- MH(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
 #'          show_progress_bar=FALSE)
-#' plot(mh)
+#' if (require(graphics)) {
+#'   plot(mh)
+#' }
 MH <- function(U, n_number, max_iter, start_perm=NULL,
                delta=3, D_matrix=NULL, return_probabilities=FALSE,
                show_progress_bar=TRUE){
@@ -75,7 +79,7 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
   for (i in 1:(max_iter-1)){
     if(show_progress_bar)
       utils::setTxtProgressBar(progressBar, i)
-
+    
     e <- runif_transposition(perm_size)
     perm_proposal <- permutations::as.cycle(points[[i]] * e)
 
@@ -83,8 +87,7 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
                                                  n_number, U,
                                                  delta=delta, D_matrix=D_matrix)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
-      #browser()  # See ISSUE#5; We hope the introduction of log calculations
-      # will stop this problem.
+      # See ISSUE#5; We hope the introduction of log calculations will stop this problem.
       warning("gips is yet unable to process this U matrix. We think it can only happen for dim(U)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
 
       break()
@@ -155,6 +158,8 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #' @export
 #'
 #' @examples
+#' require(MASS)
+#' 
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
 #' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -171,7 +176,9 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #' start_perm <- permutations::id
 #' bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
 #'                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
-#' plot(bg)
+#' if (require(graphics)) {
+#'   plot(bg)
+#' }
 best_growth <- function(U, n_number, max_iter=5,
                         start_perm=NULL,
                         delta=3, D_matrix=NULL,

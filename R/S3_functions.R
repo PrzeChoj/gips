@@ -49,6 +49,13 @@ plot.gips <- function(x, type="both",
                       xlabel="number of function calls",
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
+  if (!requireNamespace("graphics", quietly = TRUE)) {
+    stop(
+      "Package \"graphics\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+  
   stopifnot(type %in% c("all", "best", "both"))
   if(is.null(ylabel)){
     ylabel <- ifelse(logarithmic,

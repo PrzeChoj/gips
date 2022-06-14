@@ -42,6 +42,8 @@ object of class gips; list of 11 items: \code{acceptance_rate},
 Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
 }
 \examples{
+require(MASS)
+
 perm_size <- 6
 mu <- numeric(perm_size)
 # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -58,5 +60,7 @@ U <- (t(Z) \%*\% Z)
 start_perm <- permutations::id
 bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
-plot(bg)
+if (require(graphics)) {
+  plot(bg)
+}
 }
