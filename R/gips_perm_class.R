@@ -75,7 +75,7 @@ is.wholenumber <-
 #' Implementation of S3 method.
 #'
 #' @param x `gips_perm`
-#' @param ... further arguments passed to \code{\link[permutattions]{print.cycle}}
+#' @param ... further arguments passed to \code{\link[permutations]{print.cycle}}
 #'
 #' @export
 print.gips_perm <- function(x, ...)
