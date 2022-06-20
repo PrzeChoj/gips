@@ -70,6 +70,17 @@ new_gips_perm <- function(cycles, size){
 is.wholenumber <-
     function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
 
+#' Print gips_perm
+#'
+#' Implementation of S3 method.
+#'
+#' @param x `gips_perm`
+#' @param ... further arguments passed to \code{\link[permutattions]{print.cycle}}
+#'
+#' @export
+print.gips_perm <- function(x, ...)
+    print(permutations::as.character.cycle(x))
+
 #' Coerce gips_perm to character vector
 #'
 #' Implementation of S3 method.
