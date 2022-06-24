@@ -79,6 +79,7 @@ is.wholenumber <-
 #'
 #' @export
 print.gips_perm <- function(x, ...)
+    x <- permutations::as.cycle(x)
     print(permutations::as.character.cycle(x))
 
 #' Coerce gips_perm to character vector
