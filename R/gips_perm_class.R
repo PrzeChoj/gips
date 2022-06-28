@@ -78,9 +78,10 @@ is.wholenumber <-
 #' @param ... further arguments passed to \code{\link[permutations]{print.cycle}}
 #'
 #' @export
-print.gips_perm <- function(x, ...)
+print.gips_perm <- function(x, ...){
     x <- permutations::as.cycle(x)
-    print(permutations::as.character.cycle(x))
+    permutations::print.cycle(x, ...)
+}
 
 #' Coerce gips_perm to character vector
 #'
