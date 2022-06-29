@@ -22,7 +22,9 @@
 gips_perm <- function(x, size){
     if(!inherits(x, 'permutation'))
         x <- permutations::permutation(x)
-    if(rlang::is_missing(size) || !is.wholenumber(size))
+    if(rlang::is_missing(size))
+        rlang::abort('`size` argument must be provided.')
+    if(!is.wholenumber(size))
         rlang::abort('`size` must be an integer.')
     x <- permutations::as.cycle(x)
 
