@@ -1,6 +1,8 @@
-#' The goal function for optimization functions.
-#'
+#' The log likelihood that the CoV matrix is invariant under permutation.
+#' 
 #' Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
+#' Keep in mind this is not the log likelihood per se, but rather the funcition that is proportional to the log likelihood.
+#' It is the goal function for optimization algorithms.
 #'
 #' @export
 #'
@@ -13,8 +15,8 @@
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
 #' U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-#' goal_function(c, 100, U1)
-goal_function <- function(perm_proposal, number_of_observations, U, delta=3, D_matrix=NULL){
+#' log_likelihood_of_perm(c, 100, U1)
+log_likelihood_of_perm <- function(perm_proposal, number_of_observations, U, delta=3, D_matrix=NULL){
   stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
             is.matrix(U),
             dim(U)[1] == dim(U)[2])
@@ -62,10 +64,10 @@ runif_transposition <- function(perm_size){
   sample(perm_size, 2, replace=FALSE)
 }
 
-#' Calculate log phi_part of goal_function
+#' Calculate log phi_part of log_likelihood_of_perm
 #'
 #' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
-#' Rest of params as in goal_function
+#' Rest of params as in log_likelihood_of_perm
 #'
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,

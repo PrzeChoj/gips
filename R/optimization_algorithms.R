@@ -62,6 +62,11 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
   }
   stopifnot(is.matrix(D_matrix),
             dim(D_matrix)[1] == dim(D_matrix)[2])
+  
+  my_goal_function <- function(perm){
+    log_likelihood_of_perm(perm, number_of_observations, U,
+                           delta=delta, D_matrix=D_matrix)
+  }
 
   acceptance <- rep(FALSE, max_iter)
   goal_function_logvalues <- rep(0, max_iter)
@@ -70,9 +75,7 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
 
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
-  goal_function_logvalues[1] <- goal_function(points[[1]],
-                                              number_of_observations, U,
-                                              delta=delta, D_matrix=D_matrix)
+  goal_function_logvalues[1] <- my_goal_function(points[[1]])
 
   found_point <- start_perm
   found_point_function_logvalue <- goal_function_logvalues[1]
@@ -86,9 +89,7 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
     e <- runif_transposition(perm_size)
     perm_proposal <- compose_with_transposition(points[[i]], e)
 
-    goal_function_perm_proposal <- goal_function(perm_proposal,
-                                                 number_of_observations, U,
-                                                 delta=delta, D_matrix=D_matrix)
+    goal_function_perm_proposal <- my_goal_function(perm_proposal)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
       # See ISSUE#5; We hope the introduction of log calculations will stop this problem.
       warning("gips is yet unable to process this U matrix. We think it can only happen for dim(U)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
@@ -96,8 +97,8 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
       break()
     }
 
-    # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true
-    if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
+    # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true, because U2[i] \in [0,1]
+    if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
       points[[i+1]] <- perm_proposal
       goal_function_logvalues[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
@@ -209,8 +210,8 @@ best_growth <- function(U, number_of_observations, max_iter=5,
   }
 
   my_goal_function <- function(perm){
-    goal_function(perm, number_of_observations, U,
-                  delta=delta, D_matrix=D_matrix)
+    log_likelihood_of_perm(perm, number_of_observations, U,
+                           delta=delta, D_matrix=D_matrix)
   }
 
   goal_function_best_logvalues <- numeric(0)

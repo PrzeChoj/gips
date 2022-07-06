@@ -34,7 +34,7 @@
 
 \item{show_legend}{boolean.}
 
-\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.}
+\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_perm}} is taken.}
 
 \item{...}{additional arguments passed to \code{\link{print}}.}
 }

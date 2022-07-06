@@ -2,7 +2,7 @@
 #' 
 #' Printing function for gips class.
 #' @param x object of class gips.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link{goal_function}} or leave it in logarithmic form.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_perm}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
@@ -37,7 +37,7 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_perm}} is taken.
 #' @param ... additional arguments passed to \code{\link{print}}.
 #' 
 #' @return Invisible NULL.
