@@ -34,9 +34,10 @@ Metropolis_Hastings(
 }
 \value{
 object of class gips; list of 9 items: \code{acceptance_rate},
-\code{goal_function_logvalues}, \code{points}, \code{found_point},
-\code{found_point_function_logvalue}, \code{last_point},
-\code{last_point_function_logvalue}, \code{iterations_performed}, \code{U_used}.
+\code{log_likelihood_values}, \code{visited_perms},
+\code{found_perm}, \code{found_perm_log_likelihood},
+\code{last_perm}, \code{last_perm_log_likelihood},
+\code{iterations_performed}, \code{U_used}.
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.

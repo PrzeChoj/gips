@@ -12,9 +12,10 @@
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
 #' @return object of class gips; list of 9 items: `acceptance_rate`,
-#' `goal_function_logvalues`, `points`, `found_point`,
-#' `found_point_function_logvalue`, `last_point`,
-#' `last_point_function_logvalue`, `iterations_performed`, `U_used`.
+#' `log_likelihood_values`, `visited_perms`,
+#' `found_perm`, `found_perm_log_likelihood`,
+#' `last_perm`, `last_perm_log_likelihood`,
+#' `iterations_performed`, `U_used`.
 #' 
 #' @export
 #'
@@ -69,16 +70,16 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
   }
 
   acceptance <- rep(FALSE, max_iter)
-  goal_function_logvalues <- rep(0, max_iter)
-  points <- list()
-  points[[1]] <- start_perm
+  log_likelihood_values <- rep(0, max_iter)
+  visited_perms <- list()
+  visited_perms[[1]] <- start_perm
 
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
-  goal_function_logvalues[1] <- my_goal_function(points[[1]])
+  log_likelihood_values[1] <- my_goal_function(visited_perms[[1]])
 
-  found_point <- start_perm
-  found_point_function_logvalue <- goal_function_logvalues[1]
+  found_perm <- start_perm
+  found_perm_log_likelihood <- log_likelihood_values[1]
 
   U2 <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -87,7 +88,7 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
       utils::setTxtProgressBar(progressBar, i)
     
     e <- runif_transposition(perm_size)
-    perm_proposal <- compose_with_transposition(points[[i]], e)
+    perm_proposal <- compose_with_transposition(visited_perms[[i]], e)
 
     goal_function_perm_proposal <- my_goal_function(perm_proposal)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
@@ -97,39 +98,39 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
       break()
     }
 
-    # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true, because U2[i] \in [0,1]
-    if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
-      points[[i+1]] <- perm_proposal
-      goal_function_logvalues[i+1] <- goal_function_perm_proposal
+    # if goal_function_perm_proposal > log_likelihood_values[i], then it is true, because U2[i] \in [0,1]
+    if(U2[i] < exp(goal_function_perm_proposal-log_likelihood_values[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+      visited_perms[[i+1]] <- perm_proposal
+      log_likelihood_values[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
 
-      if(found_point_function_logvalue < goal_function_logvalues[i+1]){
-        found_point_function_logvalue <- goal_function_logvalues[i+1]
-        found_point <- points[[i+1]]
+      if(found_perm_log_likelihood < log_likelihood_values[i+1]){
+        found_perm_log_likelihood <- log_likelihood_values[i+1]
+        found_perm <- visited_perms[[i+1]]
       }
     }
     else{
-      points[[i+1]] = points[[i]]
-      goal_function_logvalues[i+1] <- goal_function_logvalues[i]
+      visited_perms[[i+1]] = visited_perms[[i]]
+      log_likelihood_values[i+1] <- log_likelihood_values[i]
     }
   }
 
   if(show_progress_bar)
     close(progressBar)
 
-  function_calls <- length(goal_function_logvalues)
+  function_calls <- length(log_likelihood_values)
 
   out <- list("acceptance_rate"=mean(acceptance),
-              "goal_function_logvalues"=goal_function_logvalues,
-              "points"=points,
-              "found_point"=found_point,
-              "found_point_function_logvalue"=found_point_function_logvalue,
-              "last_point"=points[[function_calls]],
-              "last_point_function_logvalue"=found_point_function_logvalue[function_calls],
+              "log_likelihood_values"=log_likelihood_values,
+              "visited_perms"=visited_perms,
+              "found_perm"=found_perm,
+              "found_perm_log_likelihood"=found_perm_log_likelihood,
+              "last_perm"=visited_perms[[function_calls]],
+              "last_perm_log_likelihood"=found_perm_log_likelihood[function_calls],
               "iterations_performed"=i,
               "U_used"=U)
   if(return_probabilities){
-      probabilities <- estimate_probabilities(points)
+      probabilities <- estimate_probabilities(visited_perms)
       out[["post_probabilities"]] <- probabilities
   }
   
@@ -151,12 +152,12 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar. `show_progress_bar == TRUE` is not supported for `max_iter == Inf`.
 #'
-#' @return object of class gips; list of 11 items: `acceptance_rate`,
-#' `goal_function_logvalues` - all calculated goal function values,
-#' `goal_function_best_logvalues` - goal function values chosen in the iteration,
-#' `points` - permutations chosen in the iteration,
-#' `found_point`, `found_point_function_logvalue`, `last_point`,
-#' `last_point_function_logvalue`, `iterations_performed`, `U_used`,
+#' @return object of class gips; list of 10 items:
+#' `acceptance_rate` - always `1/choose(dim(U)[1], 2)`,
+#' `log_likelihood_values` - all calculated goal function values,
+#' `visited_perms` - permutations chosen in the iteration,
+#' `found_perm`, `found_perm_log_likelihood`, `last_perm`,
+#' `last_perm_log_likelihood`, `iterations_performed`, `U_used`,
 #' `did_converge` - indicates if the algorithm converged.
 #' 
 #' @export
@@ -215,13 +216,13 @@ best_growth <- function(U, number_of_observations, max_iter=5,
   }
 
   goal_function_best_logvalues <- numeric(0)
-  goal_function_logvalues <- numeric(0)
+  log_likelihood_values <- numeric(0)
   
   # init
   speciments <- list()
   speciments[[1]] <- start_perm
   goal_function_best_logvalues[1] <- my_goal_function(speciments[[1]])
-  goal_function_logvalues[1] <- goal_function_best_logvalues[1]
+  log_likelihood_values[1] <- goal_function_best_logvalues[1]
 
   # mail loop
   iteration <- 0
@@ -237,7 +238,7 @@ best_growth <- function(U, number_of_observations, max_iter=5,
       for(j in (i+1):perm_size){
         neighbour <- permutations::as.cycle(speciments[[iteration]] * permutations::as.cycle(c(i, j)))
         neighbour_value <- my_goal_function(neighbour)
-        goal_function_logvalues[length(goal_function_logvalues) + 1] <- neighbour_value
+        log_likelihood_values[length(log_likelihood_values) + 1] <- neighbour_value
 
         if(neighbour_value > best_neighbour_value){
           best_neighbour_value <- neighbour_value
@@ -271,13 +272,13 @@ best_growth <- function(U, number_of_observations, max_iter=5,
 
 
   out <- list("acceptance_rate" = 1/choose(perm_size, 2),
-              "goal_function_logvalues" = goal_function_logvalues,
+              "log_likelihood_values" = log_likelihood_values,
               "goal_function_best_logvalues" = goal_function_best_logvalues,
-              "points" = speciments,
-              "found_point" = speciments[[iteration]],
-              "found_point_function_logvalue" = goal_function_best_logvalues[iteration],
-              "last_point" = speciments[[iteration]],
-              "last_point_function_logvalue" = goal_function_best_logvalues[iteration],
+              "visited_perms" = speciments,
+              "found_perm" = speciments[[iteration]],
+              "found_perm_log_likelihood" = goal_function_best_logvalues[iteration],
+              "last_perm" = speciments[[iteration]],
+              "last_perm_log_likelihood" = goal_function_best_logvalues[iteration],
               "iterations_performed" = iteration,
               "U_used" = U,
               "did_converge" = did_converge)

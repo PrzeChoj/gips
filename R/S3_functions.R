@@ -12,13 +12,13 @@ print.gips <- function(x, log_value = FALSE, ...){
   
   value_part <- ifelse(log_value,
                        paste0(" with function log value ",
-                              x[["found_point_function_logvalue"]]),
+                              x[["found_perm_log_likelihood"]]),
                        paste0(" with function value ",
-                              exp(x[["found_point_function_logvalue"]])))
+                              exp(x[["found_perm_log_likelihood"]])))
   cat(paste0("Optimization algorithm after ",
-             length(x[["goal_function_logvalues"]]),
+             length(x[["log_likelihood_values"]]),
              " iterations found permutation ",
-             x[["found_point"]],
+             x[["found_perm"]],
              value_part),
       ...)
 }
@@ -70,9 +70,9 @@ plot.gips <- function(x, type="both",
     }
   }
   if(logarithmic){  # values of goal function are logarithmic by default
-    y_values_from <- x[["goal_function_logvalues"]]
+    y_values_from <- x[["log_likelihood_values"]]
   }else{
-    y_values_from <- exp(x[["goal_function_logvalues"]])
+    y_values_from <- exp(x[["log_likelihood_values"]])
   }
 
   y_values_max <- cummax(y_values_from)
