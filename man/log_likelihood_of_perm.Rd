@@ -7,7 +7,7 @@
 log_likelihood_of_perm(
   perm_proposal,
   number_of_observations,
-  U,
+  S,
   delta = 3,
   D_matrix = NULL
 )
@@ -15,9 +15,9 @@ log_likelihood_of_perm(
 \arguments{
 \item{perm_proposal}{permutation of interest.}
 
-\item{number_of_observations}{number of random variables that \code{U} is based on.}
+\item{number_of_observations}{number of random variables that \code{S} is based on.}
 
-\item{U}{matrix that the projection of is wanted.}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
@@ -30,6 +30,6 @@ It is the goal function for optimization algorithms.
 }
 \examples{
 c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-log_likelihood_of_perm(c, 100, U1)
+S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
+log_likelihood_of_perm(c, 100, S1)
 }

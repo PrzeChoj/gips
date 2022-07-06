@@ -7,20 +7,24 @@
 #' @export
 #'
 #' @param perm_proposal permutation of interest.
-#' @param number_of_observations number of random variables that `U` is based on.
-#' @param U matrix that the projection of is wanted.
+#' @param number_of_observations number of random variables that `S` is based on.
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
 #'
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-#' U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-#' log_likelihood_of_perm(c, 100, U1)
-log_likelihood_of_perm <- function(perm_proposal, number_of_observations, U, delta=3, D_matrix=NULL){
+#' S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
+#' log_likelihood_of_perm(c, 100, S1)
+log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
+                                   delta=3, D_matrix=NULL){
   stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
-            is.matrix(U),
-            dim(U)[1] == dim(U)[2])
-  perm_size <- dim(U)[1]
+            is.matrix(S),
+            dim(S)[1] == dim(S)[2])
+  
+  U <- S * number_of_observations  # in the paper there is U everywhere in stead of S, so it is easier to use U matrix in the code
+  perm_size <- dim(S)[1]
+  
   if(!inherits(perm_proposal, 'gips_perm'))
     perm_proposal <- gips_perm(perm_proposal, perm_size)
 

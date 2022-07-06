@@ -4,7 +4,7 @@
 \alias{print.gips}
 \title{Printing gips object}
 \usage{
-\method{print}{gips}(x, log_value = FALSE, ...)
+\method{print}{gips}(x, log_value = TRUE, ...)
 }
 \arguments{
 \item{x}{object of class gips.}

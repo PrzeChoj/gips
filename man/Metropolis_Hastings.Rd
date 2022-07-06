@@ -5,7 +5,7 @@
 \title{Metropolis-Hastings algorithm}
 \usage{
 Metropolis_Hastings(
-  U,
+  S,
   number_of_observations,
   max_iter,
   start_perm = NULL,
@@ -16,9 +16,9 @@ Metropolis_Hastings(
 )
 }
 \arguments{
-\item{U}{matrix, sum of outer products of data. \code{U = sum(t(Z) \%*\% Z)}, where Z is observed data.}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
-\item{number_of_observations}{number of data points that \code{U} is based on.}
+\item{number_of_observations}{number of data points that \code{S} is based on.}
 
 \item{max_iter}{number of iterations for an algorithm to perform. At least 2. Cannot be infinite.}
 
@@ -26,7 +26,7 @@ Metropolis_Hastings(
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
 
 \item{return_probabilities}{boolean. Whether to use \code{Metropolis_Hastings()} results to calculate posterior probabilities.}
 
@@ -37,7 +37,8 @@ object of class gips; list of 9 items: \code{acceptance_rate},
 \code{log_likelihood_values}, \code{visited_perms},
 \code{found_perm}, \code{found_perm_log_likelihood},
 \code{last_perm}, \code{last_perm_log_likelihood},
-\code{iterations_performed}, \code{U_used},
+\code{iterations_performed},
+\code{provided} - a list of 2 elements, namely \code{S} and \code{number_of_observations},
 \code{optimization_algorithm_used} - always "Metropolis_Hastings".
 }
 \description{
@@ -58,9 +59,9 @@ sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                        nrow=perm_size, byrow = TRUE)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-U <- (t(Z) \%*\% Z)
+S <- (t(Z) \%*\% Z)/number_of_observations  # the theoretical mean is 0
 start_perm <- permutations::id
-mh <- Metropolis_Hastings(U=U, number_of_observations=number_of_observations,
+mh <- Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
                           max_iter=10, start_perm=start_perm,
                           show_progress_bar=FALSE)
 if (require(graphics)) {

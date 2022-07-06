@@ -7,7 +7,7 @@
 #' 
 #' @return Invisible NULL.
 #' @export
-print.gips <- function(x, log_value = FALSE, ...){
+print.gips <- function(x, log_value = TRUE, ...){
   # TODO(Change it)
   
   value_part <- ifelse(log_value,
@@ -15,7 +15,8 @@ print.gips <- function(x, log_value = FALSE, ...){
                               x[["found_perm_log_likelihood"]]),
                        paste0(" with function value ",
                               exp(x[["found_perm_log_likelihood"]])))
-  cat(paste0("Optimization algorithm after ",
+  cat(paste0("Optimization algorithm ",
+             x[["optimization_algorithm_used"]], " after ",
              length(x[["log_likelihood_values"]]),
              " iterations found permutation ",
              x[["found_perm"]],
@@ -147,8 +148,10 @@ plot.gips <- function(x, type="both",
 }
 
 
-# TODO(summary)
-
+# TODO(summary, the n_0 of best perms, the distribution of likelihood values)
+summary.gips <- function(object, ...){
+  invisible(NULL)
+}
 
 
 

@@ -5,7 +5,7 @@
 \title{Best growth algorithm}
 \usage{
 best_growth(
-  U,
+  S,
   number_of_observations,
   max_iter = 5,
   start_perm = NULL,
@@ -15,9 +15,9 @@ best_growth(
 )
 }
 \arguments{
-\item{U}{matrix, sum of outer products of data. \code{U = sum(t(Z) \%*\% Z)}, where Z is observed data.}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
-\item{number_of_observations}{number of data points that \code{U} is based on.}
+\item{number_of_observations}{number of data points that \code{S} is based on.}
 
 \item{max_iter}{number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.}
 
@@ -25,17 +25,18 @@ best_growth(
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
 
 \item{show_progress_bar}{boolean, indicate weather or not show the progress bar. \code{show_progress_bar == TRUE} is not supported for \code{max_iter == Inf}.}
 }
 \value{
 object of class gips; list of 10 items:
-\code{acceptance_rate} - always \code{1/choose(dim(U)[1], 2)},
+\code{acceptance_rate} - always \code{1/choose(dim(S)[1], 2)},
 \code{log_likelihood_values} - all calculated goal function values,
 \code{visited_perms} - permutations chosen in the iteration,
 \code{found_perm}, \code{found_perm_log_likelihood}, \code{last_perm},
-\code{last_perm_log_likelihood}, \code{iterations_performed}, \code{U_used},
+\code{last_perm_log_likelihood}, \code{iterations_performed},
+\code{provided} - a list of 2 elements, namely \code{S} and \code{number_of_observations},
 \code{did_converge} - indicates if the algorithm converged,
 \code{optimization_algorithm_used} - always "best_growth".
 }
@@ -57,9 +58,9 @@ sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                        nrow=perm_size, byrow = TRUE)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-U <- (t(Z) \%*\% Z)
+S <- (t(Z) \%*\% Z)/number_of_observations  # the theoretical mean is 0
 start_perm <- permutations::id
-bg <- best_growth(U=U, number_of_observations=number_of_observations,
+bg <- best_growth(S=S, number_of_observations=number_of_observations,
                   max_iter=10, start_perm=start_perm,
                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 if (require(graphics)) {

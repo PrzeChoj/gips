@@ -5,13 +5,13 @@ expected_equal_indices_by_example_perm <- lapply(values, function(v)
 full_double_indices <- matrix(c(rep(1:4, times=4),
                                 rep(1:4, each=4)),
                               ncol=2)
-U <- matrix(rnorm(36), ncol=6)
+S <- matrix(rnorm(36), ncol=6)
 
 gips_example_perm <- gips_perm(example_perm, 6)
 
 
 test_that('projected matrix is symvariant by example_perm', {
-    projected <- project_matrix(U, gips_example_perm)
+    projected <- project_matrix(S, gips_example_perm)
     expect_true(isSymmetric(projected))
     # now we need to check only lower diagonal
     expect_equal(rep(projected[1,1], 2),

@@ -4,10 +4,10 @@
 \alias{project_matrix}
 \title{Project matrix}
 \usage{
-project_matrix(U, perm, precomputed_equal_indices = NULL)
+project_matrix(S, perm, precomputed_equal_indices = NULL)
 }
 \arguments{
-\item{U}{matrix to be projected.}
+\item{S}{matrix to be projected.}
 
 \item{perm}{permutation. Generator of a permutation group.
 Either of \code{gips_perm} or \code{permutations::cycle} class.}
@@ -22,7 +22,7 @@ Project matrix on the space of symmetrical matrices invariant
 by a cyclic group of permutations.
 }
 \examples{
-gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)
-U <- matrix(rnorm(49), nrow = 7)
-projected_U <- project_matrix(U, perm = gperm)
+gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)  # permutation (1,4)(2,3)(5)(6)(7)
+S <- matrix(rnorm(49), nrow = 7)
+projected_S <- project_matrix(S, perm = gperm)
 }
