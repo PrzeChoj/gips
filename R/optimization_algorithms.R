@@ -2,20 +2,88 @@
 #'
 #' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
+#' @param U matrix, sum of outer products of data. `U = sum(t(Z) %*% Z)`, where Z is observed data.
 #' @param number_of_observations number of data points that `U` is based on.
-#' @param max_iter number of iterations for an algorithm to perform. At least 2.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
-#' @param return_probabilities boolean. Whether to use Metropolis_Hastings() results to calculate posterior probabilities.
-#' @param show_progress_bar boolean, indicate weather or not show the progress bar.
+#' @param return_probabilities boolean. Only for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
+#' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
+#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
+#'
+#' @return object of class gips; list of 9 or 10 items, depending on optimizer. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
+#' 
+#' @export
+#'
+#' @examples
+#' require(MASS)  # for mvrnorm()
+#' 
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                                 0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                                 0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                                 0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                        nrow=perm_size, byrow = TRUE)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' U <- (t(Z) %*% Z)
+#' start_perm <- permutations::id
+#' optimization_output <- gips(U=U, number_of_observations=number_of_observations,
+#'                             max_iter=10, start_perm=start_perm,
+#'                             show_progress_bar=FALSE, optimizer="MH")
+#' if (require(graphics)) {
+#'   plot(optimization_output)
+#' }
+gips <- function(U, number_of_observations, max_iter, start_perm=NULL,
+                 delta=3, D_matrix=NULL, return_probabilities=FALSE,
+                 show_progress_bar=TRUE, optimizer="MH"){
+  stopifnot(optimizer %in% c("MH", "Metropolis_Hastings",
+                             "BG", "best_growth"))
+  
+  if(optimizer %in% c("MH", "Metropolis_Hastings")){
+    return(Metropolis_Hastings(U=U, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=return_probabilities,
+                               show_progress_bar=show_progress_bar))
+  }
+  
+  if(optimizer %in% c("BG", "best_growth")){
+    return(best_growth(U=U, number_of_observations=number_of_observations,
+                       max_iter=max_iter, start_perm=start_perm,
+                       delta=delta, D_matrix=D_matrix,
+                       show_progress_bar=show_progress_bar))
+  }
+}
+
+
+
+
+
+#' Metropolis-Hastings algorithm
+#'
+#' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
+#'
+#' @param U matrix, sum of outer products of data. `U = sum(t(Z) %*% Z)`, where Z is observed data.
+#' @param number_of_observations number of data points that `U` is based on.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. Cannot be infinite.
+#' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
+#' @param return_probabilities boolean. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
+#' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
 #'
 #' @return object of class gips; list of 9 items: `acceptance_rate`,
 #' `log_likelihood_values`, `visited_perms`,
 #' `found_perm`, `found_perm_log_likelihood`,
 #' `last_perm`, `last_perm_log_likelihood`,
-#' `iterations_performed`, `U_used`.
+#' `iterations_performed`, `U_used`,
+#' `optimization_algorithm_used` - always "Metropolis_Hastings".
 #' 
 #' @export
 #'
@@ -54,7 +122,8 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
             is.matrix(U),
             dim(U)[1] == dim(U)[2],
             delta > 2,
-            max_iter >= 2) # TODO(Make it work for max_iter == 1)
+            max_iter >= 2, # TODO(Make it work for max_iter == 1)
+            is.finite(max_iter))
   perm_size <- dim(U)[1]
   if(permutations::is.cycle(start_perm))
       start_perm <- gips_perm(start_perm, perm_size)
@@ -120,15 +189,16 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
 
   function_calls <- length(log_likelihood_values)
 
-  out <- list("acceptance_rate"=mean(acceptance),
-              "log_likelihood_values"=log_likelihood_values,
-              "visited_perms"=visited_perms,
-              "found_perm"=found_perm,
-              "found_perm_log_likelihood"=found_perm_log_likelihood,
-              "last_perm"=visited_perms[[function_calls]],
-              "last_perm_log_likelihood"=found_perm_log_likelihood[function_calls],
-              "iterations_performed"=i,
-              "U_used"=U)
+  out <- list("acceptance_rate" = mean(acceptance),
+              "log_likelihood_values" = log_likelihood_values,
+              "visited_perms" = visited_perms,
+              "found_perm" = found_perm,
+              "found_perm_log_likelihood" = found_perm_log_likelihood,
+              "last_perm" = visited_perms[[function_calls]],
+              "last_perm_log_likelihood" = found_perm_log_likelihood[function_calls],
+              "iterations_performed" = i,
+              "U_used" = U,
+              "optimization_algorithm_used" = "Metropolis_Hastings")
   if(return_probabilities){
       probabilities <- estimate_probabilities(visited_perms)
       out[["post_probabilities"]] <- probabilities
@@ -144,7 +214,7 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
 #'
 #' Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
+#' @param U matrix, sum of outer products of data. `U = sum(t(Z) %*% Z)`, where Z is observed data.
 #' @param number_of_observations number of data points that `U` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
@@ -158,7 +228,8 @@ Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=
 #' `visited_perms` - permutations chosen in the iteration,
 #' `found_perm`, `found_perm_log_likelihood`, `last_perm`,
 #' `last_perm_log_likelihood`, `iterations_performed`, `U_used`,
-#' `did_converge` - indicates if the algorithm converged.
+#' `did_converge` - indicates if the algorithm converged,
+#' `optimization_algorithm_used` - always "best_growth".
 #' 
 #' @export
 #'
@@ -281,7 +352,8 @@ best_growth <- function(U, number_of_observations, max_iter=5,
               "last_perm_log_likelihood" = goal_function_best_logvalues[iteration],
               "iterations_performed" = iteration,
               "U_used" = U,
-              "did_converge" = did_converge)
+              "did_converge" = did_converge,
+              "optimization_algorithm_used" = "best_growth")
   
   class(out) <- c("optimized_best_growth", "gips", "list")
   

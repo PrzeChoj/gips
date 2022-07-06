@@ -16,11 +16,11 @@ Metropolis_Hastings(
 )
 }
 \arguments{
-\item{U}{matrix, sum of outer products of data. \code{U} = sum(t(Z) \%*\% Z), where Z is observed data.}
+\item{U}{matrix, sum of outer products of data. \code{U = sum(t(Z) \%*\% Z)}, where Z is observed data.}
 
 \item{number_of_observations}{number of data points that \code{U} is based on.}
 
-\item{max_iter}{number of iterations for an algorithm to perform. At least 2.}
+\item{max_iter}{number of iterations for an algorithm to perform. At least 2. Cannot be infinite.}
 
 \item{start_perm}{starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.}
 
@@ -28,16 +28,17 @@ Metropolis_Hastings(
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{U}. When NULL, the identity matrix is taken.}
 
-\item{return_probabilities}{boolean. Whether to use Metropolis_Hastings() results to calculate posterior probabilities.}
+\item{return_probabilities}{boolean. Whether to use \code{Metropolis_Hastings()} results to calculate posterior probabilities.}
 
-\item{show_progress_bar}{boolean, indicate weather or not show the progress bar.}
+\item{show_progress_bar}{boolean. Indicate weather or not show the progress bar.}
 }
 \value{
 object of class gips; list of 9 items: \code{acceptance_rate},
 \code{log_likelihood_values}, \code{visited_perms},
 \code{found_perm}, \code{found_perm_log_likelihood},
 \code{last_perm}, \code{last_perm_log_likelihood},
-\code{iterations_performed}, \code{U_used}.
+\code{iterations_performed}, \code{U_used},
+\code{optimization_algorithm_used} - always "Metropolis_Hastings".
 }
 \description{
 Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
