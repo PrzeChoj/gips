@@ -1,4 +1,4 @@
-#' goal function for MH
+#' The goal function for optimization functions.
 #'
 #' Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
 #'

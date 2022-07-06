@@ -1,4 +1,4 @@
-test_examples("../..") # example for MH and best_growth are here
+test_examples("../..") # example for Metropolis_Hastings and best_growth are here
 
 test_that("Infinite max_iter and progress bar is not supported on best_growth", {
   expect_error(best_growth(U=U, n_number=n_number, max_iter=Inf,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/goal_function.R
 \name{goal_function}
 \alias{goal_function}
-\title{goal function for MH}
+\title{The goal function for optimization functions.}
 \usage{
 goal_function(perm_proposal, n_number, U, delta = 3, D_matrix = NULL)
 }

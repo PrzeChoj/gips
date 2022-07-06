@@ -1,8 +1,8 @@
-#' Estimate posterior probabilities from MH run
+#' Estimate posterior probabilities from Metropolis_Hastings run
 #'
 #' We use "second approach" from the paper.
 #'
-#' @param points list of `gips_perm` objects. Visited groups during MH run.
+#' @param points list of `gips_perm` objects. Visited groups during Metropolis_Hastings run.
 #'
 #' @return named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations

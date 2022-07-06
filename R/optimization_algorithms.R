@@ -8,7 +8,7 @@
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
-#' @param return_probabilities boolean. Whether to use MH results to calculate posterior probabilities.
+#' @param return_probabilities boolean. Whether to use Metropolis_Hastings() results to calculate posterior probabilities.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar.
 #'
 #' @return object of class gips; list of 9 items: `acceptance_rate`,
@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @examples
-#' require(MASS)
+#' require(MASS)  # for mvrnorm()
 #' 
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
@@ -35,12 +35,12 @@
 #' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
 #' U <- (t(Z) %*% Z)
 #' start_perm <- permutations::id
-#' mh <- MH(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
-#'          show_progress_bar=FALSE)
+#' mh <- Metropolis_Hastings(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
+#'                           show_progress_bar=FALSE)
 #' if (require(graphics)) {
 #'   plot(mh)
 #' }
-MH <- function(U, n_number, max_iter, start_perm=NULL,
+Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
                delta=3, D_matrix=NULL, return_probabilities=FALSE,
                show_progress_bar=TRUE){
   if(is.null(start_perm)){
@@ -125,14 +125,14 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
               "last_point"=points[[function_calls]],
               "last_point_function_logvalue"=found_point_function_logvalue[function_calls],
               "iterations_performed"=i,
-              "U_used" = U)
-  
-  class(out) <- c("optimized_MH", "gips", "list")
-  
+              "U_used"=U)
   if(return_probabilities){
       probabilities <- estimate_probabilities(points)
       out[["post_probabilities"]] <- probabilities
-    }
+  }
+  
+  class(out) <- c("optimized_MH", "gips", "list")
+  
   out
 }
 

@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{\code{gips_perm}}
 
-\item{...}{further arguments passed to \code{\link[permutattions]{print.cycle}}}
+\item{...}{further arguments passed to \code{\link[permutations]{print.cycle}}}
 }
 \description{
 Implementation of S3 method.
