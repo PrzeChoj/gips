@@ -3,7 +3,7 @@
 #' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
 #' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
-#' @param n_number number of data points that `U` is based on.
+#' @param number_of_observations number of data points that `U` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. At least 2.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
@@ -31,23 +31,24 @@
 #'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                        nrow=perm_size, byrow = TRUE)
-#' n_number <- 13
-#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' U <- (t(Z) %*% Z)
 #' start_perm <- permutations::id
-#' mh <- Metropolis_Hastings(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
+#' mh <- Metropolis_Hastings(U=U, number_of_observations=number_of_observations,
+#'                           max_iter=10, start_perm=start_perm,
 #'                           show_progress_bar=FALSE)
 #' if (require(graphics)) {
 #'   plot(mh)
 #' }
-Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
+Metropolis_Hastings <- function(U, number_of_observations, max_iter, start_perm=NULL,
                delta=3, D_matrix=NULL, return_probabilities=FALSE,
                show_progress_bar=TRUE){
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
   stopifnot(!is.null(U),
-            !is.null(n_number),
+            !is.null(number_of_observations),
             permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
             is.matrix(U),
             dim(U)[1] == dim(U)[2],
@@ -70,7 +71,7 @@ Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   goal_function_logvalues[1] <- goal_function(points[[1]],
-                                              n_number, U,
+                                              number_of_observations, U,
                                               delta=delta, D_matrix=D_matrix)
 
   found_point <- start_perm
@@ -86,7 +87,7 @@ Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
     perm_proposal <- compose_with_transposition(points[[i]], e)
 
     goal_function_perm_proposal <- goal_function(perm_proposal,
-                                                 n_number, U,
+                                                 number_of_observations, U,
                                                  delta=delta, D_matrix=D_matrix)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
       # See ISSUE#5; We hope the introduction of log calculations will stop this problem.
@@ -142,7 +143,7 @@ Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
 #' Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
 #' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
-#' @param n_number number of data points that `U` is based on.
+#' @param number_of_observations number of data points that `U` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
@@ -172,16 +173,17 @@ Metropolis_Hastings <- function(U, n_number, max_iter, start_perm=NULL,
 #'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                        nrow=perm_size, byrow = TRUE)
-#' n_number <- 13
-#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' U <- (t(Z) %*% Z)
 #' start_perm <- permutations::id
-#' bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
+#' bg <- best_growth(U=U, number_of_observations=number_of_observations,
+#'                   max_iter=10, start_perm=start_perm,
 #'                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 #' if (require(graphics)) {
 #'   plot(bg)
 #' }
-best_growth <- function(U, n_number, max_iter=5,
+best_growth <- function(U, number_of_observations, max_iter=5,
                         start_perm=NULL,
                         delta=3, D_matrix=NULL,
                         show_progress_bar=TRUE){
@@ -193,7 +195,7 @@ best_growth <- function(U, n_number, max_iter=5,
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
 
   stopifnot(!is.null(U),
-            !is.null(n_number),
+            !is.null(number_of_observations),
             dim(U)[1] == dim(U)[2],
             delta > 2,
             max_iter > 1)
@@ -207,7 +209,7 @@ best_growth <- function(U, n_number, max_iter=5,
   }
 
   my_goal_function <- function(perm){
-    goal_function(perm, n_number, U,
+    goal_function(perm, number_of_observations, U,
                   delta=delta, D_matrix=D_matrix)
   }
 

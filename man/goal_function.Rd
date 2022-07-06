@@ -4,12 +4,18 @@
 \alias{goal_function}
 \title{The goal function for optimization functions.}
 \usage{
-goal_function(perm_proposal, n_number, U, delta = 3, D_matrix = NULL)
+goal_function(
+  perm_proposal,
+  number_of_observations,
+  U,
+  delta = 3,
+  D_matrix = NULL
+)
 }
 \arguments{
 \item{perm_proposal}{permutation of interest.}
 
-\item{n_number}{number of random variables that \code{U} is based on.}
+\item{number_of_observations}{number of random variables that \code{U} is based on.}
 
 \item{U}{matrix that the projection of is wanted.}
 
@@ -22,6 +28,6 @@ Calculate the logarithm of function proportional to a posteriori distribution, a
 }
 \examples{
 c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
+U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
 goal_function(c, 100, U1)
 }

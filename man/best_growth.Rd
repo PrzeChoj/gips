@@ -6,7 +6,7 @@
 \usage{
 best_growth(
   U,
-  n_number,
+  number_of_observations,
   max_iter = 5,
   start_perm = NULL,
   delta = 3,
@@ -17,7 +17,7 @@ best_growth(
 \arguments{
 \item{U}{matrix, sum of outer products of data. \code{U} = sum(t(Z) \%*\% Z), where Z is observed data.}
 
-\item{n_number}{number of data points that \code{U} is based on.}
+\item{number_of_observations}{number of data points that \code{U} is based on.}
 
 \item{max_iter}{number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.}
 
@@ -54,11 +54,12 @@ sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
                        nrow=perm_size, byrow = TRUE)
-n_number <- 13
-Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
+number_of_observations <- 13
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 U <- (t(Z) \%*\% Z)
 start_perm <- permutations::id
-bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
+bg <- best_growth(U=U, number_of_observations=number_of_observations,
+                  max_iter=10, start_perm=start_perm,
                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 if (require(graphics)) {
   plot(bg)

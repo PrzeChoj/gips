@@ -5,16 +5,16 @@
 #' @export
 #'
 #' @param perm_proposal permutation of interest.
-#' @param n_number number of random variables that `U` is based on.
+#' @param number_of_observations number of random variables that `U` is based on.
 #' @param U matrix that the projection of is wanted.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
 #'
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-#' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
+#' U1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
 #' goal_function(c, 100, U1)
-goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
+goal_function <- function(perm_proposal, number_of_observations, U, delta=3, D_matrix=NULL){
   stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
             is.matrix(U),
             dim(U)[1] == dim(U)[2])
@@ -33,14 +33,14 @@ goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
 
   # Ac_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
-  Ac_part <- (-n_number/2*Ac)
+  Ac_part <- (-number_of_observations/2*Ac)
 
   # G_part and phi_part
-  G_part <- G_function(structure_constants, delta + n_number) -
+  G_part <- G_function(structure_constants, delta + number_of_observations) -
     G_function(structure_constants, delta)
 
   # phi_part
-  phi_part <- calculate_phi_part(perm_proposal, n_number, U, delta,
+  phi_part <- calculate_phi_part(perm_proposal, number_of_observations, U, delta,
                                  D_matrix, structure_constants)
 
   out <- Ac_part + G_part + phi_part
@@ -68,7 +68,7 @@ runif_transposition <- function(perm_size){
 #' Rest of params as in goal_function
 #'
 #' @noRd
-calculate_phi_part <- function(perm_proposal, n_number, U, delta,
+calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
                                D_matrix, structure_constants){
 
   # projection of matrices on perm_proposal
@@ -96,7 +96,7 @@ calculate_phi_part <- function(perm_proposal, n_number, U, delta,
                                                               block_ends)
   Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
     (structure_constants[['r']] * structure_constants[['k']])
-  DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
+  DcUc_exponent <- -(number_of_observations+delta-2)/2 - structure_constants[['dim_omega']] /
     (structure_constants[['r']] * structure_constants[['k']])
 
   out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)
