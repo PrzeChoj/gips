@@ -56,7 +56,7 @@ test_that('log_likelihood_of_perm has the desired property', {
   actual_permutation_function_value <- log_likelihood_of_perm(actual_permutation, n, S)
   another_permutation_function_value <- log_likelihood_of_perm(id_perm, n, S)
 
-  # We want the goal function to have a bigger value for the real permutation than for the another
+  # We want the likelihood to have a bigger value for the real permutation than for the another
   expect_gt(actual_permutation_function_value,
             another_permutation_function_value)
 })

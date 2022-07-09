@@ -32,7 +32,7 @@ best_growth(
 \value{
 object of class gips; list of 10 items:
 \code{acceptance_rate} - always \code{1/choose(dim(S)[1], 2)},
-\code{log_likelihood_values} - all calculated goal function values,
+\code{log_likelihood_values} - all calculated log likelihood values,
 \code{visited_perms} - permutations chosen in the iteration,
 \code{found_perm}, \code{found_perm_log_likelihood}, \code{last_perm},
 \code{last_perm_log_likelihood}, \code{iterations_performed},

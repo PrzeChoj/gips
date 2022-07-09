@@ -34,7 +34,8 @@ Metropolis_Hastings(
 }
 \value{
 object of class gips; list of 9 items: \code{acceptance_rate},
-\code{log_likelihood_values}, \code{visited_perms},
+\code{log_likelihood_values} - all calculated log likelihood values,
+\code{visited_perms},
 \code{found_perm}, \code{found_perm_log_likelihood},
 \code{last_perm}, \code{last_perm_log_likelihood},
 \code{iterations_performed},

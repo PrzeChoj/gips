@@ -101,7 +101,8 @@ check_rightness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
 #'
 #' @return object of class gips; list of 9 items: `acceptance_rate`,
-#' `log_likelihood_values`, `visited_perms`,
+#' `log_likelihood_values` - all calculated log likelihood values,
+#' `visited_perms`,
 #' `found_perm`, `found_perm_log_likelihood`,
 #' `last_perm`, `last_perm_log_likelihood`,
 #' `iterations_performed`,
@@ -246,7 +247,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
 #'
 #' @return object of class gips; list of 10 items:
 #' `acceptance_rate` - always `1/choose(dim(S)[1], 2)`,
-#' `log_likelihood_values` - all calculated goal function values,
+#' `log_likelihood_values` - all calculated log likelihood values,
 #' `visited_perms` - permutations chosen in the iteration,
 #' `found_perm`, `found_perm_log_likelihood`, `last_perm`,
 #' `last_perm_log_likelihood`, `iterations_performed`,

@@ -52,10 +52,10 @@ log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
   out <- Ac_part + G_part + phi_part
 
   if(is.infinite(out)){
-    warning("Infinite value of a goal function")
+    warning("Infinite value of a likelihood")
   }
   if(is.nan(out)){
-    warning("NaN value of a goal function")
+    warning("NaN value of a likelihood")
   }
 
   out
