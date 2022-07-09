@@ -44,6 +44,9 @@ gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
                  show_progress_bar=TRUE, optimizer="MH"){
   stopifnot(optimizer %in% c("MH", "Metropolis_Hastings",
                              "BG", "best_growth"))
+  if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
+    rlang::abort("Probabilities can only be provided with `optimizer = 'Metropolis_Hastings'`. Please set the proper optimizer or `return_probabilities = FALSE`.")
+  }
   
   if(optimizer %in% c("MH", "Metropolis_Hastings")){
     return(Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
@@ -62,6 +65,24 @@ gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
 }
 
 
+check_rightness_of_arguments <- function(S, number_of_observations, max_iter,
+                                         start_perm, delta, D_matrix,
+                                         return_probabilities, show_progress_bar){
+  stopifnot(is.matrix(S),
+            dim(S)[1] == dim(S)[2],
+            !is.null(number_of_observations),
+            number_of_observations >= 1,
+            is.wholenumber(number_of_observations),
+            is.infinite(max_iter) || is.wholenumber(max_iter),
+            max_iter >= 2, # TODO(Make it work for max_iter == 1)
+            permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
+            !is.null(delta),
+            delta > 2,
+            is.null(D_matrix) || is.matrix(D_matrix),
+            is.null(D_matrix) || dim(D_matrix)[1] == dim(D_matrix)[2],
+            is.logical(return_probabilities),
+            is.logical(show_progress_bar))
+}
 
 
 
@@ -117,22 +138,19 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
-  stopifnot(!is.null(S),
-            !is.null(number_of_observations),
-            permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
-            is.matrix(S),
-            dim(S)[1] == dim(S)[2],
-            delta > 2,
-            max_iter >= 2, # TODO(Make it work for max_iter == 1)
-            is.finite(max_iter))
+  check_rightness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=return_probabilities,
+                               show_progress_bar=show_progress_bar)
+  stopifnot(is.finite(max_iter))
+  
   perm_size <- dim(S)[1]
   if(permutations::is.cycle(start_perm))
       start_perm <- gips_perm(start_perm, perm_size)
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
-  stopifnot(is.matrix(D_matrix),
-            dim(D_matrix)[1] == dim(D_matrix)[2])
   
   my_goal_function <- function(perm){
     log_likelihood_of_perm(perm_proposal=perm,
@@ -263,6 +281,16 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                         start_perm=NULL,
                         delta=3, D_matrix=NULL,
                         show_progress_bar=TRUE){
+  if(is.null(start_perm)){
+    start_perm <- permutations::id
+  }
+  
+  check_rightness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=FALSE,
+                               show_progress_bar=show_progress_bar)
+  
   if(show_progress_bar && is.infinite(max_iter)){
     stop("Progress bar is not yet supported for infinite max_iter. Rerun the algorithm with show_progress_bar=FALSE or finite max_iter. For more information see ISSUE#8.") # See ISSUE#8
   }
@@ -270,20 +298,12 @@ best_growth <- function(S, number_of_observations, max_iter=5,
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
 
-  stopifnot(!is.null(S),
-            !is.null(number_of_observations),
-            dim(S)[1] == dim(S)[2],
-            delta > 2,
-            max_iter > 1)
-  
   perm_size <- dim(S)[1]
 
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
-  if(is.null(start_perm)){
-    start_perm <- permutations::id
-  }
+  
 
   my_goal_function <- function(perm){
     log_likelihood_of_perm(perm_proposal=perm,
