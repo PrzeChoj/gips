@@ -15,7 +15,6 @@ U2 <- matrix(c(1.5,0.5,0.5,1.5), nrow=2, byrow = TRUE)
 S2 <- U2/100
 D_matrix <- diag(nrow = 2)
 
-
 test_that('log_likelihood_of_perm returns proper values', {
   # The value of log_likelihood_of_perm on matrix should the same as the projection of the matrix
   # and U2 == pi_c(U1)
@@ -36,7 +35,7 @@ test_that('log_likelihood_of_perm has the desired property', {
   # This test is randomized.
     # It is mathematically possible the Z variables will be drawn such that
     # the test fails. See ISSUE#9 for discussion.
-  
+
   p <- 10
   n <- 20
 
@@ -62,10 +61,23 @@ test_that('log_likelihood_of_perm has the desired property', {
             another_permutation_function_value)
 })
 
-test_that('calculate phi_part returns proper values', {
-    skip("TODO")
+gips_example_perm <- gips_perm(example_perm, 6)
+D_matrix <- matrix(c(10, 1, 1, 2, 2, 3,
+      1, 10, 1, 2, 2, 3,
+      1, 1, 10, 2, 2, 3,
+      2, 2, 2, 12, 4, 5,
+      2, 2, 2, 4, 12, 5,
+      3, 3, 3, 5, 5, 14), byrow = TRUE, ncol=6) * 2
+delta <- 3
+n <- 1
+U_matrix <- diag(6) * 2
+structure_constants <- get_structure_constants(gips_example_perm)
+expected_phi_part <- log(2206^(-3) * 10^(-3/2) * 9^(-2)) - log(1680^(-5/2) * 8^(-3/2))
 
-    expect_true(TRUE)
+test_that('calculate phi_part returns proper values', {
+    expect_equal(calculate_phi_part(gips_example_perm, n, U_matrix, delta, D_matrix,
+                                    structure_constants),
+                 expected_phi_part)
 })
 
 test_that('calculate_block_determinants returns proper values', {
