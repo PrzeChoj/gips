@@ -36,3 +36,5 @@ matrix_invariant_by_example_perm <- matrix(c(
     3, 3, 3, 6, 5, 7,
     4, 4, 4, 7, 7, 8
 ), byrow=TRUE, ncol=6)
+
+number_of_observations <- 13
