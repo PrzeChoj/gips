@@ -18,9 +18,10 @@
 #' log_likelihood_of_perm(c, 100, S1)
 log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
                                    delta=3, D_matrix=NULL){
-  stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
-            is.matrix(S),
-            dim(S)[1] == dim(S)[2])
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=2, start_perm=permutations::id,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=FALSE, show_progress_bar=FALSE)
   
   U <- S * number_of_observations  # in the paper there is U everywhere in stead of S, so it is easier to use U matrix in the code
   perm_size <- dim(S)[1]
@@ -28,13 +29,10 @@ log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
   if(!inherits(perm_proposal, 'gips_perm'))
     perm_proposal <- gips_perm(perm_proposal, perm_size)
 
-
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
-  stopifnot(is.matrix(D_matrix),
-            dim(D_matrix)[1] == dim(D_matrix)[2])
-
+  
   structure_constants <- get_structure_constants(perm_proposal)
 
   # Ac_part

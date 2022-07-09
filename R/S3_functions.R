@@ -55,13 +55,17 @@ plot.gips <- function(x, type="both",
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
   
   if (!requireNamespace("graphics", quietly = TRUE)) {
-    stop(
-      "Package \"graphics\" must be installed to use this function.",
-      call. = FALSE
-    )
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "Package \"graphics\" must be installed to use this function.",
+                   "x" = "Package \"graphics\" seems to be unavailable."))
   }
   
-  stopifnot(type %in% c("all", "best", "both"))
+  if(!(type %in% c("all", "best", "both"))){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`type` must be one of: c('all', 'best', 'both').",
+                   "x" = paste0("You provided `type` == ", type, ".")))
+  }
+  
   if(is.null(ylabel)){
     ylabel <- ifelse(logarithmic_y,
                      "log likelihood",

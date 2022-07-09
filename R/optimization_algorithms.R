@@ -43,10 +43,15 @@
 gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
                  delta=3, D_matrix=NULL, return_probabilities=FALSE,
                  show_progress_bar=TRUE, optimizer="MH"){
-  stopifnot(optimizer %in% c("MH", "Metropolis_Hastings",
-                             "BG", "best_growth"))
+  if(is.infinite(max_iter)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth').",
+                   "x" = paste0("You provided `optimizer` == ", optimizer, ".")))
+  }
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
-    rlang::abort("Probabilities can only be provided with `optimizer = 'Metropolis_Hastings'`. Please set the proper optimizer or `return_probabilities = FALSE`.")
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "Probabilities can only be provided with the `optimizer = 'Metropolis_Hastings'",
+                   "x" = "You should use either `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`"))
   }
   
   if(optimizer %in% c("MH", "Metropolis_Hastings")){
@@ -66,23 +71,93 @@ gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
 }
 
 
-check_rightness_of_arguments <- function(S, number_of_observations, max_iter,
+check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                                          start_perm, delta, D_matrix,
                                          return_probabilities, show_progress_bar){
-  stopifnot(is.matrix(S),
-            dim(S)[1] == dim(S)[2],
-            !is.null(number_of_observations),
-            number_of_observations >= 1,
-            is.wholenumber(number_of_observations),
-            is.infinite(max_iter) || is.wholenumber(max_iter),
-            max_iter >= 2, # TODO(Make it work for max_iter == 1)
-            permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
-            !is.null(delta),
-            delta > 2,
-            is.null(D_matrix) || is.matrix(D_matrix),
-            is.null(D_matrix) || dim(D_matrix)[1] == dim(D_matrix)[2],
-            is.logical(return_probabilities),
-            is.logical(show_progress_bar))
+  abord_text <- character(0)
+  if(!is.matrix(S))
+    abord_text <- c(abord_text,
+                    "i" = "`S` must be a matrix.",
+                    "x" = paste0("You provided `S` with class == (",
+                                 paste(class(S), collapse = ", "),
+                                 ")."))
+  else if(dim(S)[1] != dim(S)[2])
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be a square matrix.",
+                    "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
+                                 dim(S)[1], " and ", dim(S)[2], "."))
+  if(is.null(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must not be `NULL`.",
+                    "x" = "Your provided `number_of_observations` is NULL.")
+  else if(number_of_observations < 1)
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must be at least 1.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  else if(!is.wholenumber(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" ="`number_of_observations` must be a whole number.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  if(!(is.infinite(max_iter) || is.wholenumber(max_iter)))
+    abord_text <- c(abord_text,
+                    "i" ="`max_iter` must be either infinite (for best_growth optimizer) or a whole number.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  else if(max_iter < 2)  # TODO(Make it work for max_iter == 1)
+    abord_text <- c(abord_text,
+                    "i" = "`max_iter` must be at least 2.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  if(!(permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm')))
+    abord_text <- c(abord_text,
+                    "i" ="`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.",  # this is not true, but it is close enough
+                    "x" = paste0("You provided `start_perm` with class == (",
+                                 paste(class(start_perm), collapse = ", "),
+                                 ")."))
+  if(is.null(delta))
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must not be `NULL`.",
+                    "x" = "Your provided `delta` is a NULL.")
+  else if(delta <= 2)
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must be strictly bigger than 2.",
+                    "x" = paste0("You provided `delta` == ", delta, "."))
+  if(!(is.null(D_matrix) || is.matrix(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a matrix.",
+                    "x" = paste0("You provided `D_matrix` with class == (",
+                                 paste(class(D_matrix), collapse = ", "),
+                                 ")."))
+  else if(!(is.null(D_matrix) || dim(D_matrix)[1] == dim(D_matrix)[2]))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a square matrix.",
+                    "x" = paste0("You provided `D_matrix` as a matrix, but with different sizes: ",
+                                 dim(D_matrix)[1], " and ", dim(D_matrix)[2], "."))
+  if(!is.logical(return_probabilities))
+    abord_text <- c(abord_text,
+                    "i" ="`return_probabilities` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `return_probabilities` with class == (",
+                                 paste(class(return_probabilities), collapse = ", "),
+                                 ")."))
+  if(!is.logical(show_progress_bar))
+    abord_text <- c(abord_text,
+                    "i" ="`show_progress_bar` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `show_progress_bar` with class == (",
+                                 paste(class(show_progress_bar), collapse = ", "),
+                                 ")."))
+  
+  if(length(abord_text) > 0){
+    abord_text <- c(paste0("There were ", length(abord_text)/2,
+                           " problems identified with provided arguments:"),
+                    abord_text)
+    
+    if(length(abord_text) > 11){
+      abord_text <- c(abord_text[1:11],
+                      paste0("... and ", (length(abord_text)-1)/2 - 5, " more problems"))
+    }
+    
+    rlang::abort(abord_text)
+  }
 }
 
 
@@ -141,12 +216,16 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
-  check_rightness_of_arguments(S=S, number_of_observations=number_of_observations,
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                max_iter=max_iter, start_perm=start_perm,
                                delta=delta, D_matrix=D_matrix,
                                return_probabilities=return_probabilities,
                                show_progress_bar=show_progress_bar)
-  stopifnot(is.finite(max_iter))
+  if(is.infinite(max_iter)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`max_iter` in `Metropolis_Hastings()` must be finite",
+                   "x" = paste0("You provided `max_iter` == ", max_iter, ".")))
+  }
   
   perm_size <- dim(S)[1]
   if(permutations::is.cycle(start_perm))
@@ -289,7 +368,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
     start_perm <- permutations::id
   }
   
-  check_rightness_of_arguments(S=S, number_of_observations=number_of_observations,
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                max_iter=max_iter, start_perm=start_perm,
                                delta=delta, D_matrix=D_matrix,
                                return_probabilities=FALSE,

@@ -16,14 +16,28 @@
 #' S <- matrix(rnorm(49), nrow = 7)
 #' projected_S <- project_matrix(S, perm = gperm)
 project_matrix <- function(S, perm, precomputed_equal_indices=NULL){
-    if(!is.matrix(S) || nrow(S) != ncol(S))
-        rlang::abort('`S` must be a square matrix.')
+    if(!is.matrix(S))
+        rlang::abort(c("There was a problem identified with provided arguments:",
+                       "i" = '`S` must be a matrix.',
+                       "x" = paste0("You provided `S` with class == (",
+                                    paste(class(S), collapse = ", "),
+                                    ").")))
+    if(nrow(S) != ncol(S))
+        rlang::abort(c("There was a problem identified with provided arguments:",
+                       "i" = '`S` must be a square matrix.',
+                       "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
+                                    dim(S)[1], " and ", dim(S)[2], ".")))
     if(is.null(precomputed_equal_indices)){
         perm_size <- ncol(S)
         if(!inherits(perm, 'gips_perm')){
             perm <- gips_perm(perm, perm_size)
         } else if(attr(perm, 'size') != ncol(S))
-            rlang::abort('Size of `perm` must be equal to number of columns and rows of `S`.')
+            rlang::abort(c("There was a problem identified with provided arguments:",
+                           "i" = 'Size of `perm` must be equal to number of columns and rows of `S`.',
+                           "x" = paste0("You provided `perm` with size = ",
+                                        attr(perm, 'size'),
+                                        ", but the `S` matrix has ",
+                                        ncol(S), " columns.")))
         equal_indices_by_perm <- get_equal_indices_by_perm(perm)
     }
     else
