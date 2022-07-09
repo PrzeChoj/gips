@@ -65,6 +65,7 @@ mh <- Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
                           max_iter=10, start_perm=start_perm,
                           show_progress_bar=FALSE)
 if (require(graphics)) {
-  plot(mh)
+  plot(mh, logarithmic_x=TRUE)
 }
+mh[["found_perm"]]
 }

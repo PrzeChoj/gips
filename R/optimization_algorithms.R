@@ -37,8 +37,9 @@
 #'                             max_iter=10, start_perm=start_perm,
 #'                             show_progress_bar=FALSE, optimizer="MH")
 #' if (require(graphics)) {
-#'   plot(optimization_output)
+#'   plot(optimization_output, logarithmic_x=TRUE)
 #' }
+#' optimization_output[["found_perm"]]
 gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
                  delta=3, D_matrix=NULL, return_probabilities=FALSE,
                  show_progress_bar=TRUE, optimizer="MH"){
@@ -130,8 +131,9 @@ check_rightness_of_arguments <- function(S, number_of_observations, max_iter,
 #'                           max_iter=10, start_perm=start_perm,
 #'                           show_progress_bar=FALSE)
 #' if (require(graphics)) {
-#'   plot(mh)
+#'   plot(mh, logarithmic_x=TRUE)
 #' }
+#' mh[["found_perm"]]
 Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=NULL,
                                 delta=3, D_matrix=NULL, return_probabilities=FALSE,
                                 show_progress_bar=TRUE){
@@ -275,8 +277,9 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
 #'                   max_iter=10, start_perm=start_perm,
 #'                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 #' if (require(graphics)) {
-#'   plot(bg)
+#'   plot(bg, logarithmic_x=TRUE)
 #' }
+#' bg[["found_perm"]]
 best_growth <- function(S, number_of_observations, max_iter=5,
                         start_perm=NULL,
                         delta=3, D_matrix=NULL,

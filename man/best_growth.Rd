@@ -64,6 +64,7 @@ bg <- best_growth(S=S, number_of_observations=number_of_observations,
                   max_iter=10, start_perm=start_perm,
                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 if (require(graphics)) {
-  plot(bg)
+  plot(bg, logarithmic_x=TRUE)
 }
+bg[["found_perm"]]
 }

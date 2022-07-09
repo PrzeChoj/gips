@@ -62,6 +62,7 @@ optimization_output <- gips(S=S, number_of_observations=number_of_observations,
                             max_iter=10, start_perm=start_perm,
                             show_progress_bar=FALSE, optimizer="MH")
 if (require(graphics)) {
-  plot(optimization_output)
+  plot(optimization_output, logarithmic_x=TRUE)
 }
+optimization_output[["found_perm"]]
 }
