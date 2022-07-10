@@ -16,7 +16,7 @@ Metropolis_Hastings(
 )
 }
 \arguments{
-\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
 \item{number_of_observations}{number of data points that \code{S} is based on.}
 

@@ -1,3 +1,122 @@
+#' constructor of the `gips` class.
+#' 
+#' Create the `gips` object.
+#' This object will consists data and all other information needed to find the invariant group.
+#' The optimization itself will not be performed. To do it, one have to call the TODO() function. See examples below.
+#' 
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param number_of_observations number of data points that `S` is based on.
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
+#' 
+#' @return Object of class gips.
+#' 
+#' @export
+#' 
+#' @examples
+#' require(MASS)  # for mvrnorm()
+#' 
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                                 0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                                 0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                                 0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                        nrow=perm_size, byrow = TRUE)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
+#' 
+#' # TODO()
+gips <- function(S, number_of_observations, delta=3, D_matrix=NULL){
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                                 max_iter=2, start_perm=permutations::id,
+                                 delta=delta, D_matrix=D_matrix,
+                                 return_probabilities=FALSE, show_progress_bar=FALSE)
+  
+  gips_perm_object <- gips_perm(permutations::id, nrow(S))
+  
+  if(is.null(D_matrix)){
+    D_matrix <- diag(nrow = ncol(S))
+  }
+  
+  validate_gips(new_gips(gips_perm_object, S, number_of_observations,
+                         delta=delta, D_matrix=D_matrix,
+                         optimization_info=NULL))
+}
+
+
+# TODO(Documentation)
+#' @describeIn gips Constructor
+#'
+#' Only intended for low-level use.
+#'
+#' @param gips_perm_object of class `gips_perm`. The base object for the `gips` class.
+#' @param optimization_info NULL or the list with information about the optimizaion process.
+#'
+#' @export
+new_gips <- function(gips_perm_object, S, number_of_observations, delta,
+                     D_matrix, optimization_info){
+  stopifnot(inherits(gips_perm_object, "gips_perm"),
+            is.matrix(S),
+            is.wholenumber(number_of_observations),
+            is.numeric(delta),
+            is.matrix(D_matrix),
+            is.null(optimization_info) || is.list(optimization_info))
+  
+  structure(gips_perm_object, S=S, number_of_observations=number_of_observations,
+            delta=delta, D_matrix=D_matrix, optimization_info=optimization_info,
+            class=c("gips", "gips_perm"))
+}
+
+
+# TODO(Documentation)
+validate_gips <- function(x){
+  perm <- unclass(x)
+  S <- attr(x, "S")
+  number_of_observations <- attr(x, "number_of_observations")
+  delta <- attr(x, "delta")
+  D_matrix <- attr(x, "D_matrix")
+  optimization_info <- attr(x, "optimization_info")
+  
+  
+  if(!inherits(x, "gips_perm")){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "The `x` must be also of a `gips_perm` class.",
+                   "x" = paste0("You provided `x` with class == (",
+                                paste(class(x), collapse = ", "),
+                                ").")))
+  }
+  
+  class(perm) <- "gips_perm"
+  attr(perm, "size") <- attr(x, "size")
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                                 max_iter=2, start_perm=perm,
+                                 delta=delta, D_matrix=D_matrix,
+                                 return_probabilities=FALSE, show_progress_bar=FALSE)
+  if(!(is.null(optimization_info) || is.list(optimization_info))){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "The `optimization_info` value must be either a NULL, or a list.",
+                   "x" = paste0("You provided `x` with type == (",
+                                paste(typeof(perm), collapse = ", "),
+                                ").")))
+  }
+  
+  # TODO(Validate the `optimization_info` more carefully (when it will be ready))
+  
+  x
+}
+
+
+# TODO(The base object printed as the gips_perm. The "size" attr omitted)
+str.gips <- function(object, ...){
+  str(object)
+}
+
+
 #' Printing gips object
 #' 
 #' Printing function for gips class.

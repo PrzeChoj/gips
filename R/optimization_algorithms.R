@@ -2,7 +2,7 @@
 #'
 #' Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
@@ -33,14 +33,14 @@
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
 #' start_perm <- permutations::id
-#' optimization_output <- gips(S=S, number_of_observations=number_of_observations,
+#' optimization_output <- gips_opt(S=S, number_of_observations=number_of_observations,
 #'                             max_iter=10, start_perm=start_perm,
 #'                             show_progress_bar=FALSE, optimizer="MH")
 #' if (require(graphics)) {
 #'   plot(optimization_output, logarithmic_x=TRUE)
 #' }
 #' optimization_output[["found_perm"]]
-gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
+gips_opt <- function(S, number_of_observations, max_iter, start_perm=NULL,
                  delta=3, D_matrix=NULL, return_probabilities=FALSE,
                  show_progress_bar=TRUE, optimizer="MH"){
   if(is.infinite(max_iter)){
@@ -72,16 +72,16 @@ gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
 
 
 check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
-                                         start_perm, delta, D_matrix,
-                                         return_probabilities, show_progress_bar){
+                                           start_perm, delta, D_matrix,
+                                           return_probabilities, show_progress_bar){
   abord_text <- character(0)
   if(!is.matrix(S))
     abord_text <- c(abord_text,
                     "i" = "`S` must be a matrix.",
-                    "x" = paste0("You provided `S` with class == (",
-                                 paste(class(S), collapse = ", "),
+                    "x" = paste0("You provided `S` with type == (",
+                                 paste(typeof(S), collapse = ", "),
                                  ")."))
-  else if(dim(S)[1] != dim(S)[2])
+  else if(ncol(S) != nrow(S))
     abord_text <- c(abord_text,
                     "i" = "`S` matrix must be a square matrix.",
                     "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
@@ -110,10 +110,17 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "x" = paste0("You provided `max_iter` == ", max_iter, "."))
   if(!(permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm')))
     abord_text <- c(abord_text,
-                    "i" ="`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.",  # this is not true, but it is close enough
+                    "i" = "`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.",  # this is not true, but it is close enough
                     "x" = paste0("You provided `start_perm` with class == (",
                                  paste(class(start_perm), collapse = ", "),
                                  ")."))
+  else if(!(permutations::is.cycle(start_perm) || attr(start_perm, 'size') == ncol(S)))
+    abord_text <- c(abord_text,
+                    "i" = "`start_perm` must have the `size` attribute equal to the shape of a square matrix `S`",
+                    "x" = paste0("You provided `start_perm` with `size` == ",
+                                 attr(start_perm, 'size'),
+                                 ", but the `S` matrix you provided has ",
+                                 ncol(S), " columns."))
   if(is.null(delta))
     abord_text <- c(abord_text,
                     "i" ="`delta` must not be `NULL`.",
@@ -125,25 +132,32 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   if(!(is.null(D_matrix) || is.matrix(D_matrix)))
     abord_text <- c(abord_text,
                     "i" ="`D_matrix` must either be `NULL` or a matrix.",
-                    "x" = paste0("You provided `D_matrix` with class == (",
-                                 paste(class(D_matrix), collapse = ", "),
+                    "x" = paste0("You provided `D_matrix` with type == (",
+                                 paste(typeof(D_matrix), collapse = ", "),
                                  ")."))
-  else if(!(is.null(D_matrix) || dim(D_matrix)[1] == dim(D_matrix)[2]))
+  else if(!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix)))
     abord_text <- c(abord_text,
                     "i" ="`D_matrix` must either be `NULL` or a square matrix.",
                     "x" = paste0("You provided `D_matrix` as a matrix, but with different sizes: ",
-                                 dim(D_matrix)[1], " and ", dim(D_matrix)[2], "."))
+                                 ncol(D_matrix), " and ", nrow(D_matrix), "."))
+  else if(!(is.null(D_matrix) || ncol(S) == ncol(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
+                    "x" = paste0("You provided `S` with shape ",
+                                 ncol(S), " and ", nrow(S),
+                                 ", but also `D_matrix` with shape ",
+                                 ncol(D_matrix), " and ", nrow(D_matrix), "."))
   if(!is.logical(return_probabilities))
     abord_text <- c(abord_text,
                     "i" ="`return_probabilities` must be a logic value (TRUE or FALSE).",
-                    "x" = paste0("You provided `return_probabilities` with class == (",
-                                 paste(class(return_probabilities), collapse = ", "),
+                    "x" = paste0("You provided `return_probabilities` with type == (",
+                                 paste(typeof(return_probabilities), collapse = ", "),
                                  ")."))
   if(!is.logical(show_progress_bar))
     abord_text <- c(abord_text,
                     "i" ="`show_progress_bar` must be a logic value (TRUE or FALSE).",
-                    "x" = paste0("You provided `show_progress_bar` with class == (",
-                                 paste(class(show_progress_bar), collapse = ", "),
+                    "x" = paste0("You provided `show_progress_bar` with type == (",
+                                 paste(typeof(show_progress_bar), collapse = ", "),
                                  ")."))
   
   if(length(abord_text) > 0){
@@ -166,7 +180,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'
 #' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. At least 2. Cannot be infinite.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
@@ -217,10 +231,10 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
     start_perm <- permutations::id
   }
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
-                               max_iter=max_iter, start_perm=start_perm,
-                               delta=delta, D_matrix=D_matrix,
-                               return_probabilities=return_probabilities,
-                               show_progress_bar=show_progress_bar)
+                                 max_iter=max_iter, start_perm=start_perm,
+                                 delta=delta, D_matrix=D_matrix,
+                                 return_probabilities=return_probabilities,
+                                 show_progress_bar=show_progress_bar)
   if(is.infinite(max_iter)){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`max_iter` in `Metropolis_Hastings()` must be finite",
@@ -316,7 +330,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
 #'
 #' Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
@@ -369,10 +383,10 @@ best_growth <- function(S, number_of_observations, max_iter=5,
   }
   
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
-                               max_iter=max_iter, start_perm=start_perm,
-                               delta=delta, D_matrix=D_matrix,
-                               return_probabilities=FALSE,
-                               show_progress_bar=show_progress_bar)
+                                 max_iter=max_iter, start_perm=start_perm,
+                                 delta=delta, D_matrix=D_matrix,
+                                 return_probabilities=FALSE,
+                                 show_progress_bar=show_progress_bar)
   
   if(show_progress_bar && is.infinite(max_iter)){
     stop("Progress bar is not yet supported for infinite max_iter. Rerun the algorithm with show_progress_bar=FALSE or finite max_iter. For more information see ISSUE#8.") # See ISSUE#8

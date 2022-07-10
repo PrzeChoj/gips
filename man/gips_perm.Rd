@@ -10,7 +10,7 @@ gips_perm(x, size)
 new_gips_perm(cycles, size)
 }
 \arguments{
-\item{x}{An object created with \code{permutations} package, or any object that
+\item{x}{an object created with \code{permutations} package, or any object that
 can be coerced using \code{\link[permutations]{permutation}} function.}
 
 \item{size}{integer. Size of permutation (AKA cardinality of set, on which permutation
