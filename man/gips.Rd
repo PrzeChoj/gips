@@ -2,7 +2,7 @@
 % Please edit documentation in R/optimization_algorithms.R
 \name{gips}
 \alias{gips}
-\title{Metropolis-Hastings algorithm}
+\title{The optimization algorithm}
 \usage{
 gips(
   S,
@@ -39,7 +39,7 @@ gips(
 object of class gips; list of 9 or 10 items, depending on optimizer. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
 }
 \description{
-Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
+Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 }
 \examples{
 require(MASS)  # for mvrnorm()

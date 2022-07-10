@@ -1,6 +1,6 @@
-#' Metropolis-Hastings algorithm
+#' The optimization algorithm
 #'
-#' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
+#' Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 #'
 #' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.

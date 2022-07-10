@@ -17,16 +17,16 @@ log_likelihood_of_perm(
 
 \item{number_of_observations}{number of random variables that \code{S} is based on.}
 
-\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = sum(t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of size \code{perm_size}. When NULL, the identity matrix is taken.}
 }
 \description{
-Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If \code{Inf} or \code{NaN} is reached, produces a warning.
-Keep in mind this is not the log likelihood per se, but rather the funcition that is proportional to the log likelihood.
-It is the goal function for optimization algorithms.
+To be more precise, it is the logarithm of an unnormalized posterior probability.
+Calculated according to equation (33) and (27) from the paper. If \code{Inf} or \code{NaN} is reached, produces a warning.
+It is the goal function for optimization algorithms. The \code{perm_proposal} that maximizes this function is the maximum likelihood estimator.
 }
 \examples{
 c <- permutations::as.cycle(permutations::as.word(c(2,1)))
