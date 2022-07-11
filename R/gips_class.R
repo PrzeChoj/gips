@@ -137,12 +137,6 @@ validate_gips <- function(g){
 }
 
 
-# TODO(The base object printed as the gips_perm. The "size" attr omitted)
-str.gips <- function(object, ...){
-  str(object)
-}
-
-
 #' Printing gips object
 #' 
 #' Printing function for gips class.
@@ -155,18 +149,17 @@ str.gips <- function(object, ...){
 #' @export
 print.gips <- function(x, log_value = TRUE, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(Revisit when the optimization will be ready)
-  
   value_part <- ifelse(log_value,
                        paste0(" with log likelihood ",
-                              x[["found_perm_log_likelihood"]]),
+                              attr(x, "optimization_info")[["best_perm_log_likelihood"]]),
                        paste0(" with likelihood ",
-                              exp(x[["found_perm_log_likelihood"]])))
+                              exp(attr(x, "optimization_info")[["best_perm_log_likelihood"]])))
   cat(paste0("Optimization algorithm ",
-             x[["optimization_algorithm_used"]], " after ",
-             length(x[["log_likelihood_values"]]),
-             " iterations found permutation ",
-             x[["found_perm"]],
+             attr(x, "optimization_info")[["optimization_algorithm_used"]],
+             ", after ",
+             length(attr(x, "optimization_info")[["log_likelihood_values"]]),
+             " log_likelihood calculations, found permutation ",
+             x[[1]],
              value_part),
       ...)
 }
@@ -200,14 +193,17 @@ plot.gips <- function(x, type="both",
                       xlabel=NULL,
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
-  # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(Rewisit when the optimizaiton will be ready)
+  # TODO(It is not likelihood, but sth proportional to it. See #ISSUE11)
+  # TODO(What happens when called on the un-optimized `gips`?)
+  # TODO(For "MH", those are NOT "All calculated likelihoods", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
   
   if (!requireNamespace("graphics", quietly = TRUE)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "Package \"graphics\" must be installed to use this function.",
                    "x" = "Package \"graphics\" seems to be unavailable."))
   }
+  
+  validate_gips(x)
   
   if(!(type %in% c("all", "best", "both"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
@@ -233,9 +229,9 @@ plot.gips <- function(x, type="both",
     }
   }
   if(logarithmic_y){
-    y_values_from <- x[["log_likelihood_values"]] # values of likelihood are logarithmic by default
+    y_values_from <- attr(x, "optimization_info")[["log_likelihood_values"]] # values of log_likelihood are logarithmic by default
   }else{
-    y_values_from <- exp(x[["log_likelihood_values"]])
+    y_values_from <- exp(attr(x, "optimization_info")[["log_likelihood_values"]])
   }
 
   y_values_max <- cummax(y_values_from)
@@ -323,5 +319,9 @@ summary.gips <- function(object, ...){
 }
 
 
+# TODO(The base object printed as the gips_perm. The "size" attr omitted)
+str.gips <- function(object, ...){
+  str(object)
+}
 
 

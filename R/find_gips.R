@@ -281,11 +281,12 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
                             "log_likelihood_values" = log_likelihood_values,
                             "visited_perms" = visited_perms,
                             "last_perm" = visited_perms[[function_calls]],
-                            "last_perm_log_likelihood" = found_perm_log_likelihood[function_calls],
+                            "last_perm_log_likelihood" = log_likelihood_values[function_calls],
                             "iterations_performed" = i,
                             "optimization_algorithm_used" = "Metropolis_Hastings",
                             "post_probabilities" = probabilities,
-                            "did_converge" = NULL)
+                            "did_converge" = NULL,
+                            "best_perm_log_likelihood" = found_perm_log_likelihood)
   
   
   new_gips(list(found_perm), S, number_of_observations, delta,
@@ -394,7 +395,8 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                             "iterations_performed" = iteration,
                             "optimization_algorithm_used" = "best_growth",
                             "post_probabilities" = NULL,
-                            "did_converge" = did_converge)
+                            "did_converge" = did_converge,
+                            "best_perm_log_likelihood" = goal_function_best_logvalues[iteration])
   
   new_gips(list(speciments[[iteration]]), S, number_of_observations, delta,
            D_matrix, optimization_info)
