@@ -1,4 +1,4 @@
-#' constructor of the `gips` class.
+#' Constructor of the `gips` class.
 #' 
 #' Create the `gips` object.
 #' This object will consists data and all other information needed to find the invariant group.
@@ -28,9 +28,16 @@
 #'                        nrow=perm_size, byrow = TRUE)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-#' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
+#' S <- (t(Z) %*% Z) / number_of_observations  # the theoretical mean is 0
 #' 
-#' # TODO()
+#' g <- gips(S, number_of_observations)
+#' 
+#' g <- find_gips(g, max_iter=1000, show_progress_bar=TRUE, optimizer="MH")
+#' g
+#' 
+#' if (require(graphics)) {
+#'   plot(g, logarithmic_x=TRUE)
+#' }
 gips <- function(S, number_of_observations, delta=3, D_matrix=NULL){
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                  max_iter=2, start_perm=permutations::id,
@@ -43,7 +50,7 @@ gips <- function(S, number_of_observations, delta=3, D_matrix=NULL){
     D_matrix <- diag(nrow = ncol(S))
   }
   
-  validate_gips(new_gips(gips_perm_object, S, number_of_observations,
+  validate_gips(new_gips(list(gips_perm_object), S, number_of_observations,
                          delta=delta, D_matrix=D_matrix,
                          optimization_info=NULL))
 }
@@ -54,45 +61,57 @@ gips <- function(S, number_of_observations, delta=3, D_matrix=NULL){
 #'
 #' Only intended for low-level use.
 #'
-#' @param gips_perm_object of class `gips_perm`. The base object for the `gips` class.
-#' @param optimization_info NULL or the list with information about the optimizaion process.
+#' @param list_of_gips_perm list with a single element of class `gips_perm`. The base object for the `gips` class.
+#' @param optimization_info NULL or the list with information about the optimization process.
 #'
 #' @export
-new_gips <- function(gips_perm_object, S, number_of_observations, delta,
+new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
                      D_matrix, optimization_info){
-  stopifnot(inherits(gips_perm_object, "gips_perm"),
+  stopifnot(is.list(list_of_gips_perm),
+            inherits(list_of_gips_perm[[1]], "gips_perm"),
             is.matrix(S),
             is.wholenumber(number_of_observations),
             is.numeric(delta),
             is.matrix(D_matrix),
             is.null(optimization_info) || is.list(optimization_info))
   
-  structure(gips_perm_object, S=S, number_of_observations=number_of_observations,
+  structure(list_of_gips_perm, S=S, number_of_observations=number_of_observations,
             delta=delta, D_matrix=D_matrix, optimization_info=optimization_info,
-            class=c("gips", "gips_perm"))
+            class=c("gips"))
 }
 
 
 # TODO(Documentation)
-validate_gips <- function(x){
-  perm <- unclass(x)
-  S <- attr(x, "S")
-  number_of_observations <- attr(x, "number_of_observations")
-  delta <- attr(x, "delta")
-  D_matrix <- attr(x, "D_matrix")
-  optimization_info <- attr(x, "optimization_info")
-  
-  
-  if(!inherits(x, "gips_perm")){
+validate_gips <- function(g){
+  if(!(length(g) == 1)){
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "The `x` must be also of a `gips_perm` class.",
-                   "x" = paste0("You provided `x` with class == (",
-                                paste(class(x), collapse = ", "),
+                   "i" = "The `length(g)` must be `1`.",
+                   "g" = paste0("You provided `g` with `length(g) == ",
+                                length(g), "`.")))
+  }
+  if(!is.list(g)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "The `g` must be a list.",
+                   "g" = paste0("You provided `g` with `typeof(g) == '",
+                                typeof(g), "'.")))
+  }
+  
+  perm <- g[[1]]
+  S <- attr(g, "S")
+  number_of_observations <- attr(g, "number_of_observations")
+  delta <- attr(g, "delta")
+  D_matrix <- attr(g, "D_matrix")
+  optimization_info <- attr(g, "optimization_info")
+  
+  
+  if(!inherits(perm, "gips_perm")){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "The `g[[1]]` must be of a `gips_perm` class.",
+                   "g" = paste0("You provided `g[[1]]` with class == (",
+                                paste(class(perm), collapse = ", "),
                                 ").")))
   }
   
-  class(perm) <- "gips_perm"
-  attr(perm, "size") <- attr(x, "size")
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                  max_iter=2, start_perm=perm,
                                  delta=delta, D_matrix=D_matrix,
@@ -100,14 +119,14 @@ validate_gips <- function(x){
   if(!(is.null(optimization_info) || is.list(optimization_info))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "The `optimization_info` value must be either a NULL, or a list.",
-                   "x" = paste0("You provided `x` with type == (",
+                   "g" = paste0("You provided `g` with type == (",
                                 paste(typeof(perm), collapse = ", "),
                                 ").")))
   }
   
   # TODO(Validate the `optimization_info` more carefully (when it will be ready))
   
-  x
+  g
 }
 
 
@@ -120,6 +139,7 @@ str.gips <- function(object, ...){
 #' Printing gips object
 #' 
 #' Printing function for gips class.
+#' 
 #' @param x object of class gips.
 #' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_perm}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
@@ -128,6 +148,7 @@ str.gips <- function(object, ...){
 #' @export
 print.gips <- function(x, log_value = TRUE, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
+  # TODO(Revisit when the optimization will be ready)
   
   value_part <- ifelse(log_value,
                        paste0(" with log likelihood ",
@@ -149,6 +170,7 @@ print.gips <- function(x, log_value = TRUE, ...){
 #' Plot optimization convergence
 #' 
 #' Plot method for gips objects.
+#' 
 #' @param x Object of class gips.
 #' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots likelihood for all visited state. For "best" the biggest likelihood up to the point are plotted. For "both" both lines are plotted.
 #' @param logarithmic_y boolean.
@@ -172,6 +194,7 @@ plot.gips <- function(x, type="both",
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
+  # TODO(Rewisit when the optimizaiton will be ready)
   
   if (!requireNamespace("graphics", quietly = TRUE)) {
     rlang::abort(c("There was a problem identified with provided arguments:",

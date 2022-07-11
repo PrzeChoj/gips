@@ -3,12 +3,12 @@
 \name{gips}
 \alias{gips}
 \alias{new_gips}
-\title{constructor of the \code{gips} class.}
+\title{Constructor of the \code{gips} class.}
 \usage{
 gips(S, number_of_observations, delta = 3, D_matrix = NULL)
 
 new_gips(
-  gips_perm_object,
+  list_of_gips_perm,
   S,
   number_of_observations,
   delta,
@@ -17,7 +17,7 @@ new_gips(
 )
 }
 \arguments{
-\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z)/number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
+\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
 
 \item{number_of_observations}{number of data points that \code{S} is based on.}
 
@@ -25,9 +25,9 @@ new_gips(
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
 
-\item{gips_perm_object}{of class \code{gips_perm}. The base object for the \code{gips} class.}
+\item{list_of_gips_perm}{list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
 
-\item{optimization_info}{NULL or the list with information about the optimizaion process.}
+\item{optimization_info}{NULL or the list with information about the optimization process.}
 }
 \value{
 Object of class gips.
@@ -59,7 +59,14 @@ sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
                        nrow=perm_size, byrow = TRUE)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-S <- (t(Z) \%*\% Z)/number_of_observations  # the theoretical mean is 0
+S <- (t(Z) \%*\% Z) / number_of_observations  # the theoretical mean is 0
 
-# TODO()
+g <- gips(S, number_of_observations)
+
+g <- find_gips(g, max_iter=1000, show_progress_bar=TRUE, optimizer="MH")
+g
+
+if (require(graphics)) {
+  plot(g, logarithmic_x=TRUE)
+}
 }
