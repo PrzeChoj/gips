@@ -48,7 +48,7 @@ S <- (t(Z) \%*\% Z) / number_of_observations  # the theoretical mean is 0
 
 g <- gips(S, number_of_observations)
 
-g <- find_gips(g, max_iter=1000, show_progress_bar=TRUE, optimizer="MH")
+g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 g
 
 if (require(graphics)) {

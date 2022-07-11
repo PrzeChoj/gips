@@ -31,7 +31,7 @@
 #' 
 #' g <- gips(S, number_of_observations)
 #' 
-#' g <- find_gips(g, max_iter=1000, show_progress_bar=TRUE, optimizer="MH")
+#' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 #' g
 #' 
 #' if (require(graphics)) {
@@ -226,6 +226,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
 
   Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
 
+  # main loop
   for (i in 1:(max_iter-1)){
     if(show_progress_bar)
       utils::setTxtProgressBar(progressBar, i)
@@ -289,7 +290,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                         delta=3, D_matrix=NULL,
                         show_progress_bar=TRUE){
   if(is.null(start_perm)){
-    start_perm <- permutations::id
+    start_perm <- gips_perm(permutations::id, nrow(S))  # TODO(At this moment I am not sure weather the `S` is a matrix)
   }
   
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
@@ -339,7 +340,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
     best_neighbour_value <- -Inf
     for(i in 1:(perm_size-1)){
       for(j in (i+1):perm_size){
-        neighbour <- permutations::as.cycle(speciments[[iteration]] * permutations::as.cycle(c(i, j)))
+        neighbour <- compose_with_transposition(speciments[[iteration]], c(i, j))
         neighbour_value <- my_goal_function(neighbour)
         log_likelihood_values[length(log_likelihood_values) + 1] <- neighbour_value
 
@@ -371,11 +372,12 @@ best_growth <- function(S, number_of_observations, max_iter=5,
       print(paste0("Algorithm did converge in ", iteration, " iterations"))
   }
   
+  function_calls <- length(log_likelihood_values)
   
   optimization_info <- list("acceptance_rate" = 1/choose(perm_size, 2),
                             "log_likelihood_values" = log_likelihood_values,
                             "visited_perms" = speciments,
-                            "last_perm" = speciments[[function_calls]],
+                            "last_perm" = speciments[[iteration]],
                             "last_perm_log_likelihood" = goal_function_best_logvalues[iteration],
                             "iterations_performed" = iteration,
                             "optimization_algorithm_used" = "best_growth",
