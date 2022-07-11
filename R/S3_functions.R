@@ -2,23 +2,24 @@
 #' 
 #' Printing function for gips class.
 #' @param x object of class gips.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link{goal_function}} or leave it in logarithmic form.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_perm}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
 #' @export
-print.gips <- function(x, log_value = FALSE, ...){
-  # TODO(Change it)
+print.gips <- function(x, log_value = TRUE, ...){
+  # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
   
   value_part <- ifelse(log_value,
-                       paste0(" with function log value ",
-                              x[["found_point_function_logvalue"]]),
-                       paste0(" with function value ",
-                              exp(x[["found_point_function_logvalue"]])))
-  cat(paste0("Optimization algorithm after ",
-             length(x[["goal_function_logvalues"]]),
+                       paste0(" with log likelihood ",
+                              x[["found_perm_log_likelihood"]]),
+                       paste0(" with likelihood ",
+                              exp(x[["found_perm_log_likelihood"]])))
+  cat(paste0("Optimization algorithm ",
+             x[["optimization_algorithm_used"]], " after ",
+             length(x[["log_likelihood_values"]]),
              " iterations found permutation ",
-             x[["found_point"]],
+             x[["found_perm"]],
              value_part),
       ...)
 }
@@ -30,37 +31,50 @@ print.gips <- function(x, log_value = FALSE, ...){
 #' 
 #' Plot method for gips objects.
 #' @param x Object of class gips.
-#' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.
-#' @param logarithmic boolean.
+#' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots likelihood for all visited state. For "best" the biggest likelihood up to the point are plotted. For "both" both lines are plotted.
+#' @param logarithmic_y boolean.
+#' @param logarithmic_x boolean.
 #' @param color Vector of olors to be used to plot lines.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_perm}} is taken.
 #' @param ... additional arguments passed to \code{\link{print}}.
 #' 
 #' @return Invisible NULL.
 #' @export
 plot.gips <- function(x, type="both",
-                      logarithmic=TRUE,
+                      logarithmic_y=TRUE,
+                      logarithmic_x=FALSE,
                       color=NULL,
                       title_text="Convergence plot",
-                      xlabel="number of function calls",
+                      xlabel=NULL,
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
+  # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
+  
   if (!requireNamespace("graphics", quietly = TRUE)) {
-    stop(
-      "Package \"graphics\" must be installed to use this function.",
-      call. = FALSE
-    )
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "Package \"graphics\" must be installed to use this function.",
+                   "x" = "Package \"graphics\" seems to be unavailable."))
   }
   
-  stopifnot(type %in% c("all", "best", "both"))
+  if(!(type %in% c("all", "best", "both"))){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`type` must be one of: c('all', 'best', 'both').",
+                   "x" = paste0("You provided `type` == ", type, ".")))
+  }
+  
   if(is.null(ylabel)){
-    ylabel <- ifelse(logarithmic,
-                     "log of a function",
-                     "value of a function")
+    ylabel <- ifelse(logarithmic_y,
+                     "log likelihood",
+                     "likelihood")
+  }
+  if(is.null(xlabel)){
+    xlabel <- ifelse(logarithmic_x,
+                     "log10 of number of function calls",
+                     "number of function calls")
   }
   if(is.null(color)){
     if(type == "both"){
@@ -69,10 +83,10 @@ plot.gips <- function(x, type="both",
       color <- "blue"
     }
   }
-  if(logarithmic){  # values of goal function are logarithmic by default
-    y_values_from <- x[["goal_function_logvalues"]]
+  if(logarithmic_y){
+    y_values_from <- x[["log_likelihood_values"]] # values of likelihood are logarithmic by default
   }else{
-    y_values_from <- exp(x[["goal_function_logvalues"]])
+    y_values_from <- exp(x[["log_likelihood_values"]])
   }
 
   y_values_max <- cummax(y_values_from)
@@ -90,11 +104,16 @@ plot.gips <- function(x, type="both",
   else
     ylim_plot <- ylim
   
-  graphics::plot.new()
-  graphics::plot.window(xlim, ylim_plot)
-  
   # make the plot stairs-like
   x_points <- c(1, rep(2:num_of_steps, each = 2))
+  
+  if(logarithmic_x){
+    x_points <- log10(x_points)
+    xlim <- log10(xlim)
+  }
+  
+  graphics::plot.new()
+  graphics::plot.window(xlim, ylim_plot)
   
   if(type != "best"){
     # make the plot stairs-like
@@ -123,8 +142,8 @@ plot.gips <- function(x, type="both",
   
   if(show_legend){
     if(type == "both"){
-      legend_text <- c("All calculated function values",
-                       "Maximum function values calculated")
+      legend_text <- c("All calculated likelihoods",
+                       "Maximum likelihoods calculated")
       lty <- c(1, 1)
       lwd <- c(3, 3)
     }else if(type == "all"){
@@ -147,8 +166,10 @@ plot.gips <- function(x, type="both",
 }
 
 
-# TODO(summary)
-
+# TODO(summary, the n_0 of best perms, the distribution of likelihood values)
+summary.gips <- function(object, ...){
+  invisible(NULL)
+}
 
 
 

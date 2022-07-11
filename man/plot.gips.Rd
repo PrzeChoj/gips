@@ -7,10 +7,11 @@
 \method{plot}{gips}(
   x,
   type = "both",
-  logarithmic = TRUE,
+  logarithmic_y = TRUE,
+  logarithmic_x = FALSE,
   color = NULL,
   title_text = "Convergence plot",
-  xlabel = "number of function calls",
+  xlabel = NULL,
   ylabel = NULL,
   show_legend = TRUE,
   ylim = NULL,
@@ -20,9 +21,11 @@
 \arguments{
 \item{x}{Object of class gips.}
 
-\item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all" plots values of goal function for all visited state. For "best" the best value of goal function up to the point are plotted. For "both" both lines are plotted.}
+\item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all" plots likelihood for all visited state. For "best" the biggest likelihood up to the point are plotted. For "both" both lines are plotted.}
 
-\item{logarithmic}{boolean.}
+\item{logarithmic_y}{boolean.}
+
+\item{logarithmic_x}{boolean.}
 
 \item{color}{Vector of olors to be used to plot lines.}
 
@@ -34,7 +37,7 @@
 
 \item{show_legend}{boolean.}
 
-\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{goal_function}} is taken.}
+\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_perm}} is taken.}
 
 \item{...}{additional arguments passed to \code{\link{print}}.}
 }

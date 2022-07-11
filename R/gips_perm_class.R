@@ -23,9 +23,13 @@ gips_perm <- function(x, size){
     if(!inherits(x, 'permutation'))
         x <- permutations::permutation(x)
     if(rlang::is_missing(size))
-        rlang::abort('`size` argument must be provided.')
+        rlang::abort(c("There was a problem identified with provided argument:",
+                       "i" = '`size` argument must be provided.',
+                       "x" = "You did not provide the `size` argument."))
     if(!is.wholenumber(size))
-        rlang::abort('`size` must be an integer.')
+        rlang::abort(c("There was a problem identified with provided argument:",
+                       "i" = '`size` must be a whole number.',
+                       "x" = paste0("You provided `size` == ", size, ".")))
     x <- permutations::as.cycle(x)
 
     if(is.null(permutations::is.id(x))){

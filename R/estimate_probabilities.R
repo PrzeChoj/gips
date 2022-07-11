@@ -1,23 +1,23 @@
-#' Estimate posterior probabilities from MH run
+#' Estimate posterior probabilities from Metropolis_Hastings run
 #'
 #' We use "second approach" from the paper.
 #'
-#' @param points list of `gips_perm` objects. Visited groups during MH run.
+#' @param perms list of `gips_perm` objects. Visited groups during Metropolis_Hastings run.
 #'
 #' @return named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations
 #' @noRd
 
 
-estimate_probabilities <- function(points){
-    group_representatives <- sapply(points, function(p)as.character(get_group_representative(p)))
+estimate_probabilities <- function(perms){
+    group_representatives <- sapply(perms, function(p)as.character(get_group_representative(p)))
     repr_counts <- table(group_representatives)
     repr_weights <- sapply(names(repr_counts), function(p_str){
         perm <- permutations::char2cycle(p_str)
         p_order <- permutations::permorder(perm)
         1/numbers::eulersPhi(p_order)
     })
-    unnormalized_probabilities <- repr_counts * repr_weights / length(points)
+    unnormalized_probabilities <- repr_counts * repr_weights / length(perms)
     probabilities <- unnormalized_probabilities / sum(unnormalized_probabilities)
     probabilities <- as.numeric(probabilities)
     names(probabilities) <- names(unnormalized_probabilities)

@@ -2,24 +2,22 @@
 #'
 #' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
-#' @param n_number number of data points that `U` is based on.
-#' @param max_iter number of iterations for an algorithm to perform. At least 2.
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param number_of_observations number of data points that `S` is based on.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
-#' @param return_probabilities boolean. Whether to use MH results to calculate posterior probabilities.
-#' @param show_progress_bar boolean, indicate weather or not show the progress bar.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
+#' @param return_probabilities boolean. Only for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
+#' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
+#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
 #'
-#' @return object of class gips; list of 9 items: `acceptance_rate`,
-#' `goal_function_logvalues`, `points`, `found_point`,
-#' `found_point_function_logvalue`, `last_point`,
-#' `last_point_function_logvalue`, `iterations_performed`, `U_used`.
+#' @return object of class gips; list of 9 or 10 items, depending on optimizer. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
 #' 
 #' @export
 #'
 #' @examples
-#' require(MASS)
+#' require(MASS)  # for mvrnorm()
 #' 
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
@@ -31,108 +29,285 @@
 #'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                        nrow=perm_size, byrow = TRUE)
-#' n_number <- 13
-#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
-#' U <- (t(Z) %*% Z)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
 #' start_perm <- permutations::id
-#' mh <- MH(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
-#'          show_progress_bar=FALSE)
+#' optimization_output <- gips(S=S, number_of_observations=number_of_observations,
+#'                             max_iter=10, start_perm=start_perm,
+#'                             show_progress_bar=FALSE, optimizer="MH")
 #' if (require(graphics)) {
-#'   plot(mh)
+#'   plot(optimization_output, logarithmic_x=TRUE)
 #' }
-MH <- function(U, n_number, max_iter, start_perm=NULL,
-               delta=3, D_matrix=NULL, return_probabilities=FALSE,
-               show_progress_bar=TRUE){
+#' optimization_output[["found_perm"]]
+gips <- function(S, number_of_observations, max_iter, start_perm=NULL,
+                 delta=3, D_matrix=NULL, return_probabilities=FALSE,
+                 show_progress_bar=TRUE, optimizer="MH"){
+  if(is.infinite(max_iter)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth').",
+                   "x" = paste0("You provided `optimizer` == ", optimizer, ".")))
+  }
+  if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "Probabilities can only be provided with the `optimizer = 'Metropolis_Hastings'",
+                   "x" = "You should use either `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`"))
+  }
+  
+  if(optimizer %in% c("MH", "Metropolis_Hastings")){
+    return(Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=return_probabilities,
+                               show_progress_bar=show_progress_bar))
+  }
+  
+  if(optimizer %in% c("BG", "best_growth")){
+    return(best_growth(S=S, number_of_observations=number_of_observations,
+                       max_iter=max_iter, start_perm=start_perm,
+                       delta=delta, D_matrix=D_matrix,
+                       show_progress_bar=show_progress_bar))
+  }
+}
+
+
+check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
+                                         start_perm, delta, D_matrix,
+                                         return_probabilities, show_progress_bar){
+  abord_text <- character(0)
+  if(!is.matrix(S))
+    abord_text <- c(abord_text,
+                    "i" = "`S` must be a matrix.",
+                    "x" = paste0("You provided `S` with class == (",
+                                 paste(class(S), collapse = ", "),
+                                 ")."))
+  else if(dim(S)[1] != dim(S)[2])
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be a square matrix.",
+                    "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
+                                 dim(S)[1], " and ", dim(S)[2], "."))
+  if(is.null(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must not be `NULL`.",
+                    "x" = "Your provided `number_of_observations` is NULL.")
+  else if(number_of_observations < 1)
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must be at least 1.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  else if(!is.wholenumber(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" ="`number_of_observations` must be a whole number.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  if(!(is.infinite(max_iter) || is.wholenumber(max_iter)))
+    abord_text <- c(abord_text,
+                    "i" ="`max_iter` must be either infinite (for best_growth optimizer) or a whole number.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  else if(max_iter < 2)  # TODO(Make it work for max_iter == 1)
+    abord_text <- c(abord_text,
+                    "i" = "`max_iter` must be at least 2.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  if(!(permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm')))
+    abord_text <- c(abord_text,
+                    "i" ="`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.",  # this is not true, but it is close enough
+                    "x" = paste0("You provided `start_perm` with class == (",
+                                 paste(class(start_perm), collapse = ", "),
+                                 ")."))
+  if(is.null(delta))
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must not be `NULL`.",
+                    "x" = "Your provided `delta` is a NULL.")
+  else if(delta <= 2)
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must be strictly bigger than 2.",
+                    "x" = paste0("You provided `delta` == ", delta, "."))
+  if(!(is.null(D_matrix) || is.matrix(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a matrix.",
+                    "x" = paste0("You provided `D_matrix` with class == (",
+                                 paste(class(D_matrix), collapse = ", "),
+                                 ")."))
+  else if(!(is.null(D_matrix) || dim(D_matrix)[1] == dim(D_matrix)[2]))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a square matrix.",
+                    "x" = paste0("You provided `D_matrix` as a matrix, but with different sizes: ",
+                                 dim(D_matrix)[1], " and ", dim(D_matrix)[2], "."))
+  if(!is.logical(return_probabilities))
+    abord_text <- c(abord_text,
+                    "i" ="`return_probabilities` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `return_probabilities` with class == (",
+                                 paste(class(return_probabilities), collapse = ", "),
+                                 ")."))
+  if(!is.logical(show_progress_bar))
+    abord_text <- c(abord_text,
+                    "i" ="`show_progress_bar` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `show_progress_bar` with class == (",
+                                 paste(class(show_progress_bar), collapse = ", "),
+                                 ")."))
+  
+  if(length(abord_text) > 0){
+    abord_text <- c(paste0("There were ", length(abord_text)/2,
+                           " problems identified with provided arguments:"),
+                    abord_text)
+    
+    if(length(abord_text) > 11){
+      abord_text <- c(abord_text[1:11],
+                      paste0("... and ", (length(abord_text)-1)/2 - 5, " more problems"))
+    }
+    
+    rlang::abort(abord_text)
+  }
+}
+
+
+
+#' Metropolis-Hastings algorithm
+#'
+#' Uses Metropolis-Hastings algorithm to find the permutation that maximizes the likelihood of observed data.
+#'
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param number_of_observations number of data points that `S` is based on.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. Cannot be infinite.
+#' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
+#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
+#' @param return_probabilities boolean. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
+#' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
+#'
+#' @return object of class gips; list of 9 items: `acceptance_rate`,
+#' `log_likelihood_values` - all calculated log likelihood values,
+#' `visited_perms`,
+#' `found_perm`, `found_perm_log_likelihood`,
+#' `last_perm`, `last_perm_log_likelihood`,
+#' `iterations_performed`,
+#' `provided` - a list of 2 elements, namely `S` and `number_of_observations`,
+#' `optimization_algorithm_used` - always "Metropolis_Hastings".
+#' 
+#' @export
+#'
+#' @examples
+#' require(MASS)  # for mvrnorm()
+#' 
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'                                 0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'                                 0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'                                 0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
+#'                        nrow=perm_size, byrow = TRUE)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
+#' start_perm <- permutations::id
+#' mh <- Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
+#'                           max_iter=10, start_perm=start_perm,
+#'                           show_progress_bar=FALSE)
+#' if (require(graphics)) {
+#'   plot(mh, logarithmic_x=TRUE)
+#' }
+#' mh[["found_perm"]]
+Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=NULL,
+                                delta=3, D_matrix=NULL, return_probabilities=FALSE,
+                                show_progress_bar=TRUE){
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
-  stopifnot(!is.null(U),
-            !is.null(n_number),
-            permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm'),
-            is.matrix(U),
-            dim(U)[1] == dim(U)[2],
-            delta > 2,
-            max_iter >= 2) # TODO(Make it work for max_iter == 1)
-  perm_size <- dim(U)[1]
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=return_probabilities,
+                               show_progress_bar=show_progress_bar)
+  if(is.infinite(max_iter)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`max_iter` in `Metropolis_Hastings()` must be finite",
+                   "x" = paste0("You provided `max_iter` == ", max_iter, ".")))
+  }
+  
+  perm_size <- dim(S)[1]
   if(permutations::is.cycle(start_perm))
       start_perm <- gips_perm(start_perm, perm_size)
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
-  stopifnot(is.matrix(D_matrix),
-            dim(D_matrix)[1] == dim(D_matrix)[2])
+  
+  my_goal_function <- function(perm){
+    log_likelihood_of_perm(perm_proposal=perm,
+                           number_of_observations=number_of_observations, S=S,
+                           delta=delta, D_matrix=D_matrix)
+  }
 
   acceptance <- rep(FALSE, max_iter)
-  goal_function_logvalues <- rep(0, max_iter)
-  points <- list()
-  points[[1]] <- start_perm
+  log_likelihood_values <- rep(0, max_iter)
+  visited_perms <- list()
+  visited_perms[[1]] <- start_perm
 
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
-  goal_function_logvalues[1] <- goal_function(points[[1]],
-                                              n_number, U,
-                                              delta=delta, D_matrix=D_matrix)
+  log_likelihood_values[1] <- my_goal_function(visited_perms[[1]])
 
-  found_point <- start_perm
-  found_point_function_logvalue <- goal_function_logvalues[1]
+  found_perm <- start_perm
+  found_perm_log_likelihood <- log_likelihood_values[1]
 
-  U2 <- stats::runif(max_iter, min = 0, max = 1)
+  Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
 
   for (i in 1:(max_iter-1)){
     if(show_progress_bar)
       utils::setTxtProgressBar(progressBar, i)
     
     e <- runif_transposition(perm_size)
-    perm_proposal <- compose_with_transposition(points[[i]], e)
+    perm_proposal <- compose_with_transposition(visited_perms[[i]], e)
 
-    goal_function_perm_proposal <- goal_function(perm_proposal,
-                                                 n_number, U,
-                                                 delta=delta, D_matrix=D_matrix)
+    goal_function_perm_proposal <- my_goal_function(perm_proposal)
     if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
-      # See ISSUE#5; We hope the introduction of log calculations will stop this problem.
-      warning("gips is yet unable to process this U matrix. We think it can only happen for dim(U)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
+      # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
+      warning("gips is yet unable to process this S matrix. We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
 
       break()
     }
 
-    # if goal_function_perm_proposal > goal_function_logvalues[i], then it is true
-    if(U2[i] < exp(goal_function_perm_proposal-goal_function_logvalues[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2)
-      points[[i+1]] <- perm_proposal
-      goal_function_logvalues[i+1] <- goal_function_perm_proposal
+    # if goal_function_perm_proposal > log_likelihood_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
+    if(Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal-log_likelihood_values[i])){ # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+      visited_perms[[i+1]] <- perm_proposal
+      log_likelihood_values[i+1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
 
-      if(found_point_function_logvalue < goal_function_logvalues[i+1]){
-        found_point_function_logvalue <- goal_function_logvalues[i+1]
-        found_point <- points[[i+1]]
+      if(found_perm_log_likelihood < log_likelihood_values[i+1]){
+        found_perm_log_likelihood <- log_likelihood_values[i+1]
+        found_perm <- visited_perms[[i+1]]
       }
     }
     else{
-      points[[i+1]] = points[[i]]
-      goal_function_logvalues[i+1] <- goal_function_logvalues[i]
+      visited_perms[[i+1]] = visited_perms[[i]]
+      log_likelihood_values[i+1] <- log_likelihood_values[i]
     }
   }
 
   if(show_progress_bar)
     close(progressBar)
 
-  function_calls <- length(goal_function_logvalues)
+  function_calls <- length(log_likelihood_values)
 
-  out <- list("acceptance_rate"=mean(acceptance),
-              "goal_function_logvalues"=goal_function_logvalues,
-              "points"=points,
-              "found_point"=found_point,
-              "found_point_function_logvalue"=found_point_function_logvalue,
-              "last_point"=points[[function_calls]],
-              "last_point_function_logvalue"=found_point_function_logvalue[function_calls],
-              "iterations_performed"=i,
-              "U_used" = U)
+  out <- list("acceptance_rate" = mean(acceptance),
+              "log_likelihood_values" = log_likelihood_values,
+              "visited_perms" = visited_perms,
+              "found_perm" = found_perm,
+              "found_perm_log_likelihood" = found_perm_log_likelihood,
+              "last_perm" = visited_perms[[function_calls]],
+              "last_perm_log_likelihood" = found_perm_log_likelihood[function_calls],
+              "iterations_performed" = i,
+              "provided" = list("S" = S, "number_of_observations" = number_of_observations),
+              "optimization_algorithm_used" = "Metropolis_Hastings")
+  if(return_probabilities){
+      probabilities <- estimate_probabilities(visited_perms)
+      out[["post_probabilities"]] <- probabilities
+  }
   
   class(out) <- c("optimized_MH", "gips", "list")
   
-  if(return_probabilities){
-      probabilities <- estimate_probabilities(points)
-      out[["post_probabilities"]] <- probabilities
-    }
   out
 }
 
@@ -141,21 +316,23 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #'
 #' Uses best growth algorithm to find the permutation that maximizes the likelihood of observed data.
 #'
-#' @param U matrix, sum of outer products of data. `U` = sum(t(Z) %*% Z), where Z is observed data.
-#' @param n_number number of data points that `U` is based on.
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
+#' @param number_of_observations number of data points that `S` is based on.
 #' @param max_iter number of iterations for an algorithm to perform. Default 5. At least 2. Can be Inf.
 #' @param start_perm starting permutation for the algorithm; an element of class "cycle". When NULL, identity permutation is taken.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `U`. When NULL, the identity matrix is taken.
+#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
 #' @param show_progress_bar boolean, indicate weather or not show the progress bar. `show_progress_bar == TRUE` is not supported for `max_iter == Inf`.
 #'
-#' @return object of class gips; list of 11 items: `acceptance_rate`,
-#' `goal_function_logvalues` - all calculated goal function values,
-#' `goal_function_best_logvalues` - goal function values chosen in the iteration,
-#' `points` - permutations chosen in the iteration,
-#' `found_point`, `found_point_function_logvalue`, `last_point`,
-#' `last_point_function_logvalue`, `iterations_performed`, `U_used`,
-#' `did_converge` - indicates if the algorithm converged.
+#' @return object of class gips; list of 10 items:
+#' `acceptance_rate` - always `1/choose(dim(S)[1], 2)`,
+#' `log_likelihood_values` - all calculated log likelihood values,
+#' `visited_perms` - permutations chosen in the iteration,
+#' `found_perm`, `found_perm_log_likelihood`, `last_perm`,
+#' `last_perm_log_likelihood`, `iterations_performed`,
+#' `provided` - a list of 2 elements, namely `S` and `number_of_observations`,
+#' `did_converge` - indicates if the algorithm converged,
+#' `optimization_algorithm_used` - always "best_growth".
 #' 
 #' @export
 #'
@@ -172,19 +349,31 @@ MH <- function(U, n_number, max_iter, start_perm=NULL,
 #'                                 0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
 #'                                 0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
 #'                        nrow=perm_size, byrow = TRUE)
-#' n_number <- 13
-#' Z <- MASS::mvrnorm(n_number, mu = mu, Sigma = sigma_matrix)
-#' U <- (t(Z) %*% Z)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z)/number_of_observations  # the theoretical mean is 0
 #' start_perm <- permutations::id
-#' bg <- best_growth(U=U, n_number=n_number, max_iter=10, start_perm=start_perm,
+#' bg <- best_growth(S=S, number_of_observations=number_of_observations,
+#'                   max_iter=10, start_perm=start_perm,
 #'                   show_progress_bar=FALSE) # Algorithm did converge in 4 iterations
 #' if (require(graphics)) {
-#'   plot(bg)
+#'   plot(bg, logarithmic_x=TRUE)
 #' }
-best_growth <- function(U, n_number, max_iter=5,
+#' bg[["found_perm"]]
+best_growth <- function(S, number_of_observations, max_iter=5,
                         start_perm=NULL,
                         delta=3, D_matrix=NULL,
                         show_progress_bar=TRUE){
+  if(is.null(start_perm)){
+    start_perm <- permutations::id
+  }
+  
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=max_iter, start_perm=start_perm,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=FALSE,
+                               show_progress_bar=show_progress_bar)
+  
   if(show_progress_bar && is.infinite(max_iter)){
     stop("Progress bar is not yet supported for infinite max_iter. Rerun the algorithm with show_progress_bar=FALSE or finite max_iter. For more information see ISSUE#8.") # See ISSUE#8
   }
@@ -192,33 +381,27 @@ best_growth <- function(U, n_number, max_iter=5,
   if(show_progress_bar)
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
 
-  stopifnot(!is.null(U),
-            !is.null(n_number),
-            dim(U)[1] == dim(U)[2],
-            delta > 2,
-            max_iter > 1)
-  perm_size <- dim(U)[1]
+  perm_size <- dim(S)[1]
 
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)
   }
-  if(is.null(start_perm)){
-    start_perm <- permutations::id
-  }
+  
 
   my_goal_function <- function(perm){
-    goal_function(perm, n_number, U,
-                  delta=delta, D_matrix=D_matrix)
+    log_likelihood_of_perm(perm_proposal=perm,
+                           number_of_observations=number_of_observations, S=S,
+                           delta=delta, D_matrix=D_matrix)
   }
 
   goal_function_best_logvalues <- numeric(0)
-  goal_function_logvalues <- numeric(0)
+  log_likelihood_values <- numeric(0)
   
   # init
   speciments <- list()
   speciments[[1]] <- start_perm
   goal_function_best_logvalues[1] <- my_goal_function(speciments[[1]])
-  goal_function_logvalues[1] <- goal_function_best_logvalues[1]
+  log_likelihood_values[1] <- goal_function_best_logvalues[1]
 
   # mail loop
   iteration <- 0
@@ -234,7 +417,7 @@ best_growth <- function(U, n_number, max_iter=5,
       for(j in (i+1):perm_size){
         neighbour <- permutations::as.cycle(speciments[[iteration]] * permutations::as.cycle(c(i, j)))
         neighbour_value <- my_goal_function(neighbour)
-        goal_function_logvalues[length(goal_function_logvalues) + 1] <- neighbour_value
+        log_likelihood_values[length(log_likelihood_values) + 1] <- neighbour_value
 
         if(neighbour_value > best_neighbour_value){
           best_neighbour_value <- neighbour_value
@@ -268,16 +451,17 @@ best_growth <- function(U, n_number, max_iter=5,
 
 
   out <- list("acceptance_rate" = 1/choose(perm_size, 2),
-              "goal_function_logvalues" = goal_function_logvalues,
+              "log_likelihood_values" = log_likelihood_values,
               "goal_function_best_logvalues" = goal_function_best_logvalues,
-              "points" = speciments,
-              "found_point" = speciments[[iteration]],
-              "found_point_function_logvalue" = goal_function_best_logvalues[iteration],
-              "last_point" = speciments[[iteration]],
-              "last_point_function_logvalue" = goal_function_best_logvalues[iteration],
+              "visited_perms" = speciments,
+              "found_perm" = speciments[[iteration]],
+              "found_perm_log_likelihood" = goal_function_best_logvalues[iteration],
+              "last_perm" = speciments[[iteration]],
+              "last_perm_log_likelihood" = goal_function_best_logvalues[iteration],
               "iterations_performed" = iteration,
-              "U_used" = U,
-              "did_converge" = did_converge)
+              "provided" = list("S" = S, "number_of_observations" = number_of_observations),
+              "did_converge" = did_converge,
+              "optimization_algorithm_used" = "best_growth")
   
   class(out) <- c("optimized_best_growth", "gips", "list")
   

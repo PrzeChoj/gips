@@ -1,55 +1,59 @@
-#' goal function for MH
-#'
+#' The log likelihood that the CoV matrix is invariant under permutation.
+#' 
 #' Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
+#' Keep in mind this is not the log likelihood per se, but rather the funcition that is proportional to the log likelihood.
+#' It is the goal function for optimization algorithms.
 #'
 #' @export
 #'
 #' @param perm_proposal permutation of interest.
-#' @param n_number number of random variables that `U` is based on.
-#' @param U matrix that the projection of is wanted.
+#' @param number_of_observations number of random variables that `S` is based on.
+#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
 #'
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-#' U1 <- matrix(c(1,0.5,0.5,2), nrow=2,byrow = TRUE)
-#' goal_function(c, 100, U1)
-goal_function <- function(perm_proposal, n_number, U, delta=3, D_matrix=NULL){
-  stopifnot(permutations::is.cycle(perm_proposal) || inherits(perm_proposal, 'gips_perm'),
-            is.matrix(U),
-            dim(U)[1] == dim(U)[2])
-  perm_size <- dim(U)[1]
+#' S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
+#' log_likelihood_of_perm(c, 100, S1)
+log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
+                                   delta=3, D_matrix=NULL){
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                               max_iter=2, start_perm=permutations::id,
+                               delta=delta, D_matrix=D_matrix,
+                               return_probabilities=FALSE, show_progress_bar=FALSE)
+  
+  U <- S * number_of_observations  # in the paper there is U everywhere in stead of S, so it is easier to use U matrix in the code
+  perm_size <- dim(S)[1]
+  
   if(!inherits(perm_proposal, 'gips_perm'))
     perm_proposal <- gips_perm(perm_proposal, perm_size)
-
 
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = perm_size)  # identity matrix
   }
-  stopifnot(is.matrix(D_matrix),
-            dim(D_matrix)[1] == dim(D_matrix)[2])
-
+  
   structure_constants <- get_structure_constants(perm_proposal)
 
   # Ac_part
   Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
-  Ac_part <- (-n_number/2*Ac)
+  Ac_part <- (-number_of_observations/2*Ac)
 
   # G_part and phi_part
-  G_part <- G_function(structure_constants, delta + n_number) -
+  G_part <- G_function(structure_constants, delta + number_of_observations) -
     G_function(structure_constants, delta)
 
   # phi_part
-  phi_part <- calculate_phi_part(perm_proposal, n_number, U, delta,
+  phi_part <- calculate_phi_part(perm_proposal, number_of_observations, U, delta,
                                  D_matrix, structure_constants)
 
   out <- Ac_part + G_part + phi_part
 
   if(is.infinite(out)){
-    warning("Infinite value of a goal function")
+    warning("Infinite value of a likelihood")
   }
   if(is.nan(out)){
-    warning("NaN value of a goal function")
+    warning("NaN value of a likelihood")
   }
 
   out
@@ -62,13 +66,13 @@ runif_transposition <- function(perm_size){
   sample(perm_size, 2, replace=FALSE)
 }
 
-#' Calculate log phi_part of goal_function
+#' Calculate log phi_part of log_likelihood_of_perm
 #'
 #' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
-#' Rest of params as in goal_function
+#' Rest of params as in log_likelihood_of_perm
 #'
 #' @noRd
-calculate_phi_part <- function(perm_proposal, n_number, U, delta,
+calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
                                D_matrix, structure_constants){
 
   # projection of matrices on perm_proposal
@@ -96,7 +100,7 @@ calculate_phi_part <- function(perm_proposal, n_number, U, delta,
                                                               block_ends)
   Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
     (structure_constants[['r']] * structure_constants[['k']])
-  DcUc_exponent <- -(n_number+delta-2)/2 - structure_constants[['dim_omega']] /
+  DcUc_exponent <- -(number_of_observations+delta-2)/2 - structure_constants[['dim_omega']] /
     (structure_constants[['r']] * structure_constants[['k']])
 
   out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)

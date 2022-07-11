@@ -3,7 +3,7 @@
 #' Project matrix on the space of symmetrical matrices invariant
 #' by a cyclic group of permutations.
 #'
-#' @param U matrix to be projected.
+#' @param S matrix to be projected.
 #' @param perm permutation. Generator of a permutation group.
 #'             Either of `gips_perm` or `permutations::cycle` class.
 #' @param precomputed_equal_indices used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed
@@ -12,26 +12,40 @@
 #' @export
 #'
 #' @examples
-#' gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)
-#' U <- matrix(rnorm(49), nrow = 7)
-#' projected_U <- project_matrix(U, perm = gperm)
-project_matrix <- function(U, perm, precomputed_equal_indices=NULL){
-    if(!is.matrix(U) || nrow(U) != ncol(U))
-        rlang::abort('`U` must be a square matrix.')
+#' gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)  # permutation (1,4)(2,3)(5)(6)(7)
+#' S <- matrix(rnorm(49), nrow = 7)
+#' projected_S <- project_matrix(S, perm = gperm)
+project_matrix <- function(S, perm, precomputed_equal_indices=NULL){
+    if(!is.matrix(S))
+        rlang::abort(c("There was a problem identified with provided arguments:",
+                       "i" = '`S` must be a matrix.',
+                       "x" = paste0("You provided `S` with class == (",
+                                    paste(class(S), collapse = ", "),
+                                    ").")))
+    if(nrow(S) != ncol(S))
+        rlang::abort(c("There was a problem identified with provided arguments:",
+                       "i" = '`S` must be a square matrix.',
+                       "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
+                                    dim(S)[1], " and ", dim(S)[2], ".")))
     if(is.null(precomputed_equal_indices)){
-        perm_size <- ncol(U)
+        perm_size <- ncol(S)
         if(!inherits(perm, 'gips_perm')){
             perm <- gips_perm(perm, perm_size)
-        } else if(attr(perm, 'size') != ncol(U))
-            rlang::abort('Size of `perm` must be equal to number of columns and rows of `U`.')
+        } else if(attr(perm, 'size') != ncol(S))
+            rlang::abort(c("There was a problem identified with provided arguments:",
+                           "i" = 'Size of `perm` must be equal to number of columns and rows of `S`.',
+                           "x" = paste0("You provided `perm` with size = ",
+                                        attr(perm, 'size'),
+                                        ", but the `S` matrix has ",
+                                        ncol(S), " columns.")))
         equal_indices_by_perm <- get_equal_indices_by_perm(perm)
     }
     else
         equal_indices_by_perm <- precomputed_equal_indices
     mean_values <- sapply(equal_indices_by_perm, function(indices)
-        mean(U[indices]))
+        mean(S[indices]))
     means <- rep(mean_values, sapply(equal_indices_by_perm, length))
-    projected_matrix <- matrix(nrow=nrow(U), ncol=ncol(U))
+    projected_matrix <- matrix(nrow=nrow(S), ncol=ncol(S))
     projected_matrix[unlist(equal_indices_by_perm)] <- means
     projected_matrix
 }
