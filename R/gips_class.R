@@ -312,7 +312,6 @@ plot.gips <- function(x, type="both",
 
 
 # TODO(summary, the n_0 of best perms, the distribution of likelihood values)
-# TODO(`attr(object, "optimization_info")$visited_perms` can be printed as perms)
 # TODO(For BG -> All visited perms)
 summary.gips <- function(object, ...){
   invisible(NULL)
@@ -320,8 +319,9 @@ summary.gips <- function(object, ...){
 
 
 # TODO(The base object printed as the gips_perm. The "size" attr omitted)
+# TODO(`attr(object, "optimization_info")$visited_perms` can be printed as perms)
 str.gips <- function(object, ...){
-  str(object)
+  utils::str(object)
 }
 
 
