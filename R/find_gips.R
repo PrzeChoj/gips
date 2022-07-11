@@ -39,6 +39,9 @@
 #' }
 find_gips <- function(g, max_iter, return_probabilities=FALSE,
                       show_progress_bar=TRUE, optimizer="MH"){
+  # check the correctness of the g argument
+  validate_gips(g)
+  
   # extract parameters
   S <- attr(g, "S")
   number_of_observations <- attr(g, "number_of_observations")
@@ -46,8 +49,7 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   delta <- attr(g, "delta")
   D_matrix <- attr(g, "D_matrix")
   
-  # check the correctness of arguments
-  validate_gips(g)
+  # check the correctness of the rest of arguments
   if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth').",
@@ -188,11 +190,17 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
   if(is.null(start_perm)){
     start_perm <- permutations::id
   }
+  
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                  max_iter=max_iter, start_perm=start_perm,
                                  delta=delta, D_matrix=D_matrix,
                                  return_probabilities=return_probabilities,
                                  show_progress_bar=show_progress_bar)
+  
+  if(!inherits(start_perm, 'gips_perm')){
+    start_perm <- gips_perm(start_perm, nrow(S))  # now we know the `S` is a matrix
+  }
+  
   if(is.infinite(max_iter)){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`max_iter` in `Metropolis_Hastings()` must be finite",
@@ -290,7 +298,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                         delta=3, D_matrix=NULL,
                         show_progress_bar=TRUE){
   if(is.null(start_perm)){
-    start_perm <- gips_perm(permutations::id, nrow(S))  # TODO(At this moment I am not sure weather the `S` is a matrix)
+    start_perm <- permutations::id
   }
   
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
@@ -298,6 +306,10 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                                  delta=delta, D_matrix=D_matrix,
                                  return_probabilities=FALSE,
                                  show_progress_bar=show_progress_bar)
+  
+  if(!inherits(start_perm, 'gips_perm')){
+    start_perm <- gips_perm(start_perm, nrow(S))  # now we know the `S` is a matrix
+  }
   
   if(show_progress_bar && is.infinite(max_iter)){
     stop("Progress bar is not yet supported for infinite max_iter. Rerun the algorithm with show_progress_bar=FALSE or finite max_iter. For more information see ISSUE#8.") # See ISSUE#8

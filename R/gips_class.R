@@ -8,6 +8,7 @@
 #' @param number_of_observations number of data points that `S` is based on.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
+#' @param perm optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation`.
 #' 
 #' @return Object of class gips.
 #' 
@@ -38,13 +39,19 @@
 #' if (require(graphics)) {
 #'   plot(g, logarithmic_x=TRUE)
 #' }
-gips <- function(S, number_of_observations, delta=3, D_matrix=NULL){
+gips <- function(S, number_of_observations, delta=3, D_matrix=NULL,
+                 perm=permutations::id){
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
-                                 max_iter=2, start_perm=permutations::id,
+                                 max_iter=2, start_perm=perm,
                                  delta=delta, D_matrix=D_matrix,
                                  return_probabilities=FALSE, show_progress_bar=FALSE)
   
-  gips_perm_object <- gips_perm(permutations::id, nrow(S))
+  if(inherits(perm, 'gips_perm')){
+    gips_perm_object <- perm  # it is already a `gips_perm`
+  }else{
+    gips_perm_object <- gips_perm(perm, nrow(S))  # it is of class `permutation`. Make it 'gips_perm'
+  }
+  
   
   if(is.null(D_matrix)){
     D_matrix <- diag(nrow = ncol(S))
@@ -309,6 +316,8 @@ plot.gips <- function(x, type="both",
 
 
 # TODO(summary, the n_0 of best perms, the distribution of likelihood values)
+# TODO(`attr(object, "optimization_info")$visited_perms` can be printed as perms)
+# TODO(For BG -> All visited perms)
 summary.gips <- function(object, ...){
   invisible(NULL)
 }

@@ -5,7 +5,13 @@
 \alias{new_gips}
 \title{Constructor of the \code{gips} class.}
 \usage{
-gips(S, number_of_observations, delta = 3, D_matrix = NULL)
+gips(
+  S,
+  number_of_observations,
+  delta = 3,
+  D_matrix = NULL,
+  perm = permutations::id
+)
 
 new_gips(
   list_of_gips_perm,
@@ -24,6 +30,8 @@ new_gips(
 \item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
+
+\item{perm}{optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation}.}
 
 \item{list_of_gips_perm}{list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
 
