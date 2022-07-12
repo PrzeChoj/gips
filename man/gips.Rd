@@ -5,13 +5,7 @@
 \alias{new_gips}
 \title{Constructor of the \code{gips} class.}
 \usage{
-gips(
-  S,
-  number_of_observations,
-  delta = 3,
-  D_matrix = NULL,
-  perm = permutations::id
-)
+gips(S, number_of_observations, delta = 3, D_matrix = NULL, perm = "")
 
 new_gips(
   list_of_gips_perm,

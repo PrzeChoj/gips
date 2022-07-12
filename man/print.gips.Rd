@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{object of class gips.}
 
-\item{log_value}{logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_perm}} or leave it in logarithmic form.}
+\item{log_value}{logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.}
 
 \item{...}{additional arguments passed to \code{\link{cat}}.}
 }

@@ -215,8 +215,8 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
   }
   
   my_goal_function <- function(perm){
-    log_likelihood_of_perm(perm_proposal=perm,
-                           number_of_observations=number_of_observations, S=S,
+    log_likelihood_of_perm(perm, S=S,  # We recommend to use the `log_likelihood_of_gips()` function
+                           number_of_observations=number_of_observations,
                            delta=delta, D_matrix=D_matrix)
   }
 
@@ -327,8 +327,8 @@ best_growth <- function(S, number_of_observations, max_iter=5,
   
 
   my_goal_function <- function(perm){
-    log_likelihood_of_perm(perm_proposal=perm,
-                           number_of_observations=number_of_observations, S=S,
+    log_likelihood_of_perm(perm, S=S,  # We recommend to use the `log_likelihood_of_gips()` function
+                           number_of_observations=number_of_observations,
                            delta=delta, D_matrix=D_matrix)
   }
 

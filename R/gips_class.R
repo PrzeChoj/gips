@@ -8,7 +8,7 @@
 #' @param number_of_observations number of data points that `S` is based on.
 #' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
 #' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
-#' @param perm optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation`.
+#' @param perm optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation` or anything the function `permutations::permutation()` can take.
 #' 
 #' @return Object of class gips.
 #' 
@@ -40,7 +40,11 @@
 #'   plot(g, logarithmic_x=TRUE)
 #' }
 gips <- function(S, number_of_observations, delta=3, D_matrix=NULL,
-                 perm=permutations::id){
+                 perm=""){
+  if(!inherits(perm, c('gips_perm', 'permutation'))){
+    perm <- permutations::permutation(perm)
+  }
+  
   check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
                                  max_iter=2, start_perm=perm,
                                  delta=delta, D_matrix=D_matrix,
@@ -142,7 +146,7 @@ validate_gips <- function(g){
 #' Printing function for gips class.
 #' 
 #' @param x object of class gips.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_perm}} or leave it in logarithmic form.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
@@ -180,7 +184,7 @@ print.gips <- function(x, log_value = TRUE, ...){
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_perm}} is taken.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_gips}} is taken.
 #' @param ... additional arguments passed to \code{\link{print}}.
 #' 
 #' @return Invisible NULL.
