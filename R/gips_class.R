@@ -327,20 +327,29 @@ validate_gips <- function(g){
 #' @export
 print.gips <- function(x, log_value = TRUE, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(make it different for g with no optimization called)
-  value_part <- ifelse(log_value,
-                       paste0(" with log likelihood ",
-                              attr(x, "optimization_info")[["best_perm_log_likelihood"]]),
-                       paste0(" with likelihood ",
-                              exp(attr(x, "optimization_info")[["best_perm_log_likelihood"]])))
-  cat(paste0("Optimization algorithm ",
-             attr(x, "optimization_info")[["optimization_algorithm_used"]],
-             ", after ",
-             length(attr(x, "optimization_info")[["log_likelihood_values"]]),
-             " log_likelihood calculations, found permutation ",
-             x[[1]],
-             value_part),
-      ...)
+  # TODO(make it prettier)
+  validate_gips(x)
+  
+  if(is.null(attr(x, "optimization_info"))){
+    cat(paste0("Object of class `gips` with permutation ", x[[1]],
+               #", S matrix ", attr(x, "S"),
+               " and number_of_observations = ",
+               attr(x, "number_of_observations")))
+  }else{
+    value_part <- ifelse(log_value,
+                         paste0(" with log likelihood ",
+                                attr(x, "optimization_info")[["best_perm_log_likelihood"]]),
+                         paste0(" with likelihood ",
+                                exp(attr(x, "optimization_info")[["best_perm_log_likelihood"]])))
+    cat(paste0("Object of class `gips`, optimized with algorithm ",
+               attr(x, "optimization_info")[["optimization_algorithm_used"]],
+               ", after ",
+               length(attr(x, "optimization_info")[["log_likelihood_values"]]),
+               " log_likelihood calculations, found permutation ",
+               x[[1]],
+               value_part),
+        ...)
+  }
 }
 
 
