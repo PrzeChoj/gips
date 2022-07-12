@@ -3,6 +3,7 @@
 \name{gips}
 \alias{gips}
 \alias{new_gips}
+\alias{validate_gips}
 \title{Constructor of the \code{gips} class.}
 \usage{
 gips(S, number_of_observations, delta = 3, D_matrix = NULL, perm = "")
@@ -15,6 +16,8 @@ new_gips(
   D_matrix,
   optimization_info
 )
+
+validate_gips(g)
 }
 \arguments{
 \item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
@@ -25,11 +28,13 @@ new_gips(
 
 \item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
 
-\item{perm}{optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation}.}
+\item{perm}{optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation} or anything the function \code{permutations::permutation()} can take.}
 
 \item{list_of_gips_perm}{list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
 
 \item{optimization_info}{NULL or the list with information about the optimization process.}
+
+\item{g}{Element ot be cheched if it is of class \code{gips}.}
 }
 \value{
 Object of class gips.
@@ -42,6 +47,10 @@ The optimization itself will not be performed. To do it, one have to call the TO
 \section{Functions}{
 \itemize{
 \item \code{new_gips}: Constructor
+
+Only intended for low-level use.
+
+\item \code{validate_gips}: Validator
 
 Only intended for low-level use.
 }}
