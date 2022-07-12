@@ -7,7 +7,7 @@
 \method{print}{gips}(x, log_value = TRUE, ...)
 }
 \arguments{
-\item{x}{object of class gips.}
+\item{x}{object of class gips. Has to first be optimized with \code{\link{find_gips}}.}
 
 \item{log_value}{logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.}
 

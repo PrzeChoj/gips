@@ -34,7 +34,7 @@ validate_gips(g)
 
 \item{optimization_info}{NULL or the list with information about the optimization process.}
 
-\item{g}{Element ot be cheched if it is of class \code{gips}.}
+\item{g}{Element to be checked if it is of class \code{gips}.}
 }
 \value{
 Object of class gips.

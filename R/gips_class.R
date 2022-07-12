@@ -97,18 +97,25 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 #'
 #' Only intended for low-level use.
 #'
-#' @param g Element ot be cheched if it is of class `gips`.
+#' @param g Element to be checked if it is of class `gips`.
 #'
 #' @export
 validate_gips <- function(g){
+  if(!(inherits(g, "gips"))){
+    rlang::abort(c("There was a problem identified with provided argument:",
+                   "i" = "`g` must be of class `gips`.",
+                   "x" = paste0("You provided `g` with `class(g)` == (",
+                                paste(class(g), collapse = ", "), ").")))
+  }
+  
   if(!(length(g) == 1)){
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with provided argument:",
                    "i" = "The `length(g)` must be `1`.",
                    "x" = paste0("You provided `g` with `length(g) == ",
                                 length(g), "`.")))
   }
   if(!is.list(g)){
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with provided argument:",
                    "i" = "The `g` must be a list.",
                    "x" = paste0("You provided `g` with `typeof(g) == '",
                                 typeof(g), "'.")))
@@ -123,7 +130,7 @@ validate_gips <- function(g){
   
   
   if(!inherits(perm, "gips_perm")){
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with provided argument:",
                    "i" = "The `g[[1]]` must be of a `gips_perm` class.",
                    "x" = paste0("You provided `g[[1]]` with class == (",
                                 paste(class(perm), collapse = ", "),
@@ -136,7 +143,7 @@ validate_gips <- function(g){
                                  return_probabilities=FALSE, show_progress_bar=FALSE)
   
   if(!(is.null(optimization_info) || is.list(optimization_info))){
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with provided argument:",
                    "i" = "The `optimization_info` value must be either a NULL, or a list.",
                    "x" = paste0("You provided `attr(g, 'optimization_info')` with type == (",
                                 paste(typeof(optimization_info), collapse = ", "),
@@ -312,7 +319,7 @@ validate_gips <- function(g){
 #' 
 #' Printing function for gips class.
 #' 
-#' @param x object of class gips.
+#' @param x object of class gips. Has to first be optimized with \code{\link{find_gips}}.
 #' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
@@ -320,6 +327,7 @@ validate_gips <- function(g){
 #' @export
 print.gips <- function(x, log_value = TRUE, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
+  # TODO(make it different for g with no optimization called)
   value_part <- ifelse(log_value,
                        paste0(" with log likelihood ",
                               attr(x, "optimization_info")[["best_perm_log_likelihood"]]),
@@ -365,7 +373,6 @@ plot.gips <- function(x, type="both",
                       ylabel=NULL, show_legend=TRUE,
                       ylim=NULL, ...){
   # TODO(It is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(What happens when called on the un-optimized `gips`?)
   # TODO(For "MH", those are NOT "All calculated likelihoods", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
   
   if (!requireNamespace("graphics", quietly = TRUE)) {
@@ -375,6 +382,13 @@ plot.gips <- function(x, type="both",
   }
   
   validate_gips(x)
+  
+  if(is.null(attr(x, "optimization_info"))){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "plot(x) for x of class `gips` can only be called after optimizaion.",
+                   "x" = "You did not optimized `x`.",
+                   "i" = "Did You forgot to call `find_gips(x)`?"))
+  }
   
   if(!(type %in% c("all", "best", "both"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
