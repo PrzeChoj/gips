@@ -364,8 +364,8 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
 #' 
 #' Plot method for gips objects.
 #' 
-#' @param x Object of class gips.
-#' @param type Character. A type of a plot. Either "all", "best" or "both". For "all" plots likelihood for all visited state. For "best" the biggest likelihood up to the point are plotted. For "both" both lines are plotted.
+#' @param x Object of class gips. Has to first be optimized with \code{\link{find_gips}}.
+#' @param type Character. A type of a plot. Either "all", "best" or "both". For "all", plots likelihood for all visited state. For "best", the biggest likelihood up to the point are plotted. For "both", both lines are plotted.
 #' @param logarithmic_y boolean.
 #' @param logarithmic_x boolean.
 #' @param color Vector of olors to be used to plot lines.
@@ -374,18 +374,18 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
 #' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_gips}} is taken.
+#' @param xlim Limits of x axis. When \code{NULL}, the whole optimization process is shown.
 #' @param ... additional arguments passed to \code{\link{print}}.
 #' 
 #' @return Invisible NULL.
 #' @export
 plot.gips <- function(x, type="both",
-                      logarithmic_y=TRUE,
-                      logarithmic_x=FALSE,
+                      logarithmic_y=TRUE, logarithmic_x=FALSE,
                       color=NULL,
                       title_text="Convergence plot",
-                      xlabel=NULL,
-                      ylabel=NULL, show_legend=TRUE,
-                      ylim=NULL, ...){
+                      xlabel=NULL, ylabel=NULL,
+                      show_legend=TRUE,
+                      ylim=NULL, xlim=NULL, ...){
   # TODO(It is not likelihood, but sth proportional to it. See #ISSUE11)
   # TODO(For "MH", those are NOT "All calculated likelihoods", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
   
@@ -438,7 +438,10 @@ plot.gips <- function(x, type="both",
   
   num_of_steps <- length(y_values_max)
   
-  xlim <- c(1, num_of_steps)
+  if(is.null(xlim)){
+    xlim <- c(1, num_of_steps)
+  }
+  
   if(is.null(ylim)){
     ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
     if(type == "best"){

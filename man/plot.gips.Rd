@@ -15,13 +15,14 @@
   ylabel = NULL,
   show_legend = TRUE,
   ylim = NULL,
+  xlim = NULL,
   ...
 )
 }
 \arguments{
-\item{x}{Object of class gips.}
+\item{x}{Object of class gips. Has to first be optimized with \code{\link{find_gips}}.}
 
-\item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all" plots likelihood for all visited state. For "best" the biggest likelihood up to the point are plotted. For "both" both lines are plotted.}
+\item{type}{Character. A type of a plot. Either "all", "best" or "both". For "all", plots likelihood for all visited state. For "best", the biggest likelihood up to the point are plotted. For "both", both lines are plotted.}
 
 \item{logarithmic_y}{boolean.}
 
@@ -38,6 +39,8 @@
 \item{show_legend}{boolean.}
 
 \item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_gips}} is taken.}
+
+\item{xlim}{Limits of x axis. When \code{NULL}, the whole optimization process is shown.}
 
 \item{...}{additional arguments passed to \code{\link{print}}.}
 }
