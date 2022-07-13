@@ -103,7 +103,7 @@ test_that('Properly validate the gips class',{
   g_err <- g2
   len_post_prob <- length(attr(g_err, "optimization_info")[["post_probabilities"]])
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1/(len_post_prob-1), len_post_prob-1))
-  expect_error(validate_gips(g_err))
+  expect_error(validate_gips(g_err))  # TODO(investigate --->>>  once this `validate` did not throw the expected error!)
   
   g_err <- g2
   attr(g_err, "optimization_info")[["did_converge"]] <- TRUE

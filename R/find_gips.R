@@ -57,8 +57,9 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   }
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "Probabilities can only be provided with the `optimizer = 'Metropolis_Hastings'",
-                   "x" = "You should use either `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`"))
+                   "i" = "Probabilities can only be returned with the `optimizer = 'Metropolis_Hastings'",
+                   "x" = "You provided both `optimizer != Metropolis_Hastings` and `return_probabilities == TRUE`!",
+                   "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"))
   }
   
   
@@ -263,7 +264,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
     }
     else{
       visited_perms[[i+1]] = visited_perms[[i]]
-      log_likelihood_values[i+1] <- log_likelihood_values[i]
+      log_likelihood_values[i+1] <- log_likelihood_values[i]  # TODO(Do we really want to forget the calculated values? The algorithm BG works differently)
     }
   }
 
@@ -377,8 +378,8 @@ best_growth <- function(S, number_of_observations, max_iter=5,
     close(progressBar)
 
   if(!did_converge){
-    rlang::warn(paste0("Algorithm did not converge in ", iteration, # now, iteration == max_iter
-                       " iterations! Try one more time with starting_perm = output$found_perm")) # TODO(there will be a function `continue(bg)`; see ISSUE#11)
+    rlang::warn(c(paste0("Algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
+                  "i" = "We reccomend to run the `find_gips()` one more time on the conquered output")) # TODO(There will be a function `continue(bg)`; see ISSUE#11)
   }else{
     goal_function_best_logvalues <- goal_function_best_logvalues[1:iteration]
     if(show_progress_bar)
