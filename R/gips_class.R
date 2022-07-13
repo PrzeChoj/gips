@@ -515,14 +515,20 @@ plot.gips <- function(x, type="both",
 
 # TODO(summary, the n_0 of best perms, the distribution of likelihood values)
 # TODO(For BG -> All visited perms)
+# NOTE: `summary.lm()` returns the object of class `summary.lm`
 summary.gips <- function(object, ...){
+  validate_gips(object)
+  
   invisible(NULL)
 }
 
 
 # TODO(The base object printed as the gips_perm. The "size" attr omitted)
 # TODO(`attr(object, "optimization_info")$visited_perms` can be printed as perms)
+# TODO(Now I think it is good as it is with `utils::str.default`)
 str.gips <- function(object, ...){
+  validate_gips(object)
+  
   utils::str(object)
 }
 
