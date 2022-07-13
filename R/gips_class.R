@@ -319,36 +319,41 @@ validate_gips <- function(g){
 #' 
 #' Printing function for gips class.
 #' 
-#' @param x object of class gips. Has to first be optimized with \code{\link{find_gips}}.
+#' @param x object of class gips.
 #' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.
+#' @param digits Number of digits after the comma for likelihood to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link{round}}.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #' 
 #' @return Invisible NULL.
 #' @export
-print.gips <- function(x, log_value = TRUE, ...){
+print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
   # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(make it prettier)
   validate_gips(x)
   
-  if(is.null(attr(x, "optimization_info"))){
-    cat(paste0("Object of class `gips` with permutation ", x[[1]],
-               #", S matrix ", attr(x, "S"),
-               " and number_of_observations = ",
-               attr(x, "number_of_observations")))
-  }else{
+  if(is.null(attr(x, "optimization_info"))){  # it is unoptimized gips object
+    log_likelihood <- log_likelihood_of_perm(perm_proposal=x[[1]], S=attr(x, "S"),
+                                             number_of_observations=attr(x, "number_of_observations"),
+                                             delta=attr(x, "delta"), D_matrix=attr(x, "D_matrix"))
     value_part <- ifelse(log_value,
-                         paste0(" with log likelihood ",
-                                attr(x, "optimization_info")[["best_perm_log_likelihood"]]),
-                         paste0(" with likelihood ",
-                                exp(attr(x, "optimization_info")[["best_perm_log_likelihood"]])))
-    cat(paste0("Object of class `gips`, optimized with algorithm ",
+                         paste0(" has log likelihood ",
+                                round(log_likelihood, digits=digits)),
+                         paste0(" has likelihood ",
+                                round(exp(log_likelihood), digits=digits)))
+    cat(paste0("The permutation ", x[[1]],
+               value_part, "."), ...)
+  }else{  # it is optimized gips object
+    log_likelihood <- attr(x, "optimization_info")[["best_perm_log_likelihood"]]
+    value_part <- ifelse(log_value,
+                         paste0(" has log likelihood ",
+                                round(log_likelihood, digits=digits)),
+                         paste0(" has likelihood ",
+                                round(exp(log_likelihood), digits=digits)))
+    cat(paste0("The permutation ", x[[1]],
+               value_part, " which was found by ",
                attr(x, "optimization_info")[["optimization_algorithm_used"]],
-               ", after ",
+               " algorithm after ",
                length(attr(x, "optimization_info")[["log_likelihood_values"]]),
-               " log_likelihood calculations, found permutation ",
-               x[[1]],
-               value_part),
-        ...)
+               " log_likelihood calculations."), ...)
   }
 }
 

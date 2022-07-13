@@ -4,12 +4,14 @@
 \alias{print.gips}
 \title{Printing gips object}
 \usage{
-\method{print}{gips}(x, log_value = TRUE, ...)
+\method{print}{gips}(x, log_value = TRUE, digits = Inf, ...)
 }
 \arguments{
 \item{x}{object of class gips. Has to first be optimized with \code{\link{find_gips}}.}
 
 \item{log_value}{logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.}
+
+\item{digits}{Number of digits after the comma for likelihood to be presented. Can be negative. Be default, \code{Inf}. It is passed to \code{\link{round}}.}
 
 \item{...}{additional arguments passed to \code{\link{cat}}.}
 }
