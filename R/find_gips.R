@@ -244,10 +244,12 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
     perm_proposal <- compose_with_transposition(visited_perms[[i]], e)
 
     goal_function_perm_proposal <- my_goal_function(perm_proposal)
-    if(is.nan(goal_function_perm_proposal) | is.infinite(goal_function_perm_proposal)){
+    if(is.nan(goal_function_perm_proposal) || is.infinite(goal_function_perm_proposal)){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
-      warning("gips is yet unable to process this S matrix. We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5")
-
+      rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                    "x"=paste0("The likelihood value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
+                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+      
       break()
     }
 

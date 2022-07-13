@@ -334,6 +334,12 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
     log_likelihood <- log_likelihood_of_perm(perm_proposal=x[[1]], S=attr(x, "S"),
                                              number_of_observations=attr(x, "number_of_observations"),
                                              delta=attr(x, "delta"), D_matrix=attr(x, "D_matrix"))
+    if(is.nan(log_likelihood) || is.infinite(log_likelihood)){
+      # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
+      rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                    "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
+                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+    }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
                                 round(log_likelihood, digits=digits)),
@@ -343,6 +349,12 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
                value_part, "."), ...)
   }else{  # it is optimized gips object
     log_likelihood <- attr(x, "optimization_info")[["best_perm_log_likelihood"]]
+    if(is.nan(log_likelihood) || is.infinite(log_likelihood)){
+      # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
+      rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                    "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
+                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+    }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
                                 round(log_likelihood, digits=digits)),

@@ -12,7 +12,7 @@ test_that("Process proper parameters", {
 test_that("Handle improper parameters", {
   expect_error(best_growth(S=matrix_invariant_by_example_perm, number_of_observations=number_of_observations, max_iter=Inf,
                            start_perm=example_perm, show_progress_bar=TRUE))
-  expect_error(gips(matrix_invariant_by_example_perm, number_of_observations, 10, return_probabilities = TRUE, optimizer = "BG"))
+  expect_error(find_gips(gips(matrix_invariant_by_example_perm/5, number_of_observations), 10, return_probabilities = TRUE, optimizer = "BG"))  # TODO(Do not divide this by 5)
   
   # A single problem at the same time:
   expect_error(check_correctness_of_arguments(S=NULL, number_of_observations, max_iter=10,
