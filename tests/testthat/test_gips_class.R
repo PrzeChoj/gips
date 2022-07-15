@@ -133,12 +133,15 @@ test_that('Properly validate the gips class',{
 })
 
 
-test_that('Plot does not work for non_optimized gips', {
+test_that('Plot `type = "both"` does not work for non_optimized gips', {
   expect_error(plot.gips(custom_perm1))
   
-  expect_error(plot(g1))
+  expect_error(plot(g1, type="both"))
+  expect_warning(plot(g1))
+  
   g1_found <- find_gips(g1, 3, show_progress_bar = FALSE)
-  expect_silent(plot(g1_found))
+  expect_warning(plot(g1_found))
+  expect_silent(plot(g1_found, type = "both"))
 })
 
 

@@ -2,12 +2,12 @@
 % Please edit documentation in R/gips_class.R
 \name{print.gips}
 \alias{print.gips}
-\title{Printing gips object}
+\title{Printing \code{gips} object}
 \usage{
 \method{print}{gips}(x, log_value = TRUE, digits = Inf, ...)
 }
 \arguments{
-\item{x}{object of class gips.}
+\item{x}{object of class \code{gips}.}
 
 \item{log_value}{logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.}
 
@@ -19,5 +19,5 @@
 Invisible NULL.
 }
 \description{
-Printing function for gips class.
+Printing function for \code{gips} class.
 }

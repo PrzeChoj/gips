@@ -52,6 +52,6 @@ g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 g
 
 if (require(graphics)) {
-  plot(g, logarithmic_x=TRUE)
+  plot(g, type="both", logarithmic_x=TRUE)
 }
 }

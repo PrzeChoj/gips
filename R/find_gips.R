@@ -35,7 +35,7 @@
 #' g
 #' 
 #' if (require(graphics)) {
-#'   plot(g, logarithmic_x=TRUE)
+#'   plot(g, type="both", logarithmic_x=TRUE)
 #' }
 find_gips <- function(g, max_iter, return_probabilities=FALSE,
                       show_progress_bar=TRUE, optimizer="MH"){
