@@ -42,7 +42,7 @@ Object of class gips.
 \description{
 Create the \code{gips} object.
 This object will consists data and all other information needed to find the invariant group.
-The optimization itself will not be performed. To do it, one have to call the TODO() function. See examples below.
+The optimization itself will not be performed. To do it, one have to call the \code{\link{find_gips}} function. See examples below.
 }
 \section{Functions}{
 \itemize{

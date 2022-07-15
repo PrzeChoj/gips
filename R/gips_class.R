@@ -2,7 +2,7 @@
 #' 
 #' Create the `gips` object.
 #' This object will consists data and all other information needed to find the invariant group.
-#' The optimization itself will not be performed. To do it, one have to call the TODO() function. See examples below.
+#' The optimization itself will not be performed. To do it, one have to call the \code{\link{find_gips}} function. See examples below.
 #' 
 #' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
@@ -78,13 +78,15 @@ gips <- function(S, number_of_observations, delta=3, D_matrix=NULL,
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
                      D_matrix, optimization_info){
-  stopifnot(is.list(list_of_gips_perm),
-            inherits(list_of_gips_perm[[1]], "gips_perm"),
-            is.matrix(S),
-            is.wholenumber(number_of_observations),
-            is.numeric(delta),
-            is.matrix(D_matrix),
-            is.null(optimization_info) || is.list(optimization_info))
+  
+  if(!is.list(list_of_gips_perm) ||
+     !inherits(list_of_gips_perm[[1]], "gips_perm") ||
+     !is.matrix(S) ||
+     !is.wholenumber(number_of_observations) ||
+     !is.numeric(delta) ||
+     !is.matrix(D_matrix) ||
+     !(is.null(optimization_info) || is.list(optimization_info)))
+    rlang::abort(c("x" = "`gips` object cannot be created from those arguments."))
   
   structure(list_of_gips_perm, S=S, number_of_observations=number_of_observations,
             delta=delta, D_matrix=D_matrix, optimization_info=optimization_info,
