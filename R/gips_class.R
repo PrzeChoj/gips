@@ -315,6 +315,126 @@ validate_gips <- function(g){
 }
 
 
+check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
+                                           start_perm, delta, D_matrix,
+                                           return_probabilities, show_progress_bar){
+  abord_text <- character(0)
+  if(!is.matrix(S))
+    abord_text <- c(abord_text,
+                    "i" = "`S` must be a matrix.",
+                    "x" = paste0("You provided `S` with type == (",
+                                 paste(typeof(S), collapse = ", "),
+                                 ")."))
+  else if(ncol(S) != nrow(S))
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be a square matrix.",
+                    "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
+                                 dim(S)[1], " and ", dim(S)[2], "."))
+  else if(!is.numeric(S)){
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be a numeric matrix.",
+                    "x" = paste0("You provided `S` as a matrix, but with non-numeric values. Your provided type is ",
+                                 typeof(S), "."))
+  }
+  else if(!matrixcalc::is.symmetric.matrix(S))
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be a symmetric matrix.",
+                    "x" = "You provided `S` as a matrix, but a non-symmetric one.",
+                    "i" = "Is your matrix approximatelly symmetric? Maybe try setting `S <- (S+t(S))/2`?")
+  else if(!matrixcalc::is.positive.semi.definite(S, tol=1e-8))
+    abord_text <- c(abord_text,
+                    "i" = "`S` matrix must be positive semi-definite matrix.",
+                    "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one.")  # TODO(The tolerance is 1e-8 and it is absolute. However, in the MASS::mvrnorm() the tolerance is 1e-6 and it is relative)
+  if(is.null(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must not be `NULL`.",
+                    "x" = "Your provided `number_of_observations` is NULL.")
+  else if(number_of_observations < 1)
+    abord_text <- c(abord_text,
+                    "i" = "`number_of_observations` must be at least 1.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  else if(!is.wholenumber(number_of_observations))
+    abord_text <- c(abord_text,
+                    "i" ="`number_of_observations` must be a whole number.",
+                    "x" = paste0("You provided `number_of_observations` == ",
+                                 number_of_observations, "."))
+  if(!(is.infinite(max_iter) || is.wholenumber(max_iter)))
+    abord_text <- c(abord_text,
+                    "i" ="`max_iter` must be either infinite (for best_growth optimizer) or a whole number.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  else if(max_iter < 2)  # TODO(Make it work for max_iter == 1)
+    abord_text <- c(abord_text,
+                    "i" = "`max_iter` must be at least 2.",
+                    "x" = paste0("You provided `max_iter` == ", max_iter, "."))
+  if(!(permutations::is.cycle(start_perm) || inherits(start_perm, 'gips_perm')))
+    abord_text <- c(abord_text,
+                    "i" = "`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.",  # this is not true, but it is close enough
+                    "x" = paste0("You provided `start_perm` with class == (",
+                                 paste(class(start_perm), collapse = ", "),
+                                 ")."))
+  else if(!(permutations::is.cycle(start_perm) || attr(start_perm, 'size') == ncol(S)))
+    abord_text <- c(abord_text,
+                    "i" = "`start_perm` must have the `size` attribute equal to the shape of a square matrix `S`",
+                    "x" = paste0("You provided `start_perm` with `size` == ",
+                                 attr(start_perm, 'size'),
+                                 ", but the `S` matrix you provided has ",
+                                 ncol(S), " columns."))
+  if(is.null(delta))
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must not be `NULL`.",
+                    "x" = "Your provided `delta` is a NULL.")
+  else if(delta <= 2)
+    abord_text <- c(abord_text,
+                    "i" ="`delta` must be strictly bigger than 2.",
+                    "x" = paste0("You provided `delta` == ", delta, "."))
+  if(!(is.null(D_matrix) || is.matrix(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a matrix.",
+                    "x" = paste0("You provided `D_matrix` with type == (",
+                                 paste(typeof(D_matrix), collapse = ", "),
+                                 ")."))
+  else if(!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`D_matrix` must either be `NULL` or a square matrix.",
+                    "x" = paste0("You provided `D_matrix` as a matrix, but with different sizes: ",
+                                 ncol(D_matrix), " and ", nrow(D_matrix), "."))
+  else if(!(is.null(D_matrix) || ncol(S) == ncol(D_matrix)))
+    abord_text <- c(abord_text,
+                    "i" ="`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
+                    "x" = paste0("You provided `S` with shape ",
+                                 ncol(S), " and ", nrow(S),
+                                 ", but also `D_matrix` with shape ",
+                                 ncol(D_matrix), " and ", nrow(D_matrix), "."))
+  if(!is.logical(return_probabilities))
+    abord_text <- c(abord_text,
+                    "i" ="`return_probabilities` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `return_probabilities` with type == (",
+                                 paste(typeof(return_probabilities), collapse = ", "),
+                                 ")."))
+  if(!is.logical(show_progress_bar))
+    abord_text <- c(abord_text,
+                    "i" ="`show_progress_bar` must be a logic value (TRUE or FALSE).",
+                    "x" = paste0("You provided `show_progress_bar` with type == (",
+                                 paste(typeof(show_progress_bar), collapse = ", "),
+                                 ")."))
+  
+  if(length(abord_text) > 0){
+    abord_text <- c(paste0("There were ", length(abord_text)/2,
+                           " problems identified with provided arguments:"),
+                    abord_text)
+    
+    if(length(abord_text) > 11){
+      abord_text <- c(abord_text[1:11],
+                      paste0("... and ", (length(abord_text)-1)/2 - 5, " more problems"))
+    }
+    
+    rlang::abort(abord_text)
+  }
+}
+
+
+
 #' Printing `gips` object
 #' 
 #' Printing function for `gips` class.
