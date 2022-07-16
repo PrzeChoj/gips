@@ -61,7 +61,7 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
 }
 
 
-#' G_function for `log_likelihood_of_perm()`
+#' G_function for `log_likelihood_of_gips()`
 #'
 #' @param delta parameter of a method
 #' @param structure_constants constants from `get_structure_constants` function

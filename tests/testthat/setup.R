@@ -29,12 +29,12 @@ example_orth_matrix <- matrix(c(rep(1/sqrt(3), 3), rep(0, 3),
                                 rep(0,3),1/sqrt(2), -1/sqrt(2), 0), nrow=6)
 
 matrix_invariant_by_example_perm <- matrix(c(
-    2, 1, 1, 3, 3, 4,
-    1, 2, 1, 3, 3, 4,
-    1, 1, 2, 3, 3, 4,
-    3, 3, 3, 5, 6, 7,
-    3, 3, 3, 6, 5, 7,
-    4, 4, 4, 7, 7, 8
+    12, 1, 1, 3, 3, 4,
+    1, 12, 1, 3, 3, 4,
+    1, 1, 12, 3, 3, 4,
+    3, 3, 3, 15, 6, 7,
+    3, 3, 3, 6, 15, 7,
+    4, 4, 4, 7, 7, 18
 ), byrow=TRUE, ncol=6)
 
 number_of_observations <- 13

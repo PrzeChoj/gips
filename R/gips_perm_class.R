@@ -2,7 +2,7 @@
 #'
 #' Create permutation objects to be passed to functions of `gips` package.
 #'
-#' @param x An object created with `permutations` package, or any object that
+#' @param x an object created with `permutations` package, or any object that
 #' can be coerced using \code{\link[permutations]{permutation}} function.
 #' @param size integer. Size of permutation (AKA cardinality of set, on which permutation
 #' is defined).

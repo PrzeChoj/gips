@@ -1,6 +1,6 @@
 Package: gips
 Title: Gaussian Models Invariant by Permutation Symmetry
-Version: 0.2.0.9000
+Version: 0.3.1.9000
 Authors@R: c(
     person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = c("aut", "cre")),
     person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = "aut"),
@@ -19,6 +19,7 @@ License: MIT + file LICENSE
 URL: https://github.com/PrzeChoj/gips
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 
+    matrixcalc,
     numbers,
     permutations,
     rlang,
@@ -31,4 +32,4 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.0.9000

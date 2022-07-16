@@ -1,28 +1,28 @@
 #' The log likelihood that the CoV matrix is invariant under permutation.
 #' 
-#' Calculate the logarithm of function proportional to a posteriori distribution, according to equation (33) and (27). If `Inf` or `NaN` is reached, produces a warning.
-#' Keep in mind this is not the log likelihood per se, but rather the funcition that is proportional to the log likelihood.
-#' It is the goal function for optimization algorithms.
+#' To be more precise, it is the logarithm of an unnormalized posterior probability.
+#' Calculated according to equation (33) and (27) from the paper. If `Inf` or `NaN` is reached, produces a warning.
+#' It is the goal function for optimization algorithms. The `perm_proposal` that maximizes this function is the maximum likelihood estimator.
 #'
 #' @export
 #'
-#' @param perm_proposal permutation of interest.
-#' @param number_of_observations number of random variables that `S` is based on.
-#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = sum(t(Z) %*% Z)/number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
-#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of size `perm_size`. When NULL, the identity matrix is taken.
+#' @param g object of class `gips`
 #'
 #' @examples
 #' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
 #' S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-#' log_likelihood_of_perm(c, 100, S1)
-log_likelihood_of_perm <- function(perm_proposal, number_of_observations, S,
-                                   delta=3, D_matrix=NULL){
-  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
-                               max_iter=2, start_perm=permutations::id,
-                               delta=delta, D_matrix=D_matrix,
-                               return_probabilities=FALSE, show_progress_bar=FALSE)
+#' g <- gips(S1, 100, perm=c)
+#' log_likelihood_of_gips(g)
+log_likelihood_of_gips <- function(g){
+  validate_gips(g)
   
+  log_likelihood_of_perm(perm_proposal=g[[1]], S=attr(g, "S"),
+                         number_of_observations=attr(g, "number_of_observations"),
+                         delta=attr(g, "delta"), D_matrix=attr(g, "D_matrix"))
+}
+
+log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
+                                   delta, D_matrix){
   U <- S * number_of_observations  # in the paper there is U everywhere in stead of S, so it is easier to use U matrix in the code
   perm_size <- dim(S)[1]
   
@@ -66,10 +66,10 @@ runif_transposition <- function(perm_size){
   sample(perm_size, 2, replace=FALSE)
 }
 
-#' Calculate log phi_part of log_likelihood_of_perm
+#' Calculate log phi_part of log_likelihood_of_gips
 #'
 #' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
-#' Rest of params as in log_likelihood_of_perm
+#' Rest of params as in log_likelihood_of_gips
 #'
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
