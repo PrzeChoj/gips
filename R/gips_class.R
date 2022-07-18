@@ -338,12 +338,12 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "x" = paste0("You provided `S` as a matrix, but with non-numeric values. Your provided type is ",
                                  typeof(S), "."))
   }
-  else if(!matrixcalc::is.symmetric.matrix(S))
+  else if(sum(S == t(S)) != (nrow(S)^2))  # this would mean the matrix is not symmetric
     abord_text <- c(abord_text,
                     "i" = "`S` matrix must be a symmetric matrix.",
                     "x" = "You provided `S` as a matrix, but a non-symmetric one.",
                     "i" = "Is your matrix approximatelly symmetric? Maybe try setting `S <- (S+t(S))/2`?")
-  else if(!matrixcalc::is.positive.semi.definite(S, tol=1e-8))
+  else if(!is.positive.semi.definite.matrix(S, tol=1e-06))
     abord_text <- c(abord_text,
                     "i" = "`S` matrix must be positive semi-definite matrix.",
                     "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one.")  # TODO(The tolerance is 1e-8 and it is absolute. However, in the MASS::mvrnorm() the tolerance is 1e-6 and it is relative)
@@ -561,7 +561,6 @@ plot.gips <- function(x, type=NA,
                                 "')`?"),
                    "i" = "Did You want to use 'type = \"heatmap\"'?"))
   }
-  
   
   # plotting:
   if(type == "heatmap"){

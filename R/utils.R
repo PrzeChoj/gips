@@ -24,3 +24,19 @@ shift_vector <- function(v, k){
 rearrange_vector <- function(v){
     shift_vector(v, which.min(v)-1)
 }
+
+
+#' Is matrix symmetric
+#' 
+#' We did not use the `matrixcalc::is.positive.semi.definite` function, because
+#' here we b=have no checks(because they were done before) and the `tol`
+#' argument is taken relative, not absolute. The `tol` argument is 1e-06,
+#' the same as in the `MASS::mvrnorm` function.
+#' 
+#' @noRd
+is.positive.semi.definite.matrix <- function (x, tol = 1e-06)
+{
+  ev <- eigen(x, symmetric = TRUE)$values
+  
+  return(all(ev >= -tol * abs(ev[1L])))
+}
