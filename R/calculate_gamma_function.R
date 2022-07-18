@@ -24,7 +24,9 @@ calculate_gamma_function <- function(perm, lambda){
   dim_gamma <- constants[['dim_omega']]
 
   if(lambda <= max((r-1)*d/(2*k))){
-    warning("Gamma integral does not convarge for a given lambda value")
+    rlang::warn(c("Gamma integral is divergent for the given permutation and lambda value.",
+                  "i" = paste0("Gamma(perm = ", as.character(perm),
+                               ", lambda = ", lambda, ") = Inf.")))
     return(Inf)  # the integral does not converge
   }
 
@@ -46,13 +48,18 @@ calculate_gamma_function <- function(perm, lambda){
 #'
 #' @param lambda positive real number
 #' @param dim_omega_i single element from `get_structure_constants`
-#' @param r_i single element  from `get_structure_constants`
-#' @param d_i single element  from `get_structure_constants`
+#' @param r_i single element from `get_structure_constants`
+#' @param d_i single element from `get_structure_constants`
 #'
 #' @return Logarithm of value of Gamma function
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i){
   if(lambda <= dim_omega_i/r_i - 1){
-    warning("Gamma omega integral does not convarge for a given lambda value")
+    rlang::warn(c("Gamma integral is divergent for the given lambda value and structure constants.",
+                  "i" = paste0("Gamma(lambda = ", lambda,
+                               ", dim_omega_i = ", dim_omega_i,
+                               ", r_i = ", r_i,
+                               ", d_i = ", d_i,
+                               ") = Inf.")))
     return(Inf)  # the integral does not converge
   }
 

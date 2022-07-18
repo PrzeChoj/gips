@@ -11,9 +11,9 @@ calculate_gamma_omega(lambda, dim_omega_i, r_i, d_i)
 
 \item{dim_omega_i}{single element from \code{get_structure_constants}}
 
-\item{r_i}{single element  from \code{get_structure_constants}}
+\item{r_i}{single element from \code{get_structure_constants}}
 
-\item{d_i}{single element  from \code{get_structure_constants}}
+\item{d_i}{single element from \code{get_structure_constants}}
 }
 \value{
 Logarithm of value of Gamma function

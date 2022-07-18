@@ -50,10 +50,10 @@ log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
   out <- Ac_part + G_part + phi_part
 
   if(is.infinite(out)){
-    warning("Infinite value of a likelihood")
+    rlang::warn("The infinite value of a likelihood was produced.")
   }
   if(is.nan(out)){
-    warning("NaN value of a likelihood")
+    rlang::warn("The NaN value of a likelihood was produced.")
   }
 
   out
