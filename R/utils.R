@@ -38,5 +38,5 @@ is.positive.semi.definite.matrix <- function (x, tol = 1e-06)
 {
   ev <- eigen(x, symmetric = TRUE)$values
   
-  return(all(ev >= -tol * abs(ev[1L])))
+  return(all(ev >= -tol * abs(ev[1L])))  # 1L is the biggest eigenvalue
 }
