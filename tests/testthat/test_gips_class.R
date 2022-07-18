@@ -32,6 +32,9 @@ test_that('Properly validate the gips class',{
   g1 <- gips(S, number_of_observations, perm = custom_perm1)
   
   g2 <- find_gips(g1, max_iter=3, show_progress_bar=FALSE, optimizer="MH", return_probabilities = TRUE)
+  while (attr(g2, "optimization_info")$acceptance_rate == 0) {  # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again.
+    g2 <- find_gips(g1, max_iter=3, show_progress_bar=FALSE, optimizer="MH", return_probabilities = TRUE)
+  }
   g3 <- find_gips(g1, max_iter=3, show_progress_bar=FALSE, optimizer="BG", return_probabilities = FALSE)
   
   
@@ -103,7 +106,7 @@ test_that('Properly validate the gips class',{
   g_err <- g2
   len_post_prob <- length(attr(g_err, "optimization_info")[["post_probabilities"]])
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1/(len_post_prob-1), len_post_prob-1))
-  expect_error(validate_gips(g_err))  # TODO(investigate --->>>  once this `validate` did not throw the expected error!)
+  expect_error(validate_gips(g_err))
   
   g_err <- g2
   attr(g_err, "optimization_info")[["did_converge"]] <- TRUE
