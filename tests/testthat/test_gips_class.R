@@ -58,6 +58,15 @@ test_that('Properly validate the gips class',{
   expect_error(validate_gips(g_err))
   
   g_err <- g2
+  attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
+  expect_error(validate_gips(g_err))
+  
+  g_err <- g2
+  attr(g_err, "optimization_info")[["non_existing"]] <- "test"
+  attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
+  expect_error(validate_gips(g_err))  # this one shows an error that one have the list of 10 elements, which is actually expected, but the names of the fields are not expected.
+  
+  g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
   expect_error(validate_gips(g_err))
   

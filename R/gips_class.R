@@ -153,16 +153,34 @@ validate_gips <- function(g){
   }
   
   if(is.list(optimization_info)){  # Validate the `optimization_info` after the optimization
-    if(!(length(optimization_info) == 10)){
+    legal_fields <- c('acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood')
+    
+    lacking_fields <- setdiff(legal_fields, names(optimization_info))
+    illegal_fields <- setdiff(names(optimization_info), legal_fields)
+    
+    abord_text <- character(0)
+    
+    if(!(length(lacking_fields) == 0)){
+      abord_text <- c("x" = paste0("Your `attr(g, 'optimization_info')` lacks the following fields: ",
+                                   paste(lacking_fields, collapse = ", "), "."))
+    }
+    if(!(length(illegal_fields) == 0)){
+      abord_text <- c(abord_text,
+                      "x" = paste0("Your `attr(g, 'optimization_info')` has the following, unexpected fields: ",
+                                   paste(illegal_fields, collapse = ", "), "."))
+    }
+    
+    if(length(abord_text) > 0){
       rlang::abort(c("There was a problem with the 'optimization_info' attribute.",
-                     "i" = "After optimiation, `attr(g, 'optimization_info')` must be a list of 10 elements, namely: 'acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood'.",
-                     "x" = paste0("You have `names(attr(g, 'optimization_info'))` == (",
-                                  paste(names(optimization_info), collapse = ", "),  # TODO(Should there be printed only the unexpected ones?)
-                                  ")."),
+                     "i" = paste0("After optimiation, `attr(g, 'optimization_info')` must be a list of 10 elements with names: ",
+                                  paste(legal_fields, collapse = ", "), "."),
+                     "x" = paste0("You have a list of ", length(names(optimization_info)), " elements."),
+                     abord_text,
                      "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
                      "i" = "Did You accidentally set one of `attr(g, 'optimization_info')` elements to `NULL`?"))
     }
     
+    # All the fields as named as they should be. Check if their content are as expected:
     abord_text <- character(0)
     if(!(is.numeric(optimization_info[["acceptance_rate"]]) &&
          (length(optimization_info[["acceptance_rate"]]) == 1) &&
@@ -241,7 +259,7 @@ validate_gips <- function(g){
     }else if(!(is.null(optimization_info[["post_probabilities"]]) ||
               length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))){
       abord_text <- c(abord_text,
-                      "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was visided, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
+                      "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visided permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
                       "x" = paste0("You have `length(attr(g, 'optimization_info')[['visited_perms']])` == ",
                                    length(optimization_info[["post_probabilities"]]),
                                    ", but `length(attr(g, 'optimization_info')[['post_probabilities']])` == ",
