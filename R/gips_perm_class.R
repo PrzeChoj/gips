@@ -73,9 +73,6 @@ new_gips_perm <- function(cycles, size){
     structure(reordered_cycles, size=size, class='gips_perm')
 }
 
-is.wholenumber <-
-    function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
-
 #' Print gips_perm
 #'
 #' Implementation of S3 method.

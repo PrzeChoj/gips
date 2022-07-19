@@ -25,6 +25,8 @@ rearrange_vector <- function(v){
     shift_vector(v, which.min(v)-1)
 }
 
+is.wholenumber <-
+  function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
 
 #' Is matrix symmetric
 #' 
