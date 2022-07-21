@@ -31,14 +31,17 @@ is.wholenumber <-
 #' Is matrix symmetric
 #' 
 #' We did not use the `matrixcalc::is.positive.semi.definite` function, because
-#' here we b=have no checks(because they were done before) and the `tol`
-#' argument is taken relative, not absolute. The `tol` argument is 1e-06,
-#' the same as in the `MASS::mvrnorm` function.
+#' here we have no checks(because they were done before) and the `tol`
+#' argument is taken relative, not absolute. The `tolerance` argument here is
+#' 1e-06, which is the same as in the `MASS::mvrnorm` function.
+#' 
+#' Watch out that this function does NOT checks weather
+#' the `matrix_of_interest` is indeed a matrix.
 #' 
 #' @noRd
-is.positive.semi.definite.matrix <- function (x, tol = 1e-06)
+is.positive.semi.definite.matrix <- function (matrix_of_interest, tolerance = 1e-06)
 {
-  ev <- eigen(x, symmetric = TRUE)$values
+  eigenvalues <- eigen(matrix_of_interest, symmetric = TRUE)$values
   
-  return(all(ev >= -tol * abs(ev[1L])))  # 1L is the biggest eigenvalue
+  return(all(eigenvalues >= -tolerance * abs(eigenvalues[1])))  # 1st is the biggest eigenvalue
 }

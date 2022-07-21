@@ -30,7 +30,7 @@ object of class gips
 Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 }
 \examples{
-require(MASS)  # for mvrnorm()
+require("MASS")  # for mvrnorm()
 
 perm_size <- 6
 mu <- numeric(perm_size)
@@ -51,7 +51,7 @@ g <- gips(S, number_of_observations)
 g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 g
 
-if (require(graphics)) {
+if (require("graphics")) {
   plot(g, type="both", logarithmic_x=TRUE)
 }
 }

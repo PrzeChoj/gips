@@ -15,7 +15,7 @@
 #' @export
 #' 
 #' @examples
-#' require(MASS)  # for mvrnorm()
+#' require("MASS")  # for mvrnorm()
 #' 
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
@@ -36,7 +36,7 @@
 #' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 #' g
 #' 
-#' if (require(graphics)) {
+#' if (require("graphics")) {
 #'   plot(g, type="both", logarithmic_x=TRUE)
 #' }
 gips <- function(S, number_of_observations, delta=3, D_matrix=NULL,
@@ -361,7 +361,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "i" = "`S` matrix must be a symmetric matrix.",
                     "x" = "You provided `S` as a matrix, but a non-symmetric one.",
                     "i" = "Is your matrix approximatelly symmetric? Maybe try setting `S <- (S+t(S))/2`?")
-  else if(!is.positive.semi.definite.matrix(S, tol=1e-06))
+  else if(!is.positive.semi.definite.matrix(S, tolerance=1e-06))
     abord_text <- c(abord_text,
                     "i" = "`S` matrix must be positive semi-definite matrix.",
                     "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one.")  # TODO(The tolerance is 1e-8 and it is absolute. However, in the MASS::mvrnorm() the tolerance is 1e-6 and it is relative)
