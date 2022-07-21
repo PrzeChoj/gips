@@ -57,9 +57,20 @@ test_that('gips_perm coerces to permutations::cycle',{
                  perm_allfixed)
 })
 
+gips_example_perm <- gips_perm(example_perm, 6)
+gips_example_perm_copy <- gips_perm(example_perm, 6)
+gips_example_perm_different_size <- gips_perm(example_perm, 5)
+gips_different_perm <- gips_perm(example_perm2, 6)
+
+test_that('identical() works with gips_perms', {
+    expect_true(identical(gips_example_perm, gips_example_perm_copy))
+    expect_false(identical(gips_example_perm, gips_example_perm_different_size))
+    expect_false(identical(gips_example_perm, gips_different_perm))
+})
+
 
 # TODO more exact tests
-gips_example_perm <- gips_perm(example_perm, 6)
+
 transpositions <- expand.grid(1:6, 1:6)
 transpositions <- as.matrix(transpositions[transpositions$Var1 < transpositions$Var2,])
 for(i in 1:nrow(transpositions)){
