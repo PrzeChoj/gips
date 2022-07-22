@@ -63,23 +63,39 @@ gips_perm <- function(x, size){
 
     subcycles <- c(cycles, as.list(fixed_elements))
 
-    new_gips_perm(subcycles, size)
+    new_gips_perm(rearrange_cycles(subcycles), size)
+}
+
+#' Rearrange cycles
+#'
+#' `gips_perm` object stores permutations in cyclic form in following convention:
+#' 1) cycles are ordered by their minimal element
+#' 2) First element of a cycle is its minimal
+#'
+#' @param cycles list of integer vectors
+#'
+#' @examples
+#' cycles <- list(c(2,4,3), c(5,1))
+#' rearranged <- rearrange_cycles(cycles)
+#' # rearranged is list (c(1,5), c(2,4,3))
+#' @noRd
+rearrange_cycles <- function(cycles){
+    rearranged_cycles <- lapply(cycles, rearrange_vector)
+    representatives <- sapply(rearranged_cycles, function(v)v[1])
+    rearranged_cycles[order(representatives)]
 }
 
 #' @describeIn gips_perm Constructor
 #'
 #' Only intended for low-level use.
 #'
-#' @param cycles list of integer vectors. Each vector corresponds to a single cycle
+#' @param cycles list of rearranged integer vectors. Each vector corresponds to a single cycle
 #' of a permutation.
 #'
 #' @export
 
 new_gips_perm <- function(cycles, size){
-    rearranged_cycles <- lapply(cycles, rearrange_vector)
-    representatives <- sapply(rearranged_cycles, function(v)v[1])
-    reordered_cycles <- rearranged_cycles[order(representatives)]
-    structure(reordered_cycles, size=size, class='gips_perm')
+    structure(cycles, size=size, class='gips_perm')
 }
 
 #' Print gips_perm
@@ -149,7 +165,8 @@ compose_with_transposition <- function(gips_perm, transposition){
         new_cycle <- c(fragment_1, fragment_2)
         composed_gips_perm <- add_cycle(composed_gips_perm, new_cycle)
     }
-    new_gips_perm(composed_gips_perm, attr(gips_perm, 'size'))
+    new_gips_perm(rearrange_cycles(composed_gips_perm),
+                  attr(gips_perm, 'size'))
 }
 
 #' Add a new cycle to permutation

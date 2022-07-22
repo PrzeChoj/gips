@@ -16,7 +16,7 @@ can be coerced using \code{\link[permutations]{permutation}} function.}
 \item{size}{integer. Size of permutation (AKA cardinality of set, on which permutation
 is defined).}
 
-\item{cycles}{list of integer vectors. Each vector corresponds to a single cycle
+\item{cycles}{list of rearranged integer vectors. Each vector corresponds to a single cycle
 of a permutation.}
 }
 \description{
