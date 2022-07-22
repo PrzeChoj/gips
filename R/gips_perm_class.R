@@ -32,15 +32,24 @@ gips_perm <- function(x, size){
                        "x" = paste0("You provided `size` == ", size, ".")))
     x <- permutations::as.cycle(x)
 
+    if(length(unclass(x)) > 1){
+        rlang::warn("Passing multiple permutations passed to `gips_perm` is not supported. Taking only the first one",
+                    "i" = paste0("Passed ", length(unclass(x)), "permutations."))
+        x <- x[1]
+    }
+
     if(is.null(permutations::is.id(x))){
         return(new_gips_perm(list(), 0))
     }
+
 
     if (permutations::is.id(x)) {
         x <- as.list(1:size)
         return(new_gips_perm(x, size))
     }
+
     cycles <- unclass(x)[[1]]
+
     representatives <- permutations::get1(x)
 
     # unfortunately, cycles of length 1 are ignored
@@ -124,23 +133,23 @@ compose_with_transposition <- function(gips_perm, transposition){
         transposition[2] %in% cycle))
     cycle_1 <- gips_perm[[cycle_1_index]]
     cycle_2 <- gips_perm[[cycle_2_index]]
-    new_gips_perm <- gips_perm[c(-cycle_1_index, -cycle_2_index)]
+    composed_gips_perm <- gips_perm[c(-cycle_1_index, -cycle_2_index)]
     if(cycle_1_index == cycle_2_index){
         # We are breaking cycle into 2 cycles
         shifted_cycle <- shift_vector(cycle_1, which(cycle_1 == transposition[1])-1)
         new_cycle_1 <- shifted_cycle[1:(which(shifted_cycle == transposition[2])-1)]
         new_cycle_2 <- shifted_cycle[(which(shifted_cycle == transposition[2])):length(shifted_cycle)]
-        new_gips_perm <- add_cycle(new_gips_perm, new_cycle_1)
-        new_gips_perm <- add_cycle(new_gips_perm, new_cycle_2)
+        composed_gips_perm <- add_cycle(composed_gips_perm, new_cycle_1)
+        composed_gips_perm <- add_cycle(composed_gips_perm, new_cycle_2)
     } else {
         # We are merging 2 cycles
         ind <- which(cycle_1 == transposition[1])
         fragment_1 <- shift_vector(cycle_2, which(cycle_2 == transposition[2])-1)
         fragment_2 <- shift_vector(cycle_1, which(cycle_1 == transposition[1])-1)
         new_cycle <- c(fragment_1, fragment_2)
-        new_gips_perm <- add_cycle(new_gips_perm, new_cycle)
+        composed_gips_perm <- add_cycle(composed_gips_perm, new_cycle)
     }
-    new_gips_perm(new_gips_perm, attr(gips_perm, 'size'))
+    new_gips_perm(composed_gips_perm, attr(gips_perm, 'size'))
 }
 
 #' Add a new cycle to permutation

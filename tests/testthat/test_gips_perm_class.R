@@ -44,6 +44,13 @@ test_that('gips_perm works for empty permutation',{
                  structure(list(), size=0, class='gips_perm'))
 })
 
+test_that('gips_perm warns when multiple permutations passed',{
+    expect_warning(out <- gips_perm(c('(1,2,3)', '(1,3,2)'), 3),
+                   'multiple permutations')
+    expect_true(identical(gips_perm('(1,2,3)', 3),
+                          out))
+})
+
 test_that('gips_perm coerces to permutations::cycle',{
     expect_equal(permutations::as.cycle(gips_perm_nofixed),
                  perm_nofixed)
