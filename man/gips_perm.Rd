@@ -7,7 +7,7 @@
 \usage{
 gips_perm(x, size)
 
-new_gips_perm(cycles, size)
+new_gips_perm(rearranged_cycles, size)
 }
 \arguments{
 \item{x}{an object created with \code{permutations} package, or any object that
@@ -16,7 +16,7 @@ can be coerced using \code{\link[permutations]{permutation}} function.}
 \item{size}{integer. Size of permutation (AKA cardinality of set, on which permutation
 is defined).}
 
-\item{cycles}{list of rearranged integer vectors. Each vector corresponds to a single cycle
+\item{rearranged_cycles}{list of rearranged integer vectors. Each vector corresponds to a single cycle
 of a permutation.}
 }
 \description{

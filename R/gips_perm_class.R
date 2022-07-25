@@ -26,6 +26,11 @@ gips_perm <- function(x, size){
         rlang::abort(c("There was a problem identified with provided argument:",
                        "i" = '`size` argument must be provided.',
                        "x" = "You did not provide the `size` argument."))
+    if(length(size) > 1)
+      rlang::abort(c("There was a problem identified with provided argument:",
+                     "i" = '`size` argument must be of length 1',
+                     "x" = paste0("You provided the `size` argument of length ",
+                     length(size), ".")))
     if(!is.wholenumber(size))
         rlang::abort(c("There was a problem identified with provided argument:",
                        "i" = '`size` must be a whole number.',
@@ -33,19 +38,18 @@ gips_perm <- function(x, size){
     x <- permutations::as.cycle(x)
 
     if(length(unclass(x)) > 1){
-        rlang::warn("Passing multiple permutations passed to `gips_perm` is not supported. Taking only the first one",
-                    "i" = paste0("Passed ", length(unclass(x)), "permutations."))
+        rlang::warn(c("Passing multiple permutations passed to `gips_perm` is not supported. Taking only the first one.",
+                      "i" = paste0("Passed ", length(unclass(x)), " permutations.")))
         x <- x[1]
     }
 
     if(is.null(permutations::is.id(x))){
-        return(new_gips_perm(list(), 0))
+        return(new_gips_perm(list(), 0))  # rearrange_cycles is not needed, because `identical(rearrange_cycles(list()), list())`
     }
-
-
+    
     if (permutations::is.id(x)) {
         x <- as.list(1:size)
-        return(new_gips_perm(x, size))
+        return(new_gips_perm(x, size))  # rearrange_cycles is not needed, because `identical(rearrange_cycles(x), x)`
     }
 
     cycles <- unclass(x)[[1]]
@@ -89,13 +93,13 @@ rearrange_cycles <- function(cycles){
 #'
 #' Only intended for low-level use.
 #'
-#' @param cycles list of rearranged integer vectors. Each vector corresponds to a single cycle
+#' @param rearranged_cycles list of rearranged integer vectors. Each vector corresponds to a single cycle
 #' of a permutation.
 #'
 #' @export
 
-new_gips_perm <- function(cycles, size){
-    structure(cycles, size=size, class='gips_perm')
+new_gips_perm <- function(rearranged_cycles, size){
+    structure(rearranged_cycles, size=size, class='gips_perm')
 }
 
 #' Print gips_perm

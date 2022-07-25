@@ -47,6 +47,8 @@ test_that('gips_perm works for empty permutation',{
 test_that('gips_perm warns when multiple permutations passed',{
     expect_warning(out <- gips_perm(c('(1,2,3)', '(1,3,2)'), 3),
                    'multiple permutations')
+    expect_warning(out <- gips_perm(c('(1,2,3)', '(1,3,2)'), 3),
+                   '2 permutations')
     expect_true(identical(gips_perm('(1,2,3)', 3),
                           out))
 })
@@ -75,9 +77,6 @@ test_that('identical() works with gips_perms', {
     expect_false(identical(gips_example_perm, gips_different_perm))
 })
 
-
-# TODO more exact tests
-
 transpositions <- expand.grid(1:6, 1:6)
 transpositions <- as.matrix(transpositions[transpositions$Var1 < transpositions$Var2,])
 for(i in 1:nrow(transpositions)){
@@ -93,3 +92,14 @@ for(i in 1:nrow(transpositions)){
               })
 }
 
+test_that('rearrange_cycles() works properly', {
+  cycles <- list(c(2,4,3), c(5,1))
+  rearranged <- rearrange_cycles(cycles)
+  
+  expect_true(identical(rearranged, list(c(1,5), c(2,4,3))))
+  expect_true(identical(rearrange_cycles(list()), list()))
+  
+  rand_size <- sample(1000, 1)
+  x <- as.list(1:rand_size)
+  expect_true(identical(rearrange_cycles(x), x))
+})
