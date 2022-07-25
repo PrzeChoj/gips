@@ -82,7 +82,13 @@ test_that('Properly validate the gips class',{
   class(attr(g_err, "optimization_info")[["visited_perms"]][[1]]) <- "test"
   expect_error(validate_gips(g_err))
   
-  # TODO(Test for compering the last_perm with the last element of visited_perms)
+  g_err <- g2
+  attr(g_err, "optimization_info")[["last_perm"]] <- 7
+  expect_error(validate_gips(g_err))
+  
+  g_err <- g2
+  attr(g_err, "optimization_info")[["last_perm"]] <- gips_perm('', 6)
+  expect_error(validate_gips(g_err))
   
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- 7
