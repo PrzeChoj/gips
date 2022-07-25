@@ -1,10 +1,10 @@
 Type: Package
 Package: gips
-Title: Gaussian Models Invariant by Permutation Symmetry
+Title: Gaussian Model Invariant by Permutation Symmetry
 Version: 0.3.1.9000
 Authors@R: c(
-    person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = c("aut", "cre")),
-    person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = "aut"),
+    person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = c("aut", "cre")),
+    person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = "aut"),
     person("Bartosz", "Kolodziejek", , "b.kolodziejek@mini.pw.edu.pl", role = "aut",
            comment = c(ORCID = "0000-0002-5220-9012"))
   )
