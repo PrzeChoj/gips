@@ -489,7 +489,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -504,7 +504,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -568,7 +568,7 @@ plot.gips <- function(x, type=NA,
     
     warn_text <- paste0("The 'type = NA' was automatically changed to 'type = \"",
                         type, "\"'.")
-    rlang::warn(c("You used the default value of the 'type' argument.",
+    rlang::warn(c("You used the default value of the 'type' argument in `plot()` for gips object.",
                   "i" = warn_text))
   }
   

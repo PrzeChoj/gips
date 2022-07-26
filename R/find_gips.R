@@ -143,7 +143,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for dim(S)[1] > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
       
       break()
     }
@@ -275,7 +275,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
     close(progressBar)
 
   if(!did_converge){
-    rlang::warn(c(paste0("Algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
+    rlang::warn(c(paste0("Best Growth algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
                   "i" = "We reccomend to run the `find_gips()` one more time on the conquered output")) # TODO(There will be a function `continue(bg)`; see ISSUE#11)
   }else{
     goal_function_best_logvalues <- goal_function_best_logvalues[1:iteration]
