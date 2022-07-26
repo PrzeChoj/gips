@@ -6,3 +6,4 @@ tests/.DS_Store
 R/issue_5.R
 finding_cycles_on_matrix.*
 benchmark*
+tests/testthat/Rplots.pdf
