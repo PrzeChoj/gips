@@ -153,7 +153,7 @@ validate_gips <- function(g){
   }
   
   if(is.list(optimization_info)){  # Validate the `optimization_info` after the optimization
-    legal_fields <- c('acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood')
+    legal_fields <- c('acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood', 'optimization_time')
     
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -173,12 +173,12 @@ validate_gips <- function(g){
     # abort the validation
     if(length(abort_text) > 0){
       rlang::abort(c("There was a problem with the 'optimization_info' attribute.",
-                     "i" = paste0("After optimiation, `attr(g, 'optimization_info')` must be a list of 10 elements with names: ",
+                     "i" = paste0("After optimiation, `attr(g, 'optimization_info')` must be a list of 11 elements with names: ",
                                   paste(legal_fields, collapse = ", "), "."),
                      "x" = paste0("You have a list of ", length(names(optimization_info)), " elements."),
                      abort_text,
                      "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
-                     "i" = "Did You accidentally set one of `attr(g, 'optimization_info')` elements to `NULL`?"))
+                     "i" = "Did You accidentally set one of `attr(g, 'optimization_info')` elements to `NULL` or `NA`?"))
     }
     
     # All the fields as named as they should be. Check if their content are as expected:
@@ -323,6 +323,21 @@ validate_gips <- function(g){
                                    ", but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g[[1]], 'optimization_info')[['last_perm']]))` == ",
                                    log_likelihood_of_gips(best_perm_gips), "."))
     }
+    if(is.na(optimization_info[["optimization_time"]])){
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
+                      "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.")
+    }else if(!inherits(optimization_info[["optimization_time"]], "difftime")){
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be of a class 'difftime'.",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_time']]` of a class (",
+                                   paste0(class(optimization_info[["optimization_time"]]), collapse = ", "), ")."))
+    }else if(optimization_info[["optimization_time"]] <= 0){
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be a time difference bigger than 0.",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_time']] == ",
+                                   optimization_info[["optimization_time"]], "`."))
+    }
     
     
     if(length(abort_text) > 0){
@@ -332,7 +347,7 @@ validate_gips <- function(g){
       
       if(length(abort_text) > 11){
         abort_text <- c(abort_text[1:11],
-                        paste0("... and ", (length(abort_text)-1)/2 - 5, " more problems"))
+                        "x" = paste0("... and ", (length(abort_text)-1)/2 - 5, " more problems"))
       }
       
       abort_text <- c(abort_text,

@@ -62,21 +62,25 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
                    "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"))
   }
   
+  start_time <- Sys.time()
   
   if(optimizer %in% c("MH", "Metropolis_Hastings")){
-    return(Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
-                               max_iter=max_iter, start_perm=start_perm,
-                               delta=delta, D_matrix=D_matrix,
-                               return_probabilities=return_probabilities,
-                               show_progress_bar=show_progress_bar))
+    gips_optimized <- Metropolis_Hastings(S=S, number_of_observations=number_of_observations,
+                                          max_iter=max_iter, start_perm=start_perm,
+                                          delta=delta, D_matrix=D_matrix,
+                                          return_probabilities=return_probabilities,
+                                          show_progress_bar=show_progress_bar)
+  }else if(optimizer %in% c("BG", "best_growth")){
+    gips_optimized <- best_growth(S=S, number_of_observations=number_of_observations,
+                                  max_iter=max_iter, start_perm=start_perm,
+                                  delta=delta, D_matrix=D_matrix,
+                                  show_progress_bar=show_progress_bar)
   }
   
-  if(optimizer %in% c("BG", "best_growth")){
-    return(best_growth(S=S, number_of_observations=number_of_observations,
-                       max_iter=max_iter, start_perm=start_perm,
-                       delta=delta, D_matrix=D_matrix,
-                       show_progress_bar=show_progress_bar))
-  }
+  end_time <- Sys.time()
+  attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
+  
+  return(gips_optimized)
 }
 
 
@@ -184,7 +188,8 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
                             "optimization_algorithm_used" = "Metropolis_Hastings",
                             "post_probabilities" = probabilities,
                             "did_converge" = NULL,
-                            "best_perm_log_likelihood" = found_perm_log_likelihood)
+                            "best_perm_log_likelihood" = found_perm_log_likelihood,
+                            "optimization_time" = NA)
   
   
   new_gips(list(found_perm), S, number_of_observations, delta,
@@ -294,7 +299,8 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                             "optimization_algorithm_used" = "best_growth",
                             "post_probabilities" = NULL,
                             "did_converge" = did_converge,
-                            "best_perm_log_likelihood" = goal_function_best_logvalues[iteration])
+                            "best_perm_log_likelihood" = goal_function_best_logvalues[iteration],
+                            "optimization_time" = NA)
   
   new_gips(list(speciments[[iteration]]), S, number_of_observations, delta,
            D_matrix, optimization_info)

@@ -139,6 +139,27 @@ test_that('Properly validate the gips class',{
   attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
   expect_error(validate_gips(g_err))
   
+  g_err <- g2
+  attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
+  expect_error(validate_gips(g_err))
+  
+  g_err <- g2
+  time_now <- Sys.time()
+  attr(g_err, "optimization_info")[["optimization_time"]] <- time_now
+  expect_error(validate_gips(g_err))
+  
+  g_err <- g2
+  time_now <- Sys.time()
+  attr(g_err, "optimization_info")[["optimization_time"]] <- 1
+  expect_error(validate_gips(g_err))
+  
+  g_err <- g2
+  time_now <- Sys.time()
+  attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now)
+  expect_error(validate_gips(g_err))
+  
+  
+  
   # more than 5 problems at the time:
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
@@ -147,6 +168,7 @@ test_that('Properly validate the gips class',{
   attr(g_err, "optimization_info")[["iterations_performed"]] <- c(2,2)
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1/(len_post_prob-1), len_post_prob-1))
   attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
   expect_error(validate_gips(g_err))
 })
 
