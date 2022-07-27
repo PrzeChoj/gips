@@ -34,6 +34,12 @@ test_that('log_likelihood_of_gips returns proper values', {
                6^(-52) * gamma(52) * gamma(51.5) * sqrt(2*pi) / (pi / sqrt(2)))
 })
 
+test_that('log_likelihood_of_perm returns proper values', {
+  expect_silent(log_likelihood_of_perm(perm_proposal='(1,2)', S=S1,
+                                       number_of_observations=100,
+                                       3, D_matrix=NULL))
+})
+
 test_that('log_likelihood_of_gips has the desired property', {
   # Example from the paper chapter 5
   # This test is randomized.

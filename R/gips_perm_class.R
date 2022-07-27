@@ -16,6 +16,7 @@
 #' # note the necessity of `size` parameter
 #' gperm <- gips_perm(permutations::as.cycle('(5,4)'), 7)
 #' gperm <- gips_perm('(1,2)(5,4)', 7)
+#' gperm
 #'
 #' @export
 

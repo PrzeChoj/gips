@@ -10,7 +10,7 @@ S <- matrix(rnorm(36), ncol=6)
 gips_example_perm <- gips_perm(example_perm, 6)
 
 
-test_that('projected matrix is symvariant by example_perm', {
+test_that('projected matrix is invariant by example_perm', {
     projected <- project_matrix(S, gips_example_perm)
     expect_true(isSymmetric(projected))
     # now we need to check only lower diagonal
@@ -24,6 +24,20 @@ test_that('projected matrix is symvariant by example_perm', {
                  projected[6, 2:3])
     expect_equal(projected[4,4], projected[5,5])
     expect_equal(projected[6,4], projected[6,5])
+    
+    # other ways of computing the same outcome
+    projected2 <- project_matrix(S, '(1,2,3)(4,5)')
+    expect_identical(projected, projected2)
+    
+    precomputed_equal_indices <- get_equal_indices_by_perm(gips_perm(example_perm, 6))
+    projected3 <- project_matrix(S, example_perm, precomputed_equal_indices)
+    expect_identical(projected, projected3)
+})
+
+test_that('project_matrix gives errors', {
+  expect_error(project_matrix(7, gips_example_perm))
+  expect_error(project_matrix(matrix(rnorm(30), ncol=6), gips_example_perm))
+  expect_error(project_matrix(matrix(rnorm(25), ncol=5), gips_example_perm))
 })
 
 test_that('get_equal_indices_by_perm works for example_perm', {

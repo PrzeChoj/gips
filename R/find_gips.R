@@ -53,7 +53,8 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth').",
-                   "x" = paste0("You provided `optimizer` == ", optimizer, ".")))
+                   "x" = paste0("You provided `optimizer` == ", optimizer, "."),
+                   "i" = "Did You misspelled the optimizer name?"))
   }
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
     rlang::abort(c("There was a problem identified with provided arguments:",

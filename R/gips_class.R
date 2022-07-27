@@ -364,14 +364,15 @@ validate_gips <- function(g){
 check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                                            start_perm, delta, D_matrix,
                                            return_probabilities, show_progress_bar){
-  abort_text <- character(0)
   if(!is.matrix(S))
-    abort_text <- c(abort_text,
-                    "i" = "`S` must be a matrix.",
-                    "x" = paste0("You provided `S` with type == (",
-                                 paste(typeof(S), collapse = ", "),
-                                 ")."))
-  else if(ncol(S) != nrow(S))
+    rlang::abort(c("There was a problem identified with provided S argument:",
+                   "i" = "`S` must be a matrix.",
+                   "x" = paste0("You provided `S` with type == (",
+                                paste(typeof(S), collapse = ", "),
+                                ").")))
+  abort_text <- character(0)
+  additional_info <- 0  # for calculation of the number of problems
+  if(ncol(S) != nrow(S))
     abort_text <- c(abort_text,
                     "i" = "`S` matrix must be a square matrix.",
                     "x" = paste0("You provided `S` as a matrix, but with different sizes: ",
@@ -382,11 +383,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "x" = paste0("You provided `S` as a matrix, but with non-numeric values. Your provided type is ",
                                  typeof(S), "."))
   }
-  else if(sum(S == t(S)) != (nrow(S)^2))  # this would mean the matrix is not symmetric
+  else if(sum(S == t(S)) != (nrow(S)^2)){  # this would mean the matrix is not symmetric
     abort_text <- c(abort_text,
                     "i" = "`S` matrix must be a symmetric matrix.",
                     "x" = "You provided `S` as a matrix, but a non-symmetric one.",
                     "i" = "Is your matrix approximatelly symmetric? Maybe try setting `S <- (S+t(S))/2`?")
+    additional_info <- additional_info + 1  # for calculation of the number of problems
+  }
   else if(!is.positive.semi.definite.matrix(S, tolerance=1e-06))
     abort_text <- c(abort_text,
                     "i" = "`S` matrix must be positive semi-definite matrix.",
@@ -466,7 +469,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                                  ")."))
   
   if(length(abort_text) > 0){
-    abort_text <- c(paste0("There were ", length(abort_text)/2,
+    abort_text <- c(paste0("There were ", (length(abort_text) - additional_info)/2,
                            " problems identified with provided arguments:"),
                     abort_text)
     

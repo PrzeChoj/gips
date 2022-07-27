@@ -66,6 +66,19 @@ test_that('gips_perm coerces to permutations::cycle',{
                  perm_allfixed)
 })
 
+test_that('gips_perm throws errors on bad arguments', {
+  expect_error(gips_perm(''), 'You did not provide the `size` arg')
+  expect_error(gips_perm('', c(4,3)),
+               'You provided the `size` argument of length 2')
+  expect_error(gips_perm('', 3.2),
+               'You provided `size` == 3.2')
+})
+
+test_that('object of gips_perm class can be printed', {
+  expect_output(print(gips_perm('(1,2)(5,4)', 7)),
+                regexp = '\\(12\\)\\(45\\)')
+})
+
 gips_example_perm <- gips_perm(example_perm, 6)
 gips_example_perm_copy <- gips_perm(example_perm, 6)
 gips_example_perm_different_size <- gips_perm(example_perm, 5)

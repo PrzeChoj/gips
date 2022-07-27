@@ -38,6 +38,11 @@ test_that('calculate_gamma_omega returns proper value',{
                sqrt(pi / 4)) # gamma(1.5)
 })
 
+test_that('calculate_gamma_omega gives warning and infinity on divergent integral',{
+  expect_warning(out <- calculate_gamma_omega(0.4, 3, 2, 1))
+  expect_true(is.infinite(out))
+})
+
 test_that("when L is 1, G_function returns the same value as calculate_gamma_omega", {
   structure_constants <- get_structure_constants(gips_cprim)
   lambda <- 1/2 * structure_constants[['k']][1] * (delta-2) + structure_constants[['dim_omega']][1]/structure_constants[['r']][1]
@@ -67,8 +72,6 @@ test_that("calculate_gamma_function has desired properties", {
 
   expect_warning(calculate_gamma_function(gips_cprim, 0.5))
 })
-
-
 
 
 
