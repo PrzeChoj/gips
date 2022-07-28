@@ -9,7 +9,7 @@ find_gips(
   max_iter,
   return_probabilities = FALSE,
   show_progress_bar = TRUE,
-  optimizer = "MH"
+  optimizer = NA
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ find_gips(
 
 \item{show_progress_bar}{boolean. Indicate weather or not show the progress bar.}
 
-\item{optimizer}{the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)}
+\item{optimizer}{the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "continue" to continue the optimization performed on the \code{g} object (see Examples). By default, NA that is changed into "MH" when \code{g} is unoptimized and "continue", when \code{g} is optimized. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)}
 }
 \value{
 object of class gips
@@ -50,6 +50,8 @@ g <- gips(S, number_of_observations)
 
 g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 g
+
+g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
 
 if (require("graphics")) {
   plot(g, type="both", logarithmic_x=TRUE)

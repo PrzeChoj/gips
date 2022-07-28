@@ -6,7 +6,7 @@
 #' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite.
 #' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
 #' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
-#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
+#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
 #'
 #' @return object of class gips
 #' 
@@ -34,34 +34,70 @@
 #' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 #' g
 #' 
+#' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
+#' 
 #' if (require("graphics")) {
 #'   plot(g, type="both", logarithmic_x=TRUE)
 #' }
 find_gips <- function(g, max_iter, return_probabilities=FALSE,
-                      show_progress_bar=TRUE, optimizer="MH"){
+                      show_progress_bar=TRUE, optimizer=NA){
   # check the correctness of the g argument
   validate_gips(g)
   
-  # extract parameters
-  S <- attr(g, "S")
-  number_of_observations <- attr(g, "number_of_observations")
-  start_perm <- g[[1]]
-  delta <- attr(g, "delta")
-  D_matrix <- attr(g, "D_matrix")
-  
   # check the correctness of the rest of arguments
-  if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth"))){
+  if(length(optimizer) > 1)
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth').",
+                   "i" = "`optimizer` must be the character vector of length 1. Must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'continue').",
+                   "x" = paste0("You provided `optimizer == (",
+                                paste0(optimizer, collapse = ", "), ")`."),
+                   "i" = "Did You misspelled the optimizer name?"))
+  # default optimizer:
+  if(is.na(optimizer)){
+    optimizer <- ifelse(is.null(attr(g, "optimization_info")),
+                        "MH",
+                        "continue")
+    
+    rlang::inform(c("You used the default value of the 'optimizer' argument in `find_gips()`.",
+                    "i" = paste0("The 'optimizer = NA' was automatically changed to 'optimizer = \"",
+                                 optimizer, "\"'.")))
+  }
+  if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth", "continue"))){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'continue').",
                    "x" = paste0("You provided `optimizer` == ", optimizer, "."),
                    "i" = "Did You misspelled the optimizer name?"))
   }
+  
+  continue_optimization <- (optimizer == "continue")
+  if(continue_optimization){
+    if(is.null(attr(g, "optimization_info"))){
+      rlang::abort(c("There was a problem identified with provided arguments:",
+                     "i" = "`optimizer == 'continue'` can be provided only with optimized gips object `g`.",
+                     "x" = "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized.",
+                     "i" = "Did You provided wrong gips object?",
+                     "i" = "Did You want to call another optimizer like 'MH' or 'BG'?"))
+    }
+    
+    optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])]  # this is the last used optimizer
+  }
+  
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "Probabilities can only be returned with the `optimizer = 'Metropolis_Hastings'",
                    "x" = "You provided both `optimizer != Metropolis_Hastings` and `return_probabilities == TRUE`!",
                    "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"))
   }
+  
+  # extract parameters
+  S <- attr(g, "S")
+  number_of_observations <- attr(g, "number_of_observations")
+  if(continue_optimization){  # the `ifelse()` function cannot be used
+    start_perm <- attr(g, "optimization_info")[["last_perm"]]
+  }else{
+    start_perm <- g[[1]]
+  }
+  delta <- attr(g, "delta")
+  D_matrix <- attr(g, "D_matrix")
   
   start_time <- Sys.time()
   
@@ -80,8 +116,9 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   
   end_time <- Sys.time()
   attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
+  attr(gips_optimized, "optimization_info")[["full_optimization_time"]] <- end_time - start_time
   
-  return(gips_optimized)
+  return(combine_gips(g, gips_optimized))
 }
 
 
@@ -190,7 +227,8 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
                             "post_probabilities" = probabilities,
                             "did_converge" = NULL,
                             "best_perm_log_likelihood" = found_perm_log_likelihood,
-                            "optimization_time" = NA)
+                            "optimization_time" = NA,
+                            "full_optimization_time" = NA)
   
   
   new_gips(list(found_perm), S, number_of_observations, delta,
@@ -301,10 +339,59 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                             "post_probabilities" = NULL,
                             "did_converge" = did_converge,
                             "best_perm_log_likelihood" = goal_function_best_logvalues[iteration],
-                            "optimization_time" = NA)
+                            "optimization_time" = NA,
+                            "full_optimization_time" = NA)
   
   new_gips(list(speciments[[iteration]]), S, number_of_observations, delta,
            D_matrix, optimization_info)
+}
+
+
+
+#' Combining 2 gips objects
+#' 
+#' g2 was optimized with a single optimization method. g1 was potentially non-optimized or optimized once, or optimized multiple times.
+#' 
+#' @noRd
+combine_gips <- function(g1, g2){
+  if(is.null(attr(g1, "optimization_info"))){
+    return(g2)
+  }
+  
+  # g1 is also an effect of optimization.
+  optimization_info1 <- attr(g1, "optimization_info")
+  optimization_info2 <- attr(g2, "optimization_info")
+  
+  n1 <- length(optimization_info1[["log_likelihood_values"]])
+  n2 <- length(optimization_info2[["log_likelihood_values"]])
+  
+  visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]])  # WoW, one can use `c()` to combine lists!
+  optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
+  
+  if(all(optimization_algorithm_used == "Metropolis_Hastings") &&
+     !is.null(optimization_info1[["post_probabilities"]]) &&
+     !is.null(optimization_info2[["post_probabilities"]])){
+    post_probabilities <- estimate_probabilities(visited_perms)  # TODO(This can be combined more optimally, but I (Adam) think this will be rarely done nevertheless.)
+  }else{
+    post_probabilities <- NULL
+  }
+  
+  optimization_info_new <- list("acceptance_rate" = (n1*optimization_info1[["acceptance_rate"]] + n2*optimization_info2[["acceptance_rate"]])/(n1+n2),
+                                "log_likelihood_values" = c(optimization_info1[["log_likelihood_values"]], optimization_info2[["log_likelihood_values"]]),
+                                "visited_perms" = visited_perms,
+                                "last_perm" = optimization_info2[["last_perm"]],
+                                "last_perm_log_likelihood" = optimization_info2[["last_perm_log_likelihood"]],
+                                "iterations_performed" = c(optimization_info1[["iterations_performed"]], optimization_info2[["iterations_performed"]]),
+                                "optimization_algorithm_used" = optimization_algorithm_used,
+                                "post_probabilities" = post_probabilities,
+                                "did_converge" = optimization_info2[["did_converge"]],
+                                "best_perm_log_likelihood" = max(optimization_info1[["best_perm_log_likelihood"]], optimization_info2[["best_perm_log_likelihood"]]),
+                                "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
+                                "full_optimization_time" = optimization_info1[["full_optimization_time"]] + optimization_info2[["full_optimization_time"]])
+  
+  attr(g2, "optimization_info") <- optimization_info_new
+  
+  g2
 }
 
 
