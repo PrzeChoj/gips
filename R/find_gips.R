@@ -148,7 +148,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."))
       
       break()
     }

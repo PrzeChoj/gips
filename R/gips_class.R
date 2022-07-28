@@ -159,6 +159,7 @@ validate_gips <- function(g){
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
     
     abort_text <- character(0)
+    additional_info <- 0  # for calculation of the number of problems
     
     if(!(length(lacking_fields) == 0)){
       abort_text <- c("x" = paste0("Your `attr(g, 'optimization_info')` lacks the following fields: ",
@@ -324,9 +325,12 @@ validate_gips <- function(g){
                                    log_likelihood_of_gips(best_perm_gips), "."))
     }
     if(is.na(optimization_info[["optimization_time"]])){
+      additional_info <- additional_info + 2
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
-                      "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.")
+                      "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
+                      "i" = "Did You used the inner optimizers like `Metropolis_Hastings()` or `best_growth()` in stead of the exported function `find_gips()`?",
+                      "i" = "Did You modified the `find_gips()` function?")
     }else if(!inherits(optimization_info[["optimization_time"]], "difftime")){
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be of a class 'difftime'.",
@@ -341,7 +345,12 @@ validate_gips <- function(g){
     
     
     if(length(abort_text) > 0){
-      abort_text <- c(paste0("There were ", length(abort_text)/2,
+      if(!is.wholenumber((length(abort_text)-additional_info)/2)){
+        rlang::inform(paste0("You found a small bug in gips package. We calculated there was ",
+                             (length(abort_text)-additional_info)/2,
+                             " problems, but it is not a whole number. Please inform us about that bug by opening the ISSUE on https://github.com/PrzeChoj/gips/issues"))
+      }
+      abort_text <- c(paste0("There were ", (length(abort_text)-additional_info)/2,
                              " problems identified with `attr(g, 'optimization_info')`:"),
                       abort_text)
       
@@ -427,7 +436,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "i" = "`start_perm` must have the `size` attribute equal to the shape of a square matrix `S`",
                     "x" = paste0("You provided `start_perm` with `size` == ",
                                  attr(start_perm, 'size'),
-                                 ", but the `S` matrix you provided has ",
+                                 ", but the `S` matrix You provided has ",
                                  ncol(S), " columns."))
   if(is.null(delta))
     abort_text <- c(abort_text,
@@ -507,7 +516,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -522,7 +531,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -593,7 +602,7 @@ plot.gips <- function(x, type=NA,
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`type` must be one of: c('heatmap', 'all', 'best', 'both').",
                    "x" = paste0("You provided `type` == ", type, "."),
-                   "i" = "Did you misspell the 'type' argument?"))
+                   "i" = "Did You misspell the 'type' argument?"))
   }
   
   if((type != "heatmap") && is.null(attr(x, "optimization_info"))){
