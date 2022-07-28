@@ -368,18 +368,16 @@ test_that('plot.gips works or abords for wrong arguments', {
   expect_error(plot.gips(custom_perm1))
   
   expect_error(plot(g1, type="both"))
-  expect_warning(plot(g1))
+  expect_message(plot(g1))
   
   g1_found <- find_gips(g1, 3, show_progress_bar = FALSE)
-  expect_warning(plot(g1_found))
+  expect_message(plot(g1_found))
   expect_silent(plot(g1_found, type = "both"))
   expect_silent(plot(g1_found, type = "all", logarithmic_y = FALSE))
   expect_silent(plot(g1_found, type = "best", logarithmic_x = TRUE,
                      ylim = range(attr(g1_found, "optimization_info")["log_likelihood_values"])*2))
   
   expect_error(plot.gips(g1_found, type = "non_existing"))
-  
-  
 })
 
 

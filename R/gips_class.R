@@ -584,10 +584,9 @@ plot.gips <- function(x, type=NA,
                    "heatmap",
                    "both")
     
-    warn_text <- paste0("The 'type = NA' was automatically changed to 'type = \"",
-                        type, "\"'.")
-    rlang::warn(c("You used the default value of the 'type' argument in `plot()` for gips object.",
-                  "i" = warn_text))
+    rlang::inform(c("You used the default value of the 'type' argument in `plot()` for gips object.",
+                    "i" = paste0("The 'type = NA' was automatically changed to 'type = \"",
+                                 type, "\"'.")))
   }
   
   if(!(type %in% c("heatmap", "all", "best", "both"))){
