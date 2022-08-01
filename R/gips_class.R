@@ -744,11 +744,122 @@ plot.gips <- function(x, type=NA,
 }
 
 
-# TODO(summary, the n_0 of best perms, the distribution of likelihood values)
-# TODO(For BG -> All visited perms)
-# NOTE: `summary.lm()` returns the object of class `summary.lm`
+# TODO(Documentation. Can be based on `stats::summary.lm()`)
+#' @export
 summary.gips <- function(object, ...){
   validate_gips(object)
+  permutation_log_likelihood <- log_likelihood_of_gips(object)
+  
+  structure_constants <- get_structure_constants(object[[1]])
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  
+  if(is.null(attr(object, "optimization_info"))){
+    summary_list <- list(optimized = FALSE,
+                         start_permutation = object[[1]],
+                         start_permutation_log_likelihood = permutation_log_likelihood,
+                         n0 = n0,
+                         S_matrix = attr(object, "S"),
+                         number_of_observations = attr(object, "number_of_observations"),
+                         delta = attr(object, "delta"),
+                         D_matrix = attr(object, "D_matrix"))
+  }else{
+    optimization_info <- attr(object, "optimization_info")
+    
+    start_permutation <- optimization_info[["visited_perms"]][[1]]
+    start_permutation_log_likelihood <- log_likelihood_of_perm(start_permutation,
+                                                      attr(object, "S"),
+                                                      attr(object, "number_of_observations"),
+                                                      attr(object, "delta"),
+                                                      attr(object, "D_matrix"))
+    
+    when_was_best <- which(optimization_info[["log_likelihood_values"]] == permutation_log_likelihood)
+    
+    summary_list <- list(optimized = TRUE,
+                         found_permutation = object[[1]],
+                         found_permutation_log_likelihood = permutation_log_likelihood,
+                         start_permutation = start_permutation,
+                         start_permutation_log_likelihood = start_permutation_log_likelihood,
+                         n0 = n0,
+                         S_matrix = attr(object, "S"),
+                         number_of_observations = attr(object, "number_of_observations"),
+                         delta = attr(object, "delta"),
+                         D_matrix = attr(object, "D_matrix"),
+                         optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
+                         did_converge = optimization_info[["did_converge"]],
+                         number_of_log_likelihood_calls = length(optimization_info[["log_likelihood_values"]]),
+                         optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
+                         full_optimization_time = optimization_info[["full_optimization_time"]],
+                         log_likelihood_calls_after_best = length(optimization_info[["log_likelihood_values"]]) - when_was_best[length(when_was_best)],
+                         acceptance_rate = optimization_info[["acceptance_rate"]])
+  }
+  
+  structure(summary_list,
+            class=c("summary.gips"))
+}
+
+# Base on
+# `sloop::s3_get_method(print.summary.lm)`
+#' @export
+print.summary.gips <- function(x, ...){
+  cat(ifelse(x$optimized,
+             "The optimized",
+             "The unoptimized"),
+      " `gips` object.\n\nPermutation:\n ",
+      ifelse(x$optimized,
+             as.character(x$found_permutation),
+             as.character(x$start_permutation)),
+      "\n\nLog_likelihood:\n ",
+      ifelse(x$optimized,
+             x$found_permutation_log_likelihood,
+             x$start_permutation_log_likelihood),
+      "\n\nNumber of observations:\n ", x$number_of_observations,
+      "\n\nn0:\n ", x$n0,
+      "\n\nNumber of observations is ",
+      ifelse(x$n0 > x$number_of_observations,
+             "smaller",
+             ifelse(x$n0 == x$number_of_observations,
+                    "equal",
+                    "bigger")),
+      " than n0 for this permutaion, so the gips model based on the found permutation does ",
+      ifelse(x$n0 > x$number_of_observations,
+             "not ", ""), "exist.",
+      sep = "")
+  
+  if(x$optimized){
+    cat("\n\n", paste0(rep("-", getOption("width")), collapse = ""),  # the line
+        sep = "")
+    
+    if(length(x$optimization_algorithm_used) == 1){
+      cat("\nOptimization algorithm:\n ", x$optimization_algorithm_used,
+          ifelse(x$optimization_algorithm_used == "best_growth",
+                 ifelse(x$did_converge,
+                        " did converge",
+                        " did not converge"),
+                 ""),
+          sep = "")
+    }else{
+      # multiple optimizations
+      cat("\nOptimization algorithms:\n ", paste0(x$optimization_algorithm_used, collapse = ", "),
+          ifelse(x$optimization_algorithm_used[length(x$optimization_algorithm_used)] == "best_growth",
+                 ifelse(x$did_converge,
+                        "\n The last best_growth did converge.",
+                        "\n The last best_growth did not converge."),
+                 ""),
+          sep = "")
+    }
+    
+    cat("\n\nNumber of log_likelihood calls:\n ",
+        x$number_of_log_likelihood_calls,
+        "\n\nOptimization time:\n ", unclass(x$full_optimization_time),
+        " ", attr(x$full_optimization_time, "units"),
+        "\n\nLog_likelihood calls after the found permutation:\n ",
+        x$log_likelihood_calls_after_best,
+        ifelse(all(x$optimization_algorithm_used == "Metropolis_Hastings"),
+               paste0("\n\nAcceptance rate:\n ", x$acceptance_rate),
+               ""),
+        sep = "")
+    
+  }
   
   invisible(NULL)
 }
