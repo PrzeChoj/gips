@@ -1,7 +1,7 @@
 Type: Package
 Package: gips
 Title: Gaussian Model Invariant by Permutation Symmetry
-Version: 0.3.1.9000
+Version: 0.4.0.9000
 Authors@R: c(
     person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = c("aut", "cre")),
     person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = "aut"),
@@ -17,7 +17,7 @@ Description: Find the permutation symmetry group such that the covariance
     number of parameters, the covariance matrix found with 'gips' better
     approximates the actual covariance behind the data and is less
     variance.
-License: MIT + file LICENSE
+License: GPL (>= 3) + file LICENSE
 URL: https://github.com/PrzeChoj/gips
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 

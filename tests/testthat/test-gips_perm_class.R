@@ -66,12 +66,14 @@ test_that('gips_perm coerces to permutations::cycle',{
                  perm_allfixed)
 })
 
-test_that('gips_perm throws errors on bad arguments', {
+test_that('gips_perm handles bad arguments', {
   expect_error(gips_perm(''), 'You did not provide the `size` arg')
-  expect_error(gips_perm('', c(4,3)),
-               'You provided the `size` argument of length 2')
+  expect_warning(gips_perm('', c(4,3)),
+                 'Passing multiple sizes to \\`gips_perm\\(\\)\\` is not supported. Taking only the first one')
   expect_error(gips_perm('', 3.2),
                'You provided `size` == 3.2')
+  expect_warning(gips_perm(c('', '(1,2)'), 3),
+                 'Passing multiple permutations to \\`gips_perm\\(\\)\\` is not supported. Taking only the first one')
 })
 
 not_gips_perm <- 'A'

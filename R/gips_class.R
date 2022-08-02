@@ -85,8 +85,10 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
      !is.wholenumber(number_of_observations) ||
      !is.numeric(delta) ||
      !is.matrix(D_matrix) ||
-     !(is.null(optimization_info) || is.list(optimization_info)))
+     !(is.null(optimization_info) || is.list(optimization_info))){
     rlang::abort(c("x" = "`gips` object cannot be created from those arguments."))
+  }
+    
   
   structure(list_of_gips_perm, S=S, number_of_observations=number_of_observations,
             delta=delta, D_matrix=D_matrix, optimization_info=optimization_info,
@@ -153,12 +155,13 @@ validate_gips <- function(g){
   }
   
   if(is.list(optimization_info)){  # Validate the `optimization_info` after the optimization
-    legal_fields <- c('acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood', 'optimization_time')
+    legal_fields <- c('acceptance_rate', 'log_likelihood_values', 'visited_perms', 'last_perm', 'last_perm_log_likelihood', 'iterations_performed', 'optimization_algorithm_used', 'post_probabilities', 'did_converge', 'best_perm_log_likelihood', 'optimization_time', 'full_optimization_time')
     
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
     
     abort_text <- character(0)
+    additional_info <- 0  # for calculation of the number of problems
     
     if(!(length(lacking_fields) == 0)){
       abort_text <- c("x" = paste0("Your `attr(g, 'optimization_info')` lacks the following fields: ",
@@ -183,83 +186,111 @@ validate_gips <- function(g){
     
     # All the fields as named as they should be. Check if their content are as expected:
     abort_text <- character(0)
-    if(!(is.numeric(optimization_info[["acceptance_rate"]]) &&
-         (length(optimization_info[["acceptance_rate"]]) == 1) &&
-         optimization_info[["acceptance_rate"]] >= 0 &&
-         optimization_info[["acceptance_rate"]] <= 1)){
+    if(!((is.numeric(optimization_info[["acceptance_rate"]]) &&
+          (length(optimization_info[["acceptance_rate"]]) == 1) &&
+          optimization_info[["acceptance_rate"]] >= 0 &&
+          optimization_info[["acceptance_rate"]] <= 1) ||
+         optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "brute_force")){  # when brute_force, acceptance_rate is NULL
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['acceptance_rate']]` must be a number in range [0, 1].",
                       "x" = paste0("You have `attr(g, 'optimization_info')[['acceptance_rate']]` == (",
                                    paste(optimization_info[["acceptance_rate"]], collapse = ", "),
                                    ")."))
     }
+    if(!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force" ||
+         is.null(optimization_info[["acceptance_rate"]]))){
+      abort_text <- c(abort_text,
+                      "i" = "When brute force algorithm was used for optimization, `attr(g, 'optimization_info')[['acceptance_rate']]` must be a NULL.",
+                      "x" = paste0("You have used brute force algorithm, but `attr(g, 'optimization_info')[['acceptance_rate']] == (",
+                                   paste(optimization_info[["acceptance_rate"]], collapse = ", "),
+                                   ")`."))
+    }
     if(!(is.numeric(optimization_info[["log_likelihood_values"]]))){
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['log_likelihood_values']]` must be a vector of numbers.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['log_likelihood_values']]` == ",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['log_likelihood_values']] == ",
                                    typeof(optimization_info[["log_likelihood_values"]]),
-                                   "."))
+                                   "`."))
     }
-    if(!(is.list(optimization_info[["visited_perms"]]))){
-      abort_text <- c(abort_text,
-                      "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['visited_perms']]` of type ",
-                                   typeof(optimization_info[["visited_perms"]]),
-                                   "."))
-    }else if(!(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))){  # It only checks for the first one, because checking for every would be too expensive
-      abort_text <- c(abort_text,
-                      "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `gips_perm`.",
-                      "x" = paste0("You have `class(attr(g, 'optimization_info')[['visited_perms']][[1]])` == )",
-                                   paste(class(optimization_info[["visited_perms"]][[1]]), collapse = ", "),
-                                   ")."))
-    }
-    else if(!(identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]]))){
-      abort_text <- c(abort_text,
-                      "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be the last element of `attr(g, 'optimization_info')[['visited_perms']]` list.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` different from `attr(g, 'optimization_info')[['visited_perms']][[length(attr(g, 'optimization_info')[['visited_perms']])]]`."))
-    }
-    
-    # TODO(Validate more intelligently that `optimization_info[["last_perm"]]` is a permutation)
-    if(inherits(optimization_info[["last_perm"]], "gips_perm")){
-      last_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, perm = optimization_info[["last_perm"]])
-      if(!(optimization_info[["last_perm_log_likelihood"]] == log_likelihood_of_gips(last_perm_gips))){
+    if(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force"){
+      if(!(is.list(optimization_info[["visited_perms"]]))){
         abort_text <- c(abort_text,
-                        "i" = "`attr(g, 'optimization_info')[['last_perm_log_likelihood']]` must be the log_likelihood of `optimization_info[['last_perm']]`.",
-                        "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm_log_likelihood']]` == ",
-                                     optimization_info[["last_perm_log_likelihood"]],
-                                     ", but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']]))` == ",
-                                     log_likelihood_of_gips(last_perm_gips), "."))
+                        "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
+                        "x" = paste0("You have `attr(g, 'optimization_info')[['visited_perms']]` of type ",
+                                     typeof(optimization_info[["visited_perms"]]),
+                                     "."))
+      }else if(!(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))){  # It only checks for the first one, because checking for every would be too expensive
+        abort_text <- c(abort_text,
+                        "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `gips_perm`.",
+                        "x" = paste0("You have `class(attr(g, 'optimization_info')[['visited_perms']][[1]]) == (",
+                                     paste(class(optimization_info[["visited_perms"]][[1]]), collapse = ", "),
+                                     ")`."))
       }
-    }else{
-      abort_text <- c(abort_text,
-                      "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be element of class 'gips_perm.'",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` of class ('",
-                                   paste(class(optimization_info[["last_perm"]]), collapse = "', '"), "')."))
+      else if(!(identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]]))){
+        abort_text <- c(abort_text,
+                        "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be the last element of `attr(g, 'optimization_info')[['visited_perms']]` list.",
+                        "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` different from `attr(g, 'optimization_info')[['visited_perms']][[length(attr(g, 'optimization_info')[['visited_perms']])]]`."))
+      }
+      
+      # TODO(Validate more intelligently that `optimization_info[["last_perm"]]` is a permutation)
+      if(inherits(optimization_info[["last_perm"]], "gips_perm")){
+        last_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, perm = optimization_info[["last_perm"]])
+        if(!(optimization_info[["last_perm_log_likelihood"]] == log_likelihood_of_gips(last_perm_gips))){
+          abort_text <- c(abort_text,
+                          "i" = "`attr(g, 'optimization_info')[['last_perm_log_likelihood']]` must be the log_likelihood of `optimization_info[['last_perm']]`.",
+                          "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm_log_likelihood']]` == ",
+                                       optimization_info[["last_perm_log_likelihood"]],
+                                       ", but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']]))` == ",
+                                       log_likelihood_of_gips(last_perm_gips), "."))
+        }
+      }else{
+        abort_text <- c(abort_text,
+                        "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be element of class 'gips_perm.'",
+                        "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` of class ('",
+                                     paste(class(optimization_info[["last_perm"]]), collapse = "', '"), "')."))
+      }
+    }else{ # for brute_force, the visited_perms are of class "cycle"
+      if(!(is.list(optimization_info[["visited_perms"]]))){
+        abort_text <- c(abort_text,
+                        "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
+                        "x" = paste0("You have `attr(g, 'optimization_info')[['visited_perms']]` of type ",
+                                     typeof(optimization_info[["visited_perms"]]),
+                                     "."))
+      }else if(!(inherits(optimization_info[["visited_perms"]][[1]], "list"))){  # It only checks for the first one, because checking for every would be too expensive
+        abort_text <- c(abort_text,
+                        "i" = "After optimization with brute force algorithm, elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `list`.",
+                        "x" = paste0("You have `class(attr(g, 'optimization_info')[['visited_perms']][[1]]) == (",
+                                     paste(class(optimization_info[["visited_perms"]][[1]]), collapse = ", "),
+                                     ")`."))
+      }
+      else if(!(is.null(optimization_info[['last_perm']]))){
+        abort_text <- c(abort_text,
+                        "i" = "After optimization with brute force algorithm, `attr(g, 'optimization_info')[['last_perm']]` must be a NULL.",
+                        "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` of type ", typeof(optimization_info[['last_perm']]), "."))
+      }
     }
     
-    
-    if(!(((length(optimization_info[["iterations_performed"]]) == 1) &&
-          is.wholenumber(optimization_info[["iterations_performed"]])))){
+    if(!(all(is.wholenumber(optimization_info[["iterations_performed"]])))){
       abort_text <- c(abort_text,
-                      "i" = "`attr(g, 'optimization_info')[['iterations_performed']]` must be a single whole number.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['iterations_performed']]` == )",
+                      "i" = "`attr(g, 'optimization_info')[['iterations_performed']]` must be a vector of whole numbers.",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['iterations_performed']]` == (",
                                    paste(optimization_info[["iterations_performed"]], collapse = ", "),
                                    ")."))
-    }else if(!(optimization_info[["iterations_performed"]] <= length(optimization_info[["log_likelihood_values"]]))){
+    }else if(!(sum(optimization_info[["iterations_performed"]]) <= length(optimization_info[["log_likelihood_values"]]))){
       abort_text <- c(abort_text,
                       "i" = "In every iteration at least one value of log_likelihood is calculated.",
                       "x" = paste0("You have `attr(g, 'optimization_info')[['iterations_performed']]` == ",
-                                   optimization_info[["iterations_performed"]],
+                                   sum(optimization_info[["iterations_performed"]]),
                                    ", which is more than `length(attr(g, 'optimization_info')[['log_likelihood_values']])` == ",
                                    length(optimization_info[["log_likelihood_values"]]), "."))
     }
-    if(!(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "best_growth"))){  # Even if MH was used, it would produce the text "Metropolis_Hastings"
+    if(!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "best_growth", "brute_force"))){  # Even if MH was used, it would produce the text "Metropolis_Hastings"
       abort_text <- c(abort_text,
-                      "i" = "The available optimization algorithms are 'Metropolis_Hastings' and 'best_growth'.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_algorithm_used']]` == )",
-                                   paste(class(optimization_info[["optimization_algorithm_used"]]), collapse = ", "),
-                                   ")."))
-    }else if((optimization_info[["optimization_algorithm_used"]] != "Metropolis_Hastings") && 
+                      "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'best_growth' and 'brute_force'.",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == (",
+                                   paste(optimization_info[["optimization_algorithm_used"]], collapse = ", "),
+                                   ")`."))
+    }else if(all(optimization_info[["optimization_algorithm_used"]] != "Metropolis_Hastings") && 
             !is.null(optimization_info[["post_probabilities"]])){
       abort_text <- c(abort_text,
                       "i" = "`post_probabilities` can olny be obtained with 'Metropolis_Hastings' optimization method.",
@@ -290,29 +321,29 @@ validate_gips <- function(g){
                                    sum(optimization_info[["post_probabilities"]]),
                                    "."))
     }
-    if((optimization_info[["optimization_algorithm_used"]] != "best_growth") && 
+    if((!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("best_growth", "brute_force"))) &&  # The last optimization_algorithm_used has to be best_growth to make the convergence
              !is.null(optimization_info[["did_converge"]])){
       abort_text <- c(abort_text,
-                      "i" = "`did_converge` can olny be obtained with 'best_growth' optimization method.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_algorithm_used']]` == ",
-                                   optimization_info[["optimization_algorithm_used"]],
-                                   " and the `attr(g, 'optimization_info')[['did_converge']]` is not NULL, but is of type ",
+                      "i" = "`did_converge` can only be obtained with 'best_growth' optimization method.",
+                      "x" = paste0("The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(optimization_info[['optimization_algorithm_used']])] == ",
+                                   optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
+                                   "` and the `attr(g, 'optimization_info')[['did_converge']]` is not NULL, but is of type ",
                                    typeof(optimization_info[["did_converge"]]), "."))
-    }else if((optimization_info[["optimization_algorithm_used"]] == "best_growth") && 
+    }else if((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "best_growth") && 
              !is.logical(optimization_info[["did_converge"]])){
       abort_text <- c(abort_text,
                       "i" = "When 'best_growth' optimization method, the `did_converge` must be TRUE or FALSE.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_algorithm_used']]` == ",
-                                   optimization_info[["optimization_algorithm_used"]],
-                                   " and the `attr(g, 'optimization_info')[['did_converge']]` is not of type logical, but it is of type ",
+                      "x" = paste0("The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(optimization_info[['optimization_algorithm_used']])] == ",
+                                   optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
+                                   "` and the `attr(g, 'optimization_info')[['did_converge']]` is not of type logical, but it is of type ",
                                    typeof(optimization_info[["did_converge"]]), "."))
-    }else if((optimization_info[["optimization_algorithm_used"]] == "best_growth") && 
+    }else if((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "best_growth") && 
              is.na(optimization_info[["did_converge"]])){
       abort_text <- c(abort_text,
                       "i" = "When 'best_growth' optimization method, the `did_converge` must be TRUE or FALSE.",
-                      "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_algorithm_used']]` == ",
-                                   optimization_info[["optimization_algorithm_used"]],
-                                   " and the `attr(g, 'optimization_info')[['did_converge']]` is of type logical, but it is a NA."))
+                      "x" = paste0("The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(optimization_info[['optimization_algorithm_used']])] == ",
+                                   optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
+                                   "` and the `attr(g, 'optimization_info')[['did_converge']]` is of type logical, but it is a NA."))
     }
     best_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, perm = perm)  # this perm is g[[1]]
     if(!(optimization_info[["best_perm_log_likelihood"]] == log_likelihood_of_gips(best_perm_gips))){
@@ -323,25 +354,53 @@ validate_gips <- function(g){
                                    ", but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g[[1]], 'optimization_info')[['last_perm']]))` == ",
                                    log_likelihood_of_gips(best_perm_gips), "."))
     }
-    if(is.na(optimization_info[["optimization_time"]])){
+    if(any(is.na(optimization_info[["optimization_time"]]))){
+      additional_info <- additional_info + 2
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
-                      "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.")
+                      "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
+                      "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_gips()`?",
+                      "i" = "Did You modified the `find_gips()` function?")
     }else if(!inherits(optimization_info[["optimization_time"]], "difftime")){
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be of a class 'difftime'.",
                       "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_time']]` of a class (",
                                    paste0(class(optimization_info[["optimization_time"]]), collapse = ", "), ")."))
-    }else if(optimization_info[["optimization_time"]] <= 0){
+    }else if(any(optimization_info[["optimization_time"]] <= 0)){
       abort_text <- c(abort_text,
                       "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be a time difference bigger than 0.",
                       "x" = paste0("You have `attr(g, 'optimization_info')[['optimization_time']] == ",
                                    optimization_info[["optimization_time"]], "`."))
     }
+    if(is.na(optimization_info[["full_optimization_time"]])){
+      additional_info <- additional_info + 2
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
+                      "x" = "You have `is.na(attr(g, 'optimization_info')[['full_optimization_time']]) == TRUE`.",
+                      "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_gips()`?",
+                      "i" = "Did You modified the `find_gips()` function?")
+    }else if(!inherits(optimization_info[["full_optimization_time"]], "difftime")){
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be of a class 'difftime'.",
+                      "x" = paste0("You have `attr(g, 'optimization_info')[['full_optimization_time']]` of a class (",
+                                   paste0(class(optimization_info[["full_optimization_time"]]), collapse = ", "), ")."))
+    }else if(optimization_info[["full_optimization_time"]] <= 0){
+      abort_text <- c(abort_text,
+                      "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be a time difference bigger than 0.",
+                      "x" = paste0("You have `attr(g, 'full_optimization_info')[['optimization_time']] == ",
+                                   optimization_info[["full_optimization_time"]], "`."))
+    }
+    
+    # TODO(Validate that there is the same number of algorithms used and length of other things dependent on it)
     
     
     if(length(abort_text) > 0){
-      abort_text <- c(paste0("There were ", length(abort_text)/2,
+      if(!is.wholenumber((length(abort_text)-additional_info)/2)){
+        rlang::inform(paste0("You found a small bug in gips package. We calculated there was ",
+                             (length(abort_text)-additional_info)/2,
+                             " problems, but it is not a whole number. Please inform us about that bug by opening the ISSUE on https://github.com/PrzeChoj/gips/issues"))
+      }
+      abort_text <- c(paste0("There were ", (length(abort_text)-additional_info)/2,
                              " problems identified with `attr(g, 'optimization_info')`:"),
                       abort_text)
       
@@ -427,7 +486,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                     "i" = "`start_perm` must have the `size` attribute equal to the shape of a square matrix `S`",
                     "x" = paste0("You provided `start_perm` with `size` == ",
                                  attr(start_perm, 'size'),
-                                 ", but the `S` matrix you provided has ",
+                                 ", but the `S` matrix You provided has ",
                                  ncol(S), " columns."))
   if(is.null(delta))
     abort_text <- c(abort_text,
@@ -507,7 +566,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -522,7 +581,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
                     "x"=paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
-                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for you, please get in touch with us on ISSUE#5."))
+                    "i"="We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."))
     }
     value_part <- ifelse(log_value,
                          paste0(" has log likelihood ",
@@ -530,9 +589,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...){
                          paste0(" has likelihood ",
                                 round(exp(log_likelihood), digits=digits)))
     cat(paste0("The permutation ", x[[1]],
-               value_part, " which was found by ",
-               attr(x, "optimization_info")[["optimization_algorithm_used"]],
-               " algorithm after ",
+               value_part, " which was found after ",
                length(attr(x, "optimization_info")[["log_likelihood_values"]]),
                " log_likelihood calculations."), ...)
   }
@@ -584,17 +641,16 @@ plot.gips <- function(x, type=NA,
                    "heatmap",
                    "both")
     
-    warn_text <- paste0("The 'type = NA' was automatically changed to 'type = \"",
-                        type, "\"'.")
-    rlang::warn(c("You used the default value of the 'type' argument in `plot()` for gips object.",
-                  "i" = warn_text))
+    rlang::inform(c("You used the default value of the 'type' argument in `plot()` for gips object.",
+                    "i" = paste0("The 'type = NA' was automatically changed to 'type = \"",
+                                 type, "\"'.")))
   }
   
   if(!(type %in% c("heatmap", "all", "best", "both"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`type` must be one of: c('heatmap', 'all', 'best', 'both').",
                    "x" = paste0("You provided `type` == ", type, "."),
-                   "i" = "Did you misspell the 'type' argument?"))
+                   "i" = "Did You misspell the 'type' argument?"))
   }
   
   if((type != "heatmap") && is.null(attr(x, "optimization_info"))){
@@ -719,11 +775,131 @@ plot.gips <- function(x, type=NA,
 }
 
 
-# TODO(summary, the n_0 of best perms, the distribution of likelihood values)
-# TODO(For BG -> All visited perms)
-# NOTE: `summary.lm()` returns the object of class `summary.lm`
+# TODO(Documentation. Can be based on `stats::summary.lm()`)
+#' @export
 summary.gips <- function(object, ...){
   validate_gips(object)
+  permutation_log_likelihood <- log_likelihood_of_gips(object)
+  
+  structure_constants <- get_structure_constants(object[[1]])
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  
+  if(is.null(attr(object, "optimization_info"))){
+    summary_list <- list(optimized = FALSE,
+                         start_permutation = object[[1]],
+                         start_permutation_log_likelihood = permutation_log_likelihood,
+                         n0 = n0,
+                         S_matrix = attr(object, "S"),
+                         number_of_observations = attr(object, "number_of_observations"),
+                         delta = attr(object, "delta"),
+                         D_matrix = attr(object, "D_matrix"))
+  }else{
+    optimization_info <- attr(object, "optimization_info")
+    
+    if(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force"){
+      start_permutation <- optimization_info[["visited_perms"]][[1]]
+      start_permutation_log_likelihood <- log_likelihood_of_perm(start_permutation,
+                                                                 attr(object, "S"),
+                                                                 attr(object, "number_of_observations"),
+                                                                 attr(object, "delta"),
+                                                                 attr(object, "D_matrix"))
+      
+      when_was_best <- which(optimization_info[["log_likelihood_values"]] == permutation_log_likelihood)
+    }else{
+      start_permutation <- NULL
+      start_permutation_log_likelihood <- NULL
+      when_was_best <- NULL
+    }
+    
+    
+    summary_list <- list(optimized = TRUE,
+                         found_permutation = object[[1]],
+                         found_permutation_log_likelihood = permutation_log_likelihood,
+                         start_permutation = start_permutation,
+                         start_permutation_log_likelihood = start_permutation_log_likelihood,
+                         n0 = n0,
+                         S_matrix = attr(object, "S"),
+                         number_of_observations = attr(object, "number_of_observations"),
+                         delta = attr(object, "delta"),
+                         D_matrix = attr(object, "D_matrix"),
+                         optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
+                         did_converge = optimization_info[["did_converge"]],
+                         number_of_log_likelihood_calls = length(optimization_info[["log_likelihood_values"]]),
+                         optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
+                         full_optimization_time = optimization_info[["full_optimization_time"]],
+                         log_likelihood_calls_after_best = length(optimization_info[["log_likelihood_values"]]) - when_was_best[length(when_was_best)],
+                         acceptance_rate = optimization_info[["acceptance_rate"]])
+  }
+  
+  structure(summary_list,
+            class=c("summary.gips"))
+}
+
+# Base on
+# `sloop::s3_get_method(print.summary.lm)`
+#' @export
+print.summary.gips <- function(x, ...){
+  cat(ifelse(x$optimized,
+             "The optimized",
+             "The unoptimized"),
+      " `gips` object.\n\nPermutation:\n ",
+      ifelse(x$optimized,
+             as.character(x$found_permutation),
+             as.character(x$start_permutation)),
+      "\n\nLog_likelihood:\n ",
+      ifelse(x$optimized,
+             x$found_permutation_log_likelihood,
+             x$start_permutation_log_likelihood),
+      "\n\nNumber of observations:\n ", x$number_of_observations,
+      "\n\nn0:\n ", x$n0,
+      "\n\nNumber of observations is ",
+      ifelse(x$n0 > x$number_of_observations,
+             "smaller",
+             ifelse(x$n0 == x$number_of_observations,
+                    "equal",
+                    "bigger")),
+      " than n0 for this permutaion, so the gips model based on the found permutation does ",
+      ifelse(x$n0 > x$number_of_observations,
+             "not ", ""), "exist.",
+      sep = "")
+  
+  if(x$optimized){
+    cat("\n\n", paste0(rep("-", getOption("width")), collapse = ""),  # the line
+        sep = "")
+    
+    if(length(x$optimization_algorithm_used) == 1){
+      cat("\nOptimization algorithm:\n ", x$optimization_algorithm_used,
+          ifelse(x$optimization_algorithm_used == "best_growth",
+                 ifelse(x$did_converge,
+                        " did converge",
+                        " did not converge"),
+                 ""),
+          sep = "")
+    }else{
+      # multiple optimizations
+      cat("\nOptimization algorithms:\n ", paste0(x$optimization_algorithm_used, collapse = ", "),
+          ifelse(x$optimization_algorithm_used[length(x$optimization_algorithm_used)] == "best_growth",
+                 ifelse(x$did_converge,
+                        "\n The last best_growth did converge.",
+                        "\n The last best_growth did not converge."),
+                 ""),
+          sep = "")
+    }
+    
+    cat("\n\nNumber of log_likelihood calls:\n ",
+        x$number_of_log_likelihood_calls,
+        "\n\nOptimization time:\n ", unclass(x$full_optimization_time),
+        " ", attr(x$full_optimization_time, "units"),
+        sep = "")
+    
+    if(all(x$optimization_algorithm_used == "Metropolis_Hastings")){
+      cat(paste0("\n\nAcceptance rate:\n ", x$acceptance_rate), sep = "")
+    }
+    if(x$optimization_algorithm_used[length(x$optimization_algorithm_used)] != "brute_force"){
+      cat("\n\nLog_likelihood calls after the found permutation:\n ",
+          x$log_likelihood_calls_after_best, sep = "")
+    }
+  }
   
   invisible(NULL)
 }

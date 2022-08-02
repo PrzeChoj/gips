@@ -21,17 +21,23 @@
 #' @export
 
 gips_perm <- function(x, size){
-    if(!inherits(x, 'permutation'))
-        x <- permutations::permutation(x)
+    if(!inherits(x, 'permutation')){
+        if(is.matrix(x) || is.character(x) || is.list(x))
+          x <- permutations::permutation(x)
+        else
+          rlang::abort(c("There was a problem identified with provided argument:",
+                         "i" = "`x` argument must be either of a class 'permutation', or sth that can be passed to `permutations::permutation()` function (a matrix, or a character, or a list).",
+                         "x" = "You provided the `x` argument that is non of the above mentioned."))
+    }
     if(rlang::is_missing(size))
         rlang::abort(c("There was a problem identified with provided argument:",
                        "i" = '`size` argument must be provided.',
                        "x" = "You did not provide the `size` argument."))
-    if(length(size) > 1)
-      rlang::abort(c("There was a problem identified with provided argument:",
-                     "i" = '`size` argument must be of length 1',
-                     "x" = paste0("You provided the `size` argument of length ",
-                     length(size), ".")))
+    if(length(size) > 1){
+      rlang::warn(c("Passing multiple sizes to `gips_perm()` is not supported. Taking only the first one.",
+                    "i" = paste0("Passed ", length(size), " sizes.")))
+      size <- size[1]
+    }
     if(!is.wholenumber(size))
         rlang::abort(c("There was a problem identified with provided argument:",
                        "i" = '`size` must be a whole number.',
@@ -39,7 +45,7 @@ gips_perm <- function(x, size){
     x <- permutations::as.cycle(x)
 
     if(length(unclass(x)) > 1){
-        rlang::warn(c("Passing multiple permutations passed to `gips_perm` is not supported. Taking only the first one.",
+        rlang::warn(c("Passing multiple permutations to `gips_perm()` is not supported. Taking only the first one.",
                       "i" = paste0("Passed ", length(unclass(x)), " permutations.")))
         x <- x[1]
     }

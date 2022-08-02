@@ -6,22 +6,22 @@
 \usage{
 find_gips(
   g,
-  max_iter,
+  max_iter = NA,
   return_probabilities = FALSE,
   show_progress_bar = TRUE,
-  optimizer = "MH"
+  optimizer = NA
 )
 }
 \arguments{
 \item{g}{object of \code{gips} class}
 
-\item{max_iter}{number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="BG"}, can be infinite.}
+\item{max_iter}{number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="BG"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
 
 \item{return_probabilities}{boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use \code{Metropolis_Hastings()} results to calculate posterior probabilities.}
 
 \item{show_progress_bar}{boolean. Indicate weather or not show the progress bar.}
 
-\item{optimizer}{the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)}
+\item{optimizer}{the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the \code{g} object (see Examples). By default, NA that is changed into "MH" when \code{g} is unoptimized and "continue", when \code{g} is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)}
 }
 \value{
 object of class gips
@@ -51,7 +51,12 @@ g <- gips(S, number_of_observations)
 g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
 g
 
+g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
+
 if (require("graphics")) {
   plot(g, type="both", logarithmic_x=TRUE)
 }
+
+g <- find_gips(gips(S, number_of_observations), show_progress_bar=FALSE, optimizer="BF")
+summary(g)
 }
