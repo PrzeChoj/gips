@@ -3,10 +3,10 @@
 #' Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 #'
 #' @param g object of `gips` class
-#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite; for `optimizer=="BF"` it is not used.
 #' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
 #' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
-#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(reference appropriate documentation pages: Metropolis_Hastings and best_growth)
+#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)
 #'
 #' @return object of class gips
 #' 
@@ -39,7 +39,10 @@
 #' if (require("graphics")) {
 #'   plot(g, type="both", logarithmic_x=TRUE)
 #' }
-find_gips <- function(g, max_iter, return_probabilities=FALSE,
+#' 
+#' g <- find_gips(gips(S, number_of_observations), show_progress_bar=FALSE, optimizer="BF")
+#' summary(g)
+find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
                       show_progress_bar=TRUE, optimizer=NA){
   # check the correctness of the g argument
   validate_gips(g)
@@ -54,17 +57,24 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   # default optimizer:
   if(is.na(optimizer)){
     optimizer <- ifelse(is.null(attr(g, "optimization_info")),
-                        "MH",
-                        "continue")
+                        "MH", "continue")
     
     rlang::inform(c("You used the default value of the 'optimizer' argument in `find_gips()`.",
                     "i" = paste0("The 'optimizer = NA' was automatically changed to 'optimizer = \"",
                                  optimizer, "\"'.")))
   }
-  if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth", "continue"))){
+  if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth", "BF", "brute_force", "full", "continue"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'continue').",
+                   "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'BF', 'brute_force', 'full', 'continue').",
                    "x" = paste0("You provided `optimizer` == ", optimizer, "."),
+                   "i" = "Did You misspelled the optimizer name?"))
+  }
+  if(!(optimizer %in% c("BF", "brute_force", "full")) &&
+     is.na(max_iter)){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+                   "i" = "`max_iter = NA` can be provided only for `optimizer` one of: c(BF', 'brute_force', 'full'). For any other, `max_iter` must be a whole number bigger than 1.",
+                   "x" = paste0("You provided `optimizer` == ", optimizer, " and `max_iter = NA`."),
+                   "i" = "Did You forgot to set the `max_iter`?",
                    "i" = "Did You misspelled the optimizer name?"))
   }
   
@@ -77,8 +87,12 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
                      "i" = "Did You provided wrong gips object?",
                      "i" = "Did You want to call another optimizer like 'MH' or 'BG'?"))
     }
-    
     optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])]  # this is the last used optimizer
+    
+    if(optimizer == "brute_force")
+      rlang::abort(c("There was a problem identified with provided arguments:",
+                     "i" = "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`, because the whole space was already browsed.",
+                     "x" = "You provided `optimizer == 'continue'`, but the gips object `g` was optimized with brute_force optimizer. Better permutation will not be found."))
   }
   
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
@@ -110,6 +124,10 @@ find_gips <- function(g, max_iter, return_probabilities=FALSE,
   }else if(optimizer %in% c("BG", "best_growth")){
     gips_optimized <- best_growth(S=S, number_of_observations=number_of_observations,
                                   max_iter=max_iter, start_perm=start_perm,
+                                  delta=delta, D_matrix=D_matrix,
+                                  show_progress_bar=show_progress_bar)
+  }else if(optimizer %in% c("BF", "brute_force", "full")){
+    gips_optimized <- brute_force(S=S, number_of_observations=number_of_observations,
                                   delta=delta, D_matrix=D_matrix,
                                   show_progress_bar=show_progress_bar)
   }
@@ -343,6 +361,72 @@ best_growth <- function(S, number_of_observations, max_iter=5,
                             "full_optimization_time" = NA)
   
   new_gips(list(speciments[[iteration]]), S, number_of_observations, delta,
+           D_matrix, optimization_info)
+}
+
+
+brute_force <- function(S, number_of_observations,
+                        delta=3, D_matrix=NULL,
+                        show_progress_bar=TRUE){
+  check_correctness_of_arguments(S=S, number_of_observations=number_of_observations,
+                                 max_iter=5, start_perm=permutations::id,  # max_iter and start_perm are not important for optimization with brute_force
+                                 delta=delta, D_matrix=D_matrix,
+                                 return_probabilities=FALSE,
+                                 show_progress_bar=show_progress_bar)
+  
+  perm_size <- dim(S)[1]
+  
+  if(perm_size>30){  # TODO(Test and set smaller, reasonable value. 15?)
+    rlang::abort(c("Optimizer 'brute_force' cannot browse such a big permutional space.",
+                   "x" = paste0("You provided a space with size ", perm_size,
+                                "! (factorial), which has ", prod(1:perm_size),
+                                " elements."),
+                   "i" = "Do You want to use other optimizer for such a big slace? For example 'Metropolis_Hastings' or 'best_growth'?"))
+  }
+  
+  if(show_progress_bar)
+    progressBar <- utils::txtProgressBar(min = 0, max = prod(1:perm_size), initial = 1)
+  
+  if(is.null(D_matrix)){
+    D_matrix <- diag(nrow = perm_size)
+  }
+  
+  my_goal_function <- function(perm){
+    log_likelihood_of_perm(perm, S=S,  # We recommend to use the `log_likelihood_of_gips()` function
+                           number_of_observations=number_of_observations,
+                           delta=delta, D_matrix=D_matrix)
+  }
+  
+  # main loop
+  all_perms_list <- permutations::allperms(perm_size)
+  all_perms_list <- permutations::as.cycle(all_perms_list)
+  log_likelihood_values <- sapply(1:length(all_perms_list), function(i){
+    if(show_progress_bar){
+      utils::setTxtProgressBar(progressBar, i)
+    }
+    this_perm <- permutations::cycle(list(all_perms_list[[i]]))
+    my_goal_function(this_perm)
+  })
+  
+  if(show_progress_bar)
+    close(progressBar)
+  
+  best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_likelihood_values)]])), perm_size)
+  
+  optimization_info <- list("acceptance_rate" = NULL,
+                            "log_likelihood_values" = log_likelihood_values,
+                            "visited_perms" = all_perms_list,
+                            "last_perm" = NULL,
+                            "last_perm_log_likelihood" = NULL,
+                            "iterations_performed" = prod(1:perm_size),
+                            "optimization_algorithm_used" = "brute_force",
+                            "post_probabilities" = NULL,
+                            "did_converge" = TRUE,
+                            "best_perm_log_likelihood" = log_likelihood_values[which.max(log_likelihood_values)],
+                            "optimization_time" = NA,
+                            "full_optimization_time" = NA)
+  
+  new_gips(list(best_perm), S, number_of_observations, delta,
            D_matrix, optimization_info)
 }
 
