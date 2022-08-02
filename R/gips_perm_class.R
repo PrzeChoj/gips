@@ -81,7 +81,7 @@ gips_perm <- function(x, size){
 
     subcycles <- c(cycles, as.list(fixed_elements))
 
-    new_gips_perm(rearrange_cycles(subcycles), size)
+    validate_gips_perm(new_gips_perm(rearrange_cycles(subcycles), size))
 }
 
 #' Rearrange cycles
@@ -113,6 +113,11 @@ rearrange_cycles <- function(cycles){
 #' @export
 
 new_gips_perm <- function(rearranged_cycles, size){
+    if(!is.list(rearranged_cycles) ||
+       !is.wholenumber(size)){
+      rlang::abort("`gips_perm` object cannot be created from those arguments.")
+    }
+  
     structure(rearranged_cycles, size=size, class='gips_perm')
 }
 

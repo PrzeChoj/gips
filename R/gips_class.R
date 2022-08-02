@@ -53,7 +53,7 @@ gips <- function(S, number_of_observations, delta=3, D_matrix=NULL,
   if(inherits(perm, 'gips_perm')){
     gips_perm_object <- perm  # it is already a `gips_perm`
   }else{
-    gips_perm_object <- gips_perm(perm, nrow(S))  # it is of class `permutation`. Make it 'gips_perm'
+    gips_perm_object <- gips_perm(perm, nrow(S))  # it is of class `permutation` (it was checked in `check_correctness_of_arguments()`. Make it 'gips_perm'
   }
   
   
