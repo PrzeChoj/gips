@@ -102,6 +102,15 @@ find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
                    "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"))
   }
   
+  # inform, that user can use "BF"
+  if((optimizer %in% c("MH", "Metropolis_Hastings")) && (max_iter*10 >= prod(1:ncol(attr(g, "S"))))){
+    rlang::inform(c(paste0("You called optimization with Metropolis_Hastings algorith with ",
+                           max_iter, " iterations."),
+                    "i" = paste0("Consider using `optimizer = 'brute_force'`, because it will use ",
+                                 prod(1:ncol(attr(g, "S"))),
+                                 " iterations and will browse all permutations, therefore it will definitely find the maximum likelihood estimator.")))
+  }
+  
   # extract parameters
   S <- attr(g, "S")
   number_of_observations <- attr(g, "number_of_observations")
