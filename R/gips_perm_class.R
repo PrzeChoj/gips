@@ -60,6 +60,13 @@ gips_perm <- function(x, size){
     }
 
     cycles <- unclass(x)[[1]]
+    all_ints <- unlist(cycles)
+    if(size < max(all_ints)){
+        wrong_argument_abort(i = "`size` attribute must be greater or equal to largest integer in elements of `x`.",
+                             x = paste0('`size` equals ', size,
+                                        ' while the maximum element is ',
+                                        max(all_ints)))
+    }
 
     representatives <- permutations::get1(x)
 
