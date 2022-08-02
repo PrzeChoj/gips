@@ -47,7 +47,7 @@ gips_perm <- function(x, size){
     if(is.null(permutations::is.id(x))){
         return(new_gips_perm(list(), 0))  # rearrange_cycles is not needed, because `identical(rearrange_cycles(list()), list())`
     }
-    
+
     if (permutations::is.id(x)) {
         x <- as.list(1:size)
         return(new_gips_perm(x, size))  # rearrange_cycles is not needed, because `identical(rearrange_cycles(x), x)`
@@ -101,6 +101,56 @@ rearrange_cycles <- function(cycles){
 
 new_gips_perm <- function(rearranged_cycles, size){
     structure(rearranged_cycles, size=size, class='gips_perm')
+}
+
+#' Validate gips_perm object
+#'
+#' @noRd
+validate_gips_perm <- function(g){
+    if(!(inherits(g, "gips_perm"))){
+        wrong_argument_abort(
+            i = "`g` must be of class `gips_perm`.",
+            x = paste0("You provided `g` with `class(g)` == (",
+                       paste(class(g), collapse = ", "), ")."))
+    }
+    if(!is.list(g)){
+        wrong_argument_abort(i = "The `g` must be a list.",
+                       x = paste0("You provided `g` with `typeof(g) == '",
+                                    typeof(g), "'."))
+    }
+    is_whole_number <- sapply(g, is.wholenumber)
+    if(!all(is_whole_number)){
+        wrong_element_index <- which(!is_whole_number)[1]
+        wrong_argument_abort(i = "All elements of `g` must be integer vectors.",
+                       x = paste0("Element ", wrong_element_index,
+                                    " is of type ",
+                                    typeof(g[[wrong_element_index]]),
+                                    "."))
+    }
+    all_ints <- unlist(g)
+    if(length(all_ints) != length(unique(all_ints))){
+        wrong_argument_abort(i = "Elements of cycles must not repeat across or within cycles.")
+    }
+    first_element_is_min <- sapply(g, which.min) == 1
+    if(!all(first_element_is_min)){
+        wrong_element_index <- which(!first_element_is_min)[1]
+        wrong_argument_abort(i = "First element of each cycle must be the minimum element of this cycle.",
+                             x = paste0("This property is violated by element ",
+                                        wrong_element_index,
+                                        " where the minimum element is on place ",
+                                        which.min(g[[wrong_element_index]])))
+    }
+    not_sorted_by_first <- is.unsorted(sapply(g, function(v)v[1]))
+    if(not_sorted_by_first){
+        wrong_argument_abort(i = "Cycles must appear in order determined by their first elements.")
+    }
+    if(attr(g, 'size') < max(all_ints)){
+        wrong_argument_abort(i = "`size` property must be greater or equal to largest integer in elements of `g`.",
+                             x = paste0('`size` equals ', attr(g, 'size'),
+                                        ' while the maximum element is ',
+                                        max(all_ints)))
+    }
+    g
 }
 
 #' Print gips_perm
