@@ -26,7 +26,11 @@ rearrange_vector <- function(v){
 }
 
 is.wholenumber <-
-  function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
+  function(x, tol = .Machine$double.eps^0.5){
+      if(!is.numeric(x))
+          return(rep(FALSE, length(x)))
+      abs(x - round(x)) < tol
+  }
 
 #' Is matrix symmetric
 #'

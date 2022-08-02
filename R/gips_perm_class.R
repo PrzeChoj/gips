@@ -118,14 +118,14 @@ validate_gips_perm <- function(g){
                        x = paste0("You provided `g` with `typeof(g) == '",
                                     typeof(g), "'."))
     }
-    is_whole_number <- sapply(g, is.wholenumber)
+    size_attr <- attr(g, 'size')
+    if(is.null(size_attr) || !is.wholenumber(size_attr) || length(size_attr) != 1){
+        wrong_argument_abort(i = '`g` must have an attribute `size` set as a single integer.')
+    }
+    is_whole_number <- unlist(sapply(g, is.wholenumber))
     if(!all(is_whole_number)){
         wrong_element_index <- which(!is_whole_number)[1]
-        wrong_argument_abort(i = "All elements of `g` must be integer vectors.",
-                       x = paste0("Element ", wrong_element_index,
-                                    " is of type ",
-                                    typeof(g[[wrong_element_index]]),
-                                    "."))
+        wrong_argument_abort(i = "All elements of `g` must be integer vectors.")
     }
     all_ints <- unlist(g)
     if(length(all_ints) != length(unique(all_ints))){
@@ -145,7 +145,7 @@ validate_gips_perm <- function(g){
         wrong_argument_abort(i = "Cycles must appear in order determined by their first elements.")
     }
     if(attr(g, 'size') < max(all_ints)){
-        wrong_argument_abort(i = "`size` property must be greater or equal to largest integer in elements of `g`.",
+        wrong_argument_abort(i = "`size` attribute must be greater or equal to largest integer in elements of `g`.",
                              x = paste0('`size` equals ', attr(g, 'size'),
                                         ' while the maximum element is ',
                                         max(all_ints)))
