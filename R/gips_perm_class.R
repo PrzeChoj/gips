@@ -175,7 +175,7 @@ validate_gips_perm <- function(g) {
         "This property is violated by element ",
         wrong_element_index,
         " where the minimum element is on place ",
-        which.min(g[[wrong_element_index]])
+        which.min(g[[wrong_element_index]]), "."
       )
     )
   }
@@ -187,9 +187,9 @@ validate_gips_perm <- function(g) {
     wrong_argument_abort(
       i = "`size` attribute must be greater or equal to largest integer in elements of `g`.",
       x = paste0(
-        "`size` equals ", attr(g, "size"),
-        " while the maximum element is ",
-        max(all_ints)
+        "You provided `size == ", attr(g, "size"),
+        "` while the maximum element is ",
+        max(all_ints), "."
       )
     )
   }
