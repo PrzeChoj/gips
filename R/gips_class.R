@@ -642,27 +642,25 @@ plot.gips <- function(x, type=NA,
                    "both")
     
     rlang::inform(c("You used the default value of the 'type' argument in `plot()` for gips object.",
-                    "i" = paste0("The 'type = NA' was automatically changed to 'type = \"",
-                                 type, "\"'.")))
+                    "i" = paste0("The `type = NA` was automatically changed to `type = \"",
+                                 type, "\"`.")))
   }
   
   if(!(type %in% c("heatmap", "all", "best", "both"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`type` must be one of: c('heatmap', 'all', 'best', 'both').",
-                   "x" = paste0("You provided `type` == ", type, "."),
+                   "x" = paste0("You provided `type == ", type, "`."),
                    "i" = "Did You misspell the 'type' argument?"))
   }
   
   if((type != "heatmap") && is.null(attr(x, "optimization_info"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "For non-optimized `gips` objects only the 'type = \"heatmap\"' can be used.",
-                   "x" = paste0("You did not optimized `x` and provided 'type = \"",
-                                type,
-                                "\"'."),
+                   "i" = "For non-optimized `gips` objects only the `type = \"heatmap\"` can be used.",
+                   "x" = paste0("You did not optimized `x` and provided `type = \"",
+                                type, "\"`."),
                    "i" = paste0("Did You want to call `x <- find_gips(g)` and then `plot(x, type = '",
-                                type,
-                                "')`?"),
-                   "i" = "Did You want to use 'type = \"heatmap\"'?"))
+                                type, "')`?"),
+                   "i" = "Did You want to use `type = \"heatmap\"`?"))
   }
   
   # plotting:

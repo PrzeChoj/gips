@@ -31,17 +31,17 @@
 #' 
 #' g <- gips(S, number_of_observations)
 #' 
-#' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
-#' g
+#' g_opt <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
+#' g_opt
 #' 
-#' g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
+#' g_opt2 <- find_gips(g_opt, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
 #' 
 #' if (require("graphics")) {
-#'   plot(g, type="both", logarithmic_x=TRUE)
+#'   plot(g_opt2, type="both", logarithmic_x=TRUE)
 #' }
 #' 
-#' g <- find_gips(gips(S, number_of_observations), show_progress_bar=FALSE, optimizer="BF")
-#' summary(g)
+#' g_opt_BF <- find_gips(g, show_progress_bar=FALSE, optimizer="BF")
+#' summary(g_opt_BF)
 find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
                       show_progress_bar=TRUE, optimizer=NA){
   # check the correctness of the g argument
@@ -84,7 +84,7 @@ find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
       rlang::abort(c("There was a problem identified with provided arguments:",
                      "i" = "`optimizer == 'continue'` can be provided only with optimized gips object `g`.",
                      "x" = "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized.",
-                     "i" = "Did You provided wrong gips object?",
+                     "i" = "Did You provided wrong `gips` object?",
                      "i" = "Did You want to call another optimizer like 'MH' or 'BG'?"))
     }
     optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])]  # this is the last used optimizer
@@ -97,7 +97,7 @@ find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
   
   if(!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities){
     rlang::abort(c("There was a problem identified with provided arguments:",
-                   "i" = "Probabilities can only be returned with the `optimizer = 'Metropolis_Hastings'",
+                   "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'`",
                    "x" = "You provided both `optimizer != Metropolis_Hastings` and `return_probabilities == TRUE`!",
                    "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"))
   }
@@ -107,14 +107,14 @@ find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
     rlang::inform(c(paste0("You called optimization with Metropolis_Hastings algorith with ",
                            max_iter, " iterations."),
                     "i" = paste0("Consider using `optimizer = 'brute_force'`, because it will use ",
-                                 prod(1:ncol(attr(g, "S"))),
+                                 ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
                                  " iterations and will browse all permutations, therefore it will definitely find the maximum likelihood estimator.")))
   }
   
   # extract parameters
   S <- attr(g, "S")
   number_of_observations <- attr(g, "number_of_observations")
-  if(continue_optimization){  # the `ifelse()` function cannot be used
+  if(continue_optimization){  # the `ifelse()` function cannot be used because the objects are lists
     start_perm <- attr(g, "optimization_info")[["last_perm"]]
   }else{
     start_perm <- g[[1]]
@@ -444,10 +444,12 @@ brute_force <- function(S, number_of_observations,
 #' Combining 2 gips objects
 #' 
 #' g2 was optimized with a single optimization method. g1 was potentially non-optimized or optimized once, or optimized multiple times.
+#' If g2 was optimized with "brute_force", forget the g1.
 #' 
 #' @noRd
 combine_gips <- function(g1, g2){
-  if(is.null(attr(g1, "optimization_info"))){
+  if(is.null(attr(g1, "optimization_info")) ||
+     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force"){  # when brute_force was used, forget the initial optimization
     return(g2)
   }
   

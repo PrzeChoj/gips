@@ -48,15 +48,15 @@ S <- (t(Z) \%*\% Z) / number_of_observations  # the theoretical mean is 0
 
 g <- gips(S, number_of_observations)
 
-g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
-g
+g_opt <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
+g_opt
 
-g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
+g_opt2 <- find_gips(g_opt, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
 
 if (require("graphics")) {
-  plot(g, type="both", logarithmic_x=TRUE)
+  plot(g_opt2, type="both", logarithmic_x=TRUE)
 }
 
-g <- find_gips(gips(S, number_of_observations), show_progress_bar=FALSE, optimizer="BF")
-summary(g)
+g_opt_BF <- find_gips(g, show_progress_bar=FALSE, optimizer="BF")
+summary(g_opt_BF)
 }
