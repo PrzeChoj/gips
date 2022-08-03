@@ -71,7 +71,7 @@ test_that('gips_perm handles bad arguments', {
   expect_warning(gips_perm('', c(4,3)),
                  'Passing multiple sizes to \\`gips_perm\\(\\)\\` is not supported. Taking only the first one')
   expect_error(gips_perm('', 3.2),
-               'You provided `size` == 3.2')
+               'You provided `size == 3.2`')
   expect_error(gips_perm(perm_somefixed, 3),
                'size')
   expect_warning(gips_perm(c('', '(1,2)'), 3),

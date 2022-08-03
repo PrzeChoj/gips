@@ -66,14 +66,14 @@ find_gips <- function(g, max_iter=NA, return_probabilities=FALSE,
   if(!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth", "BF", "brute_force", "full", "continue"))){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'BF', 'brute_force', 'full', 'continue').",
-                   "x" = paste0("You provided `optimizer` == ", optimizer, "."),
+                   "x" = paste0("You provided `optimizer == ", optimizer, "`."),
                    "i" = "Did You misspelled the optimizer name?"))
   }
   if(!(optimizer %in% c("BF", "brute_force", "full")) &&
      is.na(max_iter)){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`max_iter = NA` can be provided only for `optimizer` one of: c(BF', 'brute_force', 'full'). For any other, `max_iter` must be a whole number bigger than 1.",
-                   "x" = paste0("You provided `optimizer` == ", optimizer, " and `max_iter = NA`."),
+                   "x" = paste0("You provided `optimizer == ", optimizer, "` and `max_iter = NA`."),
                    "i" = "Did You forgot to set the `max_iter`?",
                    "i" = "Did You misspelled the optimizer name?"))
   }
@@ -169,7 +169,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm=
   if(is.infinite(max_iter)){
     rlang::abort(c("There was a problem identified with provided arguments:",
                    "i" = "`max_iter` in `Metropolis_Hastings()` must be finite",
-                   "x" = paste0("You provided `max_iter` == ", max_iter, ".")))
+                   "x" = paste0("You provided `max_iter == ", max_iter, "`.")))
   }
   
   perm_size <- dim(S)[1]

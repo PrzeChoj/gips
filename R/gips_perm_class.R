@@ -41,7 +41,7 @@ gips_perm <- function(x, size){
     if(!is.wholenumber(size))
         rlang::abort(c("There was a problem identified with provided argument:",
                        "i" = '`size` must be a whole number.',
-                       "x" = paste0("You provided `size` == ", size, ".")))
+                       "x" = paste0("You provided `size == ", size, "`.")))
     x <- permutations::as.cycle(x)
 
     if(length(unclass(x)) > 1){
@@ -128,8 +128,8 @@ validate_gips_perm <- function(g){
     if(!(inherits(g, "gips_perm"))){
         wrong_argument_abort(
             i = "`g` must be of class `gips_perm`.",
-            x = paste0("You provided `g` with `class(g)` == (",
-                       paste(class(g), collapse = ", "), ")."))
+            x = paste0("You provided `g` with `class(g) == (",
+                       paste(class(g), collapse = ", "), ")`."))
     }
     if(!is.list(g)){
         wrong_argument_abort(i = "The `g` must be a list.",
