@@ -351,7 +351,7 @@ validate_gips <- function(g){
                       "i" = "`attr(g, 'optimization_info')[['best_perm_log_likelihood']]` must be the log_likelihood of the base object, g[[1]].",
                       "x" = paste0("You have `attr(g, 'optimization_info')[['best_perm_log_likelihood']] == ",
                                    optimization_info[["best_perm_log_likelihood"]],
-                                   "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g[[1]], 'optimization_info')[['last_perm']])) == ",
+                                   "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=g[[1]])) == ",
                                    log_likelihood_of_gips(best_perm_gips), "`."))
     }
     if(any(is.na(optimization_info[["optimization_time"]]))){

@@ -484,9 +484,15 @@ combine_gips <- function(g1, g2){
                                 "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
                                 "full_optimization_time" = optimization_info1[["full_optimization_time"]] + optimization_info2[["full_optimization_time"]])
   
-  attr(g2, "optimization_info") <- optimization_info_new
+  if(optimization_info1[["best_perm_log_likelihood"]] > optimization_info2[["best_perm_log_likelihood"]]){
+    g_out <- g1  # in the continuation the new best was not found
+  }else{
+    g_out <- g2
+  }
   
-  g2
+  attr(g_out, "optimization_info") <- optimization_info_new
+  
+  g_out
 }
 
 

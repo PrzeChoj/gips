@@ -46,15 +46,15 @@ The optimization itself will not be performed. To do it, one have to call the \c
 }
 \section{Functions}{
 \itemize{
-\item \code{new_gips}: Constructor
+\item \code{new_gips()}: Constructor
 
 Only intended for low-level use.
 
-\item \code{validate_gips}: Validator
+\item \code{validate_gips()}: Validator
 
 Only intended for low-level use.
+
 }}
-
 \examples{
 require("MASS")  # for mvrnorm()
 
