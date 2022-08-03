@@ -1,5 +1,5 @@
 #' The log likelihood that the CoV matrix is invariant under permutation.
-#' 
+#'
 #' To be more precise, it is the logarithm of an unnormalized posterior probability.
 #' Calculated according to equation (33) and (27) from the paper. If `Inf` or `NaN` is reached, produces a warning.
 #' It is the goal function for optimization algorithms. The `perm_proposal` that maximizes this function is the maximum likelihood estimator.
@@ -9,50 +9,55 @@
 #' @param g object of class `gips`
 #'
 #' @examples
-#' c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-#' S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-#' g <- gips(S1, 100, perm=c)
+#' c_perm <- permutations::as.cycle(permutations::as.word(c(2, 1)))
+#' S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+#' g <- gips(S1, 100, perm = c_perm)
 #' log_likelihood_of_gips(g)
-log_likelihood_of_gips <- function(g){
+log_likelihood_of_gips <- function(g) {
   validate_gips(g)
-  
-  log_likelihood_of_perm(perm_proposal=g[[1]], S=attr(g, "S"),
-                         number_of_observations=attr(g, "number_of_observations"),
-                         delta=attr(g, "delta"), D_matrix=attr(g, "D_matrix"))
+
+  log_likelihood_of_perm(
+    perm_proposal = g[[1]], S = attr(g, "S"),
+    number_of_observations = attr(g, "number_of_observations"),
+    delta = attr(g, "delta"), D_matrix = attr(g, "D_matrix")
+  )
 }
 
 log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
-                                   delta, D_matrix){
-  U <- S * number_of_observations  # in the paper there is U everywhere in stead of S, so it is easier to use U matrix in the code
+                                   delta, D_matrix) {
+  U <- S * number_of_observations # in the paper there is U everywhere instead of S, so it is easier to use U matrix in the code
   perm_size <- dim(S)[1]
-  
-  if(!inherits(perm_proposal, 'gips_perm'))
-    perm_proposal <- gips_perm(perm_proposal, perm_size)
 
-  if(is.null(D_matrix)){
-    D_matrix <- diag(nrow = perm_size)  # identity matrix
+  if (!inherits(perm_proposal, "gips_perm")) {
+    perm_proposal <- gips_perm(perm_proposal, perm_size)
   }
-  
+
+  if (is.null(D_matrix)) {
+    D_matrix <- diag(nrow = perm_size) # identity matrix
+  }
+
   structure_constants <- get_structure_constants(perm_proposal)
 
   # Ac_part
-  Ac <- sum(structure_constants[['r']]*structure_constants[['k']]*log(structure_constants[['k']]))  # (20)
-  Ac_part <- (-number_of_observations/2*Ac)
+  Ac <- sum(structure_constants[["r"]] * structure_constants[["k"]] * log(structure_constants[["k"]])) # (20)
+  Ac_part <- (-number_of_observations / 2 * Ac)
 
   # G_part and phi_part
   G_part <- G_function(structure_constants, delta + number_of_observations) -
     G_function(structure_constants, delta)
 
   # phi_part
-  phi_part <- calculate_phi_part(perm_proposal, number_of_observations, U, delta,
-                                 D_matrix, structure_constants)
+  phi_part <- calculate_phi_part(
+    perm_proposal, number_of_observations, U,
+    delta, D_matrix, structure_constants
+  )
 
   out <- Ac_part + G_part + phi_part
 
-  if(is.infinite(out)){
+  if (is.infinite(out)) {
     rlang::warn("The infinite value of a likelihood was produced.")
   }
-  if(is.nan(out)){
+  if (is.nan(out)) {
     rlang::warn("The NaN value of a likelihood was produced.")
   }
 
@@ -62,8 +67,8 @@ log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
 #' Uniformly random transposition of perm_size elements
 #'
 #' @param perm_size size from which take transpositions
-runif_transposition <- function(perm_size){
-  sample(perm_size, 2, replace=FALSE)
+runif_transposition <- function(perm_size) {
+  sample(perm_size, 2, replace = FALSE)
 }
 
 #' Calculate log phi_part of log_likelihood_of_gips
@@ -72,15 +77,17 @@ runif_transposition <- function(perm_size){
 #' Rest of params as in log_likelihood_of_gips
 #'
 #' @noRd
-calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
-                               D_matrix, structure_constants){
+calculate_phi_part <- function(perm_proposal, number_of_observations, U,
+                               delta, D_matrix, structure_constants) {
 
   # projection of matrices on perm_proposal
   equal_indices <- get_equal_indices_by_perm(perm_proposal)
   Dc <- project_matrix(D_matrix, perm_proposal,
-                       precomputed_equal_indices=equal_indices)
+    precomputed_equal_indices = equal_indices
+  )
   Uc <- project_matrix(U, perm_proposal,
-                       precomputed_equal_indices=equal_indices)
+    precomputed_equal_indices = equal_indices
+  )
 
   # divide by 2 - refer to newest version of the paper
   Dc <- Dc / 2
@@ -90,18 +97,22 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
   # TODO add basis argument? ISSUE#6
   diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal)
   Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
-  DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc+Dc) %*% diagonalising_matrix
+  DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc + Dc) %*% diagonalising_matrix
 
   # block part
-  block_ends <- cumsum(structure_constants[['r']] * structure_constants[['d']])
-  Dc_block_dets <- calculate_determinants_of_block_matrices(Dc_diagonalised,
-                                                            block_ends)
-  DcUc_block_dets <- calculate_determinants_of_block_matrices(DcUc_diagonalised,
-                                                              block_ends)
-  Dc_exponent <- (delta-2)/2 + structure_constants[['dim_omega']] /
-    (structure_constants[['r']] * structure_constants[['k']])
-  DcUc_exponent <- -(number_of_observations+delta-2)/2 - structure_constants[['dim_omega']] /
-    (structure_constants[['r']] * structure_constants[['k']])
+  block_ends <- cumsum(structure_constants[["r"]] * structure_constants[["d"]])
+  Dc_block_dets <- calculate_determinants_of_block_matrices(
+    Dc_diagonalised,
+    block_ends
+  )
+  DcUc_block_dets <- calculate_determinants_of_block_matrices(
+    DcUc_diagonalised,
+    block_ends
+  )
+  Dc_exponent <- (delta - 2) / 2 + structure_constants[["dim_omega"]] /
+    (structure_constants[["r"]] * structure_constants[["k"]])
+  DcUc_exponent <- -(number_of_observations + delta - 2) / 2 - structure_constants[["dim_omega"]] /
+    (structure_constants[["r"]] * structure_constants[["k"]])
 
   out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)
 
@@ -119,11 +130,11 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U, delta,
 #' @return numeric vector
 #' @noRd
 calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
-                                                     block_ends){
-  block_starts <- c(0, block_ends[-length(block_ends)]+1)
-  sapply(1:length(block_starts), function(i){
+                                                     block_ends) {
+  block_starts <- c(0, block_ends[-length(block_ends)] + 1)
+  sapply(1:length(block_starts), function(i) {
     slice <- block_starts[i]:block_ends[i]
-    block_matrix <- diagonalised_matrix[slice, slice, drop=FALSE]
+    block_matrix <- diagonalised_matrix[slice, slice, drop = FALSE]
     det(block_matrix)
   })
 }

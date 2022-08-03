@@ -30,11 +30,11 @@ Only intended for low-level use.
 
 }}
 \examples{
-gperm <- gips_perm(permutations::as.word(c(1,2,3,5,4)), 5)
-gperm <- gips_perm(permutations::as.cycle('(5,4)'), 5)
+gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
+gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
 # note the necessity of `size` parameter
-gperm <- gips_perm(permutations::as.cycle('(5,4)'), 7)
-gperm <- gips_perm('(1,2)(5,4)', 7)
+gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
+gperm <- gips_perm("(1,2)(5,4)", 7)
 gperm
 
 }

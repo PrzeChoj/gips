@@ -56,28 +56,32 @@ Only intended for low-level use.
 
 }}
 \examples{
-require("MASS")  # for mvrnorm()
+require("MASS") # for mvrnorm()
 
 perm_size <- 6
 mu <- numeric(perm_size)
 # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
-sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-                                0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-                                0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-                                0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-                                0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-                                0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
-                       nrow=perm_size, byrow = TRUE)
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-S <- (t(Z) \%*\% Z) / number_of_observations  # the theoretical mean is 0
+S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
 
 g <- gips(S, number_of_observations)
 
-g <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
-g
+g_opt <- find_gips(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+g_opt
 
 if (require("graphics")) {
-  plot(g, type="both", logarithmic_x=TRUE)
+  plot(g_opt, type = "both", logarithmic_x = TRUE)
 }
 }

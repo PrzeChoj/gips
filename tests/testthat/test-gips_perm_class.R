@@ -200,7 +200,7 @@ test_that("identical() works with gips_perms", {
 
 # 36 tests, one for every (i, j) transposition
 transpositions <- expand.grid(1:6, 1:6)
-transpositions <- as.matrix(transpositions[transpositions$Var1 < transpositions$Var2, ])
+transpositions <- as.matrix(transpositions[transpositions[["Var1"]] < transpositions[["Var2"]], ])
 for (i in 1:nrow(transpositions)) {
   transposition <- transpositions[i, ]
   test_that(paste0(

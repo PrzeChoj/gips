@@ -15,8 +15,8 @@ Calculated according to equation (33) and (27) from the paper. If \code{Inf} or 
 It is the goal function for optimization algorithms. The \code{perm_proposal} that maximizes this function is the maximum likelihood estimator.
 }
 \examples{
-c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-S1 <- matrix(c(1,0.5,0.5,2), nrow=2, byrow = TRUE)
-g <- gips(S1, 100, perm=c)
+c_perm <- permutations::as.cycle(permutations::as.word(c(2, 1)))
+S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+g <- gips(S1, 100, perm = c_perm)
 log_likelihood_of_gips(g)
 }

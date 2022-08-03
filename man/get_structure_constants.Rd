@@ -16,6 +16,6 @@ list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vect
 Get Structure Constants from theorem 5 of the paper
 }
 \examples{
-perm <- gips_perm(permutations::as.word(c(1,2,3,5,4)), 5)
+perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 get_structure_constants(perm)
 }

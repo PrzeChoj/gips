@@ -22,5 +22,5 @@ id_perm <- gips_perm(permutations::id, 2)
 calculate_gamma_function(id_perm, 0.5001)
 calculate_gamma_function(id_perm, 0.50000001)
 calculate_gamma_function(id_perm, 0.500000000001)
-#calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
+# calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
 }

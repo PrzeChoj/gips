@@ -30,33 +30,36 @@ object of class gips
 Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
 }
 \examples{
-require("MASS")  # for mvrnorm()
+require("MASS") # for mvrnorm()
 
 perm_size <- 6
 mu <- numeric(perm_size)
-# sigma is a matrix invariant under permutation (1,2,3,4,5,6)
-sigma_matrix <- matrix(data = c(1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-                                0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-                                0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-                                0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-                                0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-                                0.8, 0.6, 0.4, 0.6, 0.8, 1.0),
-                       nrow=perm_size, byrow = TRUE)
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-S <- (t(Z) \%*\% Z) / number_of_observations  # the theoretical mean is 0
+S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
 
 g <- gips(S, number_of_observations)
 
-g_opt <- find_gips(g, max_iter=10, show_progress_bar=FALSE, optimizer="MH")
+g_opt <- find_gips(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 g_opt
 
-g_opt2 <- find_gips(g_opt, max_iter=10, show_progress_bar=FALSE, optimizer="continue")
+g_opt2 <- find_gips(g_opt, max_iter = 10, show_progress_bar = FALSE, optimizer = "continue")
 
 if (require("graphics")) {
-  plot(g_opt2, type="both", logarithmic_x=TRUE)
+  plot(g_opt2, type = "both", logarithmic_x = TRUE)
 }
 
-g_opt_BF <- find_gips(g, show_progress_bar=FALSE, optimizer="BF")
+g_opt_BF <- find_gips(g, show_progress_bar = FALSE, optimizer = "BF")
 summary(g_opt_BF)
 }

@@ -22,7 +22,7 @@ Project matrix on the space of symmetrical matrices invariant
 by a cyclic group of permutations.
 }
 \examples{
-gperm <- gips_perm(permutations::as.word(c(4,3,2,1,5)), 7)  # permutation (1,4)(2,3)(5)(6)(7)
+gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), 7) # permutation (1,4)(2,3)(5)(6)(7)
 S <- matrix(rnorm(49), nrow = 7)
 projected_S <- project_matrix(S, perm = gperm)
 }

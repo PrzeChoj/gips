@@ -7,21 +7,19 @@
 #' @return named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations
 #' @noRd
-
-
-estimate_probabilities <- function(perms){
-    group_representatives <- sapply(perms, function(p)as.character(get_group_representative(p)))
-    repr_counts <- table(group_representatives)
-    repr_weights <- sapply(names(repr_counts), function(p_str){
-        perm <- permutations::char2cycle(p_str)
-        p_order <- permutations::permorder(perm)
-        1/numbers::eulersPhi(p_order)
-    })
-    unnormalized_probabilities <- repr_counts * repr_weights / length(perms)
-    probabilities <- unnormalized_probabilities / sum(unnormalized_probabilities)
-    probabilities <- as.numeric(probabilities)
-    names(probabilities) <- names(unnormalized_probabilities)
-    probabilities
+estimate_probabilities <- function(perms) {
+  group_representatives <- sapply(perms, function(p) as.character(get_group_representative(p)))
+  repr_counts <- table(group_representatives)
+  repr_weights <- sapply(names(repr_counts), function(p_str) {
+    perm <- permutations::char2cycle(p_str)
+    p_order <- permutations::permorder(perm)
+    1 / numbers::eulersPhi(p_order)
+  })
+  unnormalized_probabilities <- repr_counts * repr_weights / length(perms)
+  probabilities <- unnormalized_probabilities / sum(unnormalized_probabilities)
+  probabilities <- as.numeric(probabilities)
+  names(probabilities) <- names(unnormalized_probabilities)
+  probabilities
 }
 
 
@@ -35,24 +33,28 @@ estimate_probabilities <- function(perms){
 #'
 #' @return `gips_perm` object.
 #' @noRd
-
-get_group_representative <- function(perm){
-    size <- attr(perm, 'size')
-    if(size == 0)
-        return(perm)
-    perm <- permutations::as.cycle(perm)
-    p_order <- permutations::permorder(perm)
-    coprimes <- get_coprimes(p_order)
-    all_perms <- lapply(coprimes, function(cp)
-        permutations::cycle_power(perm, cp))
-    if(length(all_perms) == 0)
-        return(gips_perm(permutations::nullword, 0))
-    all_perms_as_vectors <- lapply(all_perms, function(p)
-        as.integer(permutations::cycle2word(p)))
-    all_perms_as_strings <- sapply(all_perms_as_vectors, function(v)
-        paste(v, collapse=" "))
-    min_index <- stringi::stri_order(all_perms_as_strings)[1]
-    gips_perm(all_perms[[min_index]], size)
+get_group_representative <- function(perm) {
+  size <- attr(perm, "size")
+  if (size == 0) {
+    return(perm)
+  }
+  perm <- permutations::as.cycle(perm)
+  p_order <- permutations::permorder(perm)
+  coprimes <- get_coprimes(p_order)
+  all_perms <- lapply(coprimes, function(cp) {
+    permutations::cycle_power(perm, cp)
+  })
+  if (length(all_perms) == 0) {
+    return(gips_perm(permutations::nullword, 0))
+  }
+  all_perms_as_vectors <- lapply(all_perms, function(p) {
+    as.integer(permutations::cycle2word(p))
+  })
+  all_perms_as_strings <- sapply(all_perms_as_vectors, function(v) {
+    paste(v, collapse = " ")
+  })
+  min_index <- stringi::stri_order(all_perms_as_strings)[1]
+  gips_perm(all_perms[[min_index]], size)
 }
 
 #' Get Coprime numbers
@@ -62,10 +64,11 @@ get_group_representative <- function(perm){
 #' @return all integers smaller than n, that are coprime to n. Exception: n=1,
 #' in which case 1 is returned
 #' @noRd
-
-get_coprimes <- function(n){
-    if(n==1)return(1)
-    smaller_ints <- 1:(n-1)
-    are_coprime <- sapply(smaller_ints, function(m) numbers::coprime(n, m))
-    smaller_ints[are_coprime]
+get_coprimes <- function(n) {
+  if (n == 1) {
+    return(1)
+  }
+  smaller_ints <- 1:(n - 1)
+  are_coprime <- sapply(smaller_ints, function(m) numbers::coprime(n, m))
+  smaller_ints[are_coprime]
 }

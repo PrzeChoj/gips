@@ -22,6 +22,6 @@ Calculate orthogonal matrix U_Gamma
 for decomposition in Theorem 1. To calculate it, we use Theorem 6.
 }
 \examples{
-gperm <- gips_perm('(1,2,3)(4,5)', 6)
+gperm <- gips_perm("(1,2,3)(4,5)", 6)
 U_g <- prepare_orthogonal_matrix(gperm)
 }

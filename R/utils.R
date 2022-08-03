@@ -3,10 +3,11 @@
 #' Move k elements from the start of a vector to its end.
 #'
 #' @noRd
-
-shift_vector <- function(v, k){
-    if(k==0) return(v)
-    c(v[-(1:k)], v[1:k])
+shift_vector <- function(v, k) {
+  if (k == 0) {
+    return(v)
+  }
+  c(v[-(1:k)], v[1:k])
 }
 
 #' Rearrange vector
@@ -15,21 +16,21 @@ shift_vector <- function(v, k){
 #' element will be first.
 #'
 #' @examples
-#' v <- c(5,3,2,1,4)
+#' v <- c(5, 3, 2, 1, 4)
 #' rearranged <- rearrange_vector(v)
-#' all(rearranged == c(1,4,5,3,2)) # TRUE
+#' all(rearranged == c(1, 4, 5, 3, 2)) # TRUE
 #'
 #' @noRd
-
-rearrange_vector <- function(v){
-    shift_vector(v, which.min(v)-1)
+rearrange_vector <- function(v) {
+  shift_vector(v, which.min(v) - 1)
 }
 
 is.wholenumber <-
-  function(x, tol = .Machine$double.eps^0.5){
-      if(!is.numeric(x))
-          return(rep(FALSE, length(x)))
-      abs(x - round(x)) < tol
+  function(x, tol = .Machine$double.eps^0.5) {
+    if (!is.numeric(x)) {
+      return(rep(FALSE, length(x)))
+    }
+    abs(x - round(x)) < tol
   }
 
 #' Is matrix symmetric
@@ -43,15 +44,15 @@ is.wholenumber <-
 #' the `matrix_of_interest` is indeed a matrix.
 #'
 #' @noRd
-is.positive.semi.definite.matrix <- function (matrix_of_interest, tolerance = 1e-06)
-{
+is.positive.semi.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
   eigenvalues <- eigen(matrix_of_interest, symmetric = TRUE)$values
 
-  return(all(eigenvalues >= -tolerance * abs(eigenvalues[1])))  # 1st is the biggest eigenvalue
+  return(all(eigenvalues >= -tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
 }
 
-wrong_argument_abort <- function(i, x=""){
-    rlang::abort(c('There was a problem identified with provided argument',
-                   "i"=i,
-                   "x"=x))
+wrong_argument_abort <- function(i, x = "") {
+  rlang::abort(c("There was a problem identified with provided argument",
+    "i" = i,
+    "x" = x
+  ))
 }

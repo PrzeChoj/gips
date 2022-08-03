@@ -20,7 +20,7 @@ G_function for \code{log_likelihood_of_gips()}
 }
 \examples{
 perm_size <- 6
-perm <- permutations::as.cycle(permutations::as.word(c(2,3,1,5,4,6)))
+perm <- permutations::as.cycle(permutations::as.word(c(2, 3, 1, 5, 4, 6)))
 gips_perm <- gips_perm(perm, perm_size)
 structure_constants <- get_structure_constants(gips_perm)
 gips:::G_function(structure_constants, 3)
