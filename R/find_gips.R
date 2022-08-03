@@ -348,6 +348,7 @@ best_growth <- function(S, number_of_observations, max_iter=5,
   if(!did_converge){
     rlang::warn(c(paste0("Best Growth algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
                   "i" = "We reccomend to run the `find_gips()` one more time on the conquered output")) # TODO(There will be a function `continue(bg)`; see ISSUE#11)
+    iteration <- iteration + 1 # the very first was the starting perm
   }else{
     goal_function_best_logvalues <- goal_function_best_logvalues[1:iteration]
     if(show_progress_bar)
