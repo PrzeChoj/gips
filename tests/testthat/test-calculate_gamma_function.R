@@ -1,40 +1,44 @@
-delta <- 3
-c <- permutations::as.cycle(permutations::as.word(c(2,1)))
-gips_c <- gips_perm(c, 2)
-cprim <- permutations::id
-gips_cprim <- gips_perm(cprim, 2)
-
 test_that('calculate_gamma_omega returns proper value',{
+  delta <- 3
+  gips_c <- gips_perm(permutations::as.cycle(permutations::as.word(c(2,1))), 2)
+  gips_cprim <- gips_perm(permutations::id, 2)
+  
   # perm = (1)(2)
   structure_constants <- get_structure_constants(gips_cprim)
 
-  dim_omega_i <- structure_constants[["dim_omega"]][1] # 3
-  r_i <- structure_constants[["r"]][1] # 2
-  d_i <- structure_constants[["d"]][1] # 1
-  k_i <- structure_constants[["k"]][1] # 1
+  dim_omega_i <- structure_constants[["dim_omega"]][1]
+  r_i <- structure_constants[["r"]][1]
+  d_i <- structure_constants[["d"]][1]
+  k_i <- structure_constants[["k"]][1]
+  expect_equal(c(dim_omega_i, r_i, d_i, k_i),
+               c(3, 2, 1, 1))
 
-  lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i # 2
+  lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i
+  expect_equal(lambda, 2)
 
   expect_equal(exp(calculate_gamma_omega(lambda=lambda,
-                                     dim_omega_i=dim_omega_i,
-                                     r_i=r_i,
-                                     d_i=d_i)),
+                                         dim_omega_i=dim_omega_i,
+                                         r_i=r_i,
+                                         d_i=d_i)),
                pi / sqrt(2))
 
   # perm = (1,2)
   structure_constants <- get_structure_constants(gips_c)
 
-  dim_omega_i <- structure_constants[["dim_omega"]][1] # 1
-  r_i <- structure_constants[["r"]][1] # 1
-  d_i <- structure_constants[["d"]][1] # 1
-  k_i <- structure_constants[["k"]][1] # 1
+  dim_omega_i <- structure_constants[["dim_omega"]][1]
+  r_i <- structure_constants[["r"]][1]
+  d_i <- structure_constants[["d"]][1]
+  k_i <- structure_constants[["k"]][1]
+  expect_equal(c(dim_omega_i, r_i, d_i, k_i),
+               c(1, 1, 1, 1))
 
-  lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i # 2
+  lambda <- 1/2 * k_i * (delta-2) + dim_omega_i/r_i
+  expect_equal(lambda, 1.5)
 
   expect_equal(exp(calculate_gamma_omega(lambda=lambda,
-                                     dim_omega_i=dim_omega_i,
-                                     r_i=r_i,
-                                     d_i=d_i)),
+                                         dim_omega_i=dim_omega_i,
+                                         r_i=r_i,
+                                         d_i=d_i)),
                sqrt(pi / 4)) # gamma(1.5)
 })
 
@@ -44,6 +48,9 @@ test_that('calculate_gamma_omega gives warning and infinity on divergent integra
 })
 
 test_that("when L is 1, G_function returns the same value as calculate_gamma_omega", {
+  delta <- 3
+  gips_cprim <- gips_perm(permutations::id, 2)
+  
   structure_constants <- get_structure_constants(gips_cprim)
   lambda <- 1/2 * structure_constants[['k']][1] * (delta-2) + structure_constants[['dim_omega']][1]/structure_constants[['r']][1]
 
@@ -64,6 +71,8 @@ test_that("G_function example from documentation", {
 })
 
 test_that("calculate_gamma_function has desired properties", {
+  gips_cprim <- gips_perm(permutations::id, 2)
+  
   expect_gt(calculate_gamma_function(gips_cprim, 0.50000001),
             calculate_gamma_function(gips_cprim, 0.5001))
 
