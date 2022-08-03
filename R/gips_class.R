@@ -665,8 +665,49 @@ plot.gips <- function(x, type=NA,
   
   # plotting:
   if(type == "heatmap"){
-    stats::heatmap(gips::project_matrix(attr(x, "S"), x[[1]]),
-                   Rowv = NA, Colv = NA, ...)  # TODO(Does the `...` work? I tried to pass `col`, and I failed.)
+    rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
+                           reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used")
+    my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
+    if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
+      p <- ncol(my_projected_matrix)
+      
+      if(is.null(colnames(my_projected_matrix))){
+        colnames(my_projected_matrix) <- paste0(seq(1,p))
+      }
+      if(is.null(rownames(my_projected_matrix))){
+        rownames(my_projected_matrix) <- paste0(seq(1,p))
+      }
+      
+      # Address the R CMD check's "no visible binding for global variable":
+      col_id <- covariance_value <- row_id <- NULL
+      
+      # imagine pipes: %>%
+      my_transformed_matrix <- dplyr::mutate(dplyr::mutate(tidyr::pivot_longer(tibble::rownames_to_column(as.data.frame(my_projected_matrix),
+                                                                                                          "row_id"),
+                                                                               -c(row_id), names_to = "col_id", values_to = "covariance_value"),
+                                                           col_id=as.numeric(col_id)),
+                                             row_id=as.numeric(row_id))
+      
+      g_plot <- ggplot2::ggplot(my_transformed_matrix,
+                                ggplot2::aes(x=col_id, y=row_id, fill=covariance_value)) +
+        ggplot2::geom_raster() +
+        ggplot2::scale_fill_viridis_c() +
+        ggplot2::scale_x_continuous(breaks = 1:p) +
+        ggplot2::scale_y_reverse(breaks = 1:p) +
+        ggplot2::theme_bw() +
+        ggplot2::labs(title=paste0("Covariance matrix projected on permutation ", x[[1]], "."),
+                      x ="", y = "")
+      
+      return(g_plot)
+    } else {  # use the basic plot in R, package `graphics`
+      if(is.null(color)){  # Setting col = NA or col = NULL turns off the whole plot.
+        stats::heatmap(my_projected_matrix, symm = TRUE,
+                       Rowv = NA, Colv = NA, ...)
+      }else{
+        stats::heatmap(my_projected_matrix, symm = TRUE,
+                       Rowv = NA, Colv = NA, col = color, ...)
+      }
+    }
   }
   if(type %in% c("all", "best", "both")){
     if(is.null(ylabel)){
