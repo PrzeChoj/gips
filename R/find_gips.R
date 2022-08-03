@@ -119,6 +119,21 @@ find_gips <- function(g, max_iter = NA, return_probabilities = FALSE,
     ))
   }
 
+  if (return_probabilities) {
+    rlang::check_installed("stringi",
+      reason = "to return probabilities in `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
+    )
+    if (!rlang::is_installed("stringi")) {
+      rlang::warn(c("There was a problem with return_probabilities:",
+        "i" = "Package `stringi` is required to successfully call `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`.",
+        "x" = "You do not have package `stringi` installed.",
+        "i" = "Optimization will proceed as `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = FALSE)`."
+      ))
+
+      return_probabilities <- FALSE
+    }
+  }
+
   # inform that user can consider "BF"
   if ((optimizer %in% c("MH", "Metropolis_Hastings")) && (max_iter * 10 >= prod(1:ncol(attr(g, "S"))))) {
     rlang::inform(c(paste0(

@@ -24,13 +24,13 @@ Imports:
     numbers,
     permutations,
     rlang,
-    stringi,
     utils
 Suggests: 
     dplyr,
     ggplot2,
     graphics,
     MASS (>= 7.3-39),
+    stringi,
     testthat (>= 3.0.0),
     tibble,
     tidyr
