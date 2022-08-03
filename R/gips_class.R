@@ -151,16 +151,29 @@ validate_gips <- function(g) {
   D_matrix <- attr(g, "D_matrix")
   optimization_info <- attr(g, "optimization_info")
 
-
   if (!inherits(perm, "gips_perm")) {
     rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "The `g[[1]]` must be of a `gips_perm` class.",
+      "i" = "The `g[[1]]` must be an object of a `gips_perm` class.",
       "x" = paste0(
         "You provided `g[[1]]` with `class(g[[1]]) == (",
         paste(class(perm), collapse = ", "),
         ")`."
       )
     ))
+  } else {
+    tryCatch(
+      {
+        validate_gips_perm(perm)
+      },
+      error = function(cond) {
+        rlang::abort(c("There was a problem identified with provided argument:",
+          "i" = "The `g[[1]]` must be an object of a `gips_perm` class.",
+          "x" = paste0(
+            "You provided `g[[1]]` with `class(g[[1]]) == 'gips_perm'`, but your g[[1]] does not pass `validate_gips_perm(g[[1]])`."
+          )
+        ))
+      }
+    )
   }
 
   check_correctness_of_arguments( # max_iter, return_probabilities and show_progress_bar are to be checked here, but some value has to be passed
@@ -281,23 +294,43 @@ validate_gips <- function(g) {
         )
       }
 
-      # TODO(Validate more intelligently that `optimization_info[["last_perm"]]` is a permutation)
       if (inherits(optimization_info[["last_perm"]], "gips_perm")) {
-        last_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, perm = optimization_info[["last_perm"]])
-        if (!(optimization_info[["last_perm_log_likelihood"]] == log_likelihood_of_gips(last_perm_gips))) {
-          abort_text <- c(abort_text,
-            "i" = "`attr(g, 'optimization_info')[['last_perm_log_likelihood']]` must be the log_likelihood of `optimization_info[['last_perm']]`.",
-            "x" = paste0(
-              "You have `attr(g, 'optimization_info')[['last_perm_log_likelihood']] == ",
-              optimization_info[["last_perm_log_likelihood"]],
-              "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
-              log_likelihood_of_gips(last_perm_gips), "`."
+        abort_text <- tryCatch(
+          {
+            validate_gips_perm(optimization_info[["last_perm"]])
+
+            # optimization_info[["last_perm"]] is proper gips_perm object
+            last_perm_gips <- gips(S, number_of_observations,
+              delta = delta, D_matrix = D_matrix,
+              perm = optimization_info[["last_perm"]]
             )
-          )
-        }
+
+            if (!(optimization_info[["last_perm_log_likelihood"]] == log_likelihood_of_gips(last_perm_gips))) {
+              abort_text <- c(abort_text,
+                "i" = "`attr(g, 'optimization_info')[['last_perm_log_likelihood']]` must be the log_likelihood of `optimization_info[['last_perm']]`.",
+                "x" = paste0(
+                  "You have `attr(g, 'optimization_info')[['last_perm_log_likelihood']] == ",
+                  optimization_info[["last_perm_log_likelihood"]],
+                  "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
+                  log_likelihood_of_gips(last_perm_gips), "`."
+                )
+              )
+            }
+
+            abort_text # if optimization_info[["last_perm"]] passes the validation, return original text
+          },
+          error = function(cond) { # error can only be thrown in `validate_gips_perm()`, so ass appropriate note to the `abort_text`:
+            c(abort_text,
+              "i" = "The `attr(g, 'optimization_info')[['last_perm']]` must be an object of a `gips_perm` class.",
+              "x" = paste0(
+                "You provided `attr(g, 'optimization_info')[['last_perm']]` with `class(attr(g, 'optimization_info')[['last_perm']]) == 'gips_perm'`, but your attr(g, 'optimization_info')[['last_perm']] does not pass `validate_gips_perm(attr(g, 'optimization_info')[['last_perm']])`."
+              )
+            )
+          }
+        )
       } else {
         abort_text <- c(abort_text,
-          "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be element of class 'gips_perm.'",
+          "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be an object of class 'gips_perm'.",
           "x" = paste0(
             "You have `attr(g, 'optimization_info')[['last_perm']]` of class ('",
             paste(class(optimization_info[["last_perm"]]), collapse = "', '"), "')."
