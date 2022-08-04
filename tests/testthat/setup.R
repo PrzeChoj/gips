@@ -1,4 +1,3 @@
-to_perm <- function(v) permutations::as.cycle(permutations::as.word(v))
 example_perm <- to_perm(c(2, 3, 1, 5, 4, 6))
 example_perm2 <- to_perm(c(2, 3, 4, 5, 1))
 

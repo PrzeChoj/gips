@@ -56,3 +56,10 @@ wrong_argument_abort <- function(i, x = "") {
     "x" = x
   ))
 }
+
+#' Used primarily in tests
+#' 
+#' Maybe later in vignette?
+#' 
+#' @noRd
+to_perm <- function(v) permutations::as.cycle(permutations::as.word(v))
