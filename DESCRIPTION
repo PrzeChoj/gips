@@ -18,7 +18,8 @@ Description: Find the permutation symmetry group such that the covariance
     approximates the actual covariance behind the data and is less
     variance.
 License: GPL (>= 3) + file LICENSE
-URL: https://github.com/PrzeChoj/gips
+URL: https://github.com/PrzeChoj/gips,
+    https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 
     numbers,
