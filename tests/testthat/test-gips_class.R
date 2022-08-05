@@ -87,11 +87,11 @@ test_that("Properly validate the gips class with no optimization or after a sing
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations, perm = custom_perm1)
 
-  g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again. We want g2 to have at least 1 accepted transposition.
-    g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   }
-  g3 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
 
 
   # tests:
@@ -131,7 +131,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["log_likelihood_values"]] <- as.character(attr(g_err, "optimization_info")[["log_likelihood_values"]])
+  attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -151,11 +151,11 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- "7"
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- "7"
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -192,7 +192,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -219,11 +219,11 @@ test_that("Properly validate the gips class with no optimization or after a sing
   # more than 5 problems at the time:
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
-  attr(g_err, "optimization_info")[["log_likelihood_values"]] <- as.character(attr(g_err, "optimization_info")[["log_likelihood_values"]])
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
   attr(g_err, "optimization_info")[["iterations_performed"]] <- 40
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1 / (len_post_prob - 1), len_post_prob - 1))
-  attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
   attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
   expect_error(validate_gips(g_err))
 })
@@ -232,17 +232,17 @@ test_that("Properly validate the gips class after multiple optimizations", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations, perm = custom_perm1)
 
-  g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-  g2 <- find_gips(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-  g2 <- find_gips(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again.
-    g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   }
-  g3 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
-  g3 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
-  g3 <- find_gips(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
 
 
 
@@ -284,7 +284,7 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["log_likelihood_values"]] <- as.character(attr(g_err, "optimization_info")[["log_likelihood_values"]])
+  attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -304,11 +304,11 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- "7"
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- "7"
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -345,7 +345,7 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -372,11 +372,11 @@ test_that("Properly validate the gips class after multiple optimizations", {
   # more than 5 problems at the time:
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
-  attr(g_err, "optimization_info")[["log_likelihood_values"]] <- as.character(attr(g_err, "optimization_info")[["log_likelihood_values"]])
-  attr(g_err, "optimization_info")[["last_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
+  attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
   attr(g_err, "optimization_info")[["iterations_performed"]] <- c(2, 2)
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1 / (len_post_prob - 1), len_post_prob - 1))
-  attr(g_err, "optimization_info")[["best_perm_log_likelihood"]] <- 7
+  attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
   attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
   expect_error(validate_gips(g_err))
 })
@@ -618,10 +618,10 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 test_that("print.gips() works", {
   g <- gips(S, number_of_observations)
-  expect_output(print(g), "The permutation \\(\\) has log likelihood")
+  expect_output(print(g), "The permutation \\(\\) has log posteriori")
 
-  g <- find_gips(g, 10, show_progress_bar = FALSE, optimizer = "MH")
-  expect_output(print(g), "which was found after 10 log_likelihood calculations.")
+  g <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
+  expect_output(print(g), "which was found after 10 log_posteriori calculations.")
 })
 
 test_that("plot.gips works or abords for wrong arguments", {
@@ -633,13 +633,13 @@ test_that("plot.gips works or abords for wrong arguments", {
   expect_error(plot(g1, type = "both"))
   expect_message(plot(g1))
 
-  g1_found <- find_gips(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
+  g1_found <- find_MAP(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
   expect_message(plot(g1_found))
   expect_silent(plot(g1_found, type = "both"))
   expect_silent(plot(g1_found, type = "all", logarithmic_y = FALSE))
   expect_silent(plot(g1_found,
     type = "best", logarithmic_x = TRUE,
-    ylim = range(attr(g1_found, "optimization_info")["log_likelihood_values"]) * 2
+    ylim = range(attr(g1_found, "optimization_info")["log_posteriori_values"]) * 2
   ))
 
   expect_error(plot.gips(g1_found, type = "non_existing"))

@@ -5,8 +5,8 @@ test_that("Handle improper parameters", {
     S = matrix_invariant_by_example_perm, number_of_observations = 13,
     max_iter = Inf, show_progress_bar = TRUE
   ))
-  expect_error(find_gips(gips(matrix_invariant_by_example_perm, number_of_observations), 10, return_probabilities = TRUE, optimizer = "BG"))
-  expect_error(find_gips(gips(matrix_invariant_by_example_perm, number_of_observations), 10, optimizer = "BD"))
+  expect_error(find_MAP(gips(matrix_invariant_by_example_perm, number_of_observations), 10, return_probabilities = TRUE, optimizer = "BG"))
+  expect_error(find_MAP(gips(matrix_invariant_by_example_perm, number_of_observations), 10, optimizer = "BD"))
   expect_error(Metropolis_Hastings(
     S = matrix_invariant_by_example_perm, number_of_observations = 13, max_iter = Inf,
     start_perm = permutations::permutation("(1,2,3)(4,5)"), show_progress_bar = TRUE

@@ -2,7 +2,7 @@
 #'
 #' Create the `gips` object.
 #' This object will consists data and all other information needed to find the invariant group.
-#' The optimization itself will not be performed. To do it, one have to call the \code{\link{find_gips}} function. See examples below.
+#' The optimization itself will not be performed. To do it, one have to call the \code{\link{find_MAP}} function. See examples below.
 #'
 #' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
@@ -37,11 +37,11 @@
 #'
 #' g <- gips(S, number_of_observations)
 #'
-#' g_opt <- find_gips(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
-#' g_opt
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' g_map
 #'
 #' if (require("graphics")) {
-#'   plot(g_opt, type = "both", logarithmic_x = TRUE)
+#'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
 gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
                  perm = "") {
@@ -194,7 +194,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("acceptance_rate", "log_likelihood_values", "visited_perms", "last_perm", "last_perm_log_likelihood", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_likelihood", "optimization_time", "full_optimization_time")
+    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "full_optimization_time")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -258,12 +258,12 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (!(is.numeric(optimization_info[["log_likelihood_values"]]))) {
+    if (!(is.numeric(optimization_info[["log_posteriori_values"]]))) {
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['log_likelihood_values']]` must be a vector of numbers.",
+        "i" = "`attr(g, 'optimization_info')[['log_posteriori_values']]` must be a vector of numbers.",
         "x" = paste0(
-          "You have `attr(g, 'optimization_info')[['log_likelihood_values']] == ",
-          typeof(optimization_info[["log_likelihood_values"]]),
+          "You have `attr(g, 'optimization_info')[['log_posteriori_values']] == ",
+          typeof(optimization_info[["log_posteriori_values"]]),
           "`."
         )
       )
@@ -305,14 +305,14 @@ validate_gips <- function(g) {
               perm = optimization_info[["last_perm"]]
             )
 
-            if (!(optimization_info[["last_perm_log_likelihood"]] == log_likelihood_of_gips(last_perm_gips))) {
+            if (!(optimization_info[["last_perm_log_posteriori"]] == log_posteriori_of_gips(last_perm_gips))) {
               abort_text <- c(abort_text,
-                "i" = "`attr(g, 'optimization_info')[['last_perm_log_likelihood']]` must be the log_likelihood of `optimization_info[['last_perm']]`.",
+                "i" = "`attr(g, 'optimization_info')[['last_perm_log_posteriori']]` must be the log_posteriori of `optimization_info[['last_perm']]`.",
                 "x" = paste0(
-                  "You have `attr(g, 'optimization_info')[['last_perm_log_likelihood']] == ",
-                  optimization_info[["last_perm_log_likelihood"]],
-                  "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
-                  log_likelihood_of_gips(last_perm_gips), "`."
+                  "You have `attr(g, 'optimization_info')[['last_perm_log_posteriori']] == ",
+                  optimization_info[["last_perm_log_posteriori"]],
+                  "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
+                  log_posteriori_of_gips(last_perm_gips), "`."
                 )
               )
             }
@@ -373,14 +373,14 @@ validate_gips <- function(g) {
           ")`."
         )
       )
-    } else if (!(sum(optimization_info[["iterations_performed"]]) <= length(optimization_info[["log_likelihood_values"]]))) {
+    } else if (!(sum(optimization_info[["iterations_performed"]]) <= length(optimization_info[["log_posteriori_values"]]))) {
       abort_text <- c(abort_text,
-        "i" = "In every iteration at least one value of log_likelihood is calculated.",
+        "i" = "In every iteration at least one value of log_posteriori is calculated.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['iterations_performed']] == ",
           sum(optimization_info[["iterations_performed"]]),
-          "`, which is more than `length(attr(g, 'optimization_info')[['log_likelihood_values']]) == ",
-          length(optimization_info[["log_likelihood_values"]]), "`."
+          "`, which is more than `length(attr(g, 'optimization_info')[['log_posteriori_values']]) == ",
+          length(optimization_info[["log_posteriori_values"]]), "`."
         )
       )
     }
@@ -467,14 +467,14 @@ validate_gips <- function(g) {
       )
     }
     best_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, perm = perm) # this perm is g[[1]]
-    if (!(optimization_info[["best_perm_log_likelihood"]] == log_likelihood_of_gips(best_perm_gips))) {
+    if (!(optimization_info[["best_perm_log_posteriori"]] == log_posteriori_of_gips(best_perm_gips))) {
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['best_perm_log_likelihood']]` must be the log_likelihood of the base object, `g[[1]]`.",
+        "i" = "`attr(g, 'optimization_info')[['best_perm_log_posteriori']]` must be the log_posteriori of the base object, `g[[1]]`.",
         "x" = paste0(
-          "You have `attr(g, 'optimization_info')[['best_perm_log_likelihood']] == ",
-          optimization_info[["best_perm_log_likelihood"]],
-          "`, but `log_likelihood_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=g[[1]])) == ",
-          log_likelihood_of_gips(best_perm_gips), "`."
+          "You have `attr(g, 'optimization_info')[['best_perm_log_posteriori']] == ",
+          optimization_info[["best_perm_log_posteriori"]],
+          "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), perm=g[[1]])) == ",
+          log_posteriori_of_gips(best_perm_gips), "`."
         )
       )
     }
@@ -483,8 +483,8 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_gips()`?",
-        "i" = "Did You modified the `find_gips()` function?"
+        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You modified the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["optimization_time"]], "difftime")) {
       abort_text <- c(abort_text,
@@ -508,8 +508,8 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['full_optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_gips()`?",
-        "i" = "Did You modified the `find_gips()` function?"
+        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You modified the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["full_optimization_time"]], "difftime")) {
       abort_text <- c(abort_text,
@@ -748,26 +748,25 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' Printing function for `gips` class.
 #'
 #' @param x object of class `gips`.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_likelihood_of_gips}} or leave it in logarithmic form.
-#' @param digits Number of digits after the comma for likelihood to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link{round}}.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_posteriori_of_gips}} or leave it in logarithmic form.
+#' @param digits Number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link{round}}.
 #' @param ... additional arguments passed to \code{\link{cat}}.
 #'
 #' @return Invisible NULL.
 #' @export
 print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
-  # TODO(it is not likelihood, but sth proportional to it. See #ISSUE11)
   validate_gips(x)
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
-    log_likelihood <- log_likelihood_of_perm(
+    log_posteriori <- log_posteriori_of_perm(
       perm_proposal = x[[1]], S = attr(x, "S"),
       number_of_observations = attr(x, "number_of_observations"),
       delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix")
     )
-    if (is.nan(log_likelihood) || is.infinite(log_likelihood)) {
+    if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
         "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -775,21 +774,21 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
       "The permutation ", x[[1]],
       ifelse(log_value,
         paste0(
-          " has log likelihood ",
-          round(log_likelihood, digits = digits)
+          " has log posteriori ",
+          round(log_posteriori, digits = digits)
         ),
         paste0(
-          " has likelihood ",
-          round(exp(log_likelihood), digits = digits)
+          " has posteriori ",
+          round(exp(log_posteriori), digits = digits)
         )
       ), "."
     ), ...)
   } else { # it is optimized gips object
-    log_likelihood <- attr(x, "optimization_info")[["best_perm_log_likelihood"]]
-    if (is.nan(log_likelihood) || is.infinite(log_likelihood)) {
+    log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
+    if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The likelihood value of ", ifelse(is.nan(log_likelihood), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
         "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -797,16 +796,16 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
       "The permutation ", x[[1]],
       ifelse(log_value,
         paste0(
-          " has log likelihood ",
-          round(log_likelihood, digits = digits)
+          " has log posteriori ",
+          round(log_posteriori, digits = digits)
         ),
         paste0(
-          " has likelihood ",
-          round(exp(log_likelihood), digits = digits)
+          " has posteriori ",
+          round(exp(log_posteriori), digits = digits)
         )
       ), " which was found after ",
-      length(attr(x, "optimization_info")[["log_likelihood_values"]]),
-      " log_likelihood calculations."
+      length(attr(x, "optimization_info")[["log_posteriori_values"]]),
+      " log_posteriori calculations."
     ), ...)
   }
 }
@@ -818,8 +817,8 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #'
 #' Plot method for `gips` object.
 #'
-#' @param x Object of class gips. Has to first be optimized with \code{\link{find_gips}}.
-#' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of the likelihoods for all visited state. For "best", plots the line of the biggest likelihoods up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
+#' @param x Object of class gips. Has to first be optimized with \code{\link{find_MAP}}.
+#' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of the posterioris for all visited state. For "best", plots the line of the biggest posterioris up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
 #' @param logarithmic_y boolean.
 #' @param logarithmic_x boolean.
 #' @param color Vector of colors to be used to plot lines.
@@ -827,7 +826,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_likelihood_of_gips}} is taken.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_posteriori_of_gips}} is taken.
 #' @param xlim Limits of x axis. When \code{NULL}, the whole optimization process is shown.
 #' @param ... Additional arguments passed to \code{\link{heatmap}} or other various elements of the plot.
 #'
@@ -840,8 +839,7 @@ plot.gips <- function(x, type = NA,
                       xlabel = NULL, ylabel = NULL,
                       show_legend = TRUE,
                       ylim = NULL, xlim = NULL, ...) {
-  # TODO(It is not likelihood, but sth proportional to it. See #ISSUE11)
-  # TODO(For "MH", those are NOT "All calculated likelihoods", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
+  # TODO(For "MH", those are NOT "All calculated posterioris", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
 
   # checking the correctness of the arguments:
   if (!requireNamespace("graphics", quietly = TRUE)) {
@@ -883,7 +881,7 @@ plot.gips <- function(x, type = NA,
         type, "'`."
       ),
       "i" = paste0(
-        "Did You want to call `x <- find_gips(g)` and then `plot(x, type = '",
+        "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
         type, "')`?"
       ),
       "i" = "Did You want to use `type = 'heatmap'`?"
@@ -957,8 +955,8 @@ plot.gips <- function(x, type = NA,
   if (type %in% c("all", "best", "both")) {
     if (is.null(ylabel)) {
       ylabel <- ifelse(logarithmic_y,
-        "log likelihood",
-        "likelihood"
+        "log posteriori",
+        "posteriori"
       )
     }
     if (is.null(xlabel)) {
@@ -975,9 +973,9 @@ plot.gips <- function(x, type = NA,
       }
     }
     if (logarithmic_y) {
-      y_values_from <- attr(x, "optimization_info")[["log_likelihood_values"]] # values of log_likelihood are logarithmic by default
+      y_values_from <- attr(x, "optimization_info")[["log_posteriori_values"]] # values of log_posteriori are logarithmic by default
     } else {
-      y_values_from <- exp(attr(x, "optimization_info")[["log_likelihood_values"]])
+      y_values_from <- exp(attr(x, "optimization_info")[["log_posteriori_values"]])
     }
 
     y_values_max <- cummax(y_values_from)
@@ -1044,8 +1042,8 @@ plot.gips <- function(x, type = NA,
     if (show_legend) {
       if (type == "both") {
         legend_text <- c(
-          "All calculated likelihoods",
-          "Maximum likelihoods calculated"
+          "All calculated posterioris",
+          "Maximum posterioris calculated"
         )
         lty <- c(1, 1)
         lwd <- c(3, 3)
@@ -1077,7 +1075,7 @@ plot.gips <- function(x, type = NA,
 #' @export
 summary.gips <- function(object, ...) {
   validate_gips(object)
-  permutation_log_likelihood <- log_likelihood_of_gips(object)
+  permutation_log_posteriori <- log_posteriori_of_gips(object)
 
   structure_constants <- get_structure_constants(object[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
@@ -1086,7 +1084,7 @@ summary.gips <- function(object, ...) {
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
-      start_permutation_log_likelihood = permutation_log_likelihood,
+      start_permutation_log_posteriori = permutation_log_posteriori,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1098,7 +1096,7 @@ summary.gips <- function(object, ...) {
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
       start_permutation <- optimization_info[["visited_perms"]][[1]]
-      start_permutation_log_likelihood <- log_likelihood_of_perm(
+      start_permutation_log_posteriori <- log_posteriori_of_perm(
         start_permutation,
         attr(object, "S"),
         attr(object, "number_of_observations"),
@@ -1106,10 +1104,10 @@ summary.gips <- function(object, ...) {
         attr(object, "D_matrix")
       )
 
-      when_was_best <- which(optimization_info[["log_likelihood_values"]] == permutation_log_likelihood)
+      when_was_best <- which(optimization_info[["log_posteriori_values"]] == permutation_log_posteriori)
     } else {
       start_permutation <- NULL
-      start_permutation_log_likelihood <- NULL
+      start_permutation_log_posteriori <- NULL
       when_was_best <- NULL
     }
 
@@ -1117,9 +1115,9 @@ summary.gips <- function(object, ...) {
     summary_list <- list(
       optimized = TRUE,
       found_permutation = object[[1]],
-      found_permutation_log_likelihood = permutation_log_likelihood,
+      found_permutation_log_posteriori = permutation_log_posteriori,
       start_permutation = start_permutation,
-      start_permutation_log_likelihood = start_permutation_log_likelihood,
+      start_permutation_log_posteriori = start_permutation_log_posteriori,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1127,10 +1125,10 @@ summary.gips <- function(object, ...) {
       D_matrix = attr(object, "D_matrix"),
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
-      number_of_log_likelihood_calls = length(optimization_info[["log_likelihood_values"]]),
+      number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       full_optimization_time = optimization_info[["full_optimization_time"]],
-      log_likelihood_calls_after_best = length(optimization_info[["log_likelihood_values"]]) - when_was_best[length(when_was_best)],
+      log_posteriori_calls_after_best = length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)],
       acceptance_rate = optimization_info[["acceptance_rate"]]
     )
   }
@@ -1153,10 +1151,10 @@ print.summary.gips <- function(x, ...) {
     as.character(x[["found_permutation"]]),
     as.character(x[["start_permutation"]])
   ),
-  "\n\nLog_likelihood:\n ",
+  "\n\nLog_posteriori:\n ",
   ifelse(x[["optimized"]],
-    x[["found_permutation_log_likelihood"]],
-    x[["start_permutation_log_likelihood"]]
+    x[["found_permutation_log_posteriori"]],
+    x[["start_permutation_log_posteriori"]]
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
   "\n\nn0:\n ", x[["n0"]],
@@ -1205,8 +1203,8 @@ print.summary.gips <- function(x, ...) {
       )
     }
 
-    cat("\n\nNumber of log_likelihood calls:\n ",
-      x[["number_of_log_likelihood_calls"]],
+    cat("\n\nNumber of log_posteriori calls:\n ",
+      x[["number_of_log_posteriori_calls"]],
       "\n\nOptimization time:\n ", unclass(x[["full_optimization_time"]]),
       " ", attr(x[["full_optimization_time"]], "units"),
       sep = ""
@@ -1216,8 +1214,8 @@ print.summary.gips <- function(x, ...) {
       cat(paste0("\n\nAcceptance rate:\n ", x[["acceptance_rate"]]), sep = "")
     }
     if (x[["optimization_algorithm_used"]][length(x[["optimization_algorithm_used"]])] != "brute_force") {
-      cat("\n\nLog_likelihood calls after the found permutation:\n ",
-        x[["log_likelihood_calls_after_best"]],
+      cat("\n\nLog_posteriori calls after the found permutation:\n ",
+        x[["log_posteriori_calls_after_best"]],
         sep = ""
       )
     }
