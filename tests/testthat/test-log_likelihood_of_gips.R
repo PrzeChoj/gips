@@ -86,8 +86,6 @@ test_that("log_likelihood_of_gips has the desired property", {
 })
 
 test_that("calculate phi_part returns proper values", {
-  skip("Further investigation needed")
-
   gips_example_perm <- gips_perm(example_perm, 6)
   D_matrix <- matrix(c(
     10, 1, 1, 2, 2, 3,
@@ -101,7 +99,7 @@ test_that("calculate phi_part returns proper values", {
   n <- 1
   U_matrix <- diag(6) * 2
   structure_constants <- get_structure_constants(gips_example_perm)
-  expected_phi_part <- log(2206^(-3) * 10^(-3 / 2) * 9^(-2)) - log(1680^(-5 / 2) * 8^(-3 / 2))
+  expected_phi_part <- log(2206^(-3) * 100^(-3 / 2) * 9^(-2)) - log(1680^(-5 / 2) * 81^(-1) * 8^(-3 / 2))
 
   expect_equal(
     calculate_phi_part(
