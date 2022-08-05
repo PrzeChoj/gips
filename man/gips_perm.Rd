@@ -24,11 +24,11 @@ Create permutation objects to be passed to functions of \code{gips} package.
 }
 \section{Functions}{
 \itemize{
-\item \code{new_gips_perm()}: Constructor
+\item \code{new_gips_perm}: Constructor
 
 Only intended for low-level use.
-
 }}
+
 \examples{
 gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
