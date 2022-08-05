@@ -3,3 +3,7 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^R/issue_5.R$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
