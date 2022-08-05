@@ -1,8 +1,8 @@
-#' The log likelihood that the CoV matrix is invariant under permutation.
+#' A log posteriori that the CoV matrix is invariant under permutation.
 #'
 #' To be more precise, it is the logarithm of an unnormalized posterior probability.
 #' Calculated according to equation (33) and (27) from the paper. If `Inf` or `NaN` is reached, produces a warning.
-#' It is the goal function for optimization algorithms. The `perm_proposal` that maximizes this function is the maximum likelihood estimator.
+#' It is the goal function for optimization algorithms. The `perm_proposal` that maximizes this function is the Maximum A Posteriori (MAP) Estimator.
 #'
 #' @export
 #'
@@ -12,18 +12,18 @@
 #' c_perm <- permutations::as.cycle(permutations::as.word(c(2, 1)))
 #' S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S1, 100, perm = c_perm)
-#' log_likelihood_of_gips(g)
-log_likelihood_of_gips <- function(g) {
+#' log_posteriori_of_gips(g)
+log_posteriori_of_gips <- function(g) {
   validate_gips(g)
 
-  log_likelihood_of_perm(
+  log_posteriori_of_perm(
     perm_proposal = g[[1]], S = attr(g, "S"),
     number_of_observations = attr(g, "number_of_observations"),
     delta = attr(g, "delta"), D_matrix = attr(g, "D_matrix")
   )
 }
 
-log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
+log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
                                    delta, D_matrix) {
   U <- S * number_of_observations # in the paper there is U everywhere instead of S, so it is easier to use U matrix in the code
   perm_size <- dim(S)[1]
@@ -55,10 +55,10 @@ log_likelihood_of_perm <- function(perm_proposal, S, number_of_observations,
   out <- Ac_part + G_part + phi_part
 
   if (is.infinite(out)) {
-    rlang::warn("The infinite value of a likelihood was produced.")
+    rlang::warn("The infinite value of a posteriori was produced.")
   }
   if (is.nan(out)) {
-    rlang::warn("The NaN value of a likelihood was produced.")
+    rlang::warn("The NaN value of a posteriori was produced.")
   }
 
   out
@@ -71,10 +71,10 @@ runif_transposition <- function(perm_size) {
   sample(perm_size, 2, replace = FALSE)
 }
 
-#' Calculate log phi_part of log_likelihood_of_gips
+#' Calculate log phi_part of log_posteriori_of_gips
 #'
 #' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
-#' Rest of params as in log_likelihood_of_gips
+#' Rest of params as in log_posteriori_of_gips
 #'
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U,

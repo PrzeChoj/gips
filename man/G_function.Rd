@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_gamma_function.R
 \name{G_function}
 \alias{G_function}
-\title{G_function for \code{log_likelihood_of_gips()}}
+\title{G_function for \code{log_posteriori_of_gips()}}
 \usage{
 G_function(structure_constants, delta = 3)
 }
@@ -16,7 +16,7 @@ Sum of logarithms of elements of \code{calculate_gamma_omega} from i to L.
 It is log of a product part of equation (27). For more information, see Issue #3 on \code{gips}' GitHub
 }
 \description{
-G_function for \code{log_likelihood_of_gips()}
+G_function for \code{log_posteriori_of_gips()}
 }
 \examples{
 perm_size <- 6

@@ -1,12 +1,12 @@
-#' Find the Gaussian model Invariant by Permutation Symmetry
+#' Find the Maximum A Posteriori Estimation
 #'
-#' Uses one of optimization algorithms to find the permutation that maximizes the likelihood of observed data.
+#' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will allways find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
 #'
 #' @param g object of `gips` class
 #' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite; for `optimizer=="BF"` it is not used.
 #' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
 #' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
-#' @param optimizer the optimizer for the search of the maximum likelihood. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)
+#' @param optimizer the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)
 #'
 #' @return object of class gips
 #'
@@ -34,18 +34,18 @@
 #'
 #' g <- gips(S, number_of_observations)
 #'
-#' g_opt <- find_gips(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
-#' g_opt
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' g_map
 #'
-#' g_opt2 <- find_gips(g_opt, max_iter = 10, show_progress_bar = FALSE, optimizer = "continue")
+#' g_map2 <- find_MAP(g_map, max_iter = 10, show_progress_bar = FALSE, optimizer = "continue")
 #'
 #' if (require("graphics")) {
-#'   plot(g_opt2, type = "both", logarithmic_x = TRUE)
+#'   plot(g_map2, type = "both", logarithmic_x = TRUE)
 #' }
 #'
-#' g_opt_BF <- find_gips(g, show_progress_bar = FALSE, optimizer = "BF")
-#' summary(g_opt_BF)
-find_gips <- function(g, max_iter = NA, return_probabilities = FALSE,
+#' g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
+#' summary(g_map_BF)
+find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
                       show_progress_bar = TRUE, optimizer = NA) {
   # check the correctness of the g argument
   validate_gips(g)
@@ -67,7 +67,7 @@ find_gips <- function(g, max_iter = NA, return_probabilities = FALSE,
       "MH", "continue"
     )
 
-    rlang::inform(c("You used the default value of the 'optimizer' argument in `find_gips()`.",
+    rlang::inform(c("You used the default value of the 'optimizer' argument in `find_MAP()`.",
       "i" = paste0(
         "The 'optimizer = NA' was automatically changed to 'optimizer = \"",
         optimizer, "\"'."
@@ -121,13 +121,13 @@ find_gips <- function(g, max_iter = NA, return_probabilities = FALSE,
 
   if (return_probabilities) {
     rlang::check_installed("stringi",
-      reason = "to return probabilities in `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
+      reason = "to return probabilities in `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
     )
     if (!rlang::is_installed("stringi")) {
       rlang::warn(c("There was a problem with return_probabilities:",
-        "i" = "Package `stringi` is required to successfully call `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`.",
+        "i" = "Package `stringi` is required to successfully call `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`.",
         "x" = "You do not have package `stringi` installed.",
-        "i" = "Optimization will proceed as `find_gips(optimizer = 'Metropolis_Hastings', return_probabilities = FALSE)`."
+        "i" = "Optimization will proceed as `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = FALSE)`."
       ))
 
       return_probabilities <- FALSE
@@ -143,7 +143,7 @@ find_gips <- function(g, max_iter = NA, return_probabilities = FALSE,
     "i" = paste0(
       "Consider using `optimizer = 'brute_force'`, because it will use ",
       ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
-      " iterations and will browse all permutations, therefore it will definitely find the maximum likelihood estimator."
+      " iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
     )
     ))
   }
@@ -227,24 +227,24 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
   }
 
   my_goal_function <- function(perm) {
-    log_likelihood_of_perm(perm, # We recommend to use the `log_likelihood_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
   }
 
   acceptance <- rep(FALSE, max_iter)
-  log_likelihood_values <- rep(0, max_iter)
+  log_posteriori_values <- rep(0, max_iter)
   visited_perms <- list()
   visited_perms[[1]] <- start_perm
 
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   }
-  log_likelihood_values[1] <- my_goal_function(visited_perms[[1]])
+  log_posteriori_values[1] <- my_goal_function(visited_perms[[1]])
 
   found_perm <- start_perm
-  found_perm_log_likelihood <- log_likelihood_values[1]
+  found_perm_log_posteriori <- log_posteriori_values[1]
 
   Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -261,26 +261,26 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     if (is.nan(goal_function_perm_proposal) || is.infinite(goal_function_perm_proposal)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The likelihood value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
         "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
 
       break()
     }
 
-    # if goal_function_perm_proposal > log_likelihood_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
-    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_likelihood_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+    # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
+    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
       visited_perms[[i + 1]] <- perm_proposal
-      log_likelihood_values[i + 1] <- goal_function_perm_proposal
+      log_posteriori_values[i + 1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
 
-      if (found_perm_log_likelihood < log_likelihood_values[i + 1]) {
-        found_perm_log_likelihood <- log_likelihood_values[i + 1]
+      if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
+        found_perm_log_posteriori <- log_posteriori_values[i + 1]
         found_perm <- visited_perms[[i + 1]]
       }
     } else {
       visited_perms[[i + 1]] <- visited_perms[[i]]
-      log_likelihood_values[i + 1] <- log_likelihood_values[i] # TODO(Do we really want to forget the calculated values? The algorithm BG works differently)
+      log_posteriori_values[i + 1] <- log_posteriori_values[i] # TODO(Do we really want to forget the calculated values? The algorithm BG works differently)
     }
   }
 
@@ -288,7 +288,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     close(progressBar)
   }
 
-  function_calls <- length(log_likelihood_values)
+  function_calls <- length(log_posteriori_values)
 
   if (return_probabilities) {
     probabilities <- estimate_probabilities(visited_perms)
@@ -297,15 +297,15 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
   }
   optimization_info <- list(
     "acceptance_rate" = mean(acceptance),
-    "log_likelihood_values" = log_likelihood_values,
+    "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "last_perm" = visited_perms[[function_calls]],
-    "last_perm_log_likelihood" = log_likelihood_values[function_calls],
+    "last_perm_log_posteriori" = log_posteriori_values[function_calls],
     "iterations_performed" = i,
     "optimization_algorithm_used" = "Metropolis_Hastings",
     "post_probabilities" = probabilities,
     "did_converge" = NULL,
-    "best_perm_log_likelihood" = found_perm_log_likelihood,
+    "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
     "full_optimization_time" = NA
   )
@@ -354,20 +354,20 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
 
 
   my_goal_function <- function(perm) {
-    log_likelihood_of_perm(perm, # We recommend to use the `log_likelihood_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
   }
 
   goal_function_best_logvalues <- numeric(0)
-  log_likelihood_values <- numeric(0)
+  log_posteriori_values <- numeric(0)
 
   # init
   speciments <- list()
   speciments[[1]] <- start_perm
   goal_function_best_logvalues[1] <- my_goal_function(speciments[[1]])
-  log_likelihood_values[1] <- goal_function_best_logvalues[1]
+  log_posteriori_values[1] <- goal_function_best_logvalues[1]
 
   # mail loop
   iteration <- 0
@@ -384,7 +384,7 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
       for (j in (i + 1):perm_size) {
         neighbour <- compose_with_transposition(speciments[[iteration]], c(i, j))
         neighbour_value <- my_goal_function(neighbour)
-        log_likelihood_values[length(log_likelihood_values) + 1] <- neighbour_value
+        log_posteriori_values[length(log_posteriori_values) + 1] <- neighbour_value
 
         if (neighbour_value > best_neighbour_value) {
           best_neighbour_value <- neighbour_value
@@ -408,7 +408,7 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
 
   if (!did_converge) {
     rlang::warn(c(paste0("Best Growth algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
-      "i" = "We recommend to run the `find_gips(optimizer = 'continue')` on the acquired output."
+      "i" = "We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output."
     ))
     iteration <- iteration + 1 # the very first was the starting perm
   } else {
@@ -418,19 +418,19 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
     }
   }
 
-  function_calls <- length(log_likelihood_values)
+  function_calls <- length(log_posteriori_values)
 
   optimization_info <- list(
     "acceptance_rate" = 1 / choose(perm_size, 2),
-    "log_likelihood_values" = log_likelihood_values,
+    "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = speciments,
     "last_perm" = speciments[[iteration]],
-    "last_perm_log_likelihood" = goal_function_best_logvalues[iteration],
+    "last_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "iterations_performed" = iteration,
     "optimization_algorithm_used" = "best_growth",
     "post_probabilities" = NULL,
     "did_converge" = did_converge,
-    "best_perm_log_likelihood" = goal_function_best_logvalues[iteration],
+    "best_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "optimization_time" = NA,
     "full_optimization_time" = NA
   )
@@ -475,7 +475,7 @@ brute_force <- function(S, number_of_observations,
   }
 
   my_goal_function <- function(perm) {
-    log_likelihood_of_perm(perm, # We recommend to use the `log_likelihood_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -484,7 +484,7 @@ brute_force <- function(S, number_of_observations,
   # main loop
   all_perms_list <- permutations::allperms(perm_size)
   all_perms_list <- permutations::as.cycle(all_perms_list)
-  log_likelihood_values <- sapply(1:length(all_perms_list), function(i) {
+  log_posteriori_values <- sapply(1:length(all_perms_list), function(i) {
     if (show_progress_bar) {
       utils::setTxtProgressBar(progressBar, i)
     }
@@ -496,19 +496,19 @@ brute_force <- function(S, number_of_observations,
     close(progressBar)
   }
 
-  best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_likelihood_values)]])), perm_size)
+  best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_posteriori_values)]])), perm_size)
 
   optimization_info <- list(
     "acceptance_rate" = NULL,
-    "log_likelihood_values" = log_likelihood_values,
+    "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = all_perms_list,
     "last_perm" = NULL,
-    "last_perm_log_likelihood" = NULL,
+    "last_perm_log_posteriori" = NULL,
     "iterations_performed" = prod(1:perm_size),
     "optimization_algorithm_used" = "brute_force",
     "post_probabilities" = NULL,
     "did_converge" = TRUE,
-    "best_perm_log_likelihood" = log_likelihood_values[which.max(log_likelihood_values)],
+    "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,
     "full_optimization_time" = NA
   )
@@ -537,8 +537,8 @@ combine_gips <- function(g1, g2) {
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")
 
-  n1 <- length(optimization_info1[["log_likelihood_values"]])
-  n2 <- length(optimization_info2[["log_likelihood_values"]])
+  n1 <- length(optimization_info1[["log_posteriori_values"]])
+  n2 <- length(optimization_info2[["log_posteriori_values"]])
 
   visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]]) # WoW, one can use `c()` to combine lists!
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
@@ -553,20 +553,20 @@ combine_gips <- function(g1, g2) {
 
   optimization_info_new <- list(
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
-    "log_likelihood_values" = c(optimization_info1[["log_likelihood_values"]], optimization_info2[["log_likelihood_values"]]),
+    "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
     "last_perm" = optimization_info2[["last_perm"]],
-    "last_perm_log_likelihood" = optimization_info2[["last_perm_log_likelihood"]],
+    "last_perm_log_posteriori" = optimization_info2[["last_perm_log_posteriori"]],
     "iterations_performed" = c(optimization_info1[["iterations_performed"]], optimization_info2[["iterations_performed"]]),
     "optimization_algorithm_used" = optimization_algorithm_used,
     "post_probabilities" = post_probabilities,
     "did_converge" = optimization_info2[["did_converge"]],
-    "best_perm_log_likelihood" = max(optimization_info1[["best_perm_log_likelihood"]], optimization_info2[["best_perm_log_likelihood"]]),
+    "best_perm_log_posteriori" = max(optimization_info1[["best_perm_log_posteriori"]], optimization_info2[["best_perm_log_posteriori"]]),
     "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
     "full_optimization_time" = optimization_info1[["full_optimization_time"]] + optimization_info2[["full_optimization_time"]]
   )
 
-  if (optimization_info1[["best_perm_log_likelihood"]] > optimization_info2[["best_perm_log_likelihood"]]) {
+  if (optimization_info1[["best_perm_log_posteriori"]] > optimization_info2[["best_perm_log_posteriori"]]) {
     g_out <- g1 # in the continuation the new best was not found
   } else {
     g_out <- g2

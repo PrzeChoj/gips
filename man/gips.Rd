@@ -42,7 +42,7 @@ Object of class gips.
 \description{
 Create the \code{gips} object.
 This object will consists data and all other information needed to find the invariant group.
-The optimization itself will not be performed. To do it, one have to call the \code{\link{find_gips}} function. See examples below.
+The optimization itself will not be performed. To do it, one have to call the \code{\link{find_MAP}} function. See examples below.
 }
 \section{Functions}{
 \itemize{
@@ -78,10 +78,10 @@ S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
 
 g <- gips(S, number_of_observations)
 
-g_opt <- find_gips(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
-g_opt
+g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+g_map
 
 if (require("graphics")) {
-  plot(g_opt, type = "both", logarithmic_x = TRUE)
+  plot(g_map, type = "both", logarithmic_x = TRUE)
 }
 }
