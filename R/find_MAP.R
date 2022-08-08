@@ -1,6 +1,6 @@
 #' Find the Maximum A Posteriori Estimation
 #'
-#' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will allways find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
+#' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
 #'
 #' @param g object of `gips` class
 #' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite; for `optimizer=="BF"` it is not used.

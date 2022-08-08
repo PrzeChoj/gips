@@ -27,7 +27,7 @@ find_MAP(
 object of class gips
 }
 \description{
-Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will allways find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
+Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
 }
 \examples{
 require("MASS") # for mvrnorm()

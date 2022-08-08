@@ -818,7 +818,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' Plot method for `gips` object.
 #'
 #' @param x Object of class gips. Has to first be optimized with \code{\link[gips]{find_MAP}}.
-#' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of the posterioris for all visited state. For "best", plots the line of the biggest posterioris up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
+#' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
 #' @param logarithmic_y boolean.
 #' @param logarithmic_x boolean.
 #' @param color Vector of colors to be used to plot lines.
@@ -839,7 +839,7 @@ plot.gips <- function(x, type = NA,
                       xlabel = NULL, ylabel = NULL,
                       show_legend = TRUE,
                       ylim = NULL, xlim = NULL, ...) {
-  # TODO(For "MH", those are NOT "All calculated posterioris", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
+  # TODO(For "MH", those are NOT "All calculated posteriori", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
 
   # checking the correctness of the arguments:
   if (!requireNamespace("graphics", quietly = TRUE)) {
@@ -1042,8 +1042,8 @@ plot.gips <- function(x, type = NA,
     if (show_legend) {
       if (type == "both") {
         legend_text <- c(
-          "All calculated posterioris",
-          "Maximum posterioris calculated"
+          "All calculated a posteriori",
+          "Maximum a posteriori calculated"
         )
         lty <- c(1, 1)
         lwd <- c(3, 3)

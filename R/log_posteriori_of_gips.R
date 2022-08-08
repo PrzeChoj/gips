@@ -1,4 +1,4 @@
-#' A log posteriori that the CoV matrix is invariant under permutation.
+#' A log posteriori that the covariance matrix is invariant under permutation.
 #'
 #' To be more precise, it is the logarithm of an unnormalized posterior probability.
 #' Calculated according to equation (33) and (27) from the paper. If `Inf` or `NaN` is reached, produces a warning.

@@ -22,7 +22,7 @@
 \arguments{
 \item{x}{Object of class gips. Has to first be optimized with \code{\link[gips]{find_MAP}}.}
 
-\item{type}{Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the \code{S} matrix inside the \code{gips} object that was projected on the permutation in the \code{gips} object. For "all", plots the line of the posterioris for all visited state. For "best", plots the line of the biggest posterioris up to the moment For "both", both lines from "all" and "best" are plotted. Default value is \code{NA}, which will be changed to "heatmap" for non-optimized \code{gips} objects, and to "both" for optimized ones. Using the default produces a warning. For the \code{type = "heatmap"}, all other arguments are ignored.}
+\item{type}{Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the \code{S} matrix inside the \code{gips} object that was projected on the permutation in the \code{gips} object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is \code{NA}, which will be changed to "heatmap" for non-optimized \code{gips} objects, and to "both" for optimized ones. Using the default produces a warning. For the \code{type = "heatmap"}, all other arguments are ignored.}
 
 \item{logarithmic_y}{boolean.}
 

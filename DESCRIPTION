@@ -18,8 +18,7 @@ Description: Find the permutation symmetry group such that the covariance
     approximates the actual covariance behind the data and is less
     variance.
 License: GPL (>= 3) + file LICENSE
-URL: https://github.com/PrzeChoj/gips,
-    https://przechoj.github.io/gips/
+URL: https://github.com/PrzeChoj/gips, https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 
     numbers,
@@ -31,11 +30,13 @@ Suggests:
     ggplot2,
     graphics,
     MASS (>= 7.3-39),
+    spelling,
     stringi,
     testthat (>= 3.0.0),
     tibble,
     tidyr
 Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-US
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1

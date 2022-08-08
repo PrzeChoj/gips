@@ -2,7 +2,7 @@
 % Please edit documentation in R/log_posteriori_of_gips.R
 \name{log_posteriori_of_gips}
 \alias{log_posteriori_of_gips}
-\title{A log posteriori that the CoV matrix is invariant under permutation.}
+\title{A log posteriori that the covariance matrix is invariant under permutation.}
 \usage{
 log_posteriori_of_gips(g)
 }
