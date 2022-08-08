@@ -7,7 +7,7 @@
 \method{print}{gips_perm}(x, ...)
 }
 \arguments{
-\item{x}{\code{gips_perm}}
+\item{x}{Object of \code{gips_perm} class}
 
 \item{...}{further arguments passed to \code{\link[permutations]{print.cycle}}}
 }

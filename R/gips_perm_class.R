@@ -200,7 +200,7 @@ validate_gips_perm <- function(g) {
 #'
 #' Implementation of S3 method.
 #'
-#' @param x `gips_perm`
+#' @param x Object of `gips_perm` class
 #' @param ... further arguments passed to \code{\link[permutations]{print.cycle}}
 #'
 #' @export
@@ -213,7 +213,7 @@ print.gips_perm <- function(x, ...) {
 #'
 #' Implementation of S3 method.
 #'
-#' @param x `gips_perm`
+#' @param x Object of `gips_perm` class
 #' @param ... further arguments passed to \code{\link[base]{as.character}}
 #'
 #' @export

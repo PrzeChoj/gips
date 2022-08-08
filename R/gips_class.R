@@ -2,7 +2,7 @@
 #'
 #' Create the `gips` object.
 #' This object will consists data and all other information needed to find the invariant group.
-#' The optimization itself will not be performed. To do it, one have to call the \code{\link{find_MAP}} function. See examples below.
+#' The optimization itself will not be performed. To do it, one have to call the \code{\link[gips]{find_MAP}} function. See examples below.
 #'
 #' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
 #' @param number_of_observations number of data points that `S` is based on.
@@ -111,7 +111,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 #'
 #' Only intended for low-level use.
 #'
-#' @param g Element to be checked if it is of class `gips`.
+#' @param g Element to be checked if it is proper element of class `gips`.
 #'
 #' @export
 validate_gips <- function(g) {
@@ -748,9 +748,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' Printing function for `gips` class.
 #'
 #' @param x object of class `gips`.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link{log_posteriori_of_gips}} or leave it in logarithmic form.
-#' @param digits Number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link{round}}.
-#' @param ... additional arguments passed to \code{\link{cat}}.
+#' @param log_value logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.
+#' @param digits Number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link[base]{round}}.
+#' @param ... additional arguments passed to \code{\link[base]{cat}}.
 #'
 #' @return Invisible NULL.
 #' @export
@@ -817,7 +817,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #'
 #' Plot method for `gips` object.
 #'
-#' @param x Object of class gips. Has to first be optimized with \code{\link{find_MAP}}.
+#' @param x Object of class gips. Has to first be optimized with \code{\link[gips]{find_MAP}}.
 #' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of the posterioris for all visited state. For "best", plots the line of the biggest posterioris up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
 #' @param logarithmic_y boolean.
 #' @param logarithmic_x boolean.
@@ -826,9 +826,9 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link{log_posteriori_of_gips}} is taken.
+#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link[gips]{log_posteriori_of_gips}} is taken.
 #' @param xlim Limits of x axis. When \code{NULL}, the whole optimization process is shown.
-#' @param ... Additional arguments passed to \code{\link{heatmap}} or other various elements of the plot.
+#' @param ... Additional arguments passed to \code{\link[stats]{heatmap}} or other various elements of the plot.
 #'
 #' @return Invisible NULL.
 #' @export
@@ -1138,7 +1138,7 @@ summary.gips <- function(object, ...) {
   )
 }
 
-# Base on
+# Based on
 # `sloop::s3_get_method(print.summary.lm)`
 #' @export
 print.summary.gips <- function(x, ...) {
@@ -1225,11 +1225,3 @@ print.summary.gips <- function(x, ...) {
 }
 
 
-# TODO(The base object printed as the gips_perm. The "size" attr omitted)
-# TODO(`attr(object, "optimization_info")$visited_perms` can be printed as perms)
-# TODO(Now I think it is good as it is with `utils::str.default`)
-str.gips <- function(object, ...) {
-  validate_gips(object)
-
-  utils::str(object)
-}

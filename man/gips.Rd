@@ -34,7 +34,7 @@ validate_gips(g)
 
 \item{optimization_info}{NULL or the list with information about the optimization process.}
 
-\item{g}{Element to be checked if it is of class \code{gips}.}
+\item{g}{Element to be checked if it is proper element of class \code{gips}.}
 }
 \value{
 Object of class gips.
@@ -42,7 +42,7 @@ Object of class gips.
 \description{
 Create the \code{gips} object.
 This object will consists data and all other information needed to find the invariant group.
-The optimization itself will not be performed. To do it, one have to call the \code{\link{find_MAP}} function. See examples below.
+The optimization itself will not be performed. To do it, one have to call the \code{\link[gips]{find_MAP}} function. See examples below.
 }
 \section{Functions}{
 \itemize{
