@@ -2,13 +2,13 @@
 #'
 #' Create permutation objects to be passed to functions of `gips` package.
 #'
-#' @param x an object created with `permutations` package, or any object that
-#' can be coerced using \code{\link[permutations]{permutation}} function.
-#' @param size integer. Size of permutation (AKA cardinality of set, on which permutation
+#' @param x An object created with `permutations` package, or any object that
+#' can be coerced using [permutations::permutation()] function.
+#' @param size An integer. Size of permutation (AKA cardinality of set, on which permutation
 #' is defined).
 #'
 #' @seealso
-#' [permutations::permutation()], [gips_perm()]
+#' [permutations::permutation()], [gips()]
 #'
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
@@ -101,7 +101,7 @@ gips_perm <- function(x, size) {
 #' 1) cycles are ordered by their minimal element
 #' 2) First element of a cycle is its minimal
 #'
-#' @param cycles list of integer vectors
+#' @param cycles A list of integer vectors.
 #'
 #' @examples
 #' cycles <- list(c(2, 4, 3), c(5, 1))
@@ -118,7 +118,7 @@ rearrange_cycles <- function(cycles) {
 #'
 #' Only intended for low-level use.
 #'
-#' @param rearranged_cycles list of rearranged integer vectors. Each vector corresponds to a single cycle
+#' @param rearranged_cycles A list of rearranged integer vectors. Each vector corresponds to a single cycle
 #' of a permutation.
 #'
 #' @export
@@ -202,8 +202,8 @@ validate_gips_perm <- function(g) {
 #'
 #' Implementation of S3 method.
 #'
-#' @param x Object of `gips_perm` class
-#' @param ... further arguments passed to \code{\link[permutations]{print.cycle}}
+#' @param x An object of `gips_perm` class.
+#' @param ... Further arguments passed to \code{\link[permutations]{print.cycle}}.
 #'
 #' @export
 print.gips_perm <- function(x, ...) {
@@ -217,10 +217,13 @@ print.gips_perm <- function(x, ...) {
 #' 
 #' @describeIn as.character
 #'
-#' @param x Object of `gips_perm` class
-#' @param ... further arguments passed to \code{\link[permutations]{as.character.cycle}}
+#' @inheritParams print.gips_perm
+#' @param ... Further arguments passed to \code{\link[permutations]{as.character.cycle}}.
 #' 
 #' @method as.character gips_perm
+#' 
+#' @seealso
+#' [permutations::as.character.cycle]
 #'
 #' @export
 as.character.gips_perm <- function(x, ...) {
@@ -229,11 +232,11 @@ as.character.gips_perm <- function(x, ...) {
 
 #' Compose permutation with transposition
 #'
-#' @param gips_perm Object of `gips_perm` class
-#' @param transposition integer vector of length 2. Transposition in a form of
+#' @param gips_perm Object of `gips_perm` class.
+#' @param transposition An integer vector of length 2. Transposition in a form of a
 #' cycle.
 #'
-#' @return `gips_perm` object. Composition of `gips_perm` parameter and `transposition`.
+#' @returns An object of `gips_perm` class. Composition of `gips_perm` parameter and `transposition`.
 #'
 #' @noRd
 #' @examples
@@ -279,8 +282,8 @@ compose_with_transposition <- function(gips_perm, transposition) {
 
 #' Add a new cycle to permutation
 #'
-#' @param cycles list of integer vectors. Each corresponds to cycles of a permutation
-#' @param new_cycle integer vector. None of its elements are present in `cycles`
+#' @param cycles A list of integer vectors. Each corresponds to cycles of a permutation.
+#' @param new_cycle An integer vector. None of its elements are present in `cycles`.
 #'
 #' @noRd
 add_cycle <- function(cycles, new_cycle) {

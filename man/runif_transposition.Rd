@@ -7,7 +7,7 @@
 runif_transposition(perm_size)
 }
 \arguments{
-\item{perm_size}{size from which take transpositions}
+\item{perm_size}{A size from which take transpositions.}
 }
 \description{
 Uniformly random transposition of perm_size elements

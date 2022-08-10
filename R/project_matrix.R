@@ -3,12 +3,12 @@
 #' Project matrix on the space of symmetrical matrices invariant
 #' by a cyclic group of permutations.
 #'
-#' @param S matrix to be projected.
-#' @param perm permutation. Generator of a permutation group.
+#' @param S A matrix to be projected.
+#' @param perm A permutation. Generator of a permutation group.
 #'             Either of `gips_perm` or `permutations::cycle` class.
-#' @param precomputed_equal_indices used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed
+#' @param precomputed_equal_indices Parameter used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed.
 #'
-#' @return projected matrix
+#' @returns A projected matrix.
 #' @export
 #' 
 #' @seealso [find_MAP()], [gips_perm()]
@@ -67,9 +67,9 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
 
 #' Get indices of elements of perm_size x perm_size matrix, which should be equal
 #'
-#' @param perm gips_perm
+#' @param perm An object of `gips_perm` class.
 #'
-#' @return a list of integer vectors. Each vector contatins SINGLE indices
+#' @returns A list of integer vectors. Each vector contains a SINGLE index
 #' of elements, which should be equal in symmetrical matrix invariant
 #' by permutation `perm`.
 #'

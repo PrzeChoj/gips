@@ -7,13 +7,13 @@
 G_function(structure_constants, delta = 3)
 }
 \arguments{
-\item{structure_constants}{constants from \code{get_structure_constants} function}
+\item{structure_constants}{Constants from \code{get_structure_constants} function.}
 
-\item{delta}{parameter of a method}
+\item{delta}{Parameter of a method.}
 }
 \value{
 Sum of logarithms of elements of \code{calculate_gamma_omega} from i to L.
-It is log of a product part of equation (27). For more information, see Issue #3 on \code{gips}' GitHub
+It is log of a product part of equation (27). For more information, see Issue #3 on \code{gips}' GitHub.
 }
 \description{
 G_function for \code{log_posteriori_of_gips()}

@@ -7,14 +7,14 @@
 prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
-\item{perm}{\code{gips_perm} or \code{permutations::cycle} object}
+\item{perm}{Object of class \code{gips_perm} or \code{permutations::cycle}.}
 
-\item{perm_size}{size of permutation. Required if \code{perm} is of \code{permutations::cycle} class}
+\item{perm_size}{Size of permutation. Required if \code{perm} is of \code{permutations::cycle} class.}
 
-\item{basis}{matrix with basis vectors in COLUMNS. Identity by default}
+\item{basis}{A matrix with basis vectors in COLUMNS. Identity by default.}
 }
 \value{
-matrix p x p with columns from V object elements, sorted according to
+A matrix p x p with columns from V object elements, sorted according to
 Theorem 6.
 }
 \description{

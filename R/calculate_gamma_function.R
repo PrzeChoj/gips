@@ -2,12 +2,12 @@
 #'
 #' Theorem 8 from the paper, using the formula (19) from the paper
 #'
-#' @param perm an element of class "gips_perm"
-#' @param lambda positive real number
+#' @inheritParams get_structure_constants
+#' @param lambda A positive real number.
 #'
 #' @export
 #'
-#' @return Value of Gamma function
+#' @returns Value of Gamma function.
 #' 
 #' @seealso [get_structure_constants()], [log_posteriori_of_gips()]
 #'
@@ -55,12 +55,12 @@ calculate_gamma_function <- function(perm, lambda) {
 #'
 #' Using the formula (12) from the paper
 #'
-#' @param lambda positive real number
-#' @param dim_omega_i single element from `get_structure_constants`
-#' @param r_i single element from `get_structure_constants`
-#' @param d_i single element from `get_structure_constants`
+#' @inheritParams calculate_gamma_function
+#' @param dim_omega_i Single element from `get_structure_constants`.
+#' @param r_i Single element from `get_structure_constants`.
+#' @param d_i Single element from `get_structure_constants`.
 #'
-#' @return Logarithm of value of Gamma function
+#' @returns Logarithm of value of Gamma function.
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
   if (lambda <= dim_omega_i / r_i - 1) {
     rlang::warn(c("Gamma integral is divergent for the given lambda value and structure constants.",
@@ -82,11 +82,11 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 
 #' G_function for `log_posteriori_of_gips()`
 #'
-#' @param delta parameter of a method
-#' @param structure_constants constants from `get_structure_constants` function
+#' @param delta Parameter of a method.
+#' @param structure_constants Constants from `get_structure_constants` function.
 #'
-#' @return Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
-#' It is log of a product part of equation (27). For more information, see Issue #3 on `gips`' GitHub
+#' @returns Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
+#' It is log of a product part of equation (27). For more information, see Issue #3 on `gips`' GitHub.
 #'
 #' @examples
 #' perm_size <- 6

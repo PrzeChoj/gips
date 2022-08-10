@@ -7,16 +7,16 @@
 calculate_gamma_omega(lambda, dim_omega_i, r_i, d_i)
 }
 \arguments{
-\item{lambda}{positive real number}
+\item{lambda}{A positive real number.}
 
-\item{dim_omega_i}{single element from \code{get_structure_constants}}
+\item{dim_omega_i}{Single element from \code{get_structure_constants}.}
 
-\item{r_i}{single element from \code{get_structure_constants}}
+\item{r_i}{Single element from \code{get_structure_constants}.}
 
-\item{d_i}{single element from \code{get_structure_constants}}
+\item{d_i}{Single element from \code{get_structure_constants}.}
 }
 \value{
-Logarithm of value of Gamma function
+Logarithm of value of Gamma function.
 }
 \description{
 Using the formula (12) from the paper

@@ -10,13 +10,19 @@
 #' 
 #' * `"brute_force"`, `"BF"`, `"full"` - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
 #'
-#' @param g object of `gips` class
-#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="HC"`, can be infinite; for `optimizer=="BF"` it is not used.
-#' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to calculate posterior probabilities.
-#' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
-#' @param optimizer the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "HC" - Hill Climbing algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See "Possible algorithms to use as optimizers" section below.
+#' @param g Object of `gips` class
+#' @param max_iter Number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="HC"`, can be infinite; for `optimizer=="BF"` it is not used.
+#' @param return_probabilities A boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to calculate posterior probabilities.
+#' @param show_progress_bar A boolean. Indicate weather or not show the progress bar.
+#' @param optimizer The optimizer for the search of the maximum posteriori.
+#'   * `"MH"` (the default for unoptimized `g`): Metropolis-Hastings
+#'   * `"HC"`: Hill Climbing
+#'   * `"BF"`: Brute Force
+#'   * `"continue"` (the default for optimized `g`): the same as the `g` was optimized by (see Examples).
+#' 
+#' See "Possible algorithms to use as optimizers" section below.
 #'
-#' @return object of class gips
+#' @returns Object of class gips.
 #'
 #' @export
 #' 

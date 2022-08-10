@@ -2,9 +2,9 @@
 #'
 #' Get Structure Constants from theorem 5 of the paper
 #'
-#' @param perm an element of class `gips_perm`
+#' @param perm An object of class `gips_perm`.
 #'
-#' @return list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1
+#' @returns A list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1.
 #' @export
 #' 
 #' @seealso [calculate_gamma_function()]
@@ -44,9 +44,9 @@ get_structure_constants <- function(perm) {
 #'
 #' Essentially get iC, pC from paper
 #'
-#' @param perm an element of class "gips_perm".
+#' @inheritParams get_structure_constants
 #'
-#' @return list with 2 items: `representatives` and `cycle_lengths`
+#' @returns A List with 2 items: `representatives` and `cycle_lengths`.
 #'
 #' @examples
 #' perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(4, 3, 6, 5, 1, 2))), 6)
@@ -62,7 +62,7 @@ get_cycle_representatives_and_lengths <- function(perm) {
 
 #' Calculate structure constant r
 #'
-#' @return integer vector. Structure constant r WITH elements equal to 0.
+#' @returns An integer vector. Structure constant r WITH elements equal to 0.
 #' @noRd
 calculate_r <- function(cycle_lengths, perm_order) {
   M <- floor(perm_order / 2)

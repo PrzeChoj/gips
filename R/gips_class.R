@@ -4,13 +4,13 @@
 #' This object will consists data and all other information needed to find the invariant group.
 #' The optimization itself will not be performed. To do it, one have to call the \code{\link[gips]{find_MAP}} function. See examples below.
 #'
-#' @param S matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)
-#' @param number_of_observations number of data points that `S` is based on.
-#' @param delta hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
-#' @param perm optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation` or anything the function `permutations::permutation()` can take.
+#' @param S A matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean).
+#' @param number_of_observations A number of data points that `S` is based on.
+#' @param delta A hyper-parameter of a Bayesian model. Has to be bigger than 2.
+#' @param D_matrix A hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
+#' @param perm An optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation` or anything the function `permutations::permutation()` can take.
 #'
-#' @return Object of class gips.
+#' @returns Object of class gips.
 #'
 #' @export
 #' @seealso
@@ -84,7 +84,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'
 #' Only intended for low-level use.
 #'
-#' @param list_of_gips_perm list with a single element of class `gips_perm`. The base object for the `gips` class.
+#' @param list_of_gips_perm A list with a single element of class `gips_perm`. The base object for the `gips` class.
 #' @param optimization_info NULL or the list with information about the optimization process.
 #'
 #' @export
@@ -751,12 +751,12 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'
 #' Printing function for `gips` class.
 #'
-#' @param x object of class `gips`.
-#' @param log_value logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.
-#' @param digits Number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link[base]{round}}.
-#' @param ... additional arguments passed to \code{\link[base]{cat}}.
+#' @param x An object of class `gips`.
+#' @param log_value A logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.
+#' @param digits A number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link[base]{round}}.
+#' @param ... An additional arguments passed to \code{\link[base]{cat}}.
 #'
-#' @return Invisible NULL.
+#' @returns Invisible NULL.
 #' @export
 print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
   validate_gips(x)
@@ -822,19 +822,18 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' Plot method for `gips` object.
 #'
 #' @param x Object of class gips. Has to first be optimized with \code{\link[gips]{find_MAP}}.
-#' @param type Character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
-#' @param logarithmic_y boolean.
-#' @param logarithmic_x boolean.
+#' @param type A character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
+#' @param logarithmic_y,logarithmic_x A boolean.
 #' @param color Vector of colors to be used to plot lines.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
-#' @param show_legend boolean.
+#' @param show_legend A boolean.
 #' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link[gips]{log_posteriori_of_gips}} is taken.
 #' @param xlim Limits of x axis. When \code{NULL}, the whole optimization process is shown.
 #' @param ... Additional arguments passed to \code{\link[stats]{heatmap}} or other various elements of the plot.
 #'
-#' @return Invisible NULL.
+#' @returns Invisible NULL.
 #' @export
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,

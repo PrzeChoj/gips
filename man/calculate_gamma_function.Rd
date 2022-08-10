@@ -7,12 +7,12 @@
 calculate_gamma_function(perm, lambda)
 }
 \arguments{
-\item{perm}{an element of class "gips_perm"}
+\item{perm}{An object of class \code{gips_perm}.}
 
-\item{lambda}{positive real number}
+\item{lambda}{A positive real number.}
 }
 \value{
-Value of Gamma function
+Value of Gamma function.
 }
 \description{
 Theorem 8 from the paper, using the formula (19) from the paper

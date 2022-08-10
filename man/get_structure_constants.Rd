@@ -7,10 +7,10 @@
 get_structure_constants(perm)
 }
 \arguments{
-\item{perm}{an element of class \code{gips_perm}}
+\item{perm}{An object of class \code{gips_perm}.}
 }
 \value{
-list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from theorem 1 and beginning of section 3.1
+A list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from theorem 1 and beginning of section 3.1.
 }
 \description{
 Get Structure Constants from theorem 5 of the paper

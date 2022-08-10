@@ -7,15 +7,15 @@
 project_matrix(S, perm, precomputed_equal_indices = NULL)
 }
 \arguments{
-\item{S}{matrix to be projected.}
+\item{S}{A matrix to be projected.}
 
-\item{perm}{permutation. Generator of a permutation group.
+\item{perm}{A permutation. Generator of a permutation group.
 Either of \code{gips_perm} or \code{permutations::cycle} class.}
 
-\item{precomputed_equal_indices}{used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed}
+\item{precomputed_equal_indices}{Parameter used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed.}
 }
 \value{
-projected matrix
+A projected matrix.
 }
 \description{
 Project matrix on the space of symmetrical matrices invariant

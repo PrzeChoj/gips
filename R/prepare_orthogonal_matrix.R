@@ -3,10 +3,10 @@
 #' Calculate orthogonal matrix U_Gamma
 #' for decomposition in Theorem 1. To calculate it, we use Theorem 6.
 #'
-#' @param perm `gips_perm` or `permutations::cycle` object
-#' @param perm_size size of permutation. Required if `perm` is of `permutations::cycle` class
-#' @param basis matrix with basis vectors in COLUMNS. Identity by default
-#' @return matrix p x p with columns from V object elements, sorted according to
+#' @param perm Object of class `gips_perm` or `permutations::cycle`.
+#' @param perm_size Size of permutation. Required if `perm` is of `permutations::cycle` class.
+#' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
+#' @returns A matrix p x p with columns from V object elements, sorted according to
 #'     Theorem 6.
 #'
 #' @examples
@@ -28,9 +28,9 @@ prepare_orthogonal_matrix <- function(perm, perm_size = NULL, basis = NULL) {
 
 #' Get V matrix
 #'
-#' @param subcycle integer vector interpreted as cycle of a permutation
-#' @param basis matrix
-#' @return matrix p x length(subcycle).
+#' @param subcycle An integer vector interpreted as cycle of a permutation.
+#' @param basis An ortogonal matrix.
+#' @returns A matrix p x length(subcycle).
 #' Essentially a object v_k^c for one c value from paper, defined right before
 #' Theorem 6.
 #' @noRd
@@ -68,8 +68,8 @@ get_v_matrix_for_subcycle <- function(subcycle, basis) {
 
 #' Arrange V object
 #'
-#' @return matrix p x p with columns from V object elements, sorted according to
-#'     Theorem 6
+#' @returns A matrix p x p with columns from V object elements, sorted according to
+#'     Theorem 6.
 #' @noRd
 arrange_v_object <- function(v_object) {
   # we put v_k^v earlier than v_k'^c' if

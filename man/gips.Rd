@@ -20,17 +20,17 @@ new_gips(
 validate_gips(g)
 }
 \arguments{
-\item{S}{matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean)}
+\item{S}{A matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean).}
 
-\item{number_of_observations}{number of data points that \code{S} is based on.}
+\item{number_of_observations}{A number of data points that \code{S} is based on.}
 
-\item{delta}{hyper-parameter of a Bayesian model. Has to be bigger than 2.}
+\item{delta}{A hyper-parameter of a Bayesian model. Has to be bigger than 2.}
 
-\item{D_matrix}{hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{A hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
 
-\item{perm}{optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation} or anything the function \code{permutations::permutation()} can take.}
+\item{perm}{An optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation} or anything the function \code{permutations::permutation()} can take.}
 
-\item{list_of_gips_perm}{list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
+\item{list_of_gips_perm}{A list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
 
 \item{optimization_info}{NULL or the list with information about the optimization process.}
 
@@ -88,6 +88,5 @@ if (require("graphics")) {
 }
 }
 \seealso{
-\code{\link[=find_MAP]{find_MAP()}}
-\code{\link[=gips_perm]{gips_perm()}}
+\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}
 }

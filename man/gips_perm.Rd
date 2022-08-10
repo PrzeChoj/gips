@@ -10,13 +10,13 @@ gips_perm(x, size)
 new_gips_perm(rearranged_cycles, size)
 }
 \arguments{
-\item{x}{an object created with \code{permutations} package, or any object that
-can be coerced using \code{\link[permutations]{permutation}} function.}
+\item{x}{An object created with \code{permutations} package, or any object that
+can be coerced using \code{\link[permutations:permutation]{permutations::permutation()}} function.}
 
-\item{size}{integer. Size of permutation (AKA cardinality of set, on which permutation
+\item{size}{An integer. Size of permutation (AKA cardinality of set, on which permutation
 is defined).}
 
-\item{rearranged_cycles}{list of rearranged integer vectors. Each vector corresponds to a single cycle
+\item{rearranged_cycles}{A list of rearranged integer vectors. Each vector corresponds to a single cycle
 of a permutation.}
 }
 \description{
@@ -39,5 +39,5 @@ gperm
 
 }
 \seealso{
-\code{\link[permutations:permutation]{permutations::permutation()}}, \code{\link[=gips_perm]{gips_perm()}}
+\code{\link[permutations:permutation]{permutations::permutation()}}, \code{\link[=gips]{gips()}}
 }

@@ -1,11 +1,11 @@
-#' Estimate posterior probabilities from Metropolis_Hastings run
+#' Estimate posterior probabilities from Metropolis-Hastings run
 #'
 #' We use "second approach" from the paper.
 #'
-#' @param perms list of `gips_perm` objects. Visited groups during Metropolis_Hastings run.
+#' @param perms A list of `gips_perm` objects. Visited groups during Metropolis-Hastings run.
 #'
-#' @return named numeric vector. Names: character representations of permutations.
-#' Elements: estimated posterior probabilities of permutations
+#' @returns A named numeric vector. Names: character representations of permutations.
+#' Elements: estimated posterior probabilities of permutations.
 #' @noRd
 estimate_probabilities <- function(perms) {
   group_representatives <- sapply(perms, function(p) as.character(get_group_representative(p)))
@@ -31,7 +31,7 @@ estimate_probabilities <- function(perms) {
 #'
 #' @param perm `gips_perm`
 #'
-#' @return `gips_perm` object.
+#' @returns Object of `gips_perm` class.
 #' @noRd
 get_group_representative <- function(perm) {
   size <- attr(perm, "size")
@@ -57,12 +57,12 @@ get_group_representative <- function(perm) {
   gips_perm(all_perms[[min_index]], size)
 }
 
-#' Get Coprime numbers
+#' Get coprime numbers
 #'
-#' @param n single integer
+#' @param n A single integer.
 #'
-#' @return all integers smaller than n, that are coprime to n. Exception: n=1,
-#' in which case 1 is returned
+#' @returns All integers smaller than n, that are coprime to n. Exception: n=1,
+#' in which case 1 is returned.
 #' @noRd
 get_coprimes <- function(n) {
   if (n == 1) {

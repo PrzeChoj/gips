@@ -7,7 +7,7 @@
 log_posteriori_of_gips(g)
 }
 \arguments{
-\item{g}{object of class \code{gips}}
+\item{g}{An object of class \code{gips_perm}.}
 }
 \description{
 To be more precise, it is the logarithm of an unnormalized posterior probability.

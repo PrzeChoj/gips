@@ -7,9 +7,9 @@
 \method{print}{gips_perm}(x, ...)
 }
 \arguments{
-\item{x}{Object of \code{gips_perm} class}
+\item{x}{An object of \code{gips_perm} class.}
 
-\item{...}{further arguments passed to \code{\link[permutations]{print.cycle}}}
+\item{...}{Further arguments passed to \code{\link[permutations]{print.cycle}}.}
 }
 \description{
 Implementation of S3 method.

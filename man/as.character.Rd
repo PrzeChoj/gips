@@ -7,9 +7,9 @@
 \method{as.character}{gips_perm}(x, ...)
 }
 \arguments{
-\item{x}{Object of \code{gips_perm} class}
+\item{x}{An object of \code{gips_perm} class.}
 
-\item{...}{further arguments passed to \code{\link[permutations]{as.character.cycle}}}
+\item{...}{Further arguments passed to \code{\link[permutations]{as.character.cycle}}.}
 }
 \description{
 Implementation of S3 method.
@@ -19,3 +19,6 @@ Implementation of S3 method.
 \item \code{as.character(gips_perm)}: 
 
 }}
+\seealso{
+\link[permutations:print]{permutations::as.character.cycle}
+}

@@ -7,13 +7,13 @@
 \method{print}{gips}(x, log_value = TRUE, digits = Inf, ...)
 }
 \arguments{
-\item{x}{object of class \code{gips}.}
+\item{x}{An object of class \code{gips}.}
 
-\item{log_value}{logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.}
+\item{log_value}{A logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.}
 
-\item{digits}{Number of digits after the comma for posteriori to be presented. Can be negative. Be default, \code{Inf}. It is passed to \code{\link[base]{round}}.}
+\item{digits}{A number of digits after the comma for posteriori to be presented. Can be negative. Be default, \code{Inf}. It is passed to \code{\link[base]{round}}.}
 
-\item{...}{additional arguments passed to \code{\link[base]{cat}}.}
+\item{...}{An additional arguments passed to \code{\link[base]{cat}}.}
 }
 \value{
 Invisible NULL.

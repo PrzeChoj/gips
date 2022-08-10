@@ -13,18 +13,26 @@ find_MAP(
 )
 }
 \arguments{
-\item{g}{object of \code{gips} class}
+\item{g}{Object of \code{gips} class}
 
-\item{max_iter}{number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="HC"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
+\item{max_iter}{Number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="HC"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
 
-\item{return_probabilities}{boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to calculate posterior probabilities.}
+\item{return_probabilities}{A boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to calculate posterior probabilities.}
 
-\item{show_progress_bar}{boolean. Indicate weather or not show the progress bar.}
+\item{show_progress_bar}{A boolean. Indicate weather or not show the progress bar.}
 
-\item{optimizer}{the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "HC" - Hill Climbing algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the \code{g} object (see Examples). By default, NA that is changed into "MH" when \code{g} is unoptimized and "continue", when \code{g} is optimized. See "Possible algorithms to use as optimizers" section below.}
+\item{optimizer}{The optimizer for the search of the maximum posteriori.
+\itemize{
+\item \code{"MH"} (the default for unoptimized \code{g}): Metropolis-Hastings
+\item \code{"HC"}: Hill Climbing
+\item \code{"BF"}: Brute Force
+\item \code{"continue"} (the default for optimized \code{g}): the same as the \code{g} was optimized by (see Examples).
+}
+
+See "Possible algorithms to use as optimizers" section below.}
 }
 \value{
-object of class gips
+Object of class gips.
 }
 \description{
 Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)

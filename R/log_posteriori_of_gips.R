@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-#' @param g object of class `gips`
+#' @param g An object of class `gips_perm`.
 #' 
 #' @seealso [calculate_gamma_function()]
 #'
@@ -68,15 +68,15 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
 
 #' Uniformly random transposition of perm_size elements
 #'
-#' @param perm_size size from which take transpositions
+#' @param perm_size A size from which take transpositions.
 runif_transposition <- function(perm_size) {
   sample(perm_size, 2, replace = FALSE)
 }
 
 #' Calculate log phi_part of log_posteriori_of_gips
 #'
-#' @param structure_constants output of get_structure_constants(perm_proposal, perm_size)
-#' Rest of params as in log_posteriori_of_gips
+#' @param structure_constants An output of `get_structure_constants(perm_proposal, perm_size)`.
+#' Rest of params as in `log_posteriori_of_gips()`.
 #'
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U,
@@ -125,11 +125,11 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
 #'
 #' Block decomposition 1 from paper
 #'
-#' @param diagonalized_matrix middle matrix from decomposition 1
-#' @param block_ends indices of last columns of block matrices.
-#' Last element equals size of matrix
+#' @param diagonalized_matrix A middle matrix from decomposition 1.
+#' @param block_ends The indices of last columns of block matrices.
+#' Last element equals size of matrix.
 #'
-#' @return numeric vector
+#' @returns A numeric vector.
 #' @noRd
 calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
                                                      block_ends) {
