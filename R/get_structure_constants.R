@@ -6,6 +6,8 @@
 #'
 #' @return list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from theorem 1 and beginning of section 3.1
 #' @export
+#' 
+#' @seealso [calculate_gamma_function()]
 #'
 #' @examples
 #' perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)

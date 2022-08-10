@@ -26,3 +26,6 @@ gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), 7) # permutation (1,
 S <- matrix(rnorm(49), nrow = 7)
 projected_S <- project_matrix(S, perm = gperm)
 }
+\seealso{
+\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}
+}

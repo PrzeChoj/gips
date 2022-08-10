@@ -81,7 +81,13 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 g_map
 
+summary(g_map)
+
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)
 }
+}
+\seealso{
+\code{\link[=find_MAP]{find_MAP()}}
+\code{\link[=gips_perm]{gips_perm()}}
 }

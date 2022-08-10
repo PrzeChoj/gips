@@ -8,6 +8,8 @@
 #' @export
 #'
 #' @return Value of Gamma function
+#' 
+#' @seealso [get_structure_constants()], [log_posteriori_of_gips()]
 #'
 #' @examples
 #' id_perm <- gips_perm(permutations::id, 2)

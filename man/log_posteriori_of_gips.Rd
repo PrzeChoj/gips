@@ -20,3 +20,6 @@ S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S1, 100, perm = c_perm)
 log_posteriori_of_gips(g)
 }
+\seealso{
+\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}
+}

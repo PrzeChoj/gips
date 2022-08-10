@@ -1,16 +1,26 @@
 #' Find the Maximum A Posteriori Estimation
 #'
 #' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
+#' 
+#' @section Possible algorithms to use as optimizers:
+#' 
+#' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+#' 
+#' * `"hill_climbing"`, `"HC"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+#' 
+#' * `"brute_force"`, `"BF"`, `"full"` - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
 #'
 #' @param g object of `gips` class
-#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="BG"`, can be infinite; for `optimizer=="BF"` it is not used.
-#' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use `Metropolis_Hastings()` results to calculate posterior probabilities.
+#' @param max_iter number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="HC"`, can be infinite; for `optimizer=="BF"` it is not used.
+#' @param return_probabilities boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to calculate posterior probabilities.
 #' @param show_progress_bar boolean. Indicate weather or not show the progress bar.
-#' @param optimizer the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)
+#' @param optimizer the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "HC" - Hill Climbing algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the `g` object (see Examples). By default, NA that is changed into "MH" when `g` is unoptimized and "continue", when `g` is optimized. See "Possible algorithms to use as optimizers" section below.
 #'
 #' @return object of class gips
 #'
 #' @export
+#' 
+#' @seealso [gips()], [gips_perm()], [project_matrix()]
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -49,11 +59,14 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
                       show_progress_bar = TRUE, optimizer = NA) {
   # check the correctness of the g argument
   validate_gips(g)
+  
+  possible_optimizers <- c("MH", "Metropolis_Hastings", "HC", "hill_climbing", "BF", "brute_force", "full", "continue")
 
   # check the correctness of the rest of arguments
   if (length(optimizer) > 1) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`optimizer` must be the character vector of length 1. Must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'continue').",
+      "i" = paste0("`optimizer` must be the character vector of length 1. Must be one of: c('",
+                   paste0(possible_optimizers, collapse = "', '"), "')."),
       "x" = paste0(
         "You provided `optimizer == (",
         paste0(optimizer, collapse = ", "), ")`."
@@ -74,9 +87,10 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
       )
     ))
   }
-  if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BG", "best_growth", "BF", "brute_force", "full", "continue"))) {
+  if (!(optimizer %in% possible_optimizers)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`optimizer` must be one of: c('MH', 'Metropolis_Hastings', 'BG', 'best_growth', 'BF', 'brute_force', 'full', 'continue').",
+      "i" = paste0("`optimizer` must be one of: c('",
+                   paste0(possible_optimizers, collapse = "', '"), "')."),
       "x" = paste0("You provided `optimizer == ", optimizer, "`."),
       "i" = "Did You misspelled the optimizer name?"
     ))
@@ -98,7 +112,7 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
         "i" = "`optimizer == 'continue'` can be provided only with optimized gips object `g`.",
         "x" = "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized.",
         "i" = "Did You provided wrong `gips` object?",
-        "i" = "Did You want to call another optimizer like 'MH' or 'BG'?"
+        "i" = "Did You want to call another optimizer like 'MH' or 'HC'?"
       ))
     }
 
@@ -169,8 +183,8 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
       return_probabilities = return_probabilities,
       show_progress_bar = show_progress_bar
     )
-  } else if (optimizer %in% c("BG", "best_growth")) {
-    gips_optimized <- best_growth(
+  } else if (optimizer %in% c("HC", "hill_climbing")) {
+    gips_optimized <- hill_climbing(
       S = S, number_of_observations = number_of_observations,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
@@ -280,7 +294,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
       }
     } else {
       visited_perms[[i + 1]] <- visited_perms[[i]]
-      log_posteriori_values[i + 1] <- log_posteriori_values[i] # TODO(Do we really want to forget the calculated values? The algorithm BG works differently)
+      log_posteriori_values[i + 1] <- log_posteriori_values[i] # TODO(Do we really want to forget the calculated values? The algorithm HC works differently)
     }
   }
 
@@ -318,7 +332,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 }
 
 
-best_growth <- function(S, number_of_observations, max_iter = 5,
+hill_climbing <- function(S, number_of_observations, max_iter = 5,
                         start_perm = NULL,
                         delta = 3, D_matrix = NULL,
                         show_progress_bar = TRUE) {
@@ -407,7 +421,7 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
   }
 
   if (!did_converge) {
-    rlang::warn(c(paste0("Best Growth algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
+    rlang::warn(c(paste0("Hill Climbing algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
       "i" = "We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output."
     ))
     iteration <- iteration + 1 # the very first was the starting perm
@@ -427,7 +441,7 @@ best_growth <- function(S, number_of_observations, max_iter = 5,
     "last_perm" = speciments[[iteration]],
     "last_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "iterations_performed" = iteration,
-    "optimization_algorithm_used" = "best_growth",
+    "optimization_algorithm_used" = "hill_climbing",
     "post_probabilities" = NULL,
     "did_converge" = did_converge,
     "best_perm_log_posteriori" = goal_function_best_logvalues[iteration],
@@ -462,7 +476,7 @@ brute_force <- function(S, number_of_observations,
         "! (factorial), which has ", prod(1:perm_size),
         " elements."
       ),
-      "i" = "Do You want to use other optimizer for such a big slace? For example 'Metropolis_Hastings' or 'best_growth'?"
+      "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
     ))
   }
 

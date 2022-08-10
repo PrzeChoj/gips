@@ -91,7 +91,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again. We want g2 to have at least 1 accepted transposition.
     g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   }
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
 
   # tests:
@@ -167,7 +167,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "best_growth" # best_growth is legal, but the post_probabilities are not with this optimization_algorithm_used
+  attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "hill_climbing" # hill_climbing is legal, but the post_probabilities are not with this optimization_algorithm_used
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -240,9 +240,9 @@ test_that("Properly validate the gips class after multiple optimizations", {
     g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
     g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   }
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "BG", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
 
 
@@ -320,7 +320,7 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "best_growth" # best_growth is legal, but the post_probabilities are not with this optimization_algorithm_used
+  attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "hill_climbing" # hill_climbing is legal, but the post_probabilities are not with this optimization_algorithm_used
   expect_error(validate_gips(g_err))
 
   g_err <- g2

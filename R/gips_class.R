@@ -13,6 +13,8 @@
 #' @return Object of class gips.
 #'
 #' @export
+#' @seealso
+#' [find_MAP()], [gips_perm()]
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -39,6 +41,8 @@
 #'
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 #' g_map
+#' 
+#' summary(g_map)
 #'
 #' if (require("graphics")) {
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
@@ -384,9 +388,9 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "best_growth", "brute_force"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
+    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "brute_force"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
       abort_text <- c(abort_text,
-        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'best_growth' and 'brute_force'.",
+        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing' and 'brute_force'.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == (",
           paste(optimization_info[["optimization_algorithm_used"]], collapse = ", "),
@@ -433,10 +437,10 @@ validate_gips <- function(g) {
         )
       )
     }
-    if ((!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("best_growth", "brute_force"))) && # The last optimization_algorithm_used has to be best_growth or brute_force to make the convergence
+    if ((!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("hill_climbing", "brute_force"))) && # The last optimization_algorithm_used has to be hill_climbing or brute_force to make the convergence
       !is.null(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "`did_converge` can only be obtained with 'best_growth' or 'brute_force' optimization method.",
+        "i" = "`did_converge` can only be obtained with 'hill_climbing' or 'brute_force' optimization method.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(attr(g, 'optimization_info')[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
@@ -444,10 +448,10 @@ validate_gips <- function(g) {
           typeof(optimization_info[["did_converge"]]), "."
         )
       )
-    } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "best_growth") &&
+    } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "hill_climbing") &&
       !is.logical(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "When 'best_growth' optimization method, the `did_converge` must be TRUE or FALSE.",
+        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be TRUE or FALSE.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(attr(g, 'optimization_info')[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
@@ -455,10 +459,10 @@ validate_gips <- function(g) {
           typeof(optimization_info[["did_converge"]]), "."
         )
       )
-    } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "best_growth") &&
+    } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "hill_climbing") &&
       is.na(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "When 'best_growth' optimization method, the `did_converge` must be TRUE or FALSE.",
+        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be TRUE or FALSE.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(optimization_info[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
@@ -483,7 +487,7 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
         "i" = "Did You modified the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["optimization_time"]], "difftime")) {
@@ -508,7 +512,7 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['full_optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::best_growth()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
         "i" = "Did You modified the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["full_optimization_time"]], "difftime")) {
@@ -634,7 +638,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   }
   if (!(is.infinite(max_iter) || is.wholenumber(max_iter))) {
     abort_text <- c(abort_text,
-      "i" = "`max_iter` must be either infinite (for best_growth optimizer) or a whole number.",
+      "i" = "`max_iter` must be either infinite (for hill_climbing optimizer) or a whole number.",
       "x" = paste0("You provided `max_iter == ", max_iter, "`.")
     )
   } else if (max_iter < 2) { # TODO(Make it work for max_iter == 1)
@@ -839,8 +843,6 @@ plot.gips <- function(x, type = NA,
                       xlabel = NULL, ylabel = NULL,
                       show_legend = TRUE,
                       ylim = NULL, xlim = NULL, ...) {
-  # TODO(For "MH", those are NOT "All calculated posteriori", but those that MH was in. Change the legend, or the output of `gips(type="MH")`)
-
   # checking the correctness of the arguments:
   if (!requireNamespace("graphics", quietly = TRUE)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
@@ -1071,7 +1073,7 @@ plot.gips <- function(x, type = NA,
 }
 
 
-# TODO(Documentation. Can be based on `stats::summary.lm()`)
+# Based on `stats::summary.lm()`
 #' @export
 summary.gips <- function(object, ...) {
   validate_gips(object)
@@ -1138,8 +1140,8 @@ summary.gips <- function(object, ...) {
   )
 }
 
-# Based on
-# `sloop::s3_get_method(print.summary.lm)`
+# Based on `sloop::s3_get_method(print.summary.lm)`
+#' @method print summary.gips
 #' @export
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
@@ -1180,7 +1182,7 @@ print.summary.gips <- function(x, ...) {
 
     if (length(x[["optimization_algorithm_used"]]) == 1) {
       cat("\nOptimization algorithm:\n ", x[["optimization_algorithm_used"]],
-        ifelse(x[["optimization_algorithm_used"]] == "best_growth",
+        ifelse(x[["optimization_algorithm_used"]] == "hill_climbing",
           ifelse(x[["did_converge"]],
             " did converge",
             " did not converge"
@@ -1192,10 +1194,10 @@ print.summary.gips <- function(x, ...) {
     } else {
       # multiple optimizations
       cat("\nOptimization algorithms:\n ", paste0(x[["optimization_algorithm_used"]], collapse = ", "),
-        ifelse(x[["optimization_algorithm_used"]][length(x[["optimization_algorithm_used"]])] == "best_growth",
+        ifelse(x[["optimization_algorithm_used"]][length(x[["optimization_algorithm_used"]])] == "hill_climbing",
           ifelse(x[["did_converge"]],
-            "\n The last best_growth did converge.",
-            "\n The last best_growth did not converge."
+            "\n The last hill_climbing did converge.",
+            "\n The last hill_climbing did not converge."
           ),
           ""
         ),

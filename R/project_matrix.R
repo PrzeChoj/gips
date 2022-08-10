@@ -10,6 +10,8 @@
 #'
 #' @return projected matrix
 #' @export
+#' 
+#' @seealso [find_MAP()], [gips_perm()]
 #'
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), 7) # permutation (1,4)(2,3)(5)(6)(7)

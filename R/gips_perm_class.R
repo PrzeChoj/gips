@@ -8,7 +8,7 @@
 #' is defined).
 #'
 #' @seealso
-#' \code{\link[permutations]{permutation}}
+#' [permutations::permutation()], [gips_perm()]
 #'
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
@@ -132,8 +132,10 @@ new_gips_perm <- function(rearranged_cycles, size) {
 }
 
 #' Validate gips_perm object
+#' 
+#' @param g Element to be checked if it is proper element of class `gips_perm`.
 #'
-#' @noRd
+#' @export
 validate_gips_perm <- function(g) {
   if (!(inherits(g, "gips_perm"))) {
     wrong_argument_abort(
@@ -212,9 +214,13 @@ print.gips_perm <- function(x, ...) {
 #' Coerce gips_perm to character vector
 #'
 #' Implementation of S3 method.
+#' 
+#' @describeIn as.character
 #'
 #' @param x Object of `gips_perm` class
-#' @param ... further arguments passed to \code{\link[base]{as.character}}
+#' @param ... further arguments passed to \code{\link[permutations]{as.character.cycle}}
+#' 
+#' @method as.character gips_perm
 #'
 #' @export
 as.character.gips_perm <- function(x, ...) {

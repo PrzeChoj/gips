@@ -39,5 +39,5 @@ gperm
 
 }
 \seealso{
-\code{\link[permutations]{permutation}}
+\code{\link[permutations:permutation]{permutations::permutation()}}, \code{\link[=gips_perm]{gips_perm()}}
 }

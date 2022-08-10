@@ -9,8 +9,13 @@
 \arguments{
 \item{x}{Object of \code{gips_perm} class}
 
-\item{...}{further arguments passed to \code{\link[base]{as.character}}}
+\item{...}{further arguments passed to \code{\link[permutations]{as.character.cycle}}}
 }
 \description{
 Implementation of S3 method.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{as.character(gips_perm)}: 
+
+}}

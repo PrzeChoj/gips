@@ -15,13 +15,13 @@ find_MAP(
 \arguments{
 \item{g}{object of \code{gips} class}
 
-\item{max_iter}{number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="BG"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
+\item{max_iter}{number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="HC"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
 
-\item{return_probabilities}{boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use \code{Metropolis_Hastings()} results to calculate posterior probabilities.}
+\item{return_probabilities}{boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to calculate posterior probabilities.}
 
 \item{show_progress_bar}{boolean. Indicate weather or not show the progress bar.}
 
-\item{optimizer}{the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "BG" - best growth algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the \code{g} object (see Examples). By default, NA that is changed into "MH" when \code{g} is unoptimized and "continue", when \code{g} is optimized. See #TODO(In "Details" explain: Metropolis_Hastings and best_growth and brute_force)}
+\item{optimizer}{the optimizer for the search of the maximum posteriori. Currently the "MH" - Metropolis-Hastings algorithm, or "HC" - Hill Climbing algorithm, or "BF" - brute force algorithm, or "continue" to continue the optimization performed on the \code{g} object (see Examples). By default, NA that is changed into "MH" when \code{g} is unoptimized and "continue", when \code{g} is optimized. See "Possible algorithms to use as optimizers" section below.}
 }
 \value{
 object of class gips
@@ -29,6 +29,15 @@ object of class gips
 \description{
 Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
 }
+\section{Possible algorithms to use as optimizers}{
+
+\itemize{
+\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}
+\item \code{"hill_climbing"}, \code{"HC"} - to use Metropolis-Hastings algorithm \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}
+\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
+}
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 
@@ -62,4 +71,7 @@ if (require("graphics")) {
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 summary(g_map_BF)
+}
+\seealso{
+\code{\link[=gips]{gips()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=project_matrix]{project_matrix()}}
 }

@@ -19,3 +19,6 @@ Get Structure Constants from theorem 5 of the paper
 perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 get_structure_constants(perm)
 }
+\seealso{
+\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}
+}

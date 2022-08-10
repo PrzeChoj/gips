@@ -7,6 +7,8 @@
 #' @export
 #'
 #' @param g object of class `gips`
+#' 
+#' @seealso [calculate_gamma_function()]
 #'
 #' @examples
 #' c_perm <- permutations::as.cycle(permutations::as.word(c(2, 1)))
