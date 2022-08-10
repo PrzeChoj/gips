@@ -41,7 +41,7 @@
 #'
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 #' g_map
-#' 
+#'
 #' summary(g_map)
 #'
 #' if (require("graphics")) {
@@ -1224,5 +1224,3 @@ print.summary.gips <- function(x, ...) {
 
   invisible(NULL)
 }
-
-

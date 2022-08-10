@@ -1,13 +1,13 @@
 #' Find the Maximum A Posteriori Estimation
 #'
 #' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
-#' 
+#'
 #' @section Possible algorithms to use as optimizers:
-#' 
+#'
 #' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
-#' 
+#'
 #' * `"hill_climbing"`, `"HC"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
-#' 
+#'
 #' * `"brute_force"`, `"BF"`, `"full"` - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
 #'
 #' @param g Object of `gips` class
@@ -19,13 +19,13 @@
 #'   * `"HC"`: Hill Climbing
 #'   * `"BF"`: Brute Force
 #'   * `"continue"` (the default for optimized `g`): the same as the `g` was optimized by (see Examples).
-#' 
+#'
 #' See "Possible algorithms to use as optimizers" section below.
 #'
 #' @returns Object of class gips.
 #'
 #' @export
-#' 
+#'
 #' @seealso [gips()], [gips_perm()], [project_matrix()]
 #'
 #' @examples
@@ -62,17 +62,19 @@
 #' g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 #' summary(g_map_BF)
 find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
-                      show_progress_bar = TRUE, optimizer = NA) {
+                     show_progress_bar = TRUE, optimizer = NA) {
   # check the correctness of the g argument
   validate_gips(g)
-  
+
   possible_optimizers <- c("MH", "Metropolis_Hastings", "HC", "hill_climbing", "BF", "brute_force", "full", "continue")
 
   # check the correctness of the rest of arguments
   if (length(optimizer) > 1) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = paste0("`optimizer` must be the character vector of length 1. Must be one of: c('",
-                   paste0(possible_optimizers, collapse = "', '"), "')."),
+      "i" = paste0(
+        "`optimizer` must be the character vector of length 1. Must be one of: c('",
+        paste0(possible_optimizers, collapse = "', '"), "')."
+      ),
       "x" = paste0(
         "You provided `optimizer == (",
         paste0(optimizer, collapse = ", "), ")`."
@@ -95,8 +97,10 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
   }
   if (!(optimizer %in% possible_optimizers)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = paste0("`optimizer` must be one of: c('",
-                   paste0(possible_optimizers, collapse = "', '"), "')."),
+      "i" = paste0(
+        "`optimizer` must be one of: c('",
+        paste0(possible_optimizers, collapse = "', '"), "')."
+      ),
       "x" = paste0("You provided `optimizer == ", optimizer, "`."),
       "i" = "Did You misspelled the optimizer name?"
     ))
@@ -339,9 +343,9 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 
 
 hill_climbing <- function(S, number_of_observations, max_iter = 5,
-                        start_perm = NULL,
-                        delta = 3, D_matrix = NULL,
-                        show_progress_bar = TRUE) {
+                          start_perm = NULL,
+                          delta = 3, D_matrix = NULL,
+                          show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }

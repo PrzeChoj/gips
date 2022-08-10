@@ -132,7 +132,7 @@ new_gips_perm <- function(rearranged_cycles, size) {
 }
 
 #' Validate gips_perm object
-#' 
+#'
 #' @param g Element to be checked if it is proper element of class `gips_perm`.
 #'
 #' @export
@@ -214,14 +214,14 @@ print.gips_perm <- function(x, ...) {
 #' Coerce gips_perm to character vector
 #'
 #' Implementation of S3 method.
-#' 
+#'
 #' @describeIn as.character
 #'
 #' @inheritParams print.gips_perm
 #' @param ... Further arguments passed to \code{\link[permutations]{as.character.cycle}}.
-#' 
+#'
 #' @method as.character gips_perm
-#' 
+#'
 #' @seealso
 #' [permutations::as.character.cycle]
 #'

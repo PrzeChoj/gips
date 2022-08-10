@@ -10,7 +10,7 @@
 #'
 #' @returns A projected matrix.
 #' @export
-#' 
+#'
 #' @seealso [find_MAP()], [gips_perm()]
 #'
 #' @examples
@@ -96,8 +96,9 @@ get_equal_indices_by_perm <- function(perm) {
   ncol = 2
   )
 
-  subcycle_indice_pairs <- subcycle_indice_pairs[subcycle_indice_pairs[, 1] <= subcycle_indice_pairs[, 2],
-                                                 , drop = FALSE]
+  subcycle_indice_pairs <- subcycle_indice_pairs[subcycle_indice_pairs[, 1] <= subcycle_indice_pairs[, 2], ,
+    drop = FALSE
+  ]
   # subcycle_indice_pairs is a matrix of pairs like (5,6), where the second is not smaller than the first
 
   # Let's go

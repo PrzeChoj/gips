@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @returns Value of Gamma function.
-#' 
+#'
 #' @seealso [get_structure_constants()], [log_posteriori_of_gips()]
 #'
 #' @examples

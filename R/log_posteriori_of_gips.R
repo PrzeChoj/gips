@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @param g An object of class `gips_perm`.
-#' 
+#'
 #' @seealso [calculate_gamma_function()]
 #'
 #' @examples
