@@ -45,3 +45,22 @@ test_that("Handle proper parameters", {
     "===="
   )) # Can we stack the `expect`s like that? Looks neat!
 })
+
+test_that("Warns when found group has n0 > n", {
+  number_of_observations <- 2
+  Z <- MASS::mvrnorm(number_of_observations,
+    mu = numeric(6),
+    Sigma = matrix_invariant_by_example_perm
+  )
+  S <- (t(Z) %*% Z) / number_of_observations
+
+  g <- gips(S, number_of_observations)
+
+  expect_warning(
+    find_MAP(g,
+      max_iter = 2, show_progress_bar = FALSE,
+      optimizer = "MH"
+    ), # after 2 iterations the n0 can either be 6, or 5, or 4. It cannot be 1 or 2.
+    "n0"
+  )
+})
