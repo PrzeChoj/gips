@@ -20,18 +20,18 @@ elements, sorted according to Theorem 6.
 }
 \description{
 Calculate orthogonal matrix U_Gamma for decomposition in
-\href{https://doi.org/10.1214/22-AOS2174}{Theorem 1}.
+\href{https://doi.org/10.1214/22-AOS2174}{Theorem 1 from references}.
 }
 \details{
 Given X - invariant under the permutation \code{perm}. Call Gamma the
 permutations cyclic group \eqn{<perm> = {perm, perm^2, ...}}.
 
-Then, U_Gamma is such an orthogonal matrix, that X is "pretty" in it.
+Then, U_Gamma is such an orthogonal matrix that X is "pretty" in it.
 
 To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has
 a lot of zeros (see examples).
 
-To calculate it, \href{https://doi.org/10.1214/22-AOS2174}{Theorem 6} is used.
+To calculate it, \href{https://doi.org/10.1214/22-AOS2174}{Theorem 6 from references} is used.
 }
 \examples{
 gperm <- gips_perm("(1,2,3)(4,5)", 5)
@@ -44,7 +44,12 @@ X <- project_matrix(S, perm = gperm)  # this matrix in invariant under gperm
 
 t(U_g) \%*\% X \%*\% U_g  # the non-zeros only on diagonal and [1,2] and [2,1]
 }
+\references{
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+"Model selection in the space of Gaussian models invariant by symmetry."
+The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
+}
 \seealso{
-\href{https://doi.org/10.1214/22-AOS2174}{Paper with Theorems 1 and 6},
 \code{\link[=project_matrix]{project_matrix()}}
 }

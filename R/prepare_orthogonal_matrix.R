@@ -1,17 +1,17 @@
 #' Prepare orthogonal matrix
 #'
 #' Calculate orthogonal matrix U_Gamma for decomposition in
-#' [Theorem 1](https://doi.org/10.1214/22-AOS2174).
+#' [Theorem 1 from references](https://doi.org/10.1214/22-AOS2174).
 #' 
 #' Given X - invariant under the permutation `perm`. Call Gamma the
 #' permutations cyclic group \eqn{<perm> = {perm, perm^2, ...}}.
 #' 
-#' Then, U_Gamma is such an orthogonal matrix, that X is "pretty" in it.
+#' Then, U_Gamma is such an orthogonal matrix that X is "pretty" in it.
 #' 
 #' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has
 #' a lot of zeros (see examples).
 #' 
-#' To calculate it, [Theorem 6](https://doi.org/10.1214/22-AOS2174) is used.
+#' To calculate it, [Theorem 6 from references](https://doi.org/10.1214/22-AOS2174) is used.
 #'
 #' @param perm Object of class `gips_perm` or `permutations::cycle`.
 #' @param perm_size Size of permutation. Required if `perm` is of
@@ -19,9 +19,13 @@
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
 #' @returns A matrix `perm_size` x `perm_size` with columns from V object
 #'     elements, sorted according to Theorem 6.
+#'     
+#' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+#' "Model selection in the space of Gaussian models invariant by symmetry."
+#' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
-#' @seealso [Paper with Theorems 1 and 6](https://doi.org/10.1214/22-AOS2174),
-#'     [project_matrix()]
+#' @seealso [project_matrix()]
 #'
 #' @examples
 #' gperm <- gips_perm("(1,2,3)(4,5)", 5)
