@@ -2,21 +2,44 @@
 #'
 #' Project matrix on the space of symmetrical matrices invariant
 #' by a cyclic group of permutations.
+#' 
+#' When `S` is the sample covariance matrix (output of `cov(X)` function, see
+#' examples), then `S` is the unbiased estimator of the covariance matrix.
+#' However, the maximum likelihood estimator of the covariance matrix is
+#' `S*(n-1)/(n)`. For more information, see [Wikipedia page for Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
+#' 
+#' The maximum likelihood estimator is different when one knows the covariance
+#' matrix is invariant under the permutation. This estimator will not only be
+#' symmetric, but will also have some more values in itself the same.
+#' The estimator will be invariant under the given permutation.
 #'
-#' @param S A matrix to be projected.
+#' @param S A square matrix to be projected.
 #' @param perm A permutation. Generator of a permutation group.
-#'             Either of `gips_perm` or `permutations::cycle` class.
-#' @param precomputed_equal_indices Parameter used in internal calculations in case when the equal indices have already been calculated; If it is not the case, leave this parameter as \code{NULL} and those will be computed.
+#'     Either of `gips_perm` or `permutations::cycle` class.
+#' @param precomputed_equal_indices Parameter used in internal calculations in
+#'     case  when the equal indices have already been calculated; If it is not
+#'     the case, leave this parameter as \code{NULL} and those will be computed.
 #'
 #' @returns A projected matrix.
 #' @export
 #'
-#' @seealso [find_MAP()], [gips_perm()]
+#' @seealso [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices),
+#'     [find_MAP()], [gips_perm()], [plot.gips()]
 #'
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), 7) # permutation (1,4)(2,3)(5)(6)(7)
-#' S <- matrix(rnorm(49), nrow = 7)
+#' 
+#' number_of_observations <- 10
+#' X <- matrix(rnorm(7 * number_of_observations), number_of_observations, 7)
+#' S <- cov(X)
 #' projected_S <- project_matrix(S, perm = gperm)
+#' projected_S
+#' # The value in [1,1] is the same as in [4,4]; also, [2,2] and [3,3];
+#'   # also [1,2] and [4,3]; also, [1,5] and [4,5]; and so on
+#' 
+#' # Plot the projected matrix:
+#' g <- gips(S, number_of_observations, perm = gperm)
+#' plot(g, type = 'heatmap')
 project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided arguments:",

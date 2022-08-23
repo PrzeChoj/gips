@@ -9,19 +9,42 @@ prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 \arguments{
 \item{perm}{Object of class \code{gips_perm} or \code{permutations::cycle}.}
 
-\item{perm_size}{Size of permutation. Required if \code{perm} is of \code{permutations::cycle} class.}
+\item{perm_size}{Size of permutation. Required if \code{perm} is of
+\code{permutations::cycle} class.}
 
 \item{basis}{A matrix with basis vectors in COLUMNS. Identity by default.}
 }
 \value{
-A matrix p x p with columns from V object elements, sorted according to
-Theorem 6.
+A matrix \code{perm_size} x \code{perm_size} with columns from V object
+elements, sorted according to Theorem 6.
 }
 \description{
-Calculate orthogonal matrix U_Gamma
-for decomposition in Theorem 1. To calculate it, we use Theorem 6.
+Calculate orthogonal matrix U_Gamma for decomposition in
+\href{https://doi.org/10.1214/22-AOS2174}{Theorem 1}.
+}
+\details{
+Given X - invariant under the permutation \code{perm}. Call Gamma the
+permutations cyclic group \eqn{<perm> = {perm, perm^2, ...}}.
+
+Then, U_Gamma is such an orthogonal matrix, that X is "pretty" in it.
+
+To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has
+a lot of zeros (see examples).
+
+To calculate it, \href{https://doi.org/10.1214/22-AOS2174}{Theorem 6} is used.
 }
 \examples{
-gperm <- gips_perm("(1,2,3)(4,5)", 6)
+gperm <- gips_perm("(1,2,3)(4,5)", 5)
 U_g <- prepare_orthogonal_matrix(gperm)
+
+number_of_observations <- 10
+X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
+S <- cov(X)
+X <- project_matrix(S, perm = gperm)  # this matrix in invariant under gperm
+
+t(U_g) \%*\% X \%*\% U_g  # the non-zeros only on diagonal and [1,2] and [2,1]
+}
+\seealso{
+\href{https://doi.org/10.1214/22-AOS2174}{Paper with Theorems 1 and 6},
+\code{\link[=project_matrix]{project_matrix()}}
 }

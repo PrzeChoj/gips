@@ -905,7 +905,7 @@ plot.gips <- function(x, type = NA,
         rownames(my_projected_matrix) <- paste0(seq(1, p))
       }
 
-      # Address the R CMD check's "no visible binding for global variable":
+      # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
       col_id <- covariance_value <- row_id <- NULL
 
       # Life would be easier with pipes (%>%)
