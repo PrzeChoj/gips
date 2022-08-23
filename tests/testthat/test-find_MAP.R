@@ -64,3 +64,33 @@ test_that("Warns when found group has n0 > n", {
     "n0"
   )
 })
+
+test_that("find_MAP() can gues the correct optimizer and message the user", {
+  g <- gips(matrix_invariant_by_example_perm, 13)
+
+  # can guess:
+  expect_message(
+    find_MAP(g,
+      max_iter = 2, show_progress_bar = FALSE,
+      optimizer = "Me"
+    ),
+    "is will be changed to `optimizer == 'Metropolis_Hastings'`"
+  )
+
+  # cannot guess, can be "MH" or "Metropolis_Hastings":
+  expect_error(
+    find_MAP(g,
+      max_iter = 2, show_progress_bar = FALSE,
+      optimizer = "M"
+    ),
+    "You provided `optimizer == 'M'`"
+  )
+  # cannot guess
+  expect_error(
+    find_MAP(g,
+      max_iter = 2, show_progress_bar = FALSE,
+      optimizer = "etropolis_Hastings"
+    ),
+    "You provided `optimizer == 'etropolis_Hastings'`"
+  )
+})

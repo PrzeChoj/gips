@@ -66,7 +66,10 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
   # check the correctness of the g argument
   validate_gips(g)
 
-  possible_optimizers <- c("MH", "Metropolis_Hastings", "HC", "hill_climbing", "BF", "brute_force", "full", "continue")
+  possible_optimizers <- c(
+    "MH", "Metropolis_Hastings", "HC", "hill_climbing",
+    "BF", "brute_force", "full", "continue"
+  )
 
   # check the correctness of the rest of arguments
   if (length(optimizer) > 1) {
@@ -95,16 +98,34 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
       )
     ))
   }
-  if (!(optimizer %in% possible_optimizers)) {
+
+  # get a chosen optimizer, even with part of the name:
+  chosen_optimizer_number <- pmatch(optimizer, possible_optimizers)
+
+  if (is.na(chosen_optimizer_number)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
       "i" = paste0(
         "`optimizer` must be one of: c('",
         paste0(possible_optimizers, collapse = "', '"), "')."
       ),
-      "x" = paste0("You provided `optimizer == ", optimizer, "`."),
+      "x" = paste0("You provided `optimizer == '", optimizer, "'`."),
       "i" = "Did You misspelled the optimizer name?"
     ))
   }
+
+  if (optimizer != possible_optimizers[chosen_optimizer_number]) {
+    rlang::inform(c(
+      "You provided a shortcut for the optimization method's name:",
+      "i" = paste0("You provided `optimizer == '", optimizer, "'`"),
+      "i" = paste0(
+        "This will be changed to `optimizer == '",
+        possible_optimizers[chosen_optimizer_number], "'`"
+      )
+    ))
+
+    optimizer <- possible_optimizers[chosen_optimizer_number]
+  }
+
   if (!(optimizer %in% c("BF", "brute_force", "full")) &&
     is.na(max_iter)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
