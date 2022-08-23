@@ -15,14 +15,25 @@ calculate_gamma_function(perm, lambda)
 Value of Gamma function.
 }
 \description{
-Theorem 8 from the paper, using the formula (19) from the paper
+It calculates the value of the integral defined in
+\href{https://doi.org/10.1214/22-AOS2174}{Definition 11 from references}.
+It is implementation of the
+\href{https://doi.org/10.1214/22-AOS2174}{Theorem 8 from references}
+and is using the
+\href{https://doi.org/10.1214/22-AOS2174}{formula (19) from references}.
 }
 \examples{
 id_perm <- gips_perm(permutations::id, 2)
-calculate_gamma_function(id_perm, 0.5001)
-calculate_gamma_function(id_perm, 0.50000001)
-calculate_gamma_function(id_perm, 0.500000000001)
+calculate_gamma_function(id_perm, 0.5001)  # 10.7...
+calculate_gamma_function(id_perm, 0.50000001)  # 19.9...
+calculate_gamma_function(id_perm, 0.500000000001)  # 29.1...
 # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
+}
+\references{
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+"Model selection in the space of Gaussian models invariant by symmetry."
+The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
 \code{\link[=get_structure_constants]{get_structure_constants()}}, \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}

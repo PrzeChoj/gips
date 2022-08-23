@@ -1,6 +1,11 @@
 #' Calculate Gamma function
-#'
-#' Theorem 8 from the paper, using the formula (19) from the paper
+#' 
+#' It calculates the value of the integral defined in
+#' [Definition 11 from references](https://doi.org/10.1214/22-AOS2174).
+#' It is implementation of the
+#' [Theorem 8 from references](https://doi.org/10.1214/22-AOS2174)
+#' and is using the
+#' [formula (19) from references](https://doi.org/10.1214/22-AOS2174).
 #'
 #' @inheritParams get_structure_constants
 #' @param lambda A positive real number.
@@ -8,14 +13,19 @@
 #' @export
 #'
 #' @returns Value of Gamma function.
+#' 
+#' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+#' "Model selection in the space of Gaussian models invariant by symmetry."
+#' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso [get_structure_constants()], [log_posteriori_of_gips()]
 #'
 #' @examples
 #' id_perm <- gips_perm(permutations::id, 2)
-#' calculate_gamma_function(id_perm, 0.5001)
-#' calculate_gamma_function(id_perm, 0.50000001)
-#' calculate_gamma_function(id_perm, 0.500000000001)
+#' calculate_gamma_function(id_perm, 0.5001)  # 10.7...
+#' calculate_gamma_function(id_perm, 0.50000001)  # 19.9...
+#' calculate_gamma_function(id_perm, 0.500000000001)  # 29.1...
 #' # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
 calculate_gamma_function <- function(perm, lambda) {
   constants <- get_structure_constants(perm)

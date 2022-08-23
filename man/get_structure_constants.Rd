@@ -10,15 +10,30 @@ get_structure_constants(perm)
 \item{perm}{An object of class \code{gips_perm}.}
 }
 \value{
-A list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from theorem 1 and beginning of section 3.1.
+A list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of
+constants from
+\href{https://doi.org/10.1214/22-AOS2174}{Theorem 1 from references}
+and beginning of
+\href{https://doi.org/10.1214/22-AOS2174}{section 3.1. from references}.
 }
 \description{
-Get Structure Constants from theorem 5 of the paper
+Constants that are useful for internal calculations of integrals and
+eventually the posteriori probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+}
+\details{
+Uses the \href{https://doi.org/10.1214/22-AOS2174}{Theorem 5 from references}
+to calculate the constants.
 }
 \examples{
 perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 get_structure_constants(perm)
 }
+\references{
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+"Model selection in the space of Gaussian models invariant by symmetry."
+The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
+}
 \seealso{
-\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}
+\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}, \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}
 }
