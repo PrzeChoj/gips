@@ -111,5 +111,7 @@ summary(g_map_BF)
 }
 \seealso{
 \code{\link[=gips]{gips()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=project_matrix]{project_matrix()}},
-\code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}}
+\code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}},
+the optimizers tries to find the argmax of
+the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/log_posteriori_of_gips.R
 \name{log_posteriori_of_gips}
 \alias{log_posteriori_of_gips}
-\title{A log posteriori that the covariance matrix is invariant under permutation.}
+\title{A log of a posteriori that the covariance matrix is invariant under permutation.}
 \usage{
 log_posteriori_of_gips(g)
 }
@@ -10,16 +10,50 @@ log_posteriori_of_gips(g)
 \item{g}{An object of class \code{gips_perm}.}
 }
 \description{
-To be more precise, it is the logarithm of an unnormalized posterior probability.
-Calculated according to equation (33) and (27) from the paper. If \code{Inf} or \code{NaN} is reached, produces a warning.
-It is the goal function for optimization algorithms. The \code{perm_proposal} that maximizes this function is the Maximum A Posteriori (MAP) Estimator.
+More precisely, it is the logarithm of an unnormalized
+posterior probability.
+It is the goal function for optimization algorithms in \code{\link[=find_MAP]{find_MAP()}} function.
+The \code{perm_proposal} that maximizes this function is
+the Maximum A Posteriori (MAP) Estimator.
+}
+\details{
+It is calculated using
+\href{https://doi.org/10.1214/22-AOS2174}{formulas (33) and (27) from references}.
+
+If \code{Inf} or \code{NaN} is reached, it produces a warning.
 }
 \examples{
-c_perm <- permutations::as.cycle(permutations::as.word(c(2, 1)))
+perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2)))  # (1)(2)
+perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1)))  # (1,2)
 S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
-g <- gips(S1, 100, perm = c_perm)
-log_posteriori_of_gips(g)
+g1 <- gips(S1, 100, perm = perm1)
+g2 <- gips(S1, 100, perm = perm2)
+log_posteriori_of_gips(g1)  # -136.6, this is the MAP Estimator
+log_posteriori_of_gips(g2)  # -140.4
+
+exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2))  # 41.3
+# g1 is over 40 times more likely than g2.
+# This is the expected outcome because S[1,1] significantly differs from S[2,2].
+
+# ========================================================================
+
+S2 <- matrix(c(1, 0.5, 0.5, 1.1), nrow = 2, byrow = TRUE)
+g1 <- gips(S2, 100, perm = perm1)
+g2 <- gips(S2, 100, perm = perm2)
+log_posteriori_of_gips(g1)  # -99.5
+log_posteriori_of_gips(g2)  # -96.9, this is the MAP Estimator
+
+exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1))  # 12.7
+# g2 is over 12 times more likely than g1.
+# This is the expected outcome because S[1,1] is very close to S[2,2].
+}
+\references{
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+"Model selection in the space of Gaussian models invariant by symmetry."
+The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
-\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}
+\code{\link[=calculate_gamma_function]{calculate_gamma_function()}},
+this function is optimized with the \code{\link[=find_MAP]{find_MAP()}} function
 }

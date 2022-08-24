@@ -10,7 +10,7 @@
 \method{print}{summary.gips}(x, ...)
 }
 \arguments{
-\item{object}{An object of class "gips", usually, a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class "gips"; is usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
@@ -25,13 +25,13 @@ statistics of the given \code{gips} object. Those are:
 \item \code{optimized} - FALSE
 \item \code{start_permutation} - the permutation this \code{gips} represents
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
-value the start permutation have
+value the start permutation has
 \item \code{n0} - the minimal number of observations needed for
-a MAP Estimator of covariance matrix to exists
+a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
 the posteriori value
 \item \code{number_of_observations} - the number of observations that
-was observed for the \code{S_matrix} to be calculated; this is
+were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 }
@@ -45,24 +45,24 @@ value the found permutation have
 \item \code{start_permutation} - the original permutation this \code{gips}
 represented before optimization; the first visited permutation
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
-value the start permutation have
+value the start permutation has
 \item \code{n0} - the minimal number of observations needed for
-a MAP Estimator of covariance matrix to exists
+a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
 the posteriori value
 \item \code{number_of_observations} - the number of observations that
-was observed for the \code{S_matrix} to be calculated; this is
+were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
-do a "HC")
+do an "HC")
 \item \code{did_converge} - boolean, did the last used algorithm converge
 \item \code{number_of_log_posteriori_calls} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
 the optimization
 \item \code{full_optimization_time} - how long was the optimization process;
-sum of all optimization times (when there were multiple)
+the sum of all optimization times (when there were multiple)
 \item \code{log_posteriori_calls_after_best} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called after
 the \code{found_permutation}; in other words, how long ago

@@ -1077,7 +1077,7 @@ plot.gips <- function(x, type = NA,
 #' 
 #' `summary` method for class "gips".
 #' 
-#' @param object An object of class "gips", usually, a result of a [find_MAP()].
+#' @param object An object of class "gips"; is usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #' 
 #' @return The function `summary.gips` computes and returns a list of summary
@@ -1086,13 +1086,13 @@ plot.gips <- function(x, type = NA,
 #'   1. `optimized` - FALSE
 #'   2. `start_permutation` - the permutation this `gips` represents
 #'   3. `start_permutation_log_posteriori` - the log of the a posteriori
-#'       value the start permutation have
+#'       value the start permutation has
 #'   4. `n0` - the minimal number of observations needed for
-#'       a MAP Estimator of covariance matrix to exists
+#'       a MAP Estimator of the covariance matrix to exist
 #'   5. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
 #'   6. `number_of_observations` - the number of observations that
-#'       was observed for the `S_matrix` to be calculated; this is
+#'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
 #'   7. `delta`, `D_matrix` - the parameters of the Bayesian method
 #' * For optimized `gips` object:
@@ -1104,24 +1104,24 @@ plot.gips <- function(x, type = NA,
 #'   4. `start_permutation` - the original permutation this `gips`
 #'       represented before optimization; the first visited permutation
 #'   5. `start_permutation_log_posteriori` - the log of the a posteriori
-#'       value the start permutation have
+#'       value the start permutation has
 #'   6. `n0` - the minimal number of observations needed for
-#'       a MAP Estimator of covariance matrix to exists
+#'       a MAP Estimator of the covariance matrix to exist
 #'   7. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
 #'   8. `number_of_observations` - the number of observations that
-#'       was observed for the `S_matrix` to be calculated; this is
+#'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
 #'   10. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
-#'       do a "HC")
+#'       do an "HC")
 #'   11. `did_converge` - boolean, did the last used algorithm converge
 #'   12. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
 #'   13. `full_optimization_time` - how long was the optimization process;
-#'       sum of all optimization times (when there were multiple)
+#'       the sum of all optimization times (when there were multiple)
 #'   14. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago

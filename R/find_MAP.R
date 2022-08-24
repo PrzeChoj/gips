@@ -56,7 +56,9 @@
 #' @export
 #'
 #' @seealso [gips()], [gips_perm()], [project_matrix()],
-#'     [plot.gips()], [summary.gips()]
+#'     [plot.gips()], [summary.gips()],
+#'     the optimizers tries to find the argmax of
+#'     the [log_posteriori_of_gips()] function
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
