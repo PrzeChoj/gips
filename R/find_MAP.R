@@ -1,28 +1,57 @@
 #' Find the Maximum A Posteriori Estimation
 #'
-#' Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
+#' Use one of the optimization algorithms to find the permutation that maximizes
+#' a posteriori based on observed data. Not all optimization algorithms will
+#' always find the MAP, but they try to find a significant value.
+#' More information can be found in the
+#' 'Possible algorithms to use as optimizers' section below.
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+#' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
+#'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
+#'     The algorithm will draw a random transposition in every iteration
+#'     and consider changing the current one.
+#'     When the `max_iter` is reached, the algorithm will return
+#'     the MAP Estimator as the best permutation calculated so far.
 #'
-#' * `"hill_climbing"`, `"HC"` - to use Metropolis-Hastings algorithm [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+#' * `"hill_climbing"`, `"HC"` - to use hill climbing algorithm;
+#'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
+#'     The algorithm will check all transpositions in every iteration and
+#'     go to the one with the biggest a posteriori value.
+#'     The optimization ends when all *neighbors* will have a smaller
+#'     a posteriori value. If the `max_iter` is reached before the end,
+#'     then the warning is shown, and it is recommended to start
+#'     the optimization again on the output of the `find_MAP()`.
+#'     Remember that there are `p*(p-1)/2` transpositions to be checked
+#'     in every iteration. For bigger `p`, this may be costly.
 #'
-#' * `"brute_force"`, `"BF"`, `"full"` - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
+#' * `"brute_force"`, `"BF"`, `"full"` - to use the Brute Force algorithm that
+#'     checks the whole permutation space of a given size. This algorithm will
+#'     definitely find the Maximum A Posteriori Estimation but is very
+#'     computationally expensive for bigger space.
 #'
 #' @param g Object of `gips` class
-#' @param max_iter Number of iterations for an algorithm to perform. At least 2. For `optimizer=="MH"` has to be finite; for `optimizer=="HC"`, can be infinite; for `optimizer=="BF"` it is not used.
-#' @param return_probabilities A boolean. TRUE can only be provided for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to calculate posterior probabilities.
-#' @param show_progress_bar A boolean. Indicate weather or not show the progress bar.
+#' @param max_iter Number of iterations for an algorithm to perform.
+#'     At least 2. For `optimizer=="MH"` has to be finite;
+#'     for `optimizer=="HC"`, can be infinite;
+#'     for `optimizer=="BF"` it is not used.
+#' @param return_probabilities A boolean. TRUE can only be provided
+#'     for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to
+#'     calculate posterior probabilities.
+#' @param show_progress_bar A boolean.
+#'     Indicate whether or not to show the progress bar.
+#'     When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
 #' @param optimizer The optimizer for the search of the maximum posteriori.
 #'   * `"MH"` (the default for unoptimized `g`): Metropolis-Hastings
 #'   * `"HC"`: Hill Climbing
 #'   * `"BF"`: Brute Force
-#'   * `"continue"` (the default for optimized `g`): the same as the `g` was optimized by (see Examples).
+#'   * `"continue"` (the default for optimized `g`): the same as the `g`
+#'       was optimized by (see Examples).
+#' 
+#' For more details, see the "Possible algorithms to use as optimizers" section below.
 #'
-#' See "Possible algorithms to use as optimizers" section below.
-#'
-#' @returns Object of class gips.
+#' @returns An object of class gips.
 #'
 #' @export
 #'

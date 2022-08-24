@@ -26,19 +26,20 @@ by a cyclic group of permutations.
 }
 \details{
 When \code{S} is the sample covariance matrix (output of \code{cov(X)} function, see
-examples), then \code{S} is the unbiased estimator of the covariance matrix.
-However, the maximum likelihood estimator of the covariance matrix is
-\code{S*(n-1)/(n)}, unless p > n, then the maximum likelihood estimator
-does not exist. For more information, see the
+examples), then \code{S} is the \strong{unbiased estimator} of the covariance matrix.
+However, the \strong{maximum likelihood estimator} of the covariance matrix is
+\code{S*(n-1)/(n)}, unless p > n, then the
+\strong{maximum likelihood estimator does not exist}. For more information, see the
 \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia page for Estimation of covariance matrices}.
 
 The maximum likelihood estimator differs when one knows the covariance
-matrix is invariant under the permutation. This estimator will not only be
+matrix is \strong{invariant under some permutation}. This estimator will not only be
 symmetric but also have some more values in itself the same (see examples).
 
 The estimator will be invariant under the given permutation. Also, it
-will need fewer observations for the maximum likelihood estimator to
-exist (see \code{\link[=summary.gips]{summary.gips()}}).
+will \strong{need fewer observations} for the maximum likelihood estimator to
+exist (see \code{\link[=summary.gips]{summary.gips()}}). For some permutations,
+even n = 1 will be enough.
 }
 \examples{
 p <- 6

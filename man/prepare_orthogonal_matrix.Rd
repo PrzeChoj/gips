@@ -26,7 +26,7 @@ Calculate orthogonal matrix U_Gamma for decomposition in
 Given X - invariant under the permutation \code{perm}. Call Gamma the
 permutations cyclic group \eqn{<perm> = {perm, perm^2, ...}}.
 
-Then, U_Gamma is such an orthogonal matrix that X is "pretty" in it.
+Then, U_Gamma is such an orthogonal matrix that X is \emph{"pretty"} in it.
 
 To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has
 a lot of zeros (see examples).

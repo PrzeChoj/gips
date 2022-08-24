@@ -15,34 +15,63 @@ find_MAP(
 \arguments{
 \item{g}{Object of \code{gips} class}
 
-\item{max_iter}{Number of iterations for an algorithm to perform. At least 2. For \code{optimizer=="MH"} has to be finite; for \code{optimizer=="HC"}, can be infinite; for \code{optimizer=="BF"} it is not used.}
+\item{max_iter}{Number of iterations for an algorithm to perform.
+At least 2. For \code{optimizer=="MH"} has to be finite;
+for \code{optimizer=="HC"}, can be infinite;
+for \code{optimizer=="BF"} it is not used.}
 
-\item{return_probabilities}{A boolean. TRUE can only be provided for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to calculate posterior probabilities.}
+\item{return_probabilities}{A boolean. TRUE can only be provided
+for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to
+calculate posterior probabilities.}
 
-\item{show_progress_bar}{A boolean. Indicate weather or not show the progress bar.}
+\item{show_progress_bar}{A boolean.
+Indicate whether or not to show the progress bar.
+When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.}
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori.
 \itemize{
 \item \code{"MH"} (the default for unoptimized \code{g}): Metropolis-Hastings
 \item \code{"HC"}: Hill Climbing
 \item \code{"BF"}: Brute Force
-\item \code{"continue"} (the default for optimized \code{g}): the same as the \code{g} was optimized by (see Examples).
+\item \code{"continue"} (the default for optimized \code{g}): the same as the \code{g}
+was optimized by (see Examples).
 }
 
-See "Possible algorithms to use as optimizers" section below.}
+See the "Possible algorithms to use as optimizers" section below.}
 }
 \value{
 Object of class gips.
 }
 \description{
-Use one of optimization algorithms to find the permutation that maximizes a posteriori based on observed data. Not all optimization algorithms will always find the MAP, but they try to find a big value. TODO(More information can be found in 'Details'.)
+Use one of the optimization algorithms to find the permutation that maximizes
+a posteriori based on observed data. Not all optimization algorithms will
+always find the MAP, but they try to find a significant value.
+More information can be found in the
+'Possible algorithms to use as optimizers' section below.
 }
 \section{Possible algorithms to use as optimizers}{
 
 \itemize{
-\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}
-\item \code{"hill_climbing"}, \code{"HC"} - to use Metropolis-Hastings algorithm \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}
-\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use Brute Force algorithm that checks the whole permutation space of a given size. This algorithm will definitely find the Maximum A Posteriori Estimation, but is very computationally expensive for bigger space.
+\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm;
+\href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
+The algorithm will draw a random transposition in every iteration
+and consider changing the current one.
+When the \code{max_iter} is reached, the algorithm will return
+the MAP Estimator as the best permutation calculated so far.
+\item \code{"hill_climbing"}, \code{"HC"} - to use hill climbing algorithm;
+\href{https://en.wikipedia.org/wiki/Hill_climbing}{see Wikipedia}.
+The algorithm will check all transpositions in every iteration and
+go to the one with the biggest a posteriori value.
+The optimization ends when all \emph{neighbors} will have a smaller
+a posteriori value. If the \code{max_iter} is reached before the end,
+then the warning is shown, and it is recommended to start
+the optimization again on the output of the \code{find_MAP()}.
+Remember that there are \code{p*(p-1)/2} transpositions to be checked
+in every iteration. For bigger \code{p}, this may be costly.
+\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use the Brute Force algorithm that
+checks the whole permutation space of a given size. This algorithm will
+definitely find the Maximum A Posteriori Estimation but is very
+computationally expensive for bigger space.
 }
 }
 
