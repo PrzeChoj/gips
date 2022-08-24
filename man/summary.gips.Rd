@@ -2,21 +2,115 @@
 % Please edit documentation in R/gips_class.R
 \name{summary.gips}
 \alias{summary.gips}
+\alias{print.summary.gips}
 \title{Summarizing the gips object}
 \usage{
 \method{summary}{gips}(object, ...)
+
+\method{print}{summary.gips}(x, ...)
 }
 \arguments{
 \item{object}{An object of class "gips", usually, a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
+
+\item{x}{An object of class "summary.gips" to be printed}
 }
 \value{
 The function \code{summary.gips} computes and returns a list of summary
-statistics of the \code{gips} given in object. Those are: TODO()
+statistics of the given \code{gips} object. Those are:
+\itemize{
+\item For unoptimized \code{gips} object:
+\enumerate{
+\item \code{optimized} - FALSE
+\item \code{start_permutation} - the permutation this \code{gips} represents
+\item \code{start_permutation_log_posteriori} - the log of the a posteriori
+value the start permutation have
+\item \code{n0} - the minimal number of observations needed for
+a MAP Estimator of covariance matrix to exists
+\item \code{S_matrix} - the underlying matrix; this is used to calculate
+the posteriori value
+\item \code{number_of_observations} - the number of observations that
+was observed for the \code{S_matrix} to be calculated; this is
+used to calculate the posteriori value
+\item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
+}
+\item For optimized \code{gips} object:
+\enumerate{
+\item \code{optimized} - TRUE
+\item \code{found_permutation} - the permutation this \code{gips} represents;
+the visited permutation with the biggest a posteriori value
+\item \code{found_permutation_log_posteriori} - the log of the a posteriori
+value the found permutation have
+\item \code{start_permutation} - the original permutation this \code{gips}
+represented before optimization; the first visited permutation
+\item \code{start_permutation_log_posteriori} - the log of the a posteriori
+value the start permutation have
+\item \code{n0} - the minimal number of observations needed for
+a MAP Estimator of covariance matrix to exists
+\item \code{S_matrix} - the underlying matrix; this is used to calculate
+the posteriori value
+\item \code{number_of_observations} - the number of observations that
+was observed for the \code{S_matrix} to be calculated; this is
+used to calculate the posteriori value
+\item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
+\item \code{optimization_algorithm_used} - all used optimization algorithms
+in order (one could start optimization with "MH", and then
+do a "HC")
+\item \code{did_converge} - boolean, did the last used algorithm converge
+\item \code{number_of_log_posteriori_calls} - how many times was
+the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
+the optimization
+\item \code{full_optimization_time} - how long was the optimization process;
+sum of all optimization times (when there were multiple)
+\item \code{log_posteriori_calls_after_best} - how many times was
+the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called after
+the \code{found_permutation}; in other words, how long ago
+could the optimization be stopped and have the same result;
+if this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
+one more time with \code{optimizer = "continue"}
+\item \code{acceptance_rate} - only interesting for \code{optimizer = "MH"};
+how often was the algorithm accepting the change of permutation
+in an iteration
+}
+}
 }
 \description{
 \code{summary} method for class "gips".
+}
+\section{Methods (by generic)}{
+\itemize{
+\item \code{print(summary.gips)}: Printing method for class "summary.gips".
+Prints every interesting information in a pleasant, human readable form
+
+}}
+\examples{
+require("MASS") # for mvrnorm()
+
+perm_size <- 6
+mu <- numeric(perm_size)
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+number_of_observations <- 13
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
+
+g <- gips(S, number_of_observations)
+
+g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+unclass(summary(g_map))
+
+g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
+summary(g_map2)
 }
 \seealso{
 \code{\link[=project_matrix]{project_matrix()}}, \code{\link[=find_MAP]{find_MAP()}}

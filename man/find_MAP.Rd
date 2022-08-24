@@ -37,10 +37,10 @@ When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE
 was optimized by (see Examples).
 }
 
-See the "Possible algorithms to use as optimizers" section below.}
+For more details, see the "Possible algorithms to use as optimizers" section below.}
 }
 \value{
-Object of class gips.
+An object of class gips.
 }
 \description{
 Use one of the optimization algorithms to find the permutation that maximizes
@@ -110,5 +110,6 @@ g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 summary(g_map_BF)
 }
 \seealso{
-\code{\link[=gips]{gips()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=project_matrix]{project_matrix()}}
+\code{\link[=gips]{gips()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=project_matrix]{project_matrix()}},
+\code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}}
 }

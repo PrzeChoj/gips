@@ -55,7 +55,8 @@
 #'
 #' @export
 #'
-#' @seealso [gips()], [gips_perm()], [project_matrix()]
+#' @seealso [gips()], [gips_perm()], [project_matrix()],
+#'     [plot.gips()], [summary.gips()]
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()

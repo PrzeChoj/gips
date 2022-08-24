@@ -1081,10 +1081,87 @@ plot.gips <- function(x, type = NA,
 #' @param ... Further arguments passed to or from other methods.
 #' 
 #' @return The function `summary.gips` computes and returns a list of summary
-#'     statistics of the `gips` given in object. Those are: TODO()
+#'     statistics of the given `gips` object. Those are:
+#' * For unoptimized `gips` object:
+#'   1. `optimized` - FALSE
+#'   2. `start_permutation` - the permutation this `gips` represents
+#'   3. `start_permutation_log_posteriori` - the log of the a posteriori
+#'       value the start permutation have
+#'   4. `n0` - the minimal number of observations needed for
+#'       a MAP Estimator of covariance matrix to exists
+#'   5. `S_matrix` - the underlying matrix; this is used to calculate
+#'       the posteriori value
+#'   6. `number_of_observations` - the number of observations that
+#'       was observed for the `S_matrix` to be calculated; this is
+#'       used to calculate the posteriori value
+#'   7. `delta`, `D_matrix` - the parameters of the Bayesian method
+#' * For optimized `gips` object:
+#'   1. `optimized` - TRUE
+#'   2. `found_permutation` - the permutation this `gips` represents;
+#'       the visited permutation with the biggest a posteriori value
+#'   3. `found_permutation_log_posteriori` - the log of the a posteriori
+#'       value the found permutation have
+#'   4. `start_permutation` - the original permutation this `gips`
+#'       represented before optimization; the first visited permutation
+#'   5. `start_permutation_log_posteriori` - the log of the a posteriori
+#'       value the start permutation have
+#'   6. `n0` - the minimal number of observations needed for
+#'       a MAP Estimator of covariance matrix to exists
+#'   7. `S_matrix` - the underlying matrix; this is used to calculate
+#'       the posteriori value
+#'   8. `number_of_observations` - the number of observations that
+#'       was observed for the `S_matrix` to be calculated; this is
+#'       used to calculate the posteriori value
+#'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   10. `optimization_algorithm_used` - all used optimization algorithms
+#'       in order (one could start optimization with "MH", and then
+#'       do a "HC")
+#'   11. `did_converge` - boolean, did the last used algorithm converge
+#'   12. `number_of_log_posteriori_calls` - how many times was
+#'       the [log_posteriori_of_gips()] function called during
+#'       the optimization
+#'   13. `full_optimization_time` - how long was the optimization process;
+#'       sum of all optimization times (when there were multiple)
+#'   14. `log_posteriori_calls_after_best` - how many times was
+#'       the [log_posteriori_of_gips()] function called after
+#'       the `found_permutation`; in other words, how long ago
+#'       could the optimization be stopped and have the same result;
+#'       if this value is small, consider running [find_MAP()]
+#'       one more time with `optimizer = "continue"`
+#'   15. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'       how often was the algorithm accepting the change of permutation
+#'       in an iteration
 #' @export
 #' 
 #' @seealso [project_matrix()], [find_MAP()]
+#' 
+#' @examples
+#' require("MASS") # for mvrnorm()
+#'
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' sigma_matrix <- matrix(
+#'   data = c(
+#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'   ),
+#'   nrow = perm_size, byrow = TRUE
+#' ) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+#'
+#' g <- gips(S, number_of_observations)
+#'
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' unclass(summary(g_map))
+#' 
+#' g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
+#' summary(g_map2)
 summary.gips <- function(object, ...) {
   validate_gips(object)
   permutation_log_posteriori <- log_posteriori_of_gips(object)
@@ -1138,7 +1215,6 @@ summary.gips <- function(object, ...) {
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
-      optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       full_optimization_time = optimization_info[["full_optimization_time"]],
       log_posteriori_calls_after_best = length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)],
       acceptance_rate = optimization_info[["acceptance_rate"]]
@@ -1152,6 +1228,9 @@ summary.gips <- function(object, ...) {
 
 # Based on `sloop::s3_get_method(print.summary.lm)`
 #' @method print summary.gips
+#' @param x An object of class "summary.gips" to be printed
+#' @describeIn summary.gips Printing method for class "summary.gips".
+#'     Prints every interesting information in a pleasant, human readable form
 #' @export
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
