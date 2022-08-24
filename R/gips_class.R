@@ -1073,7 +1073,18 @@ plot.gips <- function(x, type = NA,
 
 
 # Based on `stats::summary.lm()`
+#' Summarizing the gips object
+#' 
+#' `summary` method for class "gips".
+#' 
+#' @param object An object of class "gips", usually, a result of a [find_MAP()].
+#' @param ... Further arguments passed to or from other methods.
+#' 
+#' @return The function `summary.gips` computes and returns a list of summary
+#'     statistics of the `gips` given in object. Those are: TODO()
 #' @export
+#' 
+#' @seealso [project_matrix()], [find_MAP()]
 summary.gips <- function(object, ...) {
   validate_gips(object)
   permutation_log_posteriori <- log_posteriori_of_gips(object)

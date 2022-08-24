@@ -12,9 +12,10 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 \item{perm}{A permutation. Generator of a permutation group.
 Either of \code{gips_perm} or \code{permutations::cycle} class.}
 
-\item{precomputed_equal_indices}{Parameter used in internal calculations in
-case  when the equal indices have already been calculated; If it is not
-the case, leave this parameter as \code{NULL} and those will be computed.}
+\item{precomputed_equal_indices}{The parameter is used in internal
+calculations when the equal indices have already been calculated.
+If it is not the case, leave this parameter as \code{NULL}, and
+those will be computed.}
 }
 \value{
 A projected matrix.
@@ -27,18 +28,24 @@ by a cyclic group of permutations.
 When \code{S} is the sample covariance matrix (output of \code{cov(X)} function, see
 examples), then \code{S} is the unbiased estimator of the covariance matrix.
 However, the maximum likelihood estimator of the covariance matrix is
-\code{S*(n-1)/(n)}. For more information, see \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia page for Estimation of covariance matrices}.
+\code{S*(n-1)/(n)}, unless p > n, then the maximum likelihood estimator
+does not exist. For more information, see the
+\href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia page for Estimation of covariance matrices}.
 
-The maximum likelihood estimator is different when one knows the covariance
+The maximum likelihood estimator differs when one knows the covariance
 matrix is invariant under the permutation. This estimator will not only be
-symmetric, but will also have some more values in itself the same.
-The estimator will be invariant under the given permutation.
+symmetric but also have some more values in itself the same (see examples).
+
+The estimator will be invariant under the given permutation. Also, it
+will need fewer observations for the maximum likelihood estimator to
+exist (see \code{\link[=summary.gips]{summary.gips()}}).
 }
 \examples{
-gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), 7) # permutation (1,4)(2,3)(5)(6)(7)
+p <- 6
+gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), p) # permutation (1,4)(2,3)(5)(6)
 
 number_of_observations <- 10
-X <- matrix(rnorm(7 * number_of_observations), number_of_observations, 7)
+X <- matrix(rnorm(p * number_of_observations), number_of_observations, p)
 S <- cov(X)
 projected_S <- project_matrix(S, perm = gperm)
 projected_S
@@ -51,5 +58,5 @@ plot(g, type = 'heatmap')
 }
 \seealso{
 \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices},
-\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=plot.gips]{plot.gips()}}
+\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}}
 }
