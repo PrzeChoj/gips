@@ -9,11 +9,11 @@
 \arguments{
 \item{x}{An object of class \code{gips}.}
 
-\item{log_value}{A logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.}
+\item{log_value}{A logical. Weather to print the exp of a value of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} or leave it in logarithmic form.}
 
-\item{digits}{A number of digits after the comma for posteriori to be presented. Can be negative. Be default, \code{Inf}. It is passed to \code{\link[base]{round}}.}
+\item{digits}{A number of digits after the comma for posteriori to be presented. Can be negative. Be default, \code{Inf}. It is passed to \link[base:Round]{base::round}.}
 
-\item{...}{An additional arguments passed to \code{\link[base]{cat}}.}
+\item{...}{An additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
 \value{
 Invisible NULL.

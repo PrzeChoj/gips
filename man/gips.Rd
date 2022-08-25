@@ -113,11 +113,12 @@ if (require("graphics")) {
 }
 \seealso{
 \itemize{
-\item \code{\link[=find_MAP]{find_MAP()}} - the function that finds
-the Maximum A Posteriori Estimator
+\item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
+the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.
-\item \code{\link[=gips_perm]{gips_perm()}} - under the \code{gips}, there is
-a permutation of a \code{gips_perm} class
-generated with the \code{gips_perm()} function.
+\item \code{\link[=gips_perm]{gips_perm()}} - The constructor of the \code{gips_perm} class.
+The \code{gips_perm} object is used as the base object for
+the \code{gips} object. To be more precise, the \code{gips} object has
+a one-element list of a \code{gips_perm} object as the base object.
 }
 }

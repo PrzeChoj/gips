@@ -60,5 +60,9 @@ gperm
 
 }
 \seealso{
-\code{\link[permutations:permutation]{permutations::permutation()}}, \code{\link[=gips]{gips()}}
+\itemize{
+\item \code{\link[permutations:permutation]{permutations::permutation()}} - The constructor for the \code{x} parameter.
+\item \code{\link[=gips]{gips()}} - The constructor for the \code{gips} class uses
+the \code{gips_perm} object as the base object.
+}
 }

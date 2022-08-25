@@ -113,5 +113,8 @@ g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC"
 summary(g_map2)
 }
 \seealso{
-\code{\link[=project_matrix]{project_matrix()}}, \code{\link[=find_MAP]{find_MAP()}}
+\itemize{
+\item \code{\link[=project_matrix]{project_matrix()}}
+\item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{summary.gips()} is called on the output of \code{find_MAP()}.
+}
 }

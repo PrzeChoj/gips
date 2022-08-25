@@ -24,14 +24,27 @@
 #'     Either of `gips_perm` or `permutations::cycle` class.
 #' @param precomputed_equal_indices The parameter is used in internal
 #'     calculations when the equal indices have already been calculated.
-#'     If it is not the case, leave this parameter as \code{NULL}, and
+#'     If it is not the case, leave this parameter as `NULL`, and
 #'     those will be computed.
 #'
 #' @returns A projected matrix.
 #' @export
 #'
-#' @seealso [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices),
-#'     [find_MAP()], [gips_perm()], [plot.gips()], [summary.gips()]
+#' @seealso
+#' * [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices)
+#' * [find_MAP()] - The function that finds
+#'     the Maximum A Posteriori (MAP) Estimator
+#'     for a given `gips` object.
+#'     After the MAP Estimator is found, the matrix
+#'     `S` can be projected on this permutation,
+#'     creating the MAP Estimator of the covariance matrix
+#'     (see examples).
+#' * [gips_perm()] - Constructor for the `perm` parameter.
+#' * [plot.gips()] - For `plot(g, type = 'heatmap')`,
+#'     the `project_matrix()` is called (see examples).
+#' * [summary.gips()] - Can calculate the `n0`, the minimal
+#'     number of observations, so that the projected matrix
+#'     will be the MAP estimator of the covariance matrix.
 #'
 #' @examples
 #' p <- 6
@@ -48,6 +61,12 @@
 #' # Plot the projected matrix:
 #' g <- gips(S, number_of_observations, perm = gperm)
 #' plot(g, type = 'heatmap')
+#' 
+#' # Find the MAP Estimator
+#' g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' S_MAP <- project_matrix(S, perm = g_MAP[[1]])
+#' S_MAP
+#' plot(g_MAP, type = 'heatmap')
 project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided arguments:",

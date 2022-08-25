@@ -49,16 +49,21 @@
 #'   * `"continue"` (the default for optimized `g`): the same as the `g`
 #'       was optimized by (see Examples).
 #' 
-#' For more details, see the "Possible algorithms to use as optimizers" section below.
+#' For more details, see the "Possible algorithms to use as optimizers"
+#' section below.
 #'
 #' @returns An object of class gips.
 #'
 #' @export
 #'
-#' @seealso [gips()], [gips_perm()], [project_matrix()],
-#'     [plot.gips()], [summary.gips()],
-#'     the optimizers tries to find the argmax of
-#'     the [log_posteriori_of_gips()] function
+#' @seealso
+#' * [gips()] - The constructor of the `gips` class.
+#'     The `gips` object is used as the `g` parameter.
+#' * [plot.gips()] - Practical plotting function for
+#'     visualizing the optimization process.
+#' * [summary.gips()] - The function that summarizes the output of optimization.
+#' * [log_posteriori_of_gips()] - The function that the optimizers
+#'     of `find_MAP()` tries to find the argmax of.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()

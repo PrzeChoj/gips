@@ -20,7 +20,9 @@
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
-#' @seealso [calculate_gamma_function()], [log_posteriori_of_gips()]
+#' @seealso
+#' * [calculate_gamma_function()], [log_posteriori_of_gips()] - The functions
+#'     that rely heavily on `get_structure_constants()`.
 #'
 #' @examples
 #' perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)

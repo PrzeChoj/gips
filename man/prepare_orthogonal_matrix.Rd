@@ -51,5 +51,8 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
-\code{\link[=project_matrix]{project_matrix()}}
+\itemize{
+\item \code{\link[=project_matrix]{project_matrix()}} - A function used in examples
+to show the properties of \code{prepare_orthogonal_matrix()}.
+}
 }

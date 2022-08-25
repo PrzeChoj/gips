@@ -37,7 +37,8 @@ When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE
 was optimized by (see Examples).
 }
 
-For more details, see the "Possible algorithms to use as optimizers" section below.}
+For more details, see the "Possible algorithms to use as optimizers"
+section below.}
 }
 \value{
 An object of class gips.
@@ -110,8 +111,13 @@ g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 summary(g_map_BF)
 }
 \seealso{
-\code{\link[=gips]{gips()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=project_matrix]{project_matrix()}},
-\code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}},
-the optimizers tries to find the argmax of
-the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function
+\itemize{
+\item \code{\link[=gips]{gips()}} - The constructor of the \code{gips} class.
+The \code{gips} object is used as the \code{g} parameter.
+\item \code{\link[=plot.gips]{plot.gips()}} - Practical plotting function for
+visualizing the optimization process.
+\item \code{\link[=summary.gips]{summary.gips()}} - The function that summarizes the output of optimization.
+\item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that the optimizers
+of \code{find_MAP()} tries to find the argmax of.
+}
 }

@@ -15,7 +15,9 @@
 #' @returns Object of class `gips_perm`.
 #'
 #' @seealso
-#' [permutations::permutation()], [gips()]
+#' * [permutations::permutation()] - The constructor for the `x` parameter.
+#' * [gips()] - The constructor for the `gips` class uses
+#'     the `gips_perm` object as the base object.
 #'
 #' @examples
 #' gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
@@ -212,7 +214,7 @@ validate_gips_perm <- function(g) {
 #' Implementation of S3 method.
 #'
 #' @param x An object of `gips_perm` class.
-#' @param ... Further arguments passed to \code{\link[permutations]{print.cycle}}.
+#' @param ... Further arguments passed to [permutations::print.cycle].
 #'
 #' @export
 print.gips_perm <- function(x, ...) {

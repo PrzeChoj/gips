@@ -55,6 +55,10 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
-\code{\link[=calculate_gamma_function]{calculate_gamma_function()}},
-this function is optimized with the \code{\link[=find_MAP]{find_MAP()}} function
+\itemize{
+\item \code{\link[=calculate_gamma_function]{calculate_gamma_function()}} - The function that calculates the value
+needed for \code{log_posteriori_of_gips()}.
+\item \code{\link[=find_MAP]{find_MAP()}} - The functions that tries
+to optimize the \code{log_posteriori_of_gips} function.
+}
 }

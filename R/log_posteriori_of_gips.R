@@ -20,8 +20,11 @@
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
-#' @seealso [calculate_gamma_function()],
-#'     this function is optimized with the [find_MAP()] function
+#' @seealso
+#' * [calculate_gamma_function()] - The function that calculates the value
+#'     needed for `log_posteriori_of_gips()`.
+#' * [find_MAP()] - The functions that tries
+#'     to optimize the `log_posteriori_of_gips` function.
 #'
 #' @examples
 #' # In the space with p = 2, there is only 2 permutations:

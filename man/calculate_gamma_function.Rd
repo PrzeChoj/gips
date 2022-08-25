@@ -36,5 +36,11 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
-\code{\link[=get_structure_constants]{get_structure_constants()}}, \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}
+\itemize{
+\item \code{\link[=get_structure_constants]{get_structure_constants()}} - The function useful inside
+the \code{calculate_gamma_function()} function.
+\item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that uses
+the values of the gamma function calculable
+with \code{calculate_gamma_function()}.
+}
 }

@@ -19,7 +19,12 @@
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
-#' @seealso [get_structure_constants()], [log_posteriori_of_gips()]
+#' @seealso
+#' * [get_structure_constants()] - The function useful inside
+#'     the `calculate_gamma_function()` function.
+#' * [log_posteriori_of_gips()] - The function that uses
+#'     the values of the gamma function calculable
+#'     with `calculate_gamma_function()`.
 #'
 #' @examples
 #' id_perm <- gips_perm(permutations::id, 2)

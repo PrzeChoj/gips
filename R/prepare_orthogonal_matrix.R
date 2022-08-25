@@ -25,7 +25,9 @@
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
-#' @seealso [project_matrix()]
+#' @seealso
+#' * [project_matrix()] - A function used in examples
+#'     to show the properties of `prepare_orthogonal_matrix()`.
 #'
 #' @examples
 #' gperm <- gips_perm("(1,2,3)(4,5)", 5)

@@ -35,5 +35,8 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
-\code{\link[=calculate_gamma_function]{calculate_gamma_function()}}, \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}
+\itemize{
+\item \code{\link[=calculate_gamma_function]{calculate_gamma_function()}}, \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The functions
+that rely heavily on \code{get_structure_constants()}.
+}
 }

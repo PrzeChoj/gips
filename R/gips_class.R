@@ -35,12 +35,13 @@
 #'
 #' @export
 #' @seealso
-#' * [find_MAP()] - the function that finds
-#'     the Maximum A Posteriori Estimator
+#' * [find_MAP()] - The function that finds
+#'     the Maximum A Posteriori (MAP) Estimator
 #'     for a given `gips` object.
-#' * [gips_perm()] - under the `gips`, there is
-#'     a permutation of a `gips_perm` class
-#'     generated with the `gips_perm()` function.
+#' * [gips_perm()] - The constructor of the `gips_perm` class.
+#'     The `gips_perm` object is used as the base object for
+#'     the `gips` object. To be more precise, the `gips` object has
+#'     a one-element list of a `gips_perm` object as the base object.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -773,9 +774,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' Printing function for `gips` class.
 #'
 #' @param x An object of class `gips`.
-#' @param log_value A logical. Weather to print the exp of a value of a \code{\link[gips]{log_posteriori_of_gips}} or leave it in logarithmic form.
-#' @param digits A number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to \code{\link[base]{round}}.
-#' @param ... An additional arguments passed to \code{\link[base]{cat}}.
+#' @param log_value A logical. Weather to print the exp of a value of a [log_posteriori_of_gips()] or leave it in logarithmic form.
+#' @param digits A number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to [base::round].
+#' @param ... An additional arguments passed to [base::cat()].
 #'
 #' @returns Invisible NULL.
 #' @export
@@ -842,17 +843,17 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #'
 #' Plot method for `gips` object.
 #'
-#' @param x Object of class gips. Has to first be optimized with \code{\link[gips]{find_MAP}}.
-#' @param type A character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
+#' @param x Object of class gips. Has to first be optimized with [find_MAP()].
+#' @param type A character. A type of a plot. one of `c("heatmap", "all", "best", "both")`. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
 #' @param logarithmic_y,logarithmic_x A boolean.
 #' @param color Vector of colors to be used to plot lines.
 #' @param title_text Text to be in a title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend A boolean.
-#' @param ylim Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link[gips]{log_posteriori_of_gips}} is taken.
-#' @param xlim Limits of x axis. When \code{NULL}, the whole optimization process is shown.
-#' @param ... Additional arguments passed to \code{\link[stats]{heatmap}} or other various elements of the plot.
+#' @param ylim Limits of y axis. When `NULL`, the minimum and maximum of the [log_posteriori_of_gips()] is taken.
+#' @param xlim Limits of x axis. When `NULL`, the whole optimization process is shown.
+#' @param ... Additional arguments passed to [stats::heatmap()] or other various elements of the plot.
 #'
 #' @returns Invisible NULL.
 #' @export
@@ -1154,7 +1155,9 @@ plot.gips <- function(x, type = NA,
 #'       in an iteration
 #' @export
 #' 
-#' @seealso [project_matrix()], [find_MAP()]
+#' @seealso
+#' * [project_matrix()]
+#' * [find_MAP()] - Usually, the `summary.gips()` is called on the output of `find_MAP()`.
 #' 
 #' @examples
 #' require("MASS") # for mvrnorm()

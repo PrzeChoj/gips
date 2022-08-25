@@ -56,8 +56,28 @@ projected_S
 # Plot the projected matrix:
 g <- gips(S, number_of_observations, perm = gperm)
 plot(g, type = 'heatmap')
+
+# Find the MAP Estimator
+g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+S_MAP <- project_matrix(S, perm = g_MAP[[1]])
+S_MAP
+plot(g_MAP, type = 'heatmap')
 }
 \seealso{
-\href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices},
-\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}, \code{\link[=plot.gips]{plot.gips()}}, \code{\link[=summary.gips]{summary.gips()}}
+\itemize{
+\item \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}
+\item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
+the Maximum A Posteriori (MAP) Estimator
+for a given \code{gips} object.
+After the MAP Estimator is found, the matrix
+\code{S} can be projected on this permutation,
+creating the MAP Estimator of the covariance matrix
+(see examples).
+\item \code{\link[=gips_perm]{gips_perm()}} - Constructor for the \code{perm} parameter.
+\item \code{\link[=plot.gips]{plot.gips()}} - For \code{plot(g, type = 'heatmap')},
+the \code{project_matrix()} is called (see examples).
+\item \code{\link[=summary.gips]{summary.gips()}} - Can calculate the \code{n0}, the minimal
+number of observations, so that the projected matrix
+will be the MAP estimator of the covariance matrix.
+}
 }
