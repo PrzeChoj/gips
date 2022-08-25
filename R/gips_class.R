@@ -916,9 +916,11 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' if (require("graphics")) {
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
+#' 
 #' if (require("graphics")) {
 #'   plot(g, type = "heatmap")
-#' } # Now, the output is (most likely) different because the permutation `g_map[[1]]` is (most likely) not an identity permutation.
+#' } # Now, the output is (most likely) different because the permutation
+#'     # `g_map[[1]]` is (most likely) not an identity permutation.
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,
                       color = NULL,
