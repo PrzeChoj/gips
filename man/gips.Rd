@@ -55,7 +55,7 @@ information about the optimization process.}
 \item{g}{Element to be checked if it is proper element of class \code{gips}.}
 }
 \value{
-Object of class gips.
+Object of class \code{gips}.
 }
 \description{
 Create the \code{gips} object.

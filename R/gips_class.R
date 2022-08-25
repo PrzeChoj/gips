@@ -31,7 +31,7 @@
 #' * [plot.gips()]
 #' * [print.gips()]
 #'
-#' @returns Object of class gips.
+#' @returns Object of class `gips`.
 #'
 #' @export
 #' @seealso

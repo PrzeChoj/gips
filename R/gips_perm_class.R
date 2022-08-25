@@ -1,11 +1,18 @@
 #' Permutation object
 #'
-#' Create permutation objects to be passed to functions of `gips` package.
+#' Create permutation objects to be passed to
+#' other functions of the `gips` package.
 #'
-#' @param x An object created with `permutations` package, or any object that
-#' can be coerced using [permutations::permutation()] function.
-#' @param size An integer. Size of permutation (AKA cardinality of set, on which permutation
-#' is defined).
+#' @param x An object created with a `permutations` package or any object
+#'     that can be processed with the [permutations::permutation()] function.
+#' @param size An integer. Size of permutation
+#'     (AKA cardinality of a set, on which permutation is defined).
+#'
+#' @section Methods for class `gips`:
+#' * [as.character.gips_perm()]
+#' * [print.gips_perm()]
+#' 
+#' @returns Object of class `gips_perm`.
 #'
 #' @seealso
 #' [permutations::permutation()], [gips()]
@@ -17,6 +24,9 @@
 #' gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
 #' gperm <- gips_perm("(1,2)(5,4)", 7)
 #' gperm
+#' 
+#' # gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3)
+#' # Error, `size` equals 3 while the maximum element is 5.
 #'
 #' @export
 gips_perm <- function(x, size) {
@@ -114,12 +124,10 @@ rearrange_cycles <- function(cycles) {
   rearranged_cycles[order(representatives)]
 }
 
-#' @describeIn gips_perm Constructor
+#' @describeIn gips_perm Constructor. Only intended for low-level use.
 #'
-#' Only intended for low-level use.
-#'
-#' @param rearranged_cycles A list of rearranged integer vectors. Each vector corresponds to a single cycle
-#' of a permutation.
+#' @param rearranged_cycles A list of rearranged integer vectors.
+#'     Each vector corresponds to a single cycle of a permutation.
 #'
 #' @export
 new_gips_perm <- function(rearranged_cycles, size) {
@@ -131,9 +139,10 @@ new_gips_perm <- function(rearranged_cycles, size) {
   structure(rearranged_cycles, size = size, class = "gips_perm")
 }
 
-#' Validate gips_perm object
+#' @describeIn gips_perm Validator. Only intended for low-level use.
 #'
-#' @param g Element to be checked if it is proper element of class `gips_perm`.
+#' @param g Element to be checked if it is
+#'     a proper element of a `gips_perm` class.
 #'
 #' @export
 validate_gips_perm <- function(g) {
@@ -218,7 +227,7 @@ print.gips_perm <- function(x, ...) {
 #' @describeIn as.character
 #'
 #' @inheritParams print.gips_perm
-#' @param ... Further arguments passed to \code{\link[permutations]{as.character.cycle}}.
+#' @param ... Further arguments passed to [permutations::as.character.cycle()].
 #'
 #' @method as.character gips_perm
 #'

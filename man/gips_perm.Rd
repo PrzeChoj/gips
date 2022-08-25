@@ -3,32 +3,50 @@
 \name{gips_perm}
 \alias{gips_perm}
 \alias{new_gips_perm}
+\alias{validate_gips_perm}
 \title{Permutation object}
 \usage{
 gips_perm(x, size)
 
 new_gips_perm(rearranged_cycles, size)
+
+validate_gips_perm(g)
 }
 \arguments{
-\item{x}{An object created with \code{permutations} package, or any object that
-can be coerced using \code{\link[permutations:permutation]{permutations::permutation()}} function.}
+\item{x}{An object created with a \code{permutations} package or any object
+that can be processed with the \code{\link[permutations:permutation]{permutations::permutation()}} function.}
 
-\item{size}{An integer. Size of permutation (AKA cardinality of set, on which permutation
-is defined).}
+\item{size}{An integer. Size of permutation
+(AKA cardinality of a set, on which permutation is defined).}
 
-\item{rearranged_cycles}{A list of rearranged integer vectors. Each vector corresponds to a single cycle
-of a permutation.}
+\item{rearranged_cycles}{A list of rearranged integer vectors.
+Each vector corresponds to a single cycle of a permutation.}
+
+\item{g}{Element to be checked if it is
+a proper element of a \code{gips_perm} class.}
+}
+\value{
+Object of class \code{gips_perm}.
 }
 \description{
-Create permutation objects to be passed to functions of \code{gips} package.
+Create permutation objects to be passed to
+other functions of the \code{gips} package.
 }
 \section{Functions}{
 \itemize{
-\item \code{new_gips_perm()}: Constructor
+\item \code{new_gips_perm()}: Constructor. Only intended for low-level use.
 
-Only intended for low-level use.
+\item \code{validate_gips_perm()}: Validator. Only intended for low-level use.
 
 }}
+\section{Methods for class \code{gips}}{
+
+\itemize{
+\item \code{\link[=as.character.gips_perm]{as.character.gips_perm()}}
+\item \code{\link[=print.gips_perm]{print.gips_perm()}}
+}
+}
+
 \examples{
 gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
@@ -36,6 +54,9 @@ gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
 gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
 gperm <- gips_perm("(1,2)(5,4)", 7)
 gperm
+
+# gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3)
+# Error, `size` equals 3 while the maximum element is 5.
 
 }
 \seealso{
