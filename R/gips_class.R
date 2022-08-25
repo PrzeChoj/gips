@@ -773,9 +773,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'
 #' Printing function for `gips` class.
 #'
-#' @param x An object of class `gips`.
-#' @param log_value A logical. Weather to print the exp of a value of a [log_posteriori_of_gips()] or leave it in logarithmic form.
-#' @param digits A number of digits after the comma for posteriori to be presented. Can be negative. Be default, `Inf`. It is passed to [base::round].
+#' @param x An object of `gips` class.
+#' @param log_value A logical. Whether to print
+#'     the exp of a value of a [log_posteriori_of_gips()]
+#'     or leave it in logarithmic form.
+#' @param digits A number of digits after the comma
+#'     for a posteriori to be presented. It can be negative.
+#'     By default, `Inf`. It is passed to [base::round()].
 #' @param ... An additional arguments passed to [base::cat()].
 #'
 #' @returns Invisible NULL.
@@ -839,24 +843,82 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 
 
 
-#' Plot optimized matrix or optimization convergence
+#' Plot optimized matrix or optimization `gips` object
 #'
-#' Plot method for `gips` object.
+#' Plot the heatmap of the MAP covariance matrix estimator
+#' or the convergence of the optimization method.
+#' The plot depends on the `type` argument.
 #'
-#' @param x Object of class gips. Has to first be optimized with [find_MAP()].
-#' @param type A character. A type of a plot. one of `c("heatmap", "all", "best", "both")`. For "heatmap", plots a heatmap of the `S` matrix inside the `gips` object that was projected on the permutation in the `gips` object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is `NA`, which will be changed to "heatmap" for non-optimized `gips` objects, and to "both" for optimized ones. Using the default produces a warning. For the `type = "heatmap"`, all other arguments are ignored.
+#' @param x Object of class `gips`.
+#' @param type A single character. One of `c("heatmap", "all", "best", "both")`.
+#'   * "heatmap" - Plots a heatmap of the `S` matrix
+#'       inside the `gips` object projected
+#'       on the permutation in the `gips` object.
+#'   * "all" - Plots the line of a posteriori for all visited states.
+#'   * "best" - Plots the line of the biggest a posteriori up to the moment.
+#'   * "both" - Plots both lines from "all" and "best".
+#'  
+#' The default value is `NA`, which will be changed to "heatmap" for
+#'     non-optimized `gips` objects and to "both" for optimized ones.
+#'     Using the default produces a warning.
+#'     All other arguments are ignored for the `type = "heatmap"`.
 #' @param logarithmic_y,logarithmic_x A boolean.
+#'     Sets the axis of the plot in logarithmic scale.
 #' @param color Vector of colors to be used to plot lines.
-#' @param title_text Text to be in a title of the plot.
+#' @param title_text Text to be in the title of the plot.
 #' @param xlabel Text to be on the bottom of the plot.
 #' @param ylabel Text to be on the left of the plot.
-#' @param show_legend A boolean.
-#' @param ylim Limits of y axis. When `NULL`, the minimum and maximum of the [log_posteriori_of_gips()] is taken.
-#' @param xlim Limits of x axis. When `NULL`, the whole optimization process is shown.
-#' @param ... Additional arguments passed to [stats::heatmap()] or other various elements of the plot.
+#' @param show_legend A boolean. Whether or not to show a legend.
+#' @param ylim Limits of the y axis. When `NULL`,
+#'     the minimum and maximum of the [log_posteriori_of_gips()] are taken.
+#' @param xlim Limits of the x axis. When `NULL`,
+#'     the whole optimization process is shown.
+#' @param ... Additional arguments passed to [stats::heatmap()]
+#'     or other various elements of the plot.
 #'
-#' @returns Invisible NULL.
+#' @returns An invisible NULL.
+#' 
+#' @seealso
+#' * [find_MAP()] - Usually, the `plot.gips()`
+#'     is called on the output of `find_MAP()`.
+#' * [project_matrix()] - The function used with `type = "heatmap"`.
+#' * [gips()] - The constructor of the `gips` class.
+#'     The `gips` object is used as the `x` parameter.
+#' 
 #' @export
+#' 
+#' @examples
+#' require("MASS") # for mvrnorm()
+#'
+#' perm_size <- 6
+#' mu <- numeric(perm_size)
+#' sigma_matrix <- matrix(
+#'   data = c(
+#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'   ),
+#'   nrow = perm_size, byrow = TRUE
+#' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+#'
+#' g <- gips(S, number_of_observations)
+#' if (require("graphics")) {
+#'   plot(g, type = "heatmap")
+#' }
+#'
+#' g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+#' if (require("graphics")) {
+#'   plot(g_map, type = "both", logarithmic_x = TRUE)
+#' }
+#' if (require("graphics")) {
+#'   plot(g, type = "heatmap")
+#' } # Now, the output is (most likely) different because the permutation `g_map[[1]]` is (most likely) not an identity permutation.
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,
                       color = NULL,

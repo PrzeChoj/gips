@@ -43,11 +43,11 @@
 #'     Indicate whether or not to show the progress bar.
 #'     When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
 #' @param optimizer The optimizer for the search of the maximum posteriori.
-#'   * `"MH"` (the default for unoptimized `g`): Metropolis-Hastings
-#'   * `"HC"`: Hill Climbing
-#'   * `"BF"`: Brute Force
-#'   * `"continue"` (the default for optimized `g`): the same as the `g`
-#'       was optimized by (see Examples).
+#'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings
+#'   * `"HC"` - Hill Climbing
+#'   * `"BF"` - Brute Force
+#'   * `"continue"` (the default for optimized `g`) - The same as
+#'       the `g` was optimized by (see Examples).
 #' 
 #' For more details, see the "Possible algorithms to use as optimizers"
 #' section below.

@@ -209,12 +209,14 @@ validate_gips_perm <- function(g) {
   g
 }
 
-#' Print gips_perm
+#' Printing `gips_perm` object
 #'
-#' Implementation of S3 method.
+#' Printing function for `gips_perm` class.
 #'
 #' @param x An object of `gips_perm` class.
-#' @param ... Further arguments passed to [permutations::print.cycle].
+#' @param ... Further arguments passed to [permutations::print.cycle()].
+#' 
+#' @returns Returns its argument invisibly, after printing it.
 #'
 #' @export
 print.gips_perm <- function(x, ...) {
@@ -222,7 +224,7 @@ print.gips_perm <- function(x, ...) {
   permutations::print.cycle(x, ...)
 }
 
-#' Coerce gips_perm to character vector
+#' Transform `gips_perm` object to character vector
 #'
 #' Implementation of S3 method.
 #'
@@ -232,6 +234,8 @@ print.gips_perm <- function(x, ...) {
 #' @param ... Further arguments passed to [permutations::as.character.cycle()].
 #'
 #' @method as.character gips_perm
+#' 
+#' @returns An object of `character` type.
 #'
 #' @seealso
 #' [permutations::as.character.cycle]

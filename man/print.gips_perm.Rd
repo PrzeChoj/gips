@@ -2,15 +2,18 @@
 % Please edit documentation in R/gips_perm_class.R
 \name{print.gips_perm}
 \alias{print.gips_perm}
-\title{Print gips_perm}
+\title{Printing \code{gips_perm} object}
 \usage{
 \method{print}{gips_perm}(x, ...)
 }
 \arguments{
 \item{x}{An object of \code{gips_perm} class.}
 
-\item{...}{Further arguments passed to \link[permutations:print]{permutations::print.cycle}.}
+\item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::print.cycle()}}.}
+}
+\value{
+Returns its argument invisibly, after printing it.
 }
 \description{
-Implementation of S3 method.
+Printing function for \code{gips_perm} class.
 }

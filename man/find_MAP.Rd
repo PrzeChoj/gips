@@ -30,11 +30,11 @@ When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori.
 \itemize{
-\item \code{"MH"} (the default for unoptimized \code{g}): Metropolis-Hastings
-\item \code{"HC"}: Hill Climbing
-\item \code{"BF"}: Brute Force
-\item \code{"continue"} (the default for optimized \code{g}): the same as the \code{g}
-was optimized by (see Examples).
+\item \code{"MH"} (the default for unoptimized \code{g}) - Metropolis-Hastings
+\item \code{"HC"} - Hill Climbing
+\item \code{"BF"} - Brute Force
+\item \code{"continue"} (the default for optimized \code{g}) - The same as
+the \code{g} was optimized by (see Examples).
 }
 
 For more details, see the "Possible algorithms to use as optimizers"

@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_perm_class.R
 \name{as.character.gips_perm}
 \alias{as.character.gips_perm}
-\title{Coerce gips_perm to character vector}
+\title{Transform \code{gips_perm} object to character vector}
 \usage{
 \method{as.character}{gips_perm}(x, ...)
 }
@@ -10,6 +10,9 @@
 \item{x}{An object of \code{gips_perm} class.}
 
 \item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.}
+}
+\value{
+An object of \code{character} type.
 }
 \description{
 Implementation of S3 method.

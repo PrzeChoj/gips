@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_class.R
 \name{plot.gips}
 \alias{plot.gips}
-\title{Plot optimized matrix or optimization convergence}
+\title{Plot optimized matrix or optimization \code{gips} object}
 \usage{
 \method{plot}{gips}(
   x,
@@ -20,31 +20,92 @@
 )
 }
 \arguments{
-\item{x}{Object of class gips. Has to first be optimized with \code{\link[=find_MAP]{find_MAP()}}.}
+\item{x}{Object of class \code{gips}.}
 
-\item{type}{A character. A type of a plot. one of \code{c("heatmap", "all", "best", "both")}. For "heatmap", plots a heatmap of the \code{S} matrix inside the \code{gips} object that was projected on the permutation in the \code{gips} object. For "all", plots the line of a posteriori for all visited state. For "best", plots the line of the biggest a posteriori up to the moment For "both", both lines from "all" and "best" are plotted. Default value is \code{NA}, which will be changed to "heatmap" for non-optimized \code{gips} objects, and to "both" for optimized ones. Using the default produces a warning. For the \code{type = "heatmap"}, all other arguments are ignored.}
+\item{type}{A single character. One of \code{c("heatmap", "all", "best", "both")}.
+\itemize{
+\item "heatmap" - Plots a heatmap of the \code{S} matrix
+inside the \code{gips} object projected
+on the permutation in the \code{gips} object.
+\item "all" - Plots the line of a posteriori for all visited states.
+\item "best" - Plots the line of the biggest a posteriori up to the moment.
+\item "both" - Plots both lines from "all" and "best".
+}
 
-\item{logarithmic_y, logarithmic_x}{A boolean.}
+The default value is \code{NA}, which will be changed to "heatmap" for
+non-optimized \code{gips} objects and to "both" for optimized ones.
+Using the default produces a warning.
+All other arguments are ignored for the \code{type = "heatmap"}.}
+
+\item{logarithmic_y, logarithmic_x}{A boolean.
+Sets the axis of the plot in logarithmic scale.}
 
 \item{color}{Vector of colors to be used to plot lines.}
 
-\item{title_text}{Text to be in a title of the plot.}
+\item{title_text}{Text to be in the title of the plot.}
 
 \item{xlabel}{Text to be on the bottom of the plot.}
 
 \item{ylabel}{Text to be on the left of the plot.}
 
-\item{show_legend}{A boolean.}
+\item{show_legend}{A boolean. Whether or not to show a legend.}
 
-\item{ylim}{Limits of y axis. When \code{NULL}, the minimum and maximum of the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} is taken.}
+\item{ylim}{Limits of the y axis. When \code{NULL},
+the minimum and maximum of the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} are taken.}
 
-\item{xlim}{Limits of x axis. When \code{NULL}, the whole optimization process is shown.}
+\item{xlim}{Limits of the x axis. When \code{NULL},
+the whole optimization process is shown.}
 
-\item{...}{Additional arguments passed to \code{\link[stats:heatmap]{stats::heatmap()}} or other various elements of the plot.}
+\item{...}{Additional arguments passed to \code{\link[stats:heatmap]{stats::heatmap()}}
+or other various elements of the plot.}
 }
 \value{
-Invisible NULL.
+An invisible NULL.
 }
 \description{
-Plot method for \code{gips} object.
+Plot the heatmap of the MAP covariance matrix estimator
+or the convergence of the optimization method.
+The plot depends on the \code{type} argument.
+}
+\examples{
+require("MASS") # for mvrnorm()
+
+perm_size <- 6
+mu <- numeric(perm_size)
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+number_of_observations <- 13
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
+
+g <- gips(S, number_of_observations)
+if (require("graphics")) {
+  plot(g, type = "heatmap")
+}
+
+g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+if (require("graphics")) {
+  plot(g_map, type = "both", logarithmic_x = TRUE)
+}
+if (require("graphics")) {
+  plot(g, type = "heatmap")
+} # Now, the output is (most likely) different because the permutation `g_map[[1]]` is (most likely) not an identity permutation.
+}
+\seealso{
+\itemize{
+\item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{plot.gips()}
+is called on the output of \code{find_MAP()}.
+\item \code{\link[=project_matrix]{project_matrix()}} - The function used with \code{type = "heatmap"}.
+\item \code{\link[=gips]{gips()}} - The constructor of the \code{gips} class.
+The \code{gips} object is used as the \code{x} parameter.
+}
 }
