@@ -5,15 +5,61 @@ test_that("Handle improper parameters", {
     S = matrix_invariant_by_example_perm, number_of_observations = 13,
     max_iter = Inf, show_progress_bar = TRUE
   ))
-  expect_error(find_MAP(gips(matrix_invariant_by_example_perm, number_of_observations), 10, return_probabilities = TRUE, optimizer = "HC"))
-  expect_error(find_MAP(gips(matrix_invariant_by_example_perm, number_of_observations), 10, optimizer = "BD"))
+
   expect_error(Metropolis_Hastings(
     S = matrix_invariant_by_example_perm, number_of_observations = 13, max_iter = Inf,
     start_perm = permutations::permutation("(1,2,3)(4,5)"), show_progress_bar = TRUE
   ))
+
+  g1 <- gips(matrix_invariant_by_example_perm, 13)
+
+  expect_error(find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"))
+  expect_error(find_MAP(g1, 10, optimizer = "BD"))
+  expect_error(
+    find_MAP(g1, 10,
+      optimizer = c("MH", "BG")
+    ),
+    "`optimizer` must be the character vector of length 1."
+  )
+  expect_error(find_MAP(g1, 10, optimizer = "BD"))
+  expect_error(
+    find_MAP(g1, max_iter = NA, optimizer = "MH"),
+    "You provided `optimizer == MH` and `max_iter = NA`."
+  )
+  expect_error(
+    find_MAP(g1, Inf, optimizer = "MH"),
+    "`max_iter` in `Metropolis_Hastings\\(\\)` must be finite."
+  )
+  expect_error(
+    find_MAP(g1, 10, optimizer = "continue"),
+    "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized."
+  )
+
+  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13)
+  g_BF <- find_MAP(g_small, optimizer = "full", show_progress_bar = FALSE)
+  expect_error(
+    find_MAP(g_BF, max_iter = 10, optimizer = "continue"),
+    "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`"
+  )
+
+  matrix_big_space <- matrix(runif(35 * 35), nrow = 35)
+  matrix_big_space <- t(matrix_big_space) %*% matrix_big_space
+  g_big <- gips(matrix_big_space, number_of_observations = 13)
+
+  expect_error(
+    find_MAP(g_big, optimizer = "full", show_progress_bar = FALSE),
+    "Optimizer 'brute_force' cannot browse such a big permutional space."
+  )
 })
 
 test_that("Handle proper parameters", {
+  g1 <- gips(matrix_invariant_by_example_perm, 13)
+
+  expect_message(
+    g_map <- find_MAP(g1, 10, show_progress_bar = FALSE),
+    "The 'optimizer = NA' was automatically changed to 'optimizer = \"MH\"."
+  )
+
   expect_silent(out <- Metropolis_Hastings(
     S = matrix_invariant_by_example_perm,
     number_of_observations = 13, max_iter = 2,
@@ -44,6 +90,17 @@ test_that("Handle proper parameters", {
     ),
     "===="
   )) # Can we stack the `expect`s like that? Looks neat!
+
+  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13)
+  expect_message(
+    find_MAP(g_small, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE),
+    "Consider using `optimizer = 'brute_force'`, because it will use 2! \\(factorial\\) = 2 iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
+  )
+
+  expect_warning(
+    find_MAP(g1, max_iter = 2, optimizer = "HC", show_progress_bar = FALSE),
+    "Hill Climbing algorithm did not converge in 2 iterations!"
+  )
 })
 
 test_that("Warns when found group has n0 > n", {

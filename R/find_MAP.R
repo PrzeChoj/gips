@@ -48,7 +48,7 @@
 #'   * `"BF"` - Brute Force
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
-#' 
+#'
 #' For more details, see the "Possible algorithms to use as optimizers"
 #' section below.
 #'
@@ -217,7 +217,9 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
   }
 
   # inform that user can consider "BF"
-  if ((optimizer %in% c("MH", "Metropolis_Hastings")) && (max_iter * 10 >= prod(1:ncol(attr(g, "S"))))) {
+  if ((optimizer %in% c("MH", "Metropolis_Hastings")) &&
+    (max_iter * 10 >= prod(1:ncol(attr(g, "S")))) &&
+    is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
     rlang::inform(c(paste0(
       "You called optimization with Metropolis_Hastings algorith with ",
       max_iter, " iterations."

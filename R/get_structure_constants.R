@@ -1,5 +1,5 @@
 #' Get Structure Constants
-#' 
+#'
 #' Constants that are useful for internal calculations of integrals and
 #' eventually the posteriori probability in [log_posteriori_of_gips()].
 #'
@@ -14,7 +14,7 @@
 #'     and beginning of
 #'     [section 3.1. from references](https://doi.org/10.1214/22-AOS2174).
 #' @export
-#' 
+#'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.

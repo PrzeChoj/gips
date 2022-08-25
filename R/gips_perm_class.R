@@ -11,7 +11,7 @@
 #' @section Methods for class `gips`:
 #' * [as.character.gips_perm()]
 #' * [print.gips_perm()]
-#' 
+#'
 #' @returns Object of class `gips_perm`.
 #'
 #' @seealso
@@ -26,7 +26,7 @@
 #' gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
 #' gperm <- gips_perm("(1,2)(5,4)", 7)
 #' gperm
-#' 
+#'
 #' # gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3)
 #' # Error, `size` equals 3 while the maximum element is 5.
 #'
@@ -215,7 +215,7 @@ validate_gips_perm <- function(g) {
 #'
 #' @param x An object of `gips_perm` class.
 #' @param ... Further arguments passed to [permutations::print.cycle()].
-#' 
+#'
 #' @returns Returns its argument invisibly, after printing it.
 #'
 #' @export
@@ -234,7 +234,7 @@ print.gips_perm <- function(x, ...) {
 #' @param ... Further arguments passed to [permutations::as.character.cycle()].
 #'
 #' @method as.character gips_perm
-#' 
+#'
 #' @returns An object of `character` type.
 #'
 #' @seealso

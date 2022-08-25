@@ -1,5 +1,5 @@
 #' Calculate Gamma function
-#' 
+#'
 #' It calculates the value of the integral defined in
 #' [Definition 11 from references](https://doi.org/10.1214/22-AOS2174).
 #' It is implementation of the
@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @returns Value of Gamma function.
-#' 
+#'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
@@ -28,9 +28,9 @@
 #'
 #' @examples
 #' id_perm <- gips_perm(permutations::id, 2)
-#' calculate_gamma_function(id_perm, 0.5001)  # 10.7...
-#' calculate_gamma_function(id_perm, 0.50000001)  # 19.9...
-#' calculate_gamma_function(id_perm, 0.500000000001)  # 29.1...
+#' calculate_gamma_function(id_perm, 0.5001) # 10.7...
+#' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
+#' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
 #' # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
 calculate_gamma_function <- function(perm, lambda) {
   constants <- get_structure_constants(perm)

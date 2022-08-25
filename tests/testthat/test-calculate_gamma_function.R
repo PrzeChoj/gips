@@ -59,6 +59,15 @@ test_that("calculate_gamma_omega gives warning and infinity on divergent integra
   expect_true(is.infinite(out))
 })
 
+test_that("calculate_gamma_function returns Inf and warning when integral diverges", {
+  id_perm <- gips_perm(permutations::id, 2)
+  expect_warning(
+    out <- calculate_gamma_function(id_perm, 0.5),
+    "Gamma integral is divergent for the given permutation and lambda value."
+  )
+  expect_true(is.infinite(out))
+})
+
 test_that("when L is 1, G_function returns the same value as calculate_gamma_omega", {
   delta <- 3
   gips_cprim <- gips_perm(permutations::id, 2)

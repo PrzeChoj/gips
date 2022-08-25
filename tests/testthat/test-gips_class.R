@@ -93,6 +93,13 @@ test_that("Properly validate the gips class with no optimization or after a sing
   }
   g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
+  g_BF <- find_MAP(gips(
+    matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+    number_of_observations
+  ),
+  optimizer = "BF", show_progress_bar = FALSE
+  )
+
 
   # tests:
   g_err <- g2
@@ -106,6 +113,14 @@ test_that("Properly validate the gips class with no optimization or after a sing
   g_err <- "(1,2)(3,4,5)"
   attributes(g_err) <- attributes(g2)
   expect_error(validate_gips(g_err))
+
+  g_err <- list("(1,2)(3,4,5)")
+  class(g_err[[1]]) <- "gips_perm"
+  attributes(g_err) <- attributes(g2)
+  expect_error(
+    validate_gips(g_err),
+    "You provided `g\\[\\[1\\]\\]` with `class\\(g\\[\\[1\\]\\]\\) == 'gips_perm'`, but your g\\[\\[1\\]\\] does not pass `validate_gips_perm\\(g\\[\\[1\\]\\]\\)`."
+  )
 
 
   # test of "optimization_info" validation:
@@ -131,6 +146,13 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
+  attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "brute_force" # in general, brute_force is all right, but then the acceptance_rate has to be NULL
+  expect_error(
+    validate_gips(g_err),
+    "When brute force algorithm was used for optimization, `attr\\(g, 'optimization_info'\\)\\[\\['acceptance_rate'\\]\\]` must be a NULL"
+  )
+
+  g_err <- g2
   attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
   expect_error(validate_gips(g_err))
 
@@ -143,12 +165,43 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
+  attr(g_err, "optimization_info")[["visited_perms"]] <- list()
+  expect_error(validate_gips(g_err), "is a list, but of a length")
+
+  g_err <- g_BF
+  attr(g_err, "optimization_info")[["visited_perms"]] <- list()
+  expect_error(validate_gips(g_err), "is a list, but of a length")
+
+  g_err <- g_BF
+  attr(g_err, "optimization_info")[["visited_perms"]] <- "()"
+  expect_error(
+    validate_gips(g_err),
+    "You have `attr\\(g, 'optimization_info'\\)\\[\\['visited_perms'\\]\\]` of type character."
+  )
+
+  g_err <- g_BF
+  attr(g_err, "optimization_info")[["last_perm"]] <- "()"
+  expect_error(
+    validate_gips(g_err),
+    "You have `attr\\(g, 'optimization_info'\\)\\[\\['last_perm'\\]\\]` of type character."
+  )
+
+  g_err <- g2
   attr(g_err, "optimization_info")[["last_perm"]] <- 7
   expect_error(validate_gips(g_err))
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm"]] <- gips_perm("", 6)
   expect_error(validate_gips(g_err))
+
+  g_err <- g2
+  fake_gips_perm <- "()"
+  class(fake_gips_perm) <- "gips_perm"
+  attr(g_err, "optimization_info")[["last_perm"]] <- fake_gips_perm
+  expect_error(
+    validate_gips(g_err),
+    ", but your attr\\(g, 'optimization_info'\\)\\[\\['last_perm'\\]\\] does not pass `validate_gips_perm"
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
@@ -161,6 +214,13 @@ test_that("Properly validate the gips class with no optimization or after a sing
   g_err <- g2
   attr(g_err, "optimization_info")[["iterations_performed"]] <- 4 # there were 2 iterations + init (+ additional 2 iterations if repeated); so it cannot be 4
   expect_error(validate_gips(g_err))
+
+  g_err <- g2
+  attr(g_err, "optimization_info")[["iterations_performed"]] <- 4.5
+  expect_error(
+    validate_gips(g_err),
+    "attr\\(g, 'optimization_info'\\)\\[\\['iterations_performed'\\]\\]` must be a vector of whole numbers"
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "MH" # Even if MH was used, it would produce the text "Metropolis_Hastings"
@@ -214,6 +274,28 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now)
   expect_error(validate_gips(g_err))
 
+  g_err <- g2
+  attr(g_err, "optimization_info")[["full_optimization_time"]] <- NA
+  expect_error(
+    validate_gips(g_err),
+    "You have `is.na\\(attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]\\)"
+  )
+
+  g_err <- g2
+  attr(g_err, "optimization_info")[["full_optimization_time"]] <- 7
+  expect_error(
+    validate_gips(g_err),
+    "You have `attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` of a class \\(numeric\\)"
+  )
+
+  time_now1 <- Sys.time()
+  g_err <- g2
+  time_now2 <- Sys.time()
+  attr(g_err, "optimization_info")[["full_optimization_time"]] <- time_now1 - time_now2
+  expect_error(
+    validate_gips(g_err),
+    "`attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` has to be a time difference bigger than 0."
+  )
 
 
   # more than 5 problems at the time:
@@ -624,23 +706,78 @@ test_that("print.gips() works", {
   expect_output(print(g), "which was found after 10 log_posteriori calculations.")
 })
 
-test_that("plot.gips works or abords for wrong arguments", {
+test_that("plot.gips() works or abords for wrong arguments", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations, perm = custom_perm1)
 
   expect_error(plot.gips(custom_perm1))
 
   expect_error(plot(g1, type = "both"))
-  expect_message(plot(g1))
+  expect_message(
+    plot(g1),
+    "`type = NA` was automatically changed to `type = 'heatmap'`"
+  )
 
   g1_found <- find_MAP(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
-  expect_message(plot(g1_found))
+  expect_message(
+    plot(g1_found),
+    "`type = NA` was automatically changed to `type = 'both'`"
+  )
   expect_silent(plot(g1_found, type = "both"))
   expect_silent(plot(g1_found, type = "all", logarithmic_y = FALSE))
+  expect_silent(plot(g1_found, type = "best"))
   expect_silent(plot(g1_found,
     type = "best", logarithmic_x = TRUE,
-    ylim = range(attr(g1_found, "optimization_info")["log_posteriori_values"]) * 2
+    ylim = range(attr(g1_found, "optimization_info")["log_posteriori_values"]) + c(-10, 10)
   ))
 
-  expect_error(plot.gips(g1_found, type = "non_existing"))
+  expect_error(
+    plot.gips(g1_found, type = "non_existing"),
+    "Did You misspell the 'type' argument?"
+  )
+})
+
+test_that("summary.gips() works", {
+  custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
+  g1 <- gips(S, number_of_observations, perm = custom_perm1)
+
+  my_sum <- structure(list(
+    optimized = FALSE, start_permutation = structure(list(
+      c(1, 2), c(3, 4, 5, 6)
+    ), size = 6, class = "gips_perm"),
+    start_permutation_log_posteriori = log_posteriori_of_gips(g1),
+    n0 = 2, S_matrix = S, number_of_observations = 13,
+    delta = 3, D_matrix = structure(c(
+      1, 0, 0, 0, 0, 0,
+      0, 1, 0, 0, 0, 0,
+      0, 0, 1, 0, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 0, 1, 0,
+      0, 0, 0, 0, 0, 1
+    ), .Dim = c(6L, 6L))
+  ), class = "summary.gips")
+
+  expect_equal(summary(g1), my_sum)
+
+  expect_output(
+    print(summary(g1)),
+    "Number of observations is bigger than n0 for this permutaion, so "
+  )
+
+  g2 <- find_MAP(g1, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE)
+
+  expect_output(
+    print(summary(g2)),
+    "Optimization time:"
+  )
+
+  g3 <- find_MAP(g2,
+    max_iter = 10, optimizer = "continue",
+    show_progress_bar = FALSE
+  )
+
+  expect_output(
+    print(summary(g3)),
+    "Optimization algorithms:"
+  )
 })

@@ -25,7 +25,7 @@
 #' @param perm An optional permutation to be the base for the `gips` object.
 #'     Can be of the class `gips_perm` or `permutation` or anything
 #'     the function [permutations::permutation()] can handle.
-#'     
+#'
 #' @section Methods for class `gips`:
 #' * [summary.gips()]
 #' * [plot.gips()]
@@ -304,6 +304,13 @@ validate_gips <- function(g) {
             "."
           )
         )
+      } else if (!(length(optimization_info[["visited_perms"]]) != 0)) {
+        abort_text <- c(abort_text,
+          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
+          "x" = paste0(
+            "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
+          )
+        )
       } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
           "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `gips_perm`.",
@@ -345,7 +352,7 @@ validate_gips <- function(g) {
 
             abort_text # if optimization_info[["last_perm"]] passes the validation, return original text
           },
-          error = function(cond) { # error can only be thrown in `validate_gips_perm()`, so ass appropriate note to the `abort_text`:
+          error = function(cond) { # this error can only be thrown in `validate_gips_perm()`, so add an appropriate note to the `abort_text`:
             c(abort_text,
               "i" = "The `attr(g, 'optimization_info')[['last_perm']]` must be an object of a `gips_perm` class.",
               "x" = paste0(
@@ -371,6 +378,13 @@ validate_gips <- function(g) {
             "You have `attr(g, 'optimization_info')[['visited_perms']]` of type ",
             typeof(optimization_info[["visited_perms"]]),
             "."
+          )
+        )
+      } else if (!(length(optimization_info[["visited_perms"]]) != 0)) {
+        abort_text <- c(abort_text,
+          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
+          "x" = paste0(
+            "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
           )
         )
       } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "list"))) { # It only checks for the first one, because checking for every would be too expensive
@@ -857,7 +871,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #'   * "all" - Plots the line of a posteriori for all visited states.
 #'   * "best" - Plots the line of the biggest a posteriori up to the moment.
 #'   * "both" - Plots both lines from "all" and "best".
-#'  
+#'
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
@@ -877,16 +891,16 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #'     or other various elements of the plot.
 #'
 #' @returns An invisible NULL.
-#' 
+#'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
 #'     is called on the output of `find_MAP()`.
 #' * [project_matrix()] - The function used with `type = "heatmap"`.
 #' * [gips()] - The constructor of the `gips` class.
 #'     The `gips` object is used as the `x` parameter.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' require("MASS") # for mvrnorm()
 #'
@@ -916,7 +930,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' if (require("graphics")) {
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
-#' 
+#'
 #' if (require("graphics")) {
 #'   plot(g_map, type = "heatmap")
 #' } # Now, the output is (most likely) different because the permutation
@@ -1160,12 +1174,12 @@ plot.gips <- function(x, type = NA,
 
 # Based on `stats::summary.lm()`
 #' Summarizing the gips object
-#' 
+#'
 #' `summary` method for class "gips".
-#' 
+#'
 #' @param object An object of class "gips"; is usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
-#' 
+#'
 #' @return The function `summary.gips` computes and returns a list of summary
 #'     statistics of the given `gips` object. Those are:
 #' * For unoptimized `gips` object:
@@ -1218,11 +1232,11 @@ plot.gips <- function(x, type = NA,
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
-#' 
+#'
 #' @seealso
 #' * [project_matrix()]
 #' * [find_MAP()] - Usually, the `summary.gips()` is called on the output of `find_MAP()`.
-#' 
+#'
 #' @examples
 #' require("MASS") # for mvrnorm()
 #'
@@ -1247,7 +1261,7 @@ plot.gips <- function(x, type = NA,
 #'
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 #' unclass(summary(g_map))
-#' 
+#'
 #' g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
 #' summary(g_map2)
 summary.gips <- function(object, ...) {
