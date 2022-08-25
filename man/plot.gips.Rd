@@ -92,13 +92,13 @@ if (require("graphics")) {
   plot(g, type = "heatmap")
 }
 
-g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)
 }
 
 if (require("graphics")) {
-  plot(g, type = "heatmap")
+  plot(g_map, type = "heatmap")
 } # Now, the output is (most likely) different because the permutation
     # `g_map[[1]]` is (most likely) not an identity permutation.
 }
