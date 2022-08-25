@@ -47,7 +47,7 @@ other functions of the \code{gips} package.
 \item \code{validate_gips_perm()}: Validator. Only intended for low-level use.
 
 }}
-\section{Methods for class \code{gips}}{
+\section{Methods for a \code{gips} class}{
 
 \itemize{
 \item \code{\link[=as.character.gips_perm]{as.character.gips_perm()}}

@@ -31,7 +31,7 @@
 #'     definitely find the Maximum A Posteriori Estimation but is very
 #'     computationally expensive for bigger space.
 #'
-#' @param g Object of `gips` class
+#' @param g Object of a `gips` class
 #' @param max_iter Number of iterations for an algorithm to perform.
 #'     At least 2. For `optimizer=="MH"` it has to be finite;
 #'     for `optimizer=="HC"` it can be infinite;
@@ -52,12 +52,12 @@
 #' For more details, see the "Possible algorithms to use as optimizers"
 #' section below.
 #'
-#' @returns Returns an optimized object of class `gips`.
+#' @returns Returns an optimized object of a `gips` class.
 #'
 #' @export
 #'
 #' @seealso
-#' * [gips()] - The constructor of the `gips` class.
+#' * [gips()] - The constructor of a `gips` class.
 #'     The `gips` object is used as the `g` parameter.
 #' * [plot.gips()] - Practical plotting function for
 #'     visualizing the optimization process.

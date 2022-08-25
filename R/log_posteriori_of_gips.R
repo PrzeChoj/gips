@@ -13,7 +13,7 @@
 #'
 #' @export
 #'
-#' @param g An object of class `gips_perm`.
+#' @param g An object of a `gips_perm` class.
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."

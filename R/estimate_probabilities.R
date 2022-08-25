@@ -31,7 +31,7 @@ estimate_probabilities <- function(perms) {
 #'
 #' @param perm `gips_perm`
 #'
-#' @returns Object of `gips_perm` class.
+#' @returns Object of a `gips_perm` class.
 #' @noRd
 get_group_representative <- function(perm) {
   size <- attr(perm, "size")

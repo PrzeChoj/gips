@@ -4,7 +4,7 @@
 \alias{gips}
 \alias{new_gips}
 \alias{validate_gips}
-\title{The constructor of the \code{gips} class.}
+\title{The constructor of a \code{gips} class.}
 \usage{
 gips(S, number_of_observations, delta = 3, D_matrix = NULL, perm = "")
 
@@ -43,16 +43,16 @@ Square matrix of the same size as \code{S}.
 When NULL, the identity matrix is taken.}
 
 \item{perm}{An optional permutation to be the base for the \code{gips} object.
-Can be of the class \code{gips_perm} or \code{permutation} or anything
+Can be of a \code{gips_perm} or a \code{permutation} class, or anything
 the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.}
 
 \item{list_of_gips_perm}{A list with a single element of
-class \code{gips_perm}. The base object for the \code{gips} object.}
+a \code{gips_perm} class. The base object for the \code{gips} object.}
 
 \item{optimization_info}{NULL or the list with
 information about the optimization process.}
 
-\item{g}{Element to be checked if it is proper element of class \code{gips}.}
+\item{g}{Element to be checked if it is proper element of a \code{gips} class.}
 }
 \value{
 \code{gips()} returns an object of
@@ -66,7 +66,7 @@ If the argument is not a correct element of a \code{gips} class,
 it produces an error.
 }
 \description{
-Create the \code{gips} object.
+Create a \code{gips} object.
 This object will consist of data and all other information needed to find
 the most likely invariant permutation. The optimization itself
 will not be performed. One must call the \code{\link[=find_MAP]{find_MAP()}}
@@ -79,7 +79,7 @@ function to do it. See examples below.
 \item \code{validate_gips()}: Validator. Only intended for low-level use.
 
 }}
-\section{Methods for class \code{gips}}{
+\section{Methods for a \code{gips} class}{
 
 \itemize{
 \item \code{\link[=summary.gips]{summary.gips()}}
@@ -124,7 +124,7 @@ if (require("graphics")) {
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
 the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.
-\item \code{\link[=gips_perm]{gips_perm()}} - The constructor of the \code{gips_perm} class.
+\item \code{\link[=gips_perm]{gips_perm()}} - The constructor of a \code{gips_perm} class.
 The \code{gips_perm} object is used as the base object for
 the \code{gips} object. To be more precise, the \code{gips} object has
 a one-element list of a \code{gips_perm} object as the base object.

@@ -10,7 +10,7 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 \item{S}{A square matrix to be projected.}
 
 \item{perm}{A permutation. Generator of a permutation group.
-Either of \code{gips_perm} or \code{permutations::cycle} class.}
+Either of a \code{gips_perm} or a \code{permutations::cycle} class.}
 
 \item{precomputed_equal_indices}{The parameter is used in internal
 calculations when the equal indices have already been calculated.

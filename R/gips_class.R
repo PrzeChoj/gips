@@ -1,6 +1,6 @@
-#' The constructor of the `gips` class.
+#' The constructor of a `gips` class.
 #'
-#' Create the `gips` object.
+#' Create a `gips` object.
 #' This object will consist of data and all other information needed to find
 #' the most likely invariant permutation. The optimization itself
 #' will not be performed. One must call the [find_MAP()]
@@ -23,10 +23,10 @@
 #'     Square matrix of the same size as `S`.
 #'     When NULL, the identity matrix is taken.
 #' @param perm An optional permutation to be the base for the `gips` object.
-#'     Can be of the class `gips_perm` or `permutation` or anything
+#'     Can be of a `gips_perm` or a `permutation` class, or anything
 #'     the function [permutations::permutation()] can handle.
 #'
-#' @section Methods for class `gips`:
+#' @section Methods for a `gips` class:
 #' * [summary.gips()]
 #' * [plot.gips()]
 #' * [print.gips()]
@@ -39,7 +39,7 @@
 #' * [find_MAP()] - The function that finds
 #'     the Maximum A Posteriori (MAP) Estimator
 #'     for a given `gips` object.
-#' * [gips_perm()] - The constructor of the `gips_perm` class.
+#' * [gips_perm()] - The constructor of a `gips_perm` class.
 #'     The `gips_perm` object is used as the base object for
 #'     the `gips` object. To be more precise, the `gips` object has
 #'     a one-element list of a `gips_perm` object as the base object.
@@ -90,7 +90,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
   if (inherits(perm, "gips_perm")) {
     gips_perm_object <- perm # it is already a `gips_perm`
   } else {
-    gips_perm_object <- gips_perm(perm, nrow(S)) # it is of class `cycle` from permutations package (it was checked in `check_correctness_of_arguments()`. Make it 'gips_perm'
+    gips_perm_object <- gips_perm(perm, nrow(S)) # it is of a `cycle` class from permutations package (it was checked in `check_correctness_of_arguments()`. Make it 'gips_perm' class
   }
 
 
@@ -109,7 +109,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #' @describeIn gips Constructor. Only intended for low-level use.
 #'
 #' @param list_of_gips_perm A list with a single element of
-#'     class `gips_perm`. The base object for the `gips` object.
+#'     a `gips_perm` class. The base object for the `gips` object.
 #' @param optimization_info NULL or the list with
 #'     information about the optimization process.
 #'     
@@ -141,7 +141,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 
 #' @describeIn gips Validator. Only intended for low-level use.
 #'
-#' @param g Element to be checked if it is proper element of class `gips`.
+#' @param g Element to be checked if it is proper element of a `gips` class.
 #' 
 #' @returns `validate_gips()` returns its argument unchanged.
 #'     If the argument is not a correct element of a `gips` class,
@@ -151,7 +151,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 validate_gips <- function(g) {
   if (!(inherits(g, "gips"))) {
     rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "`g` must be of class `gips`.",
+      "i" = "`g` must be of a `gips` class.",
       "x" = paste0(
         "You provided `g` with `class(g) == (",
         paste(class(g), collapse = ", "), ")`."
@@ -321,7 +321,7 @@ validate_gips <- function(g) {
         )
       } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
-          "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `gips_perm`.",
+          "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `gips_perm` class.",
           "x" = paste0(
             "You have `class(attr(g, 'optimization_info')[['visited_perms']][[1]]) == (",
             paste(class(optimization_info[["visited_perms"]][[1]]), collapse = ", "),
@@ -397,7 +397,7 @@ validate_gips <- function(g) {
         )
       } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "list"))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
-          "i" = "After optimization with brute force algorithm, elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of class `list`.",
+          "i" = "After optimization with brute force algorithm, elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `list` class.",
           "x" = paste0(
             "You have `class(attr(g, 'optimization_info')[['visited_perms']][[1]]) == (",
             paste(class(optimization_info[["visited_perms"]][[1]]), collapse = ", "),
@@ -693,7 +693,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   }
   if (!(permutations::is.cycle(start_perm) || inherits(start_perm, "gips_perm"))) {
     abort_text <- c(abort_text,
-      "i" = "`start_perm` must be the output of `gips_perm()` function, or of class `cycle` form `permutations` package.", # this is not true, but it is close enough
+      "i" = "`start_perm` must be the output of `gips_perm()` function, or of a `cycle` class form `permutations` package.", # this is not true, but it is close enough
       "x" = paste0(
         "You provided `start_perm` with `class(start_perm) == (",
         paste(class(start_perm), collapse = ", "),
@@ -793,9 +793,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 
 #' Printing `gips` object
 #'
-#' Printing function for `gips` class.
+#' Printing function for a `gips` class.
 #'
-#' @param x An object of `gips` class.
+#' @param x An object of a `gips` class.
 #' @param log_value A logical. Whether to print
 #'     the exp of a value of a [log_posteriori_of_gips()]
 #'     or leave it in logarithmic form.
@@ -871,7 +871,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' or the convergence of the optimization method.
 #' The plot depends on the `type` argument.
 #'
-#' @param x Object of class `gips`.
+#' @param x Object of a `gips` class.
 #' @param type A single character. One of `c("heatmap", "all", "best", "both")`.
 #'   * "heatmap" - Plots a heatmap of the `S` matrix
 #'       inside the `gips` object projected
@@ -904,7 +904,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' * [find_MAP()] - Usually, the `plot.gips()`
 #'     is called on the output of `find_MAP()`.
 #' * [project_matrix()] - The function used with `type = "heatmap"`.
-#' * [gips()] - The constructor of the `gips` class.
+#' * [gips()] - The constructor of a `gips` class.
 #'     The `gips` object is used as the `x` parameter.
 #'
 #' @export

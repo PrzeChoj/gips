@@ -21,7 +21,7 @@
 #'
 #' @param S A square matrix to be projected.
 #' @param perm A permutation. Generator of a permutation group.
-#'     Either of `gips_perm` or `permutations::cycle` class.
+#'     Either of a `gips_perm` or a `permutations::cycle` class.
 #' @param precomputed_equal_indices The parameter is used in internal
 #'     calculations when the equal indices have already been calculated.
 #'     If it is not the case, leave this parameter as `NULL`, and
@@ -117,7 +117,7 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
 
 #' Get indices of elements of perm_size x perm_size matrix, which should be equal
 #'
-#' @param perm An object of `gips_perm` class.
+#' @param perm An object of a `gips_perm` class.
 #'
 #' @returns A list of integer vectors. Each vector contains a SINGLE index
 #' of elements, which should be equal in symmetrical matrix invariant

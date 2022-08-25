@@ -7,7 +7,7 @@
 \method{print}{gips}(x, log_value = TRUE, digits = Inf, ...)
 }
 \arguments{
-\item{x}{An object of \code{gips} class.}
+\item{x}{An object of a \code{gips} class.}
 
 \item{log_value}{A logical. Whether to print
 the exp of a value of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}
@@ -23,5 +23,5 @@ By default, \code{Inf}. It is passed to \code{\link[base:Round]{base::round()}}.
 Returns an invisible NULL.
 }
 \description{
-Printing function for \code{gips} class.
+Printing function for a \code{gips} class.
 }

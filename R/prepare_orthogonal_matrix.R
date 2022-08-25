@@ -13,9 +13,9 @@
 #'
 #' To calculate it, [Theorem 6 from references](https://doi.org/10.1214/22-AOS2174) is used.
 #'
-#' @param perm Object of class `gips_perm` or `permutations::cycle`.
-#' @param perm_size Size of permutation. Required if `perm` is of
-#'     `permutations::cycle` class.
+#' @param perm Object of a `gips_perm` or a `permutations::cycle` class.
+#' @param perm_size Size of permutation.
+#'     Required if `perm` is of a `permutations::cycle` class.
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
 #' @returns A matrix `perm_size` x `perm_size` with columns from V object
 #'     elements, sorted according to Theorem 6.

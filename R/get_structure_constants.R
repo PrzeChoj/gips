@@ -6,7 +6,7 @@
 #' Uses the [Theorem 5 from references](https://doi.org/10.1214/22-AOS2174)
 #' to calculate the constants.
 #'
-#' @param perm An object of class `gips_perm`.
+#' @param perm An object of a `gips_perm` class.
 #'
 #' @returns Returns a list of 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from

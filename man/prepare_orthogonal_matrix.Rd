@@ -7,10 +7,10 @@
 prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
-\item{perm}{Object of class \code{gips_perm} or \code{permutations::cycle}.}
+\item{perm}{Object of a \code{gips_perm} or a \code{permutations::cycle} class.}
 
-\item{perm_size}{Size of permutation. Required if \code{perm} is of
-\code{permutations::cycle} class.}
+\item{perm_size}{Size of permutation.
+Required if \code{perm} is of a \code{permutations::cycle} class.}
 
 \item{basis}{A matrix with basis vectors in COLUMNS. Identity by default.}
 }

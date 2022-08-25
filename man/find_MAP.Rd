@@ -13,7 +13,7 @@ find_MAP(
 )
 }
 \arguments{
-\item{g}{Object of \code{gips} class}
+\item{g}{Object of a \code{gips} class}
 
 \item{max_iter}{Number of iterations for an algorithm to perform.
 At least 2. For \code{optimizer=="MH"} it has to be finite;
@@ -41,7 +41,7 @@ For more details, see the "Possible algorithms to use as optimizers"
 section below.}
 }
 \value{
-Returns an optimized object of class \code{gips}.
+Returns an optimized object of a \code{gips} class.
 }
 \description{
 Use one of the optimization algorithms to find the permutation that maximizes
@@ -112,7 +112,7 @@ summary(g_map_BF)
 }
 \seealso{
 \itemize{
-\item \code{\link[=gips]{gips()}} - The constructor of the \code{gips} class.
+\item \code{\link[=gips]{gips()}} - The constructor of a \code{gips} class.
 The \code{gips} object is used as the \code{g} parameter.
 \item \code{\link[=plot.gips]{plot.gips()}} - Practical plotting function for
 visualizing the optimization process.

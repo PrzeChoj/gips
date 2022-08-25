@@ -8,7 +8,7 @@
 #' @param size An integer. Size of permutation
 #'     (AKA cardinality of a set, on which permutation is defined).
 #'
-#' @section Methods for class `gips`:
+#' @section Methods for a `gips` class:
 #' * [as.character.gips_perm()]
 #' * [print.gips_perm()]
 #'
@@ -158,7 +158,7 @@ new_gips_perm <- function(rearranged_cycles, size) {
 validate_gips_perm <- function(g) {
   if (!(inherits(g, "gips_perm"))) {
     wrong_argument_abort(
-      i = "`g` must be of class `gips_perm`.",
+      i = "`g` must be of a `gips_perm` class.",
       x = paste0(
         "You provided `g` with `class(g) == (",
         paste(class(g), collapse = ", "), ")`."
@@ -219,9 +219,9 @@ validate_gips_perm <- function(g) {
 
 #' Printing `gips_perm` object
 #'
-#' Printing function for `gips_perm` class.
+#' Printing function for a `gips_perm` class.
 #'
-#' @param x An object of `gips_perm` class.
+#' @param x An object of a `gips_perm` class.
 #' @param ... Further arguments passed to [permutations::print.cycle()].
 #'
 #' @returns Returns its argument invisibly, after printing it.
@@ -255,11 +255,11 @@ as.character.gips_perm <- function(x, ...) {
 
 #' Compose permutation with transposition
 #'
-#' @param gips_perm Object of `gips_perm` class.
+#' @param gips_perm Object of a `gips_perm` class.
 #' @param transposition An integer vector of length 2. Transposition in a form of a
 #' cycle.
 #'
-#' @returns An object of `gips_perm` class. Composition of `gips_perm` parameter and `transposition`.
+#' @returns An object of a `gips_perm` class. Composition of `gips_perm` parameter and `transposition`.
 #'
 #' @noRd
 #' @examples

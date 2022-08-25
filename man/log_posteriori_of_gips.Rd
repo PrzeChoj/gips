@@ -7,7 +7,7 @@
 log_posteriori_of_gips(g)
 }
 \arguments{
-\item{g}{An object of class \code{gips_perm}.}
+\item{g}{An object of a \code{gips_perm} class.}
 }
 \value{
 Returns a value of

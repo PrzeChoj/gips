@@ -7,7 +7,7 @@
 calculate_gamma_function(perm, lambda)
 }
 \arguments{
-\item{perm}{An object of class \code{gips_perm}.}
+\item{perm}{An object of a \code{gips_perm} class.}
 
 \item{lambda}{A positive real number.}
 }

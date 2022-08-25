@@ -7,7 +7,7 @@
 \method{as.character}{gips_perm}(x, ...)
 }
 \arguments{
-\item{x}{An object of \code{gips_perm} class.}
+\item{x}{An object of a \code{gips_perm} class.}
 
 \item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.}
 }

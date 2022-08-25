@@ -20,7 +20,7 @@
 )
 }
 \arguments{
-\item{x}{Object of class \code{gips}.}
+\item{x}{Object of a \code{gips} class.}
 
 \item{type}{A single character. One of \code{c("heatmap", "all", "best", "both")}.
 \itemize{
@@ -107,7 +107,7 @@ if (require("graphics")) {
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{plot.gips()}
 is called on the output of \code{find_MAP()}.
 \item \code{\link[=project_matrix]{project_matrix()}} - The function used with \code{type = "heatmap"}.
-\item \code{\link[=gips]{gips()}} - The constructor of the \code{gips} class.
+\item \code{\link[=gips]{gips()}} - The constructor of a \code{gips} class.
 The \code{gips} object is used as the \code{x} parameter.
 }
 }
