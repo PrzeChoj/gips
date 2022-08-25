@@ -4,7 +4,7 @@
 \alias{gips}
 \alias{new_gips}
 \alias{validate_gips}
-\title{Constructor of the \code{gips} class.}
+\title{The constructor of the \code{gips} class.}
 \usage{
 gips(S, number_of_observations, delta = 3, D_matrix = NULL, perm = "")
 
@@ -20,19 +20,37 @@ new_gips(
 validate_gips(g)
 }
 \arguments{
-\item{S}{A matrix, estimated covariance matrix. When Z is observed data: \code{S = (t(Z) \%*\% Z) / number_of_observations}, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean).}
+\item{S}{A matrix; estimated covariance matrix.
+When Z is the observed data:
+\enumerate{
+\item if one know the theoretical mean is 0, use
+\code{S = (t(Z) \%*\% Z) / number_of_observations};
+\item if one does not know the theoretical mean and has to
+estimate it with the observed mean, use \code{S = cov(Z)}
+and set the \code{number_of_observations} parameter to 1 less than
+the real number of observations.
+TODO(Make the parameter and change the line to: "and set the parameter \code{mean_estimated} to TRUE").
+}}
 
-\item{number_of_observations}{A number of data points that \code{S} is based on.}
+\item{number_of_observations}{A number of data points
+that \code{S} is based on.}
 
-\item{delta}{A hyper-parameter of a Bayesian model. Has to be bigger than 2.}
+\item{delta}{A hyper-parameter of a Bayesian model.
+Has to be bigger than 2.}
 
-\item{D_matrix}{A hyper-parameter of a Bayesian model. Square matrix of the same size as \code{S}. When NULL, the identity matrix is taken.}
+\item{D_matrix}{A hyper-parameter of a Bayesian model.
+Square matrix of the same size as \code{S}.
+When NULL, the identity matrix is taken.}
 
-\item{perm}{An optional permutation to be the base for \code{gips} object. Can be of the class \code{gips_perm} or \code{permutation} or anything the function \code{permutations::permutation()} can take.}
+\item{perm}{An optional permutation to be the base for the \code{gips} object.
+Can be of the class \code{gips_perm} or \code{permutation} or anything
+the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.}
 
-\item{list_of_gips_perm}{A list with a single element of class \code{gips_perm}. The base object for the \code{gips} class.}
+\item{list_of_gips_perm}{A list with a single element of
+class \code{gips_perm}. The base object for the \code{gips} object.}
 
-\item{optimization_info}{NULL or the list with information about the optimization process.}
+\item{optimization_info}{NULL or the list with
+information about the optimization process.}
 
 \item{g}{Element to be checked if it is proper element of class \code{gips}.}
 }
@@ -41,26 +59,32 @@ Object of class gips.
 }
 \description{
 Create the \code{gips} object.
-This object will consists data and all other information needed to find the invariant group.
-The optimization itself will not be performed. To do it, one have to call the \code{\link[gips]{find_MAP}} function. See examples below.
+This object will consist of data and all other information needed to find
+the most likely invariant permutation. The optimization itself
+will not be performed. One must call the \code{\link[=find_MAP]{find_MAP()}}
+function to do it. See examples below.
 }
 \section{Functions}{
 \itemize{
-\item \code{new_gips()}: Constructor
+\item \code{new_gips()}: Constructor. Only intended for low-level use.
 
-Only intended for low-level use.
-
-\item \code{validate_gips()}: Validator
-
-Only intended for low-level use.
+\item \code{validate_gips()}: Validator. Only intended for low-level use.
 
 }}
+\section{Methods for class \code{gips}}{
+
+\itemize{
+\item \code{\link[=summary.gips]{summary.gips()}}
+\item \code{\link[=plot.gips]{plot.gips()}}
+\item \code{\link[=print.gips]{print.gips()}}
+}
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 
 perm_size <- 6
 mu <- numeric(perm_size)
-# sigma is a matrix invariant under permutation (1,2,3,4,5,6)
 sigma_matrix <- matrix(
   data = c(
     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -71,7 +95,7 @@ sigma_matrix <- matrix(
     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
   ),
   nrow = perm_size, byrow = TRUE
-)
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
@@ -88,5 +112,12 @@ if (require("graphics")) {
 }
 }
 \seealso{
-\code{\link[=find_MAP]{find_MAP()}}, \code{\link[=gips_perm]{gips_perm()}}
+\itemize{
+\item \code{\link[=find_MAP]{find_MAP()}} - the function that finds
+the Maximum A Posteriori Estimator
+for a given \code{gips} object.
+\item \code{\link[=gips_perm]{gips_perm()}} - under the \code{gips}, there is
+a permutation of a \code{gips_perm} class
+generated with the \code{gips_perm()} function.
+}
 }

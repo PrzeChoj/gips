@@ -1,27 +1,52 @@
-#' Constructor of the `gips` class.
+#' The constructor of the `gips` class.
 #'
 #' Create the `gips` object.
-#' This object will consists data and all other information needed to find the invariant group.
-#' The optimization itself will not be performed. To do it, one have to call the \code{\link[gips]{find_MAP}} function. See examples below.
+#' This object will consist of data and all other information needed to find
+#' the most likely invariant permutation. The optimization itself
+#' will not be performed. One must call the [find_MAP()]
+#' function to do it. See examples below.
 #'
-#' @param S A matrix, estimated covariance matrix. When Z is observed data: `S = (t(Z) %*% Z) / number_of_observations`, if one know the theoretical mean is 0; # TODO(What if one have to estimate the theoretical mean with the empirical mean).
-#' @param number_of_observations A number of data points that `S` is based on.
-#' @param delta A hyper-parameter of a Bayesian model. Has to be bigger than 2.
-#' @param D_matrix A hyper-parameter of a Bayesian model. Square matrix of the same size as `S`. When NULL, the identity matrix is taken.
-#' @param perm An optional permutation to be the base for `gips` object. Can be of the class `gips_perm` or `permutation` or anything the function `permutations::permutation()` can take.
+#' @param S A matrix; estimated covariance matrix.
+#'     When Z is the observed data:
+#' 1. if one know the theoretical mean is 0, use
+#'     `S = (t(Z) %*% Z) / number_of_observations`;
+#' 2. if one does not know the theoretical mean and has to
+#'     estimate it with the observed mean, use `S = cov(Z)`
+#'     and set the `number_of_observations` parameter to 1 less than
+#'     the real number of observations.
+#'     TODO(Make the parameter and change the line to: "and set the parameter `mean_estimated` to TRUE").
+#' @param number_of_observations A number of data points
+#'     that `S` is based on.
+#' @param delta A hyper-parameter of a Bayesian model.
+#'     Has to be bigger than 2.
+#' @param D_matrix A hyper-parameter of a Bayesian model.
+#'     Square matrix of the same size as `S`.
+#'     When NULL, the identity matrix is taken.
+#' @param perm An optional permutation to be the base for the `gips` object.
+#'     Can be of the class `gips_perm` or `permutation` or anything
+#'     the function [permutations::permutation()] can handle.
+#'     
+#' @section Methods for class `gips`:
+#' * [summary.gips()]
+#' * [plot.gips()]
+#' * [print.gips()]
 #'
 #' @returns Object of class gips.
 #'
 #' @export
 #' @seealso
-#' [find_MAP()], [gips_perm()]
+#' * [find_MAP()] - the function that finds
+#'     the Maximum A Posteriori Estimator
+#'     for a given `gips` object.
+#' * [gips_perm()] - under the `gips`, there is
+#'     a permutation of a `gips_perm` class
+#'     generated with the `gips_perm()` function.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 6
 #' mu <- numeric(perm_size)
-#' # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
 #' sigma_matrix <- matrix(
 #'   data = c(
 #'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -32,7 +57,7 @@
 #'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
-#' )
+#' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
@@ -79,13 +104,12 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 }
 
 
-# TODO(Documentation)
-#' @describeIn gips Constructor
+#' @describeIn gips Constructor. Only intended for low-level use.
 #'
-#' Only intended for low-level use.
-#'
-#' @param list_of_gips_perm A list with a single element of class `gips_perm`. The base object for the `gips` class.
-#' @param optimization_info NULL or the list with information about the optimization process.
+#' @param list_of_gips_perm A list with a single element of
+#'     class `gips_perm`. The base object for the `gips` object.
+#' @param optimization_info NULL or the list with
+#'     information about the optimization process.
 #'
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
@@ -110,10 +134,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 }
 
 
-# TODO(Documentation; I think @describeIn is intended for methods...)
-#' @describeIn gips Validator
-#'
-#' Only intended for low-level use.
+#' @describeIn gips Validator. Only intended for low-level use.
 #'
 #' @param g Element to be checked if it is proper element of class `gips`.
 #'
@@ -1150,7 +1171,7 @@ plot.gips <- function(x, type = NA,
 #'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
-#' ) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0

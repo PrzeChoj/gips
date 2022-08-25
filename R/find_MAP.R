@@ -33,8 +33,8 @@
 #'
 #' @param g Object of `gips` class
 #' @param max_iter Number of iterations for an algorithm to perform.
-#'     At least 2. For `optimizer=="MH"` has to be finite;
-#'     for `optimizer=="HC"`, can be infinite;
+#'     At least 2. For `optimizer=="MH"` it has to be finite;
+#'     for `optimizer=="HC"` it can be infinite;
 #'     for `optimizer=="BF"` it is not used.
 #' @param return_probabilities A boolean. TRUE can only be provided
 #'     for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to
@@ -75,7 +75,7 @@
 #'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
-#' ) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+#' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 #' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0

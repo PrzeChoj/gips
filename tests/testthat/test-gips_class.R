@@ -3,7 +3,7 @@
 # Setup the S matrix for every test
 perm_size <- 6
 mu <- numeric(perm_size)
-# sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+# sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 sigma_matrix <- matrix(
   data = c(
     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,

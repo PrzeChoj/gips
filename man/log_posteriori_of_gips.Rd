@@ -23,6 +23,7 @@ It is calculated using
 If \code{Inf} or \code{NaN} is reached, it produces a warning.
 }
 \examples{
+# In the space with p = 2, there is only 2 permutations:
 perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2)))  # (1)(2)
 perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1)))  # (1,2)
 S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)

@@ -99,7 +99,7 @@ sigma_matrix <- matrix(
     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
   ),
   nrow = perm_size, byrow = TRUE
-) # sigma is a matrix invariant under permutation (1,2,3,4,5,6)
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
