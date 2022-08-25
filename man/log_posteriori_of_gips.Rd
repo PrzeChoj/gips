@@ -9,6 +9,10 @@ log_posteriori_of_gips(g)
 \arguments{
 \item{g}{An object of class \code{gips_perm}.}
 }
+\value{
+Returns a value of
+the logarithm of an unnormalized A Posteriori.
+}
 \description{
 More precisely, it is the logarithm of an unnormalized
 posterior probability.
@@ -24,15 +28,15 @@ If \code{Inf} or \code{NaN} is reached, it produces a warning.
 }
 \examples{
 # In the space with p = 2, there is only 2 permutations:
-perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2)))  # (1)(2)
-perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1)))  # (1,2)
+perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2))) # (1)(2)
+perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1))) # (1,2)
 S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g1 <- gips(S1, 100, perm = perm1)
 g2 <- gips(S1, 100, perm = perm2)
-log_posteriori_of_gips(g1)  # -136.6, this is the MAP Estimator
-log_posteriori_of_gips(g2)  # -140.4
+log_posteriori_of_gips(g1) # -136.6, this is the MAP Estimator
+log_posteriori_of_gips(g2) # -140.4
 
-exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2))  # 41.3
+exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 41.3
 # g1 is over 40 times more likely than g2.
 # This is the expected outcome because S[1,1] significantly differs from S[2,2].
 
@@ -41,10 +45,10 @@ exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2))  # 41.3
 S2 <- matrix(c(1, 0.5, 0.5, 1.1), nrow = 2, byrow = TRUE)
 g1 <- gips(S2, 100, perm = perm1)
 g2 <- gips(S2, 100, perm = perm2)
-log_posteriori_of_gips(g1)  # -99.5
-log_posteriori_of_gips(g2)  # -96.9, this is the MAP Estimator
+log_posteriori_of_gips(g1) # -99.5
+log_posteriori_of_gips(g2) # -96.9, this is the MAP Estimator
 
-exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1))  # 12.7
+exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.7
 # g2 is over 12 times more likely than g1.
 # This is the expected outcome because S[1,1] is very close to S[2,2].
 }

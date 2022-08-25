@@ -55,13 +55,13 @@ projected_S
 
 # Plot the projected matrix:
 g <- gips(S, number_of_observations, perm = gperm)
-plot(g, type = 'heatmap')
+plot(g, type = "heatmap")
 
 # Find the MAP Estimator
 g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 S_MAP <- project_matrix(S, perm = g_MAP[[1]])
 S_MAP
-plot(g_MAP, type = 'heatmap')
+plot(g_MAP, type = "heatmap")
 }
 \seealso{
 \itemize{

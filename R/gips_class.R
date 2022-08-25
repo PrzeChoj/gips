@@ -31,7 +31,8 @@
 #' * [plot.gips()]
 #' * [print.gips()]
 #'
-#' @returns Object of class `gips`.
+#' @returns `gips()` returns an object of
+#'     a `gips` class after the safety checks.
 #'
 #' @export
 #' @seealso
@@ -111,6 +112,9 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'     class `gips_perm`. The base object for the `gips` object.
 #' @param optimization_info NULL or the list with
 #'     information about the optimization process.
+#'     
+#' @returns `new_gips()` returns an object of
+#'     a `gips` class without the safety checks.
 #'
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
@@ -138,6 +142,10 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations, delta,
 #' @describeIn gips Validator. Only intended for low-level use.
 #'
 #' @param g Element to be checked if it is proper element of class `gips`.
+#' 
+#' @returns `validate_gips()` returns its argument unchanged.
+#'     If the argument is not a correct element of a `gips` class,
+#'     it produces an error.
 #'
 #' @export
 validate_gips <- function(g) {
@@ -796,7 +804,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'     By default, `Inf`. It is passed to [base::round()].
 #' @param ... An additional arguments passed to [base::cat()].
 #'
-#' @returns Invisible NULL.
+#' @returns Returns an invisible NULL.
 #' @export
 print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
   validate_gips(x)
@@ -890,7 +898,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' @param ... Additional arguments passed to [stats::heatmap()]
 #'     or other various elements of the plot.
 #'
-#' @returns An invisible NULL.
+#' @returns Returns an invisible NULL.
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
@@ -1234,8 +1242,12 @@ plot.gips <- function(x, type = NA,
 #' @export
 #'
 #' @seealso
-#' * [project_matrix()]
-#' * [find_MAP()] - Usually, the `summary.gips()` is called on the output of `find_MAP()`.
+#' * [find_MAP()] - Usually, the `summary.gips()`
+#'     is called on the output of `find_MAP()`.
+#' * [log_posteriori_of_gips()] - The function that
+#'     calculates the likelihood of a permutation.
+#' * [project_matrix()] - The function that can project
+#'     the known matrix of the found permutations space.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -1333,6 +1345,7 @@ summary.gips <- function(object, ...) {
 #' @param x An object of class "summary.gips" to be printed
 #' @describeIn summary.gips Printing method for class "summary.gips".
 #'     Prints every interesting information in a pleasant, human readable form
+#' @returns `print.summary.gips` returns an invisible NULL.
 #' @export
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],

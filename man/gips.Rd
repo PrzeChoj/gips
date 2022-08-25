@@ -55,7 +55,15 @@ information about the optimization process.}
 \item{g}{Element to be checked if it is proper element of class \code{gips}.}
 }
 \value{
-Object of class \code{gips}.
+\code{gips()} returns an object of
+a \code{gips} class after the safety checks.
+
+\code{new_gips()} returns an object of
+a \code{gips} class without the safety checks.
+
+\code{validate_gips()} returns its argument unchanged.
+If the argument is not a correct element of a \code{gips} class,
+it produces an error.
 }
 \description{
 Create the \code{gips} object.

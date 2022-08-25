@@ -12,7 +12,7 @@ calculate_gamma_function(perm, lambda)
 \item{lambda}{A positive real number.}
 }
 \value{
-Value of Gamma function.
+Returns the value of the Gamma function.
 }
 \description{
 It calculates the value of the integral defined in
@@ -24,9 +24,9 @@ and is using the
 }
 \examples{
 id_perm <- gips_perm(permutations::id, 2)
-calculate_gamma_function(id_perm, 0.5001)  # 10.7...
-calculate_gamma_function(id_perm, 0.50000001)  # 19.9...
-calculate_gamma_function(id_perm, 0.500000000001)  # 29.1...
+calculate_gamma_function(id_perm, 0.5001) # 10.7...
+calculate_gamma_function(id_perm, 0.50000001) # 19.9...
+calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
 # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
 }
 \references{

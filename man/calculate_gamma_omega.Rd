@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_gamma_function.R
 \name{calculate_gamma_omega}
 \alias{calculate_gamma_omega}
-\title{Calculate single Gamma omega function}
+\title{Calculate logarithm of a single Gamma omega function}
 \usage{
 calculate_gamma_omega(lambda, dim_omega_i, r_i, d_i)
 }

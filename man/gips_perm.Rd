@@ -26,7 +26,15 @@ Each vector corresponds to a single cycle of a permutation.}
 a proper element of a \code{gips_perm} class.}
 }
 \value{
-Object of class \code{gips_perm}.
+\code{gips_perm()} returns an object of
+a \code{gips_perm} class after the safety checks.
+
+\code{new_gips_perm()} returns an object of
+a \code{gips_perm} class without the safety checks.
+
+\code{validate_gips_perm()} returns its argument unchanged.
+If the argument is not a correct element of a \code{gips_perm} class,
+it produces an error.
 }
 \description{
 Create permutation objects to be passed to

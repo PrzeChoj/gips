@@ -10,10 +10,10 @@ get_structure_constants(perm)
 \item{perm}{An object of class \code{gips_perm}.}
 }
 \value{
-A list of 5 items: \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of
-constants from
+Returns a list of 5 items:
+\code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from
 \href{https://doi.org/10.1214/22-AOS2174}{Theorem 1 from references}
-and beginning of
+and the beginning of
 \href{https://doi.org/10.1214/22-AOS2174}{section 3.1. from references}.
 }
 \description{

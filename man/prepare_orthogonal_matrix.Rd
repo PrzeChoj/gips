@@ -40,9 +40,9 @@ U_g <- prepare_orthogonal_matrix(gperm)
 number_of_observations <- 10
 X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
 S <- cov(X)
-X <- project_matrix(S, perm = gperm)  # this matrix in invariant under gperm
+X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 
-t(U_g) \%*\% X \%*\% U_g  # the non-zeros only on diagonal and [1,2] and [2,1]
+t(U_g) \%*\% X \%*\% U_g # the non-zeros only on diagonal and [1,2] and [2,1]
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.

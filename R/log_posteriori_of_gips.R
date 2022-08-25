@@ -25,6 +25,9 @@
 #'     needed for `log_posteriori_of_gips()`.
 #' * [find_MAP()] - The functions that tries
 #'     to optimize the `log_posteriori_of_gips` function.
+#'     
+#' @returns Returns a value of
+#'     the logarithm of an unnormalized A Posteriori.
 #'
 #' @examples
 #' # In the space with p = 2, there is only 2 permutations:

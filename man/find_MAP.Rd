@@ -41,7 +41,7 @@ For more details, see the "Possible algorithms to use as optimizers"
 section below.}
 }
 \value{
-An object of class gips.
+Returns an optimized object of class \code{gips}.
 }
 \description{
 Use one of the optimization algorithms to find the permutation that maximizes

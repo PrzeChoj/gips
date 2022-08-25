@@ -74,6 +74,8 @@ how often was the algorithm accepting the change of permutation
 in an iteration
 }
 }
+
+\code{print.summary.gips} returns an invisible NULL.
 }
 \description{
 \code{summary} method for class "gips".
@@ -114,7 +116,11 @@ summary(g_map2)
 }
 \seealso{
 \itemize{
-\item \code{\link[=project_matrix]{project_matrix()}}
-\item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{summary.gips()} is called on the output of \code{find_MAP()}.
+\item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{summary.gips()}
+is called on the output of \code{find_MAP()}.
+\item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that
+calculates the likelihood of a permutation.
+\item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
+the known matrix of the found permutations space.
 }
 }

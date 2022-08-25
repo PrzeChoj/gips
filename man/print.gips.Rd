@@ -20,7 +20,7 @@ By default, \code{Inf}. It is passed to \code{\link[base:Round]{base::round()}}.
 \item{...}{An additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
 \value{
-Invisible NULL.
+Returns an invisible NULL.
 }
 \description{
 Printing function for \code{gips} class.

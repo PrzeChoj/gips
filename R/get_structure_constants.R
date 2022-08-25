@@ -8,10 +8,10 @@
 #'
 #' @param perm An object of class `gips_perm`.
 #'
-#' @returns A list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of
-#'     constants from
+#' @returns Returns a list of 5 items:
+#'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from
 #'     [Theorem 1 from references](https://doi.org/10.1214/22-AOS2174)
-#'     and beginning of
+#'     and the beginning of
 #'     [section 3.1. from references](https://doi.org/10.1214/22-AOS2174).
 #' @export
 #'

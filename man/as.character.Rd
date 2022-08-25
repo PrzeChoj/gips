@@ -12,7 +12,7 @@
 \item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.}
 }
 \value{
-An object of \code{character} type.
+Returns an object of a \code{character} type.
 }
 \description{
 Implementation of S3 method.

@@ -12,7 +12,7 @@
 #'
 #' @export
 #'
-#' @returns Value of Gamma function.
+#' @returns Returns the value of the Gamma function.
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
@@ -66,7 +66,7 @@ calculate_gamma_function <- function(perm, lambda) {
 }
 
 
-#' Calculate single Gamma omega function
+#' Calculate logarithm of a single Gamma omega function
 #'
 #' Using the formula (12) from the paper
 #'
@@ -90,7 +90,6 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
     return(Inf) # the integral does not converge
   }
 
-  # prod(gamma((0:(-(r_i - 1))) * d_i / 2 + lambda)) * (2 * pi)^((dim_omega_i - r_i) / 2)
   sum(lgamma((0:(-(r_i - 1))) * d_i / 2 + lambda)) + (dim_omega_i - r_i) / 2 * log(2 * pi)
 }
 

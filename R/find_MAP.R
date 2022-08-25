@@ -52,7 +52,7 @@
 #' For more details, see the "Possible algorithms to use as optimizers"
 #' section below.
 #'
-#' @returns An object of class gips.
+#' @returns Returns an optimized object of class `gips`.
 #'
 #' @export
 #'

@@ -60,7 +60,7 @@ the whole optimization process is shown.}
 or other various elements of the plot.}
 }
 \value{
-An invisible NULL.
+Returns an invisible NULL.
 }
 \description{
 Plot the heatmap of the MAP covariance matrix estimator

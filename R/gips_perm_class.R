@@ -12,7 +12,8 @@
 #' * [as.character.gips_perm()]
 #' * [print.gips_perm()]
 #'
-#' @returns Object of class `gips_perm`.
+#' @returns `gips_perm()` returns an object of
+#'     a `gips_perm` class after the safety checks.
 #'
 #' @seealso
 #' * [permutations::permutation()] - The constructor for the `x` parameter.
@@ -131,6 +132,9 @@ rearrange_cycles <- function(cycles) {
 #' @param rearranged_cycles A list of rearranged integer vectors.
 #'     Each vector corresponds to a single cycle of a permutation.
 #'
+#' @returns `new_gips_perm()` returns an object of
+#'     a `gips_perm` class without the safety checks.
+#'
 #' @export
 new_gips_perm <- function(rearranged_cycles, size) {
   if (!is.list(rearranged_cycles) ||
@@ -145,6 +149,10 @@ new_gips_perm <- function(rearranged_cycles, size) {
 #'
 #' @param g Element to be checked if it is
 #'     a proper element of a `gips_perm` class.
+#'
+#' @returns `validate_gips_perm()` returns its argument unchanged.
+#'     If the argument is not a correct element of a `gips_perm` class,
+#'     it produces an error.
 #'
 #' @export
 validate_gips_perm <- function(g) {
@@ -235,7 +243,7 @@ print.gips_perm <- function(x, ...) {
 #'
 #' @method as.character gips_perm
 #'
-#' @returns An object of `character` type.
+#' @returns Returns an object of a `character` type.
 #'
 #' @seealso
 #' [permutations::as.character.cycle]
