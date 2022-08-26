@@ -1229,7 +1229,11 @@ plot.gips <- function(x, type = NA,
 #'   6. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   7. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   7. `estimated_mean` - given by the user while creating the `gips` object:
+#'   * TRUE means the `S` parameter was output of [stats::cov()] function
+#'   * FALSE means the `S` parameter was calculated with
+#'       `S = t(X) %*% X / number_of_observations`
+#'   8. `delta`, `D_matrix` - the parameters of the Bayesian method
 #' * For optimized `gips` object:
 #'   1. `optimized` - TRUE
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1247,23 +1251,27 @@ plot.gips <- function(x, type = NA,
 #'   8. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   10. `optimization_algorithm_used` - all used optimization algorithms
+#'   9. `estimated_mean` - given by the user while creating the `gips` object:
+#'       * TRUE means the `S` parameter was output of [stats::cov()] function
+#'       * FALSE means the `S` parameter was calculated with
+#'           `S = t(X) %*% X / number_of_observations`
+#'   10. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   11. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
-#'   11. `did_converge` - boolean, did the last used algorithm converge
-#'   12. `number_of_log_posteriori_calls` - how many times was
+#'   12. `did_converge` - boolean, did the last used algorithm converge
+#'   13. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   13. `full_optimization_time` - how long was the optimization process;
+#'   14. `full_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
-#'   14. `log_posteriori_calls_after_best` - how many times was
+#'   15. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result;
 #'       if this value is small, consider running [find_MAP()]
 #'       one more time with `optimizer = "continue"`
-#'   15. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'   16. `acceptance_rate` - only interesting for `optimizer = "MH"`;
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
@@ -1318,6 +1326,7 @@ summary.gips <- function(object, ...) {
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
+      estimated_mean = attr(object, "estimated_mean"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix")
     )
@@ -1391,6 +1400,11 @@ print.summary.gips <- function(x, ...) {
     x[["start_permutation_log_posteriori"]]
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
+  "\n\n", ifelse(x[["estimated_mean"]],
+                 paste0("The mean in `S` was estimated.\nTherefore, one degree of freedom was lost. There is ",
+                        x[["number_of_observations"]] - 1, " degrees of freedom left."),
+                 paste0("The mean in `S` was not estimated.\nTherefore, all degrees of freedom were preserved (",
+                        x[["number_of_observations"]], ").")),
   "\n\nn0:\n ", x[["n0"]],
   "\n\nNumber of observations is ",
   ifelse(x[["n0"]] > x[["number_of_observations"]],
@@ -1400,7 +1414,7 @@ print.summary.gips <- function(x, ...) {
       "bigger"
     )
   ),
-  " than n0 for this permutaion, so the gips model based on the found permutation does ",
+  " than n0 for this permutaion,\nso the gips model based on the found permutation does ",
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "not ", ""
   ), "exist.",

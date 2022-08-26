@@ -33,6 +33,14 @@ the posteriori value
 \item \code{number_of_observations} - the number of observations that
 were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
+\item \code{estimated_mean} - given by the user while creating the \code{gips} object:
+}
+\itemize{
+\item TRUE means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item FALSE means the \code{S} parameter was calculated with
+\code{S = t(X) \%*\% X / number_of_observations}
+}
+\enumerate{
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 }
 \item For optimized \code{gips} object:
@@ -53,6 +61,12 @@ the posteriori value
 \item \code{number_of_observations} - the number of observations that
 were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
+\item \code{estimated_mean} - given by the user while creating the \code{gips} object:
+\itemize{
+\item TRUE means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item FALSE means the \code{S} parameter was calculated with
+\code{S = t(X) \%*\% X / number_of_observations}
+}
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then

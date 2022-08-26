@@ -800,6 +800,7 @@ test_that("summary.gips() works", {
     ), size = 6, class = "gips_perm"),
     start_permutation_log_posteriori = log_posteriori_of_gips(g1),
     n0 = 2, S_matrix = S, number_of_observations = 13,
+    estimated_mean = FALSE,
     delta = 3, D_matrix = structure(c(
       1, 0, 0, 0, 0, 0,
       0, 1, 0, 0, 0, 0,
@@ -810,11 +811,11 @@ test_that("summary.gips() works", {
     ), .Dim = c(6L, 6L))
   ), class = "summary.gips")
 
-  expect_equal(summary(g1), my_sum)
-
+  expect_identical(summary(g1), my_sum)
+  
   expect_output(
     print(summary(g1)),
-    "Number of observations is bigger than n0 for this permutaion, so "
+    "Number of observations is bigger than n0 for this permutaion,\nso "
   )
 
   g2 <- find_MAP(g1, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE)
