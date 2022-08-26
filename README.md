@@ -26,7 +26,7 @@ better approximates the actual covariance behind the data.
 
 ## `gips` will help you with two things:
 
-1.  Exploratory Data Analysis - with `gips`, you can find the
+1.  Exploratory Data Analysis (EDA) - with `gips`, you can find the
     permutation of features that approximately does not change the
     covariance matrix.
 2.  Modeling - with `gips`, you can accurately use the found permutation
@@ -44,18 +44,19 @@ devtools::install_github("PrzeChoj/gips")
 
 ## Examples
 
-### Example 1
+### Example 1 - EDA
 
-Assume we have the data, and we want to understand the structure of it:
+Assume we have the data, and we want to understand its structure:
 
 ``` r
 library(gips)
 
 Z <- as.matrix(mtcars)
 
-# Assume the data is normal. It is not very sensible assumprion looking at this distributions:
-# hist(Z[,2])
-# but let's do it for the purpose of the example
+# Assume the data is normal.
+  # Looking at this (`hist(Z[,2])`) distribution,
+  # it is not a remarkably sensible assumption,
+  # but let's do it for the example.
 
 Z_scaled <- scale(Z)
 
@@ -68,83 +69,38 @@ plot(g, type = 'heatmap')
 
 ``` r
 # We can see some strong relationships between columns in this matrix.
-  # For example, 9 and 10 have very similar coralations to other variables.
+  # For example, 9 and 10 have very similar correlations to other variables.
 
+# Let's see if the find_MAP will find this relationship:
 g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
 #> ========================================================================
-plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+plot(g_MAP, type = 'heatmap')
 ```
 
 <img src="man/figures/README-example_mean_unknown-2.png" width="100%" />
 
 ``` r
+# Even after a short time (only 10 iterations),
+  # find_MAP found some relationship.
+
+# Let's see what it will find with a slightly bigger budget:
+g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
+#> ===============================================================================
 plot(g_MAP, type = 'heatmap')
 ```
 
 <img src="man/figures/README-example_mean_unknown-3.png" width="100%" />
 
 ``` r
-
-g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
-#> ===============================================================================
-plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+# find_MAP found the (9,10) relationship and even something more.
 ```
 
-<img src="man/figures/README-example_mean_unknown-4.png" width="100%" />
-
-``` r
-plot(g_MAP, type = 'heatmap')
-```
-
-<img src="man/figures/README-example_mean_unknown-5.png" width="100%" />
-
-``` r
-summary(g_MAP)
-#> The optimized `gips` object.
-#> 
-#> Permutation:
-#>  (5,9,10)
-#> 
-#> Log_posteriori:
-#>  -23.19336
-#> 
-#> Number of observations:
-#>  32
-#> 
-#> The mean in `S` was estimated.
-#> Therefore, one degree of freedom was lost. There is 31 degrees of freedom left.
-#> 
-#> n0:
-#>  9
-#> 
-#> Number of observations is bigger than n0 for this permutaion,
-#> so the gips model based on the found permutation does exist.
-#> 
-#> --------------------------------------------------------------------------------
-#> Optimization algorithms:
-#>  Metropolis_Hastings, Metropolis_Hastings
-#> 
-#> Number of log_posteriori calls:
-#>  110
-#> 
-#> Optimization time:
-#>  0.6324432 secs
-#> 
-#> Acceptance rate:
-#>  0.0272727272727273
-#> 
-#> Log_posteriori calls after the found permutation:
-#>  3
-```
-
-### Example 2
+### Example 2 - modeling
 
 Assume we know the mean is 0, and we want to estimate the covariance
 matrix, but we don’t have enough data:
 
 ``` r
-library(gips)
-
 # Prepare model, multivariate normal distribution
 perm_size <- 6
 mu <- numeric(perm_size)  
@@ -159,36 +115,47 @@ sigma_matrix <- matrix(
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
-number_of_observations <- 4 # 4 < 6, so n < p
 
 # generate example data from a model:
-Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+# End of prepare model
+
+
+
+library(gips)
+(number_of_observations <- nrow(Z)) # 4 < 6, so n < p
+#> [1] 4
 
 # calculate the covariance matrix from the data:
 S <- (t(Z) %*% Z) / number_of_observations
-# the theoretical mean is 0, so this S is the Maximum likelihood estimation of the covariance matrix
 
 # Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
-# Find the Maximum A Posteriori Estimator for the permutation:
+# Find the Maximum A Posteriori Estimator for the permutation.
+  # Space is small (6! = 720), so it is reasonable to
+  # browse the whole of it:
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,3,4,6)(2,5) has log posteriori -6.59017393217882 which was found after 720 log_posteriori calculations.
+#> The permutation (1,2,6,4,5,3) has log posteriori -5.63840470919283 which was found after 720 log_posteriori calculations.
 
 summary(g_map)$n0
-#> [1] 2
+#> [1] 1
+summary(g_map)$n0 <= 4
+#> [1] TRUE
 
-# We see the number of observations is bigger than n0, so we can estimate the covariance matrix with Maximum Likelihood estimator:
+# We see the number of observations (4) is bigger or equal to n0,
+  # so we can estimate the covariance matrix
+  # with the Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
-#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 1.3579574 0.9653756 0.9653756 0.5727939 0.9653756 0.9653756
-#> [2,] 0.9653756 1.0405983 0.9653756 0.9653756 0.8901530 0.9653756
-#> [3,] 0.9653756 0.9653756 1.3579574 0.9653756 0.9653756 0.5727939
-#> [4,] 0.5727939 0.9653756 0.9653756 1.3579574 0.9653756 0.9653756
-#> [5,] 0.9653756 0.8901530 0.9653756 0.9653756 1.0405983 0.9653756
-#> [6,] 0.9653756 0.9653756 0.5727939 0.9653756 0.9653756 1.3579574
+#>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
+#> [1,] 1.626103 1.264264 1.264264 1.199515 1.561354 1.561354
+#> [2,] 1.264264 1.626103 1.561354 1.561354 1.199515 1.264264
+#> [3,] 1.264264 1.561354 1.626103 1.561354 1.264264 1.199515
+#> [4,] 1.199515 1.561354 1.561354 1.626103 1.264264 1.264264
+#> [5,] 1.561354 1.199515 1.264264 1.264264 1.626103 1.561354
+#> [6,] 1.561354 1.264264 1.199515 1.264264 1.561354 1.626103
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
@@ -198,6 +165,6 @@ plot(g_map, type = "heatmap")
 
 # Credits
 
-It was developed in 2022 by Przemysław Chojecki and Paweł Morgen under
-the leadership of Ph.D. Bartosz Kołodziejek within the “CyberiADa-3”
-(2021) grant from the Warsaw University of Technology.
+`gips` was developed in 2022 by Przemysław Chojecki and Paweł Morgen
+under the leadership of Ph.D. Bartosz Kołodziejek within the
+“CyberiADa-3” (2021) grant from the Warsaw University of Technology.
