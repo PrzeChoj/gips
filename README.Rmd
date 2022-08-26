@@ -39,13 +39,44 @@ You can install the development version of gips from [GitHub](https://github.com
 devtools::install_github("PrzeChoj/gips")
 ```
 
-## Example
+## Examples
 
-TODO(Example without assuming known mean)
+### Example 1
 
-Assume we know the mean is $0$, and we want to estimate the covariance matrix:
+Assume we have the data, and we want to understand the structure of it:
 
-```{r example}
+```{r example_mean_unknown}
+library(gips)
+
+Z <- as.matrix(mtcars)
+
+# Assume the data is normal. It is not very sensible assumprion looking at this distributions:
+# hist(Z[,2])
+# but let's do it for the purpose of the example
+
+Z_scaled <- scale(Z)
+
+S <- cov(Z_scaled)
+g <- gips(S, nrow(Z_scaled), was_mean_estimated = TRUE)
+plot(g, type = 'heatmap')
+# We can see some strong relationships between columns in this matrix.
+  # For example, 9 and 10 have very similar coralations to other variables.
+
+g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
+plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+plot(g_MAP, type = 'heatmap')
+
+g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
+plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+plot(g_MAP, type = 'heatmap')
+summary(g_MAP)
+
+```
+
+### Example 2
+Assume we know the mean is 0, and we want to estimate the covariance matrix, but we don't have enough data:
+
+```{r example_mean_known}
 library(gips)
 
 # Prepare model, multivariate normal distribution
@@ -62,7 +93,7 @@ sigma_matrix <- matrix(
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
-number_of_observations <- 13
+number_of_observations <- 4 # 4 < 6, so n < p
 
 # generate example data from a model:
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
@@ -78,9 +109,9 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 g_map
 
-summary(g_map)
+summary(g_map)$n0
 
-# find_MAP() found the permutation; now, make a matrix estimator:
+# We see the number of observations is bigger than n0, so we can estimate the covariance matrix with Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
 
 # Plot the found matrix:

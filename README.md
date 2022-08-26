@@ -42,13 +42,105 @@ You can install the development version of gips from
 devtools::install_github("PrzeChoj/gips")
 ```
 
-## Example
+## Examples
 
-TODO(Example without assuming known mean)
+### Example 1
 
-Assume we know the mean is
-![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0"),
-and we want to estimate the covariance matrix:
+Assume we have the data, and we want to understand the structure of it:
+
+``` r
+library(gips)
+
+Z <- as.matrix(mtcars)
+
+# Assume the data is normal. It is not very sensible assumprion looking at this distributions:
+# hist(Z[,2])
+# but let's do it for the purpose of the example
+
+Z_scaled <- scale(Z)
+
+S <- cov(Z_scaled)
+g <- gips(S, nrow(Z_scaled), was_mean_estimated = TRUE)
+plot(g, type = 'heatmap')
+```
+
+<img src="man/figures/README-example_mean_unknown-1.png" width="100%" />
+
+``` r
+# We can see some strong relationships between columns in this matrix.
+  # For example, 9 and 10 have very similar coralations to other variables.
+
+g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
+#> ========================================================================
+plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+```
+
+<img src="man/figures/README-example_mean_unknown-2.png" width="100%" />
+
+``` r
+plot(g_MAP, type = 'heatmap')
+```
+
+<img src="man/figures/README-example_mean_unknown-3.png" width="100%" />
+
+``` r
+
+g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
+#> ===============================================================================
+plot(g_MAP, type = 'both', logarithmic_x = TRUE)
+```
+
+<img src="man/figures/README-example_mean_unknown-4.png" width="100%" />
+
+``` r
+plot(g_MAP, type = 'heatmap')
+```
+
+<img src="man/figures/README-example_mean_unknown-5.png" width="100%" />
+
+``` r
+summary(g_MAP)
+#> The optimized `gips` object.
+#> 
+#> Permutation:
+#>  (5,9,10)
+#> 
+#> Log_posteriori:
+#>  -23.19336
+#> 
+#> Number of observations:
+#>  32
+#> 
+#> The mean in `S` was estimated.
+#> Therefore, one degree of freedom was lost. There is 31 degrees of freedom left.
+#> 
+#> n0:
+#>  9
+#> 
+#> Number of observations is bigger than n0 for this permutaion,
+#> so the gips model based on the found permutation does exist.
+#> 
+#> --------------------------------------------------------------------------------
+#> Optimization algorithms:
+#>  Metropolis_Hastings, Metropolis_Hastings
+#> 
+#> Number of log_posteriori calls:
+#>  110
+#> 
+#> Optimization time:
+#>  0.6324432 secs
+#> 
+#> Acceptance rate:
+#>  0.0272727272727273
+#> 
+#> Log_posteriori calls after the found permutation:
+#>  3
+```
+
+### Example 2
+
+Assume we know the mean is 0, and we want to estimate the covariance
+matrix, but we don’t have enough data:
 
 ``` r
 library(gips)
@@ -67,7 +159,7 @@ sigma_matrix <- matrix(
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
-number_of_observations <- 13
+number_of_observations <- 4 # 4 < 6, so n < p
 
 # generate example data from a model:
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
@@ -83,54 +175,26 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,2,3,4,5,6) has log posteriori -0.661106722575923 which was found after 720 log_posteriori calculations.
+#> The permutation (1,3,4,6)(2,5) has log posteriori -6.59017393217882 which was found after 720 log_posteriori calculations.
 
-summary(g_map)
-#> The optimized `gips` object.
-#> 
-#> Permutation:
-#>  (1,2,3,4,5,6)
-#> 
-#> Log_posteriori:
-#>  -0.6611067
-#> 
-#> Number of observations:
-#>  13
-#> 
-#> The mean in `S` was not estimated.
-#> Therefore, all degrees of freedom were preserved (13).
-#> 
-#> n0:
-#>  1
-#> 
-#> Number of observations is bigger than n0 for this permutaion,
-#> so the gips model based on the found permutation does exist.
-#> 
-#> --------------------------------------------------------------------------------
-#> Optimization algorithm:
-#>  brute_force
-#> 
-#> Number of log_posteriori calls:
-#>  720
-#> 
-#> Optimization time:
-#>  2.058028 secs
+summary(g_map)$n0
+#> [1] 2
 
-# find_MAP() found the permutation; now, make a matrix estimator:
+# We see the number of observations is bigger than n0, so we can estimate the covariance matrix with Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
-#>             [,1]        [,2]        [,3]        [,4]        [,5]        [,6]
-#> [1,]  0.92142807  0.66434770  0.20435462 -0.05272574  0.20435462  0.66434770
-#> [2,]  0.66434770  0.92142807  0.66434770  0.20435462 -0.05272574  0.20435462
-#> [3,]  0.20435462  0.66434770  0.92142807  0.66434770  0.20435462 -0.05272574
-#> [4,] -0.05272574  0.20435462  0.66434770  0.92142807  0.66434770  0.20435462
-#> [5,]  0.20435462 -0.05272574  0.20435462  0.66434770  0.92142807  0.66434770
-#> [6,]  0.66434770  0.20435462 -0.05272574  0.20435462  0.66434770  0.92142807
+#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+#> [1,] 1.3579574 0.9653756 0.9653756 0.5727939 0.9653756 0.9653756
+#> [2,] 0.9653756 1.0405983 0.9653756 0.9653756 0.8901530 0.9653756
+#> [3,] 0.9653756 0.9653756 1.3579574 0.9653756 0.9653756 0.5727939
+#> [4,] 0.5727939 0.9653756 0.9653756 1.3579574 0.9653756 0.9653756
+#> [5,] 0.9653756 0.8901530 0.9653756 0.9653756 1.0405983 0.9653756
+#> [6,] 0.9653756 0.9653756 0.5727939 0.9653756 0.9653756 1.3579574
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known-1.png" width="100%" />
 
 # Credits
 
