@@ -22,6 +22,10 @@ Implementation of S3 method.
 \item \code{as.character(gips_perm)}: 
 
 }}
+\examples{
+g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+as.character(g_perm)
+}
 \seealso{
-\link[permutations:print]{permutations::as.character.cycle}
+\code{\link[permutations:print]{permutations::as.character.cycle()}}
 }

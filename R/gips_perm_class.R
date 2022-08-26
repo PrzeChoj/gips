@@ -227,6 +227,10 @@ validate_gips_perm <- function(g) {
 #' @returns Returns its argument invisibly, after printing it.
 #'
 #' @export
+#' 
+#' @examples
+#' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+#' \dontrun{print(g_perm)}
 print.gips_perm <- function(x, ...) {
   x <- permutations::as.cycle(x)
   permutations::print.cycle(x, ...)
@@ -246,9 +250,13 @@ print.gips_perm <- function(x, ...) {
 #' @returns Returns an object of a `character` type.
 #'
 #' @seealso
-#' [permutations::as.character.cycle]
+#' [permutations::as.character.cycle()]
 #'
 #' @export
+#' 
+#' @examples
+#' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+#' as.character(g_perm)
 as.character.gips_perm <- function(x, ...) {
   as.character(permutations::as.cycle(x), ...)
 }

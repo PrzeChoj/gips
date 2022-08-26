@@ -72,7 +72,7 @@ S <- (t(Z) %*% Z) / number_of_observations
 # the theoretical mean is 0, so this S is the Maximum likelihood estimation of the covariance matrix
 
 # Make the gips object out of data:
-g <- gips(S, number_of_observations)
+g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
 # Find the Maximum A Posteriori Estimator for the permutation:
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")

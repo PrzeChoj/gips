@@ -71,7 +71,7 @@ The plot depends on the \code{type} argument.
 require("MASS") # for mvrnorm()
 
 perm_size <- 6
-mu <- numeric(perm_size)
+mu <- runif(6, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
   data = c(
     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -85,14 +85,14 @@ sigma_matrix <- matrix(
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-S <- (t(Z) \%*\% Z) / number_of_observations # the theoretical mean is 0
+S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 if (require("graphics")) {
   plot(g, type = "heatmap")
 }
 
-g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
+g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "HC")
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)
 }

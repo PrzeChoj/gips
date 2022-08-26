@@ -56,7 +56,7 @@
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 6
-#' mu <- numeric(perm_size)
+#' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
 #'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -70,7 +70,7 @@
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-#' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+#' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
 #'
@@ -833,6 +833,11 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'
 #' @returns Returns an invisible NULL.
 #' @export
+#' 
+#' @examples
+#' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+#' g <- gips(S, 10)
+#' \dontrun{print(g)}
 print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
   validate_gips(x)
 
@@ -940,7 +945,7 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 6
-#' mu <- numeric(perm_size)
+#' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
 #'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -954,14 +959,14 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-#' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+#' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
 #' if (require("graphics")) {
 #'   plot(g, type = "heatmap")
 #' }
 #'
-#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
+#' g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "HC")
 #' if (require("graphics")) {
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
@@ -1288,7 +1293,7 @@ plot.gips <- function(x, type = NA,
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 6
-#' mu <- numeric(perm_size)
+#' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
 #'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -1302,7 +1307,7 @@ plot.gips <- function(x, type = NA,
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 #' number_of_observations <- 13
 #' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-#' S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+#' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
 #'
@@ -1384,6 +1389,12 @@ summary.gips <- function(object, ...) {
 #'     Prints every interesting information in a pleasant, human readable form
 #' @returns `print.summary.gips` returns an invisible NULL.
 #' @export
+#' 
+#' @examples
+#' # ================================================================================
+#' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+#' g <- gips(S, 10)
+#' \dontrun{print(summary(g))}
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
     "The optimized",

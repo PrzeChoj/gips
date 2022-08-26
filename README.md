@@ -77,13 +77,13 @@ S <- (t(Z) %*% Z) / number_of_observations
 # the theoretical mean is 0, so this S is the Maximum likelihood estimation of the covariance matrix
 
 # Make the gips object out of data:
-g <- gips(S, number_of_observations)
+g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
 # Find the Maximum A Posteriori Estimator for the permutation:
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,2,3,4,5,6) has log posteriori -0.15575126668579 which was found after 720 log_posteriori calculations.
+#> The permutation (1,2,3,4,5,6) has log posteriori -0.661106722575923 which was found after 720 log_posteriori calculations.
 
 summary(g_map)
 #> The optimized `gips` object.
@@ -92,15 +92,19 @@ summary(g_map)
 #>  (1,2,3,4,5,6)
 #> 
 #> Log_posteriori:
-#>  -0.1557513
+#>  -0.6611067
 #> 
 #> Number of observations:
 #>  13
 #> 
+#> The mean in `S` was not estimated.
+#> Therefore, all degrees of freedom were preserved (13).
+#> 
 #> n0:
 #>  1
 #> 
-#> Number of observations is bigger than n0 for this permutaion, so the gips model based on the found permutation does exist.
+#> Number of observations is bigger than n0 for this permutaion,
+#> so the gips model based on the found permutation does exist.
 #> 
 #> --------------------------------------------------------------------------------
 #> Optimization algorithm:
@@ -110,17 +114,17 @@ summary(g_map)
 #>  720
 #> 
 #> Optimization time:
-#>  1.957744 secs
+#>  2.058028 secs
 
 # find_MAP() found the permutation; now, make a matrix estimator:
 project_matrix(S, g_map[[1]])
-#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 1.1894104 1.0174834 0.7342702 0.5623432 0.7342702 1.0174834
-#> [2,] 1.0174834 1.1894104 1.0174834 0.7342702 0.5623432 0.7342702
-#> [3,] 0.7342702 1.0174834 1.1894104 1.0174834 0.7342702 0.5623432
-#> [4,] 0.5623432 0.7342702 1.0174834 1.1894104 1.0174834 0.7342702
-#> [5,] 0.7342702 0.5623432 0.7342702 1.0174834 1.1894104 1.0174834
-#> [6,] 1.0174834 0.7342702 0.5623432 0.7342702 1.0174834 1.1894104
+#>             [,1]        [,2]        [,3]        [,4]        [,5]        [,6]
+#> [1,]  0.92142807  0.66434770  0.20435462 -0.05272574  0.20435462  0.66434770
+#> [2,]  0.66434770  0.92142807  0.66434770  0.20435462 -0.05272574  0.20435462
+#> [3,]  0.20435462  0.66434770  0.92142807  0.66434770  0.20435462 -0.05272574
+#> [4,] -0.05272574  0.20435462  0.66434770  0.92142807  0.66434770  0.20435462
+#> [5,]  0.20435462 -0.05272574  0.20435462  0.66434770  0.92142807  0.66434770
+#> [6,]  0.66434770  0.20435462 -0.05272574  0.20435462  0.66434770  0.92142807
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
