@@ -56,7 +56,7 @@ Z <- as.matrix(mtcars)
   # but let's do it for the example.
 
 S <- cor(Z)
-g <- gips(S, nrow(Z_scaled), was_mean_estimated = TRUE)
+g <- gips(S, nrow(Z), was_mean_estimated = TRUE)
 plot(g, type = 'heatmap')
 # We can see some strong relationships between columns in this matrix.
   # For example, 9 and 10 have very similar correlations to other variables.

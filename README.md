@@ -58,8 +58,8 @@ Z <- as.matrix(mtcars)
   # it is not a remarkably sensible assumption,
   # but let's do it for the example.
 
-S <- cor(Z_scaled)
-g <- gips(S, nrow(Z_scaled), was_mean_estimated = TRUE)
+S <- cor(Z)
+g <- gips(S, nrow(Z), was_mean_estimated = TRUE)
 plot(g, type = 'heatmap')
 ```
 
