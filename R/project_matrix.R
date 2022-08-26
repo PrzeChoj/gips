@@ -7,8 +7,8 @@
 #' examples), then `S` is the **unbiased estimator** of the covariance matrix.
 #' However, the **maximum likelihood estimator** of the covariance matrix is
 #' `S*(n-1)/(n)`, unless p > n, then the
-#' **maximum likelihood estimator does not exist**. For more information, see the
-#' [Wikipedia page for Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
+#' **maximum likelihood estimator does not exist**. For more information, see
+#' [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 #'
 #' The maximum likelihood estimator differs when one knows the covariance
 #' matrix is **invariant under some permutation**. This estimator will not only be

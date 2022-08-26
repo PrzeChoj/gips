@@ -56,10 +56,19 @@
 #' # This is the expected outcome because S[1,1] is very close to S[2,2].
 log_posteriori_of_gips <- function(g) {
   validate_gips(g)
+  
+  number_of_observations <- attr(g, "number_of_observations")
+  estimated_mean <- attr(g, "estimated_mean")
+  
+  if(estimated_mean) {
+    edited_number_of_observations <- number_of_observations - 1
+  } else {
+    edited_number_of_observations <- number_of_observations
+  }
 
   log_posteriori_of_perm(
     perm_proposal = g[[1]], S = attr(g, "S"),
-    number_of_observations = attr(g, "number_of_observations"),
+    number_of_observations = edited_number_of_observations,
     delta = attr(g, "delta"), D_matrix = attr(g, "D_matrix")
   )
 }

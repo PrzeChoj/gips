@@ -29,8 +29,8 @@ When \code{S} is the sample covariance matrix (output of \code{cov(X)} function,
 examples), then \code{S} is the \strong{unbiased estimator} of the covariance matrix.
 However, the \strong{maximum likelihood estimator} of the covariance matrix is
 \code{S*(n-1)/(n)}, unless p > n, then the
-\strong{maximum likelihood estimator does not exist}. For more information, see the
-\href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia page for Estimation of covariance matrices}.
+\strong{maximum likelihood estimator does not exist}. For more information, see
+\href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}.
 
 The maximum likelihood estimator differs when one knows the covariance
 matrix is \strong{invariant under some permutation}. This estimator will not only be

@@ -6,7 +6,14 @@
 \alias{validate_gips}
 \title{The constructor of a \code{gips} class.}
 \usage{
-gips(S, number_of_observations, delta = 3, D_matrix = NULL, perm = "")
+gips(
+  S,
+  number_of_observations,
+  delta = 3,
+  D_matrix = NULL,
+  estimated_mean = TRUE,
+  perm = ""
+)
 
 new_gips(
   list_of_gips_perm,
@@ -14,6 +21,7 @@ new_gips(
   number_of_observations,
   delta,
   D_matrix,
+  estimated_mean,
   optimization_info
 )
 
@@ -22,14 +30,13 @@ validate_gips(g)
 \arguments{
 \item{S}{A matrix; estimated covariance matrix.
 When Z is the observed data:
-\enumerate{
-\item if one know the theoretical mean is 0, use
-\code{S = (t(Z) \%*\% Z) / number_of_observations};
+\itemize{
 \item if one does not know the theoretical mean and has to
-estimate it with the observed mean, use \code{S = cov(Z)}
-and set the \code{number_of_observations} parameter to 1 less than
-the real number of observations.
-TODO(Make the parameter and change the line to: "and set the parameter \code{mean_estimated} to TRUE").
+estimate it with the observed mean, use \code{S = cov(Z)}, and set
+parameter \code{estimated_mean = FALSE}.
+\item if one know the theoretical mean is 0, use
+\code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
+parameter \code{estimated_mean = FALSE};
 }}
 
 \item{number_of_observations}{A number of data points
@@ -41,6 +48,14 @@ Has to be bigger than 2.}
 \item{D_matrix}{A hyper-parameter of a Bayesian model.
 Square matrix of the same size as \code{S}.
 When NULL, the identity matrix is taken.}
+
+\item{estimated_mean}{A logical (TRUE or FALSE).
+\itemize{
+\item Set TRUE (default) when your \code{S} parameter is a result of
+a \code{\link[stats:cor]{stats::cov()}} function.
+\item Set FALSE when your \code{S} parameter is a result of
+a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
+}}
 
 \item{perm}{An optional permutation to be the base for the \code{gips} object.
 Can be of a \code{gips_perm} or a \code{permutation} class, or anything
@@ -121,6 +136,10 @@ if (require("graphics")) {
 }
 \seealso{
 \itemize{
+\item \code{\link[stats:cor]{stats::cov()}} - The \code{S} parameter is most of the time
+an estimated covariance matrix, so a result of the \code{cov()} function.
+For more information, see
+\href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
 the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.
