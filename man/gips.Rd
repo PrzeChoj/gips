@@ -11,7 +11,7 @@ gips(
   number_of_observations,
   delta = 3,
   D_matrix = NULL,
-  estimated_mean = TRUE,
+  was_mean_estimated = TRUE,
   perm = ""
 )
 
@@ -21,7 +21,7 @@ new_gips(
   number_of_observations,
   delta,
   D_matrix,
-  estimated_mean,
+  was_mean_estimated,
   optimization_info
 )
 
@@ -33,10 +33,10 @@ When Z is the observed data:
 \itemize{
 \item if one does not know the theoretical mean and has to
 estimate it with the observed mean, use \code{S = cov(Z)}, and set
-parameter \code{estimated_mean = FALSE}.
+parameter \code{was_mean_estimated = FALSE}.
 \item if one know the theoretical mean is 0, use
 \code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
-parameter \code{estimated_mean = FALSE};
+parameter \code{was_mean_estimated = FALSE};
 }}
 
 \item{number_of_observations}{A number of data points
@@ -49,7 +49,7 @@ Has to be bigger than 2.}
 Square matrix of the same size as \code{S}.
 When NULL, the identity matrix is taken.}
 
-\item{estimated_mean}{A logical (TRUE or FALSE).
+\item{was_mean_estimated}{A logical (TRUE or FALSE).
 \itemize{
 \item Set TRUE (default) when your \code{S} parameter is a result of
 a \code{\link[stats:cor]{stats::cov()}} function.

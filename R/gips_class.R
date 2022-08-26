@@ -10,10 +10,10 @@
 #'     When Z is the observed data:
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`, and set
-#'     parameter `estimated_mean = FALSE`.
+#'     parameter `was_mean_estimated = FALSE`.
 #' * if one know the theoretical mean is 0, use
 #'     `S = (t(Z) %*% Z) / number_of_observations`, and set
-#'     parameter `estimated_mean = FALSE`;
+#'     parameter `was_mean_estimated = FALSE`;
 #' @param number_of_observations A number of data points
 #'     that `S` is based on.
 #' @param delta A hyper-parameter of a Bayesian model.
@@ -21,7 +21,7 @@
 #' @param D_matrix A hyper-parameter of a Bayesian model.
 #'     Square matrix of the same size as `S`.
 #'     When NULL, the identity matrix is taken.
-#' @param estimated_mean A logical (TRUE or FALSE).
+#' @param was_mean_estimated A logical (TRUE or FALSE).
 #' * Set TRUE (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
 #' * Set FALSE when your `S` parameter is a result of
@@ -83,7 +83,7 @@
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
 gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
-                 estimated_mean = TRUE, perm = "") {
+                 was_mean_estimated = TRUE, perm = "") {
   if (!inherits(perm, c("gips_perm", "permutation"))) {
     perm <- permutations::permutation(perm)
   }
@@ -91,7 +91,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
   check_correctness_of_arguments( # max_iter, return_probabilities and show_progress_bar are to be checked here, but some value has to be passed
     S = S, number_of_observations = number_of_observations,
     max_iter = 2, start_perm = perm,
-    delta = delta, D_matrix = D_matrix, estimated_mean = estimated_mean,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
     return_probabilities = FALSE, show_progress_bar = FALSE
   )
 
@@ -109,7 +109,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
   validate_gips(new_gips(
     list(gips_perm_object), S, number_of_observations,
     delta = delta, D_matrix = D_matrix,
-    estimated_mean = estimated_mean, optimization_info = NULL
+    was_mean_estimated = was_mean_estimated, optimization_info = NULL
   ))
 }
 
@@ -126,14 +126,14 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations,
-                     delta, D_matrix, estimated_mean, optimization_info) {
+                     delta, D_matrix, was_mean_estimated, optimization_info) {
   if (!is.list(list_of_gips_perm) ||
     !inherits(list_of_gips_perm[[1]], "gips_perm") ||
     !is.matrix(S) ||
     !is.wholenumber(number_of_observations) ||
     !is.numeric(delta) ||
     !is.matrix(D_matrix) ||
-    !is.logical(estimated_mean) ||
+    !is.logical(was_mean_estimated) ||
     !(is.null(optimization_info) || is.list(optimization_info))) {
     rlang::abort(c("x" = "`gips` object cannot be created from those arguments."))
   }
@@ -141,7 +141,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 
   structure(list_of_gips_perm,
     S = S, number_of_observations = number_of_observations,
-    delta = delta, D_matrix = D_matrix, estimated_mean = estimated_mean,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
     optimization_info = optimization_info,
     class = c("gips")
   )
@@ -192,7 +192,7 @@ validate_gips <- function(g) {
   number_of_observations <- attr(g, "number_of_observations")
   delta <- attr(g, "delta")
   D_matrix <- attr(g, "D_matrix")
-  estimated_mean <- attr(g, "estimated_mean")
+  was_mean_estimated <- attr(g, "was_mean_estimated")
   optimization_info <- attr(g, "optimization_info")
 
   if (!inherits(perm, "gips_perm")) {
@@ -223,7 +223,7 @@ validate_gips <- function(g) {
   check_correctness_of_arguments( # max_iter, return_probabilities and show_progress_bar are to be checked here, but some value has to be passed
     S = S, number_of_observations = number_of_observations,
     max_iter = 2, start_perm = perm,
-    delta = delta, D_matrix = D_matrix, estimated_mean = estimated_mean,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
     return_probabilities = FALSE, show_progress_bar = FALSE
   )
 
@@ -353,7 +353,7 @@ validate_gips <- function(g) {
             # optimization_info[["last_perm"]] is proper gips_perm object
             last_perm_gips <- gips(S, number_of_observations,
               delta = delta, D_matrix = D_matrix,
-              estimated_mean = estimated_mean,
+              was_mean_estimated = was_mean_estimated,
               perm = optimization_info[["last_perm"]]
             )
 
@@ -363,7 +363,7 @@ validate_gips <- function(g) {
                 "x" = paste0(
                   "You have `attr(g, 'optimization_info')[['last_perm_log_posteriori']] == ",
                   optimization_info[["last_perm_log_posteriori"]],
-                  "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), estimated_mean=attr(g, 'estimated_mean'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
+                  "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), was_mean_estimated=attr(g, 'was_mean_estimated'), perm=attr(g, 'optimization_info')[['last_perm']])) == ",
                   log_posteriori_of_gips(last_perm_gips), "`."
                 )
               )
@@ -525,14 +525,14 @@ validate_gips <- function(g) {
         )
       )
     }
-    best_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, estimated_mean = estimated_mean, perm = perm) # this perm is g[[1]]
+    best_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated, perm = perm) # this perm is g[[1]]
     if (!(optimization_info[["best_perm_log_posteriori"]] == log_posteriori_of_gips(best_perm_gips))) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['best_perm_log_posteriori']]` must be the log_posteriori of the base object, `g[[1]]`.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['best_perm_log_posteriori']] == ",
           optimization_info[["best_perm_log_posteriori"]],
-          "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), estimated_mean=attr(g, 'estimated_mean'), perm=g[[1]])) == ",
+          "`, but `log_posteriori_of_gips(gips(attr(g, 'S'), attr(g, 'number_of_observations'), delta=attr(g, 'delta'), D_matrix=attr(g, 'D_matrix'), was_mean_estimated=attr(g, 'was_mean_estimated'), perm=g[[1]])) == ",
           log_posteriori_of_gips(best_perm_gips), "`."
         )
       )
@@ -627,7 +627,7 @@ validate_gips <- function(g) {
 
 
 check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
-                                           start_perm, delta, D_matrix, estimated_mean,
+                                           start_perm, delta, D_matrix, was_mean_estimated,
                                            return_probabilities, show_progress_bar) {
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
@@ -760,19 +760,19 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       )
     )
   }
-  if (!is.logical(estimated_mean)) {
+  if (!is.logical(was_mean_estimated)) {
     abort_text <- c(abort_text,
-                    "i" = "`estimated_mean` must be a logic value (TRUE or FALSE).",
+                    "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
                     "x" = paste0(
-                      "You provided `estimated_mean` with type ",
-                      typeof(estimated_mean), "."
+                      "You provided `was_mean_estimated` with type ",
+                      typeof(was_mean_estimated), "."
                     )
     )
-  } else if(is.na(estimated_mean)) {
+  } else if(is.na(was_mean_estimated)) {
     abort_text <- c(abort_text,
-                    "i" = "`estimated_mean` must be a logic value (TRUE or FALSE).",
+                    "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
                     "x" = paste0(
-                      "You provided `estimated_mean` as an `NA`."
+                      "You provided `was_mean_estimated` as an `NA`."
                     )
     )
   }
@@ -1229,7 +1229,7 @@ plot.gips <- function(x, type = NA,
 #'   6. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   7. `estimated_mean` - given by the user while creating the `gips` object:
+#'   7. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'   * TRUE means the `S` parameter was output of [stats::cov()] function
 #'   * FALSE means the `S` parameter was calculated with
 #'       `S = t(X) %*% X / number_of_observations`
@@ -1251,7 +1251,7 @@ plot.gips <- function(x, type = NA,
 #'   8. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   9. `estimated_mean` - given by the user while creating the `gips` object:
+#'   9. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * TRUE means the `S` parameter was output of [stats::cov()] function
 #'       * FALSE means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
@@ -1326,7 +1326,7 @@ summary.gips <- function(object, ...) {
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
-      estimated_mean = attr(object, "estimated_mean"),
+      was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix")
     )
@@ -1360,7 +1360,7 @@ summary.gips <- function(object, ...) {
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
-      estimated_mean = attr(object, "estimated_mean"),
+      was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
@@ -1400,7 +1400,7 @@ print.summary.gips <- function(x, ...) {
     x[["start_permutation_log_posteriori"]]
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
-  "\n\n", ifelse(x[["estimated_mean"]],
+  "\n\n", ifelse(x[["was_mean_estimated"]],
                  paste0("The mean in `S` was estimated.\nTherefore, one degree of freedom was lost. There is ",
                         x[["number_of_observations"]] - 1, " degrees of freedom left."),
                  paste0("The mean in `S` was not estimated.\nTherefore, all degrees of freedom were preserved (",

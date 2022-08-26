@@ -11,9 +11,9 @@ test_that("log_posteriori_of_gips returns proper values", {
 
   expect_equal(
     log_posteriori_of_gips(gips(S1, 100, perm = c_perm, D_matrix = D_matrix,
-                                estimated_mean = FALSE)),
+                                was_mean_estimated = FALSE)),
     log_posteriori_of_gips(gips(S2, 100, perm = c_perm, D_matrix = D_matrix,
-                                estimated_mean = FALSE))
+                                was_mean_estimated = FALSE))
   )
 
   # Those values were calculated by hand:
@@ -21,21 +21,21 @@ test_that("log_posteriori_of_gips returns proper values", {
   expect_equal(
     exp(log_posteriori_of_gips(gips(S1 * 2, 100,
       perm = c_perm,
-      D_matrix = D_matrix * 2, estimated_mean = FALSE
+      D_matrix = D_matrix * 2, was_mean_estimated = FALSE
     ))),
     6^(-103 / 2) * gamma(103 / 2) * gamma(103 / 2) / (pi / 4)
   )
   expect_equal(
     exp(log_posteriori_of_gips(gips(S1 * 2, 100,
       perm = id_perm,
-      D_matrix = D_matrix * 2, estimated_mean = FALSE
+      D_matrix = D_matrix * 2, was_mean_estimated = FALSE
     ))),
     (23 / 4)^(-52) * gamma(52) * gamma(51.5) * sqrt(2 * pi) / (pi / sqrt(2))
   )
   expect_equal(
     exp(log_posteriori_of_gips(gips(S2 * 2, 100,
       perm = id_perm,
-      D_matrix = D_matrix * 2, estimated_mean = FALSE
+      D_matrix = D_matrix * 2, was_mean_estimated = FALSE
     ))),
     6^(-52) * gamma(52) * gamma(51.5) * sqrt(2 * pi) / (pi / sqrt(2))
   )
@@ -77,8 +77,8 @@ test_that("log_posteriori_of_gips has the desired property", {
 
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
 
-  actual_permutation_function_value <- log_posteriori_of_gips(gips(S, n, perm = actual_permutation, estimated_mean = FALSE))
-  another_permutation_function_value <- log_posteriori_of_gips(gips(S, n, perm = id_perm, estimated_mean = FALSE))
+  actual_permutation_function_value <- log_posteriori_of_gips(gips(S, n, perm = actual_permutation, was_mean_estimated = FALSE))
+  another_permutation_function_value <- log_posteriori_of_gips(gips(S, n, perm = id_perm, was_mean_estimated = FALSE))
 
   # We want the posteriori to have a bigger value for the real permutation than for the another
   expect_gt(

@@ -58,9 +58,9 @@ log_posteriori_of_gips <- function(g) {
   validate_gips(g)
   
   number_of_observations <- attr(g, "number_of_observations")
-  estimated_mean <- attr(g, "estimated_mean")
+  was_mean_estimated <- attr(g, "was_mean_estimated")
   
-  if(estimated_mean) {
+  if(was_mean_estimated) {
     edited_number_of_observations <- number_of_observations - 1
   } else {
     edited_number_of_observations <- number_of_observations

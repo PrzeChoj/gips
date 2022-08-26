@@ -11,7 +11,7 @@ test_that("Handle improper parameters", {
     start_perm = permutations::permutation("(1,2,3)(4,5)"), show_progress_bar = TRUE
   ))
 
-  g1 <- gips(matrix_invariant_by_example_perm, 13, estimated_mean = FALSE)
+  g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
   expect_error(find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"))
   expect_error(find_MAP(g1, 10, optimizer = "BD"))
@@ -35,7 +35,7 @@ test_that("Handle improper parameters", {
     "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized."
   )
 
-  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, estimated_mean = FALSE)
+  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, was_mean_estimated = FALSE)
   g_BF <- find_MAP(g_small, optimizer = "full", show_progress_bar = FALSE)
   expect_error(
     find_MAP(g_BF, max_iter = 10, optimizer = "continue"),
@@ -44,7 +44,7 @@ test_that("Handle improper parameters", {
 
   matrix_big_space <- matrix(runif(35 * 35), nrow = 35)
   matrix_big_space <- t(matrix_big_space) %*% matrix_big_space
-  g_big <- gips(matrix_big_space, number_of_observations = 13, estimated_mean = FALSE)
+  g_big <- gips(matrix_big_space, number_of_observations = 13, was_mean_estimated = FALSE)
 
   expect_error(
     find_MAP(g_big, optimizer = "full", show_progress_bar = FALSE),
@@ -53,7 +53,7 @@ test_that("Handle improper parameters", {
 })
 
 test_that("Handle proper parameters", {
-  g1 <- gips(matrix_invariant_by_example_perm, 13, estimated_mean = FALSE)
+  g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
   expect_message(
     g_map <- find_MAP(g1, 10, show_progress_bar = FALSE),
@@ -91,7 +91,7 @@ test_that("Handle proper parameters", {
     "===="
   )) # Can we stack the `expect`s like that? Looks neat!
 
-  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, estimated_mean = FALSE)
+  g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, was_mean_estimated = FALSE)
   expect_message(
     find_MAP(g_small, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE),
     "Consider using `optimizer = 'brute_force'`, because it will use 2! \\(factorial\\) = 2 iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
@@ -111,7 +111,7 @@ test_that("Warns when found group has n0 > n", {
   )
   S <- (t(Z) %*% Z) / number_of_observations
 
-  g <- gips(S, number_of_observations, estimated_mean = FALSE)
+  g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
   expect_warning(
     find_MAP(g,
@@ -123,7 +123,7 @@ test_that("Warns when found group has n0 > n", {
 })
 
 test_that("find_MAP() can gues the correct optimizer and message the user", {
-  g <- gips(matrix_invariant_by_example_perm, 13, estimated_mean = FALSE)
+  g <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
   # can guess:
   expect_message(
@@ -152,13 +152,13 @@ test_that("find_MAP() can gues the correct optimizer and message the user", {
   )
 })
 
-test_that("find_MAP will remember the right number of observations and estimated_mean", {
+test_that("find_MAP will remember the right number of observations and was_mean_estimated", {
   number_of_observations <- 13
   
   g_em_FALSE <- gips(matrix_invariant_by_example_perm, number_of_observations,
-                     estimated_mean = FALSE)
+                     was_mean_estimated = FALSE)
   g_em_TRUE <- gips(matrix_invariant_by_example_perm, number_of_observations,
-                    estimated_mean = TRUE)
+                    was_mean_estimated = TRUE)
 
   g_map_em_FALSE <- find_MAP(g_em_FALSE, max_iter = 10,
                              show_progress_bar = FALSE, optimizer = "MH")
