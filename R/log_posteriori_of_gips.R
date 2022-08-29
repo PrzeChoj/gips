@@ -25,7 +25,7 @@
 #'     needed for `log_posteriori_of_gips()`.
 #' * [find_MAP()] - The functions that tries
 #'     to optimize the `log_posteriori_of_gips` function.
-#'     
+#'
 #' @returns Returns a value of
 #'     the logarithm of an unnormalized A Posteriori.
 #'
@@ -56,11 +56,11 @@
 #' # This is the expected outcome because S[1,1] is very close to S[2,2].
 log_posteriori_of_gips <- function(g) {
   validate_gips(g)
-  
+
   number_of_observations <- attr(g, "number_of_observations")
   was_mean_estimated <- attr(g, "was_mean_estimated")
-  
-  if(was_mean_estimated) {
+
+  if (was_mean_estimated) {
     edited_number_of_observations <- number_of_observations - 1
   } else {
     edited_number_of_observations <- number_of_observations

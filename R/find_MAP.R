@@ -243,8 +243,8 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
   delta <- attr(g, "delta")
   D_matrix <- attr(g, "D_matrix")
   was_mean_estimated <- attr(g, "was_mean_estimated")
-  
-  if(was_mean_estimated) { # one degree of freedom is lost; we will return this 1 to number_of_observations after optimization in `combine_gips()`
+
+  if (was_mean_estimated) { # one degree of freedom is lost; we will return this 1 to number_of_observations after optimization in `combine_gips()`
     edited_number_of_observations <- number_of_observations - 1
   } else {
     edited_number_of_observations <- number_of_observations
@@ -278,7 +278,7 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
   end_time <- Sys.time()
   attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
   attr(gips_optimized, "optimization_info")[["full_optimization_time"]] <- end_time - start_time
-  
+
   structure_constants <- get_structure_constants(gips_optimized[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
   if (n0 > number_of_observations) {
@@ -287,7 +287,7 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
       "i" = "For more in-depth explanation, see the Vignette (TODO)."
     ))
   }
-  
+
 
   return(combine_gips(g, gips_optimized))
 }
@@ -414,7 +414,8 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 
   new_gips(
     list(found_perm), S, number_of_observations,
-    delta, D_matrix, was_mean_estimated = FALSE, optimization_info
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
   ) # was_mean_estimated will be changed in the `find_MAP` function
 }
 
@@ -535,11 +536,12 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
     "optimization_time" = NA,
     "full_optimization_time" = NA
   )
-  
+
 
   new_gips(
     list(speciments[[iteration]]), S, number_of_observations,
-    delta, D_matrix, was_mean_estimated = FALSE, optimization_info
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
   ) # was_mean_estimated will be changed in the `find_MAP` function
 }
 
@@ -614,11 +616,12 @@ brute_force <- function(S, number_of_observations,
     "optimization_time" = NA,
     "full_optimization_time" = NA
   )
-  
+
 
   new_gips(
     list(best_perm), S, number_of_observations,
-    delta, D_matrix, was_mean_estimated = FALSE, optimization_info
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
   ) # was_mean_estimated will be changed in the `find_MAP` function
 }
 
@@ -634,10 +637,10 @@ combine_gips <- function(g1, g2) {
   # first, adjust the number of observations:
   attr(g2, "number_of_observations") <- attr(g1, "number_of_observations")
   attr(g2, "was_mean_estimated") <- attr(g1, "was_mean_estimated")
-  
+
   if (is.null(attr(g1, "optimization_info")) ||
     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force") { # when brute_force was used, forget the initial optimization
-    
+
     return(g2)
   }
 

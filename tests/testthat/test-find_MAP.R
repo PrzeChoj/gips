@@ -154,19 +154,36 @@ test_that("find_MAP() can gues the correct optimizer and message the user", {
 
 test_that("find_MAP will remember the right number of observations and was_mean_estimated", {
   number_of_observations <- 13
-  
-  g_em_FALSE <- gips(matrix_invariant_by_example_perm, number_of_observations,
-                     was_mean_estimated = FALSE)
-  g_em_TRUE <- gips(matrix_invariant_by_example_perm, number_of_observations,
-                    was_mean_estimated = TRUE)
 
-  g_map_em_FALSE <- find_MAP(g_em_FALSE, max_iter = 10,
-                             show_progress_bar = FALSE, optimizer = "MH")
-  g_map_em_TRUE <- find_MAP(g_em_TRUE, max_iter = 10,
-                            show_progress_bar = FALSE, optimizer = "MH")
-  
-  expect_equal(attr(g_map_em_FALSE, "number_of_observations"),
-               number_of_observations)
-  expect_equal(attr(g_map_em_TRUE, "number_of_observations"),
-               number_of_observations)
+  # em - estimated mean
+  g_em_FALSE <- gips(
+    matrix_invariant_by_example_perm,
+    number_of_observations,
+    was_mean_estimated = FALSE
+  )
+  g_em_TRUE <- gips(
+    matrix_invariant_by_example_perm,
+    number_of_observations,
+    was_mean_estimated = TRUE
+  )
+
+  g_map_em_FALSE <- find_MAP(
+    g_em_FALSE,
+    max_iter = 10,
+    show_progress_bar = FALSE, optimizer = "MH"
+  )
+  g_map_em_TRUE <- find_MAP(
+    g_em_TRUE,
+    max_iter = 10,
+    show_progress_bar = FALSE, optimizer = "MH"
+  )
+
+  expect_equal(
+    attr(g_map_em_FALSE, "number_of_observations"),
+    number_of_observations
+  )
+  expect_equal(
+    attr(g_map_em_TRUE, "number_of_observations"),
+    number_of_observations
+  )
 })

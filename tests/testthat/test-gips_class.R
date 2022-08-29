@@ -24,12 +24,16 @@ S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
 
 test_that("Setting custom permutation in gips constructor works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
-  g1 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm1)
+  g1 <- gips(
+    S, number_of_observations,
+    was_mean_estimated = FALSE, perm = custom_perm1
+  )
 
   custom_perm2 <- permutations::permutation("(1,2)(3,4,5)(6)")
-  g2 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm2)
+  g2 <- gips(
+    S, number_of_observations,
+    was_mean_estimated = FALSE, perm = custom_perm2
+  )
 
   expect_identical(custom_perm1, g1[[1]])
 
@@ -91,21 +95,31 @@ test_that("new_gips works or throws an erron on wrong arguments", {
 
 test_that("Properly validate the gips class with no optimization or after a single optimization", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
-  g1 <- gips(S, number_of_observations, was_mean_estimated = FALSE,
-             perm = custom_perm1)
+  g1 <- gips(
+    S, number_of_observations,
+    was_mean_estimated = FALSE,
+    perm = custom_perm1
+  )
 
-  g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE,
-                 optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g1,
+    max_iter = 3, show_progress_bar = FALSE,
+    optimizer = "MH", return_probabilities = TRUE
+  )
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again. We want g2 to have at least 1 accepted transposition.
-    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE,
-                   optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g1,
+      max_iter = 3, show_progress_bar = FALSE,
+      optimizer = "MH", return_probabilities = TRUE
+    )
   }
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE,
-                 optimizer = "HC", return_probabilities = FALSE)
+  g3 <- find_MAP(g1,
+    max_iter = 3, show_progress_bar = FALSE,
+    optimizer = "HC", return_probabilities = FALSE
+  )
 
   g_BF <- find_MAP(gips(
     matrix(c(1, 0.5, 0.5, 5), nrow = 2),
-    number_of_observations, was_mean_estimated = FALSE
+    number_of_observations,
+    was_mean_estimated = FALSE
   ),
   optimizer = "BF", show_progress_bar = FALSE
   )
@@ -323,7 +337,8 @@ test_that("Properly validate the gips class with no optimization or after a sing
 test_that("Properly validate the gips class after multiple optimizations", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm1)
+    was_mean_estimated = FALSE, perm = custom_perm1
+  )
 
   g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
@@ -610,7 +625,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     "(1,3)(2,4)(5,6)",
     2, diag(nrow = ncol(S)), FALSE, FALSE, "FALSE"
   ))
-  
+
   # A lot of problems ot once
   expect_error(check_correctness_of_arguments(
     S, number_of_observations + 0.1, 1,
@@ -760,7 +775,8 @@ test_that("print.gips() works", {
 test_that("plot.gips() works or abords for wrong arguments", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm1)
+    was_mean_estimated = FALSE, perm = custom_perm1
+  )
 
   expect_error(plot.gips(custom_perm1))
 
@@ -792,8 +808,9 @@ test_that("plot.gips() works or abords for wrong arguments", {
 test_that("summary.gips() works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm1)
-  
+    was_mean_estimated = FALSE, perm = custom_perm1
+  )
+
   start_permutation_log_posteriori <- log_posteriori_of_gips(g1)
   log_posteriori_id <- log_posteriori_of_perm(
     perm_proposal = "", S = S,
@@ -820,7 +837,7 @@ test_that("summary.gips() works", {
   ), class = "summary.gips")
 
   expect_identical(summary(g1), my_sum)
-  
+
   expect_output(
     print(summary(g1)),
     "Number of observations is bigger than n0 for this permutaion,\nso "
@@ -846,16 +863,20 @@ test_that("summary.gips() works", {
 
 test_that("start_permutation_log_posteriori was calculated correctly", {
   g <- gips(S, number_of_observations, was_mean_estimated = TRUE)
-  g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE,
-                    optimizer = "MH")
-  
+  g_map <- find_MAP(g,
+    max_iter = 10, show_progress_bar = FALSE,
+    optimizer = "MH"
+  )
+
   optimization_info <- attr(g_map, "optimization_info")
-  expect_equal(optimization_info[["log_posteriori_values"]][1],
-               log_posteriori_of_perm(
-                 "",
-                 attr(g_map, "S"),
-                 attr(g_map, "number_of_observations") - attr(g_map, "was_mean_estimated"),
-                 attr(g_map, "delta"),
-                 attr(g_map, "D_matrix")
-               ))
+  expect_equal(
+    optimization_info[["log_posteriori_values"]][1],
+    log_posteriori_of_perm(
+      "",
+      attr(g_map, "S"),
+      attr(g_map, "number_of_observations") - attr(g_map, "was_mean_estimated"),
+      attr(g_map, "delta"),
+      attr(g_map, "D_matrix")
+    )
+  )
 })

@@ -10,10 +10,14 @@ test_that("log_posteriori_of_gips returns proper values", {
   D_matrix <- diag(nrow = 2)
 
   expect_equal(
-    log_posteriori_of_gips(gips(S1, 100, perm = c_perm, D_matrix = D_matrix,
-                                was_mean_estimated = FALSE)),
-    log_posteriori_of_gips(gips(S2, 100, perm = c_perm, D_matrix = D_matrix,
-                                was_mean_estimated = FALSE))
+    log_posteriori_of_gips(gips(S1, 100,
+      perm = c_perm, D_matrix = D_matrix,
+      was_mean_estimated = FALSE
+    )),
+    log_posteriori_of_gips(gips(S2, 100,
+      perm = c_perm, D_matrix = D_matrix,
+      was_mean_estimated = FALSE
+    ))
   )
 
   # Those values were calculated by hand:

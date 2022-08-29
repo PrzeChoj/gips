@@ -120,7 +120,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'     a `gips_perm` class. The base object for the `gips` object.
 #' @param optimization_info NULL or the list with
 #'     information about the optimization process.
-#'     
+#'
 #' @returns `new_gips()` returns an object of
 #'     a `gips` class without the safety checks.
 #'
@@ -151,7 +151,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 #' @describeIn gips Validator. Only intended for low-level use.
 #'
 #' @param g Element to be checked if it is proper element of a `gips` class.
-#' 
+#'
 #' @returns `validate_gips()` returns its argument unchanged.
 #'     If the argument is not a correct element of a `gips` class,
 #'     it produces an error.
@@ -762,18 +762,18 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   }
   if (!is.logical(was_mean_estimated)) {
     abort_text <- c(abort_text,
-                    "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
-                    "x" = paste0(
-                      "You provided `was_mean_estimated` with type ",
-                      typeof(was_mean_estimated), "."
-                    )
+      "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
+      "x" = paste0(
+        "You provided `was_mean_estimated` with type ",
+        typeof(was_mean_estimated), "."
+      )
     )
-  } else if(is.na(was_mean_estimated)) {
+  } else if (is.na(was_mean_estimated)) {
     abort_text <- c(abort_text,
-                    "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
-                    "x" = paste0(
-                      "You provided `was_mean_estimated` as an `NA`."
-                    )
+      "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
+      "x" = paste0(
+        "You provided `was_mean_estimated` as an `NA`."
+      )
     )
   }
   if (!is.logical(return_probabilities)) {
@@ -833,14 +833,14 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @param log_value A logical. Whether to print the value
 #'     of a [log_posteriori_of_gips()]. Default to `FALSE`.
 #' @param ... The additional arguments passed to [base::cat()].
-#' 
+#'
 #' @seealso
 #' * [find_MAP()] - The function that makes
 #'     an optimized `gips` object out of the unoptimized one.
 #'
 #' @returns Returns an invisible NULL.
 #' @export
-#' 
+#'
 #' @examples
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
@@ -851,12 +851,13 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
     log_posteriori <- log_posteriori_of_gips(x)
-    if(compare_to_original){
-      x_id <- gips(S = attr(x, "S"),
-                   number_of_observations = attr(x, "number_of_observations"),
-                   delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
-                   was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
-                   )
+    if (compare_to_original) {
+      x_id <- gips(
+        S = attr(x, "S"),
+        number_of_observations = attr(x, "number_of_observations"),
+        delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
+        was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
+      )
       log_posteriori_id <- log_posteriori_of_gips(x_id)
     }
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
@@ -869,12 +870,17 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
     cat(paste0(
       "The permutation ", x[[1]],
       ifelse(compare_to_original,
-             paste0(" is ", round(exp(log_posteriori - log_posteriori_id),
-                                  digits = digits),
-             " times more likely than the id, () permutation"),
-             ""),
+        paste0(
+          " is ", round(exp(log_posteriori - log_posteriori_id),
+            digits = digits
+          ),
+          " times more likely than the id, () permutation"
+        ),
+        ""
+      ),
       ifelse(compare_to_original && log_value,
-             ",", ""),
+        ",", ""
+      ),
       ifelse(log_value,
         paste0(
           " has log posteriori ",
@@ -900,11 +906,15 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       length(attr(x, "optimization_info")[["log_posteriori_values"]]),
       " log_posteriori calculations",
       ifelse(compare_to_original,
-             paste0(", is ", round(exp(log_posteriori - log_posteriori_start),
-                                  digits = digits),
-                    " times more likely than the starting, ",
-                    start_perm, " permutation"),
-             ""),
+        paste0(
+          ", is ", round(exp(log_posteriori - log_posteriori_start),
+            digits = digits
+          ),
+          " times more likely than the starting, ",
+          start_perm, " permutation"
+        ),
+        ""
+      ),
       ifelse(log_value,
         paste0(
           ", has log posteriori ",
@@ -1347,7 +1357,7 @@ plot.gips <- function(x, type = NA,
 #' g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
 #' summary(g_map2)
 summary.gips <- function(object, ...) {
-  #validate_gips(object) # validation is done in `log_posteriori_of_gips()`
+  # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
   permutation_log_posteriori <- log_posteriori_of_gips(object)
 
   structure_constants <- get_structure_constants(object[[1]])
@@ -1359,7 +1369,7 @@ summary.gips <- function(object, ...) {
       number_of_observations = attr(object, "number_of_observations"),
       delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
     )
-    
+
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
@@ -1381,16 +1391,16 @@ summary.gips <- function(object, ...) {
       start_permutation <- optimization_info[["visited_perms"]][[1]]
     } else {
       # for brute_force when_was_best is useless.
-        # Also, the `optimization_info[["visited_perms"]]` is a list, but
+      # Also, the `optimization_info[["visited_perms"]]` is a list, but
         # its elements are not of class `gips_perm`, because it was done with
         # `optimization_info[["visited_perms"]] <- permutations::allperms()`
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
       start_permutation <- gips_perm("", ncol(attr(object, "S")))
     }
-    
+
     start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
-    
+
     summary_list <- list(
       optimized = TRUE,
       found_permutation = object[[1]],
@@ -1425,7 +1435,7 @@ summary.gips <- function(object, ...) {
 #'     Prints every interesting information in a pleasant, human readable form
 #' @returns `print.summary.gips` returns an invisible NULL.
 #' @export
-#' 
+#'
 #' @examples
 #' # ================================================================================
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
@@ -1448,17 +1458,26 @@ print.summary.gips <- function(x, ...) {
   ),
   "\n\nTimes more likely than ",
   ifelse(x[["optimized"]],
-         paste0("starting permutation:\n",
-                x[["times_more_likely_than_start"]]),
-         paste0("identity permutation:\n",
-                x[["times_more_likely_than_id"]])
+    paste0(
+      "starting permutation:\n",
+      x[["times_more_likely_than_start"]]
+    ),
+    paste0(
+      "identity permutation:\n",
+      x[["times_more_likely_than_id"]]
+    )
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
   "\n\n", ifelse(x[["was_mean_estimated"]],
-                 paste0("The mean in `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere is ",
-                        x[["number_of_observations"]] - 1, " degrees of freedom left."),
-                 paste0("The mean in `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
-                        x[["number_of_observations"]], ").")),
+    paste0(
+      "The mean in `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere is ",
+      x[["number_of_observations"]] - 1, " degrees of freedom left."
+    ),
+    paste0(
+      "The mean in `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
+      x[["number_of_observations"]], ")."
+    )
+  ),
   "\n\nn0:\n ", x[["n0"]],
   "\n\nNumber of observations is ",
   ifelse(x[["n0"]] > x[["number_of_observations"]],
