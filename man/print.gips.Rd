@@ -4,20 +4,26 @@
 \alias{print.gips}
 \title{Printing \code{gips} object}
 \usage{
-\method{print}{gips}(x, log_value = TRUE, digits = Inf, ...)
+\method{print}{gips}(x, digits = Inf, compare_to_original = TRUE, log_value = FALSE, ...)
 }
 \arguments{
 \item{x}{An object of a \code{gips} class.}
 
-\item{log_value}{A logical. Whether to print
-the exp of a value of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}
-or leave it in logarithmic form.}
-
-\item{digits}{A number of digits after the comma
+\item{digits}{The number of digits after the comma
 for a posteriori to be presented. It can be negative.
 By default, \code{Inf}. It is passed to \code{\link[base:Round]{base::round()}}.}
 
-\item{...}{An additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
+\item{compare_to_original}{A logical. Whether to print how many
+times more likely is the current permutation compared to:
+\itemize{
+\item the identity permutation \verb{()} (for unoptimized \code{gips} object);
+\item the starting permutation (for optimized \code{gips} object).
+}}
+
+\item{log_value}{A logical. Whether to print the value
+of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}. Default to \code{FALSE}.}
+
+\item{...}{The additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
 \value{
 Returns an invisible NULL.
@@ -28,5 +34,11 @@ Printing function for a \code{gips} class.
 \examples{
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
-\dontrun{print(g)}
+# print(g, digits = 4)
+}
+\seealso{
+\itemize{
+\item \code{\link[=find_MAP]{find_MAP()}} - The function that makes
+an optimized \code{gips} object out of the unoptimized one.
+}
 }

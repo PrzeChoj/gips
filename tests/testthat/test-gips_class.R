@@ -751,10 +751,10 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 test_that("print.gips() works", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
-  expect_output(print(g), "The permutation \\(\\) has log posteriori")
+  expect_output(print(g), "The permutation \\(\\) is 1 times more likely")
 
   g <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
-  expect_output(print(g), "which was found after 10 log_posteriori calculations.")
+  expect_output(print(g), "was found after 10 log_posteriori calculations, is")
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
@@ -793,12 +793,20 @@ test_that("summary.gips() works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
              was_mean_estimated = FALSE, perm = custom_perm1)
+  
+  start_permutation_log_posteriori <- log_posteriori_of_gips(g1)
+  log_posteriori_id <- log_posteriori_of_perm(
+    perm_proposal = "", S = S,
+    number_of_observations = number_of_observations,
+    delta = attr(g1, "delta"), D_matrix = attr(g1, "D_matrix")
+  )
 
   my_sum <- structure(list(
     optimized = FALSE, start_permutation = structure(list(
       c(1, 2), c(3, 4, 5, 6)
     ), size = 6, class = "gips_perm"),
-    start_permutation_log_posteriori = log_posteriori_of_gips(g1),
+    start_permutation_log_posteriori = start_permutation_log_posteriori,
+    times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(

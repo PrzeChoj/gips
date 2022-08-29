@@ -823,13 +823,20 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' Printing function for a `gips` class.
 #'
 #' @param x An object of a `gips` class.
-#' @param log_value A logical. Whether to print
-#'     the exp of a value of a [log_posteriori_of_gips()]
-#'     or leave it in logarithmic form.
-#' @param digits A number of digits after the comma
+#' @param digits The number of digits after the comma
 #'     for a posteriori to be presented. It can be negative.
 #'     By default, `Inf`. It is passed to [base::round()].
-#' @param ... An additional arguments passed to [base::cat()].
+#' @param compare_to_original A logical. Whether to print how many
+#'     times more likely is the current permutation compared to:
+#' * the identity permutation `()` (for unoptimized `gips` object);
+#' * the starting permutation (for optimized `gips` object).
+#' @param log_value A logical. Whether to print the value
+#'     of a [log_posteriori_of_gips()]. Default to `FALSE`.
+#' @param ... The additional arguments passed to [base::cat()].
+#' 
+#' @seealso
+#' * [find_MAP()] - The function that makes
+#'     an optimized `gips` object out of the unoptimized one.
 #'
 #' @returns Returns an invisible NULL.
 #' @export
@@ -837,8 +844,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @examples
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' \dontrun{print(g)}
-print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
+#' # print(g, digits = 4)
+print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
+                       log_value = FALSE, ...) {
   validate_gips(x)
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
@@ -847,6 +855,13 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
       number_of_observations = attr(x, "number_of_observations"),
       delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix")
     )
+    if(compare_to_original){
+      log_posteriori_id <- log_posteriori_of_perm(
+        perm_proposal = "", S = attr(x, "S"),
+        number_of_observations = attr(x, "number_of_observations"),
+        delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix")
+      )
+    }
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
@@ -856,19 +871,25 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
     }
     cat(paste0(
       "The permutation ", x[[1]],
+      ifelse(compare_to_original,
+             paste0(" is ", round(exp(log_posteriori - log_posteriori_id),
+                                  digits = digits),
+             " times more likely than the id, () permutation"),
+             ""),
+      ifelse(compare_to_original && log_value,
+             ",", ""),
       ifelse(log_value,
         paste0(
           " has log posteriori ",
           round(log_posteriori, digits = digits)
         ),
-        paste0(
-          " has posteriori ",
-          round(exp(log_posteriori), digits = digits)
-        )
+        ""
       ), "."
     ), ...)
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
+    log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
+    start_perm <- attr(x, "optimization_info")[["visited_perms"]][[1]]
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
@@ -878,18 +899,22 @@ print.gips <- function(x, log_value = TRUE, digits = Inf, ...) {
     }
     cat(paste0(
       "The permutation ", x[[1]],
+      " was found after ",
+      length(attr(x, "optimization_info")[["log_posteriori_values"]]),
+      " log_posteriori calculations",
+      ifelse(compare_to_original,
+             paste0(", is ", round(exp(log_posteriori - log_posteriori_start),
+                                  digits = digits),
+                    " times more likely than the starting, ",
+                    start_perm, " permutation"),
+             ""),
       ifelse(log_value,
         paste0(
-          " has log posteriori ",
+          ", has log posteriori ",
           round(log_posteriori, digits = digits)
         ),
-        paste0(
-          " has posteriori ",
-          round(exp(log_posteriori), digits = digits)
-        )
-      ), " which was found after ",
-      length(attr(x, "optimization_info")[["log_posteriori_values"]]),
-      " log_posteriori calculations."
+        ""
+      ), "."
     ), ...)
   }
 }
@@ -1227,18 +1252,22 @@ plot.gips <- function(x, type = NA,
 #'   2. `start_permutation` - the permutation this `gips` represents
 #'   3. `start_permutation_log_posteriori` - the log of the a posteriori
 #'       value the start permutation has
-#'   4. `n0` - the minimal number of observations needed for
+#'   4. `times_more_likely_than_id` - how many more likely
+#'       the `start_permutation` is over the identity permutation, `()`.
+#'       It can be a number less than 1, which means
+#'       the identity permutation, `()`, is more likely
+#'   5. `n0` - the minimal number of observations needed for
 #'       a MAP Estimator of the covariance matrix to exist
-#'   5. `S_matrix` - the underlying matrix; this is used to calculate
+#'   6. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
-#'   6. `number_of_observations` - the number of observations that
+#'   7. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   7. `was_mean_estimated` - given by the user while creating the `gips` object:
+#'   8. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'   * TRUE means the `S` parameter was output of [stats::cov()] function
 #'   * FALSE means the `S` parameter was calculated with
 #'       `S = t(X) %*% X / number_of_observations`
-#'   8. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
 #' * For optimized `gips` object:
 #'   1. `optimized` - TRUE
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1249,34 +1278,38 @@ plot.gips <- function(x, type = NA,
 #'       represented before optimization; the first visited permutation
 #'   5. `start_permutation_log_posteriori` - the log of the a posteriori
 #'       value the start permutation has
-#'   6. `n0` - the minimal number of observations needed for
+#'   6. `times_more_likely_than_start` - how many more likely
+#'       the `found_permutation` is over the `start_permutation`.
+#'       It cannot be a number less than 1
+#'   7. `n0` - the minimal number of observations needed for
 #'       a MAP Estimator of the covariance matrix to exist
-#'   7. `S_matrix` - the underlying matrix; this is used to calculate
+#'   8. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
-#'   8. `number_of_observations` - the number of observations that
+#'   9. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
-#'   9. `was_mean_estimated` - given by the user while creating the `gips` object:
+#'   10. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * TRUE means the `S` parameter was output of [stats::cov()] function
 #'       * FALSE means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
-#'   10. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   11. `optimization_algorithm_used` - all used optimization algorithms
+#'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   12. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
-#'   12. `did_converge` - boolean, did the last used algorithm converge
-#'   13. `number_of_log_posteriori_calls` - how many times was
+#'   13. `did_converge` - a boolean, did the last used algorithm converge
+#'   14. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   14. `full_optimization_time` - how long was the optimization process;
+#'   15. `full_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
-#'   15. `log_posteriori_calls_after_best` - how many times was
+#'   16. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result;
 #'       if this value is small, consider running [find_MAP()]
-#'       one more time with `optimizer = "continue"`
-#'   16. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'       one more time with `optimizer = "continue"`.
+#'       For `optimizer = "BF"`, it is `NULL`
+#'   17. `acceptance_rate` - only interesting for `optimizer = "MH"`;
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
@@ -1324,10 +1357,17 @@ summary.gips <- function(object, ...) {
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
 
   if (is.null(attr(object, "optimization_info"))) {
+    log_posteriori_id <- log_posteriori_of_perm(
+      perm_proposal = "", S = attr(object, "S"),
+      number_of_observations = attr(object, "number_of_observations"),
+      delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
+    )
+    
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
       start_permutation_log_posteriori = permutation_log_posteriori,
+      times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1339,22 +1379,26 @@ summary.gips <- function(object, ...) {
     optimization_info <- attr(object, "optimization_info")
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      start_permutation <- optimization_info[["visited_perms"]][[1]]
-      start_permutation_log_posteriori <- log_posteriori_of_perm(
-        start_permutation,
-        attr(object, "S"),
-        attr(object, "number_of_observations"),
-        attr(object, "delta"),
-        attr(object, "D_matrix")
-      )
-
       when_was_best <- which(optimization_info[["log_posteriori_values"]] == permutation_log_posteriori)
+      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)]
+      start_permutation <- optimization_info[["visited_perms"]][[1]]
     } else {
-      start_permutation <- NULL
-      start_permutation_log_posteriori <- NULL
+      # for brute_force when_was_best is useless.
+        # Also, the `optimization_info[["visited_perms"]]` is a list, but
+        # its elements are not of class `gips_perm`, because it was done with
+        # `optimization_info[["visited_perms"]] <- permutations::allperms()`
       when_was_best <- NULL
+      log_posteriori_calls_after_best <- NULL
+      start_permutation <- gips_perm("", ncol(attr(object, "S")))
     }
-
+    
+    start_permutation_log_posteriori <- log_posteriori_of_perm(
+      start_permutation,
+      attr(object, "S"),
+      attr(object, "number_of_observations"),
+      attr(object, "delta"),
+      attr(object, "D_matrix")
+    )
 
     summary_list <- list(
       optimized = TRUE,
@@ -1362,6 +1406,7 @@ summary.gips <- function(object, ...) {
       found_permutation_log_posteriori = permutation_log_posteriori,
       start_permutation = start_permutation,
       start_permutation_log_posteriori = start_permutation_log_posteriori,
+      times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1372,7 +1417,7 @@ summary.gips <- function(object, ...) {
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
       full_optimization_time = optimization_info[["full_optimization_time"]],
-      log_posteriori_calls_after_best = length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)],
+      log_posteriori_calls_after_best = log_posteriori_calls_after_best,
       acceptance_rate = optimization_info[["acceptance_rate"]]
     )
   }
@@ -1394,7 +1439,7 @@ summary.gips <- function(object, ...) {
 #' # ================================================================================
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' \dontrun{print(summary(g))}
+#' # print(summary(g))
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
     "The optimized",
@@ -1409,6 +1454,13 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["optimized"]],
     x[["found_permutation_log_posteriori"]],
     x[["start_permutation_log_posteriori"]]
+  ),
+  "\n\nTimes more likely than ",
+  ifelse(x[["optimized"]],
+         paste0("starting permutation:\n",
+                x[["times_more_likely_than_start"]]),
+         paste0("identity permutation:\n",
+                x[["times_more_likely_than_id"]])
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
   "\n\n", ifelse(x[["was_mean_estimated"]],

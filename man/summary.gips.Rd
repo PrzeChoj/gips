@@ -26,6 +26,10 @@ statistics of the given \code{gips} object. Those are:
 \item \code{start_permutation} - the permutation this \code{gips} represents
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
 value the start permutation has
+\item \code{times_more_likely_than_id} - how many more likely
+the \code{start_permutation} is over the identity permutation, \verb{()}.
+It can be a number less than 1, which means
+the identity permutation, \verb{()}, is more likely
 \item \code{n0} - the minimal number of observations needed for
 a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
@@ -54,6 +58,9 @@ value the found permutation have
 represented before optimization; the first visited permutation
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
 value the start permutation has
+\item \code{times_more_likely_than_start} - how many more likely
+the \code{found_permutation} is over the \code{start_permutation}.
+It cannot be a number less than 1
 \item \code{n0} - the minimal number of observations needed for
 a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
@@ -71,7 +78,7 @@ used to calculate the posteriori value
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
 do an "HC")
-\item \code{did_converge} - boolean, did the last used algorithm converge
+\item \code{did_converge} - a boolean, did the last used algorithm converge
 \item \code{number_of_log_posteriori_calls} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
 the optimization
@@ -82,7 +89,8 @@ the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function cal
 the \code{found_permutation}; in other words, how long ago
 could the optimization be stopped and have the same result;
 if this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
-one more time with \code{optimizer = "continue"}
+one more time with \code{optimizer = "continue"}.
+For \code{optimizer = "BF"}, it is \code{NULL}
 \item \code{acceptance_rate} - only interesting for \code{optimizer = "MH"};
 how often was the algorithm accepting the change of permutation
 in an iteration
@@ -130,7 +138,7 @@ summary(g_map2)
 # ================================================================================
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
-\dontrun{print(summary(g))}
+# print(summary(g))
 }
 \seealso{
 \itemize{
