@@ -328,7 +328,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
   }
 
   my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -455,7 +455,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 
 
   my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -577,7 +577,7 @@ brute_force <- function(S, number_of_observations,
   }
 
   my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function
+    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )

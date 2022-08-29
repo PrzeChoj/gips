@@ -843,3 +843,19 @@ test_that("summary.gips() works", {
     "Optimization algorithms:"
   )
 })
+
+test_that("start_permutation_log_posteriori was calculated correctly", {
+  g <- gips(S, number_of_observations, was_mean_estimated = TRUE)
+  g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE,
+                    optimizer = "MH")
+  
+  optimization_info <- attr(g_map, "optimization_info")
+  expect_equal(optimization_info[["log_posteriori_values"]][1],
+               log_posteriori_of_perm(
+                 "",
+                 attr(g_map, "S"),
+                 attr(g_map, "number_of_observations") - attr(g_map, "was_mean_estimated"),
+                 attr(g_map, "delta"),
+                 attr(g_map, "D_matrix")
+               ))
+})

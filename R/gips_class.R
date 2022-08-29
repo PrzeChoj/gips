@@ -850,17 +850,14 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
   validate_gips(x)
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
-    log_posteriori <- log_posteriori_of_perm(
-      perm_proposal = x[[1]], S = attr(x, "S"),
-      number_of_observations = attr(x, "number_of_observations"),
-      delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix")
-    )
+    log_posteriori <- log_posteriori_of_gips(x)
     if(compare_to_original){
-      log_posteriori_id <- log_posteriori_of_perm(
-        perm_proposal = "", S = attr(x, "S"),
-        number_of_observations = attr(x, "number_of_observations"),
-        delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix")
-      )
+      x_id <- gips(S = attr(x, "S"),
+                   number_of_observations = attr(x, "number_of_observations"),
+                   delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
+                   was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
+                   )
+      log_posteriori_id <- log_posteriori_of_gips(x_id)
     }
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
@@ -1392,14 +1389,8 @@ summary.gips <- function(object, ...) {
       start_permutation <- gips_perm("", ncol(attr(object, "S")))
     }
     
-    start_permutation_log_posteriori <- log_posteriori_of_perm(
-      start_permutation,
-      attr(object, "S"),
-      attr(object, "number_of_observations"),
-      attr(object, "delta"),
-      attr(object, "D_matrix")
-    )
-
+    start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
+    
     summary_list <- list(
       optimized = TRUE,
       found_permutation = object[[1]],
