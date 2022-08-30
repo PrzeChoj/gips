@@ -36,12 +36,6 @@
 #'     At least 2. For `optimizer=="MH"` it has to be finite;
 #'     for `optimizer=="HC"` it can be infinite;
 #'     for `optimizer=="BF"` it is not used.
-#' @param return_probabilities A boolean. TRUE can only be provided
-#'     for `optimizer=="MH"`. Whether to use Metropolis-Hastings results to
-#'     calculate posterior probabilities.
-#' @param show_progress_bar A boolean.
-#'     Indicate whether or not to show the progress bar.
-#'     When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
 #' @param optimizer The optimizer for the search of the maximum posteriori.
 #'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings
 #'   * `"HC"` - Hill Climbing
@@ -51,6 +45,15 @@
 #'
 #' For more details, see the "Possible algorithms to use as optimizers"
 #' section below.
+#' @param show_progress_bar A boolean.
+#'     Indicate whether or not to show the progress bar.
+#'     When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
+#' @param return_probabilities A boolean. TRUE can only be provided for:
+#'   * `optimizer=="MH"` - use Metropolis-Hastings results to
+#'       estimate posterior probabilities
+#'   * `optimizer=="BF"` - use brute force results to
+#'       calculate exact posterior probabilities
+#'
 #'
 #' @returns Returns an optimized object of a `gips` class.
 #'
@@ -98,8 +101,9 @@
 #'
 #' g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 #' summary(g_map_BF)
-find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
-                     show_progress_bar = TRUE, optimizer = NA) {
+find_MAP <- function(g, max_iter = NA, optimizer = NA,
+                     show_progress_bar = TRUE,
+                     return_probabilities = FALSE) {
   # check the correctness of the g argument
   validate_gips(g)
 
@@ -185,7 +189,7 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
     }
 
     optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])] # this is the last used optimizer
-    if (optimizer == "brute_force") {
+    if (optimizer %in% c("BF", "brute_force", "full")) {
       rlang::abort(c("There was a problem identified with provided arguments:",
         "i" = "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`, because the whole space was already browsed.",
         "x" = "You provided `optimizer == 'continue'`, but the gips object `g` was optimized with brute_force optimizer. Better permutation will not be found."
@@ -193,15 +197,15 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
     }
   }
 
-  if (!(optimizer %in% c("MH", "Metropolis_Hastings")) && return_probabilities) {
+  if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BF", "brute_force", "full")) && return_probabilities) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'`",
-      "x" = "You provided both `optimizer != Metropolis_Hastings` and `return_probabilities == TRUE`!",
-      "i" = "Did You want to use `optimizer == Metropolis_Hastings` or `return_probabilities == FLASE`?"
+      "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`",
+      "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
+      "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FLASE`?"
     ))
   }
 
-  if (return_probabilities) {
+  if (return_probabilities && optimizer %in% c("MH", "Metropolis_Hastings")) {
     rlang::check_installed("stringi",
       reason = "to return probabilities in `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
     )
@@ -271,6 +275,7 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
     gips_optimized <- brute_force(
       S = S, number_of_observations = edited_number_of_observations,
       delta = delta, D_matrix = D_matrix,
+      return_probabilities = return_probabilities,
       show_progress_bar = show_progress_bar
     )
   }
@@ -551,12 +556,13 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 
 brute_force <- function(S, number_of_observations,
                         delta = 3, D_matrix = NULL,
+                        return_probabilities = return_probabilities,
                         show_progress_bar = TRUE) {
   check_correctness_of_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = 5, start_perm = permutations::id, # max_iter, was_mean_estimated and start_perm are not important for optimization with brute_force
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
-    return_probabilities = FALSE,
+    return_probabilities = return_probabilities,
     show_progress_bar = show_progress_bar
   )
 
@@ -602,6 +608,13 @@ brute_force <- function(S, number_of_observations,
   if (show_progress_bar) {
     close(progressBar)
   }
+  
+  if (return_probabilities) { # calculate exact probabilities
+    probabilities <- change_log_probabilities_unnorm_to_probabilities(log_posteriori_values)
+    names(probabilities) <- as.character(all_perms_list)
+  } else {
+    probabilities <- NULL
+  }
 
   best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_posteriori_values)]])), perm_size)
 
@@ -613,7 +626,7 @@ brute_force <- function(S, number_of_observations,
     "last_perm_log_posteriori" = NULL,
     "iterations_performed" = prod(1:perm_size),
     "optimization_algorithm_used" = "brute_force",
-    "post_probabilities" = NULL,
+    "post_probabilities" = probabilities,
     "did_converge" = TRUE,
     "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,

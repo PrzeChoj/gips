@@ -40,3 +40,11 @@ test_that("is.positive.semi.definite.matrix works", {
   expect_true(is.positive.semi.definite.matrix(random_matrix - diag(p) * 10, tolerance = 0.001)) # the smallest eigen value is very close to 0
   expect_false(is.positive.semi.definite.matrix(random_matrix - diag(p) * (10.01))) # the smallest eigen value is very close to -0.01
 })
+
+test_that("change_log_probabilities_unnorm_to_probabilities forks as intendent", {
+  desired_probs <- c(0.1, 0.2, 0.3, 0.4)
+  changed_probs <- log(desired_probs) + runif(1, -1000, 1000)
+  est_desired_probs <- change_log_probabilities_unnorm_to_probabilities(changed_probs)
+
+  expect_equal(desired_probs, est_desired_probs) # function can recreate the original distribution
+})

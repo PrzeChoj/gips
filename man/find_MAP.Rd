@@ -7,9 +7,9 @@
 find_MAP(
   g,
   max_iter = NA,
-  return_probabilities = FALSE,
+  optimizer = NA,
   show_progress_bar = TRUE,
-  optimizer = NA
+  return_probabilities = FALSE
 )
 }
 \arguments{
@@ -19,14 +19,6 @@ find_MAP(
 At least 2. For \code{optimizer=="MH"} it has to be finite;
 for \code{optimizer=="HC"} it can be infinite;
 for \code{optimizer=="BF"} it is not used.}
-
-\item{return_probabilities}{A boolean. TRUE can only be provided
-for \code{optimizer=="MH"}. Whether to use Metropolis-Hastings results to
-calculate posterior probabilities.}
-
-\item{show_progress_bar}{A boolean.
-Indicate whether or not to show the progress bar.
-When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.}
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori.
 \itemize{
@@ -39,6 +31,18 @@ the \code{g} was optimized by (see Examples).
 
 For more details, see the "Possible algorithms to use as optimizers"
 section below.}
+
+\item{show_progress_bar}{A boolean.
+Indicate whether or not to show the progress bar.
+When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.}
+
+\item{return_probabilities}{A boolean. TRUE can only be provided for:
+\itemize{
+\item \code{optimizer=="MH"} - use Metropolis-Hastings results to
+estimate posterior probabilities
+\item \code{optimizer=="BF"} - use brute force results to
+calculate exact posterior probabilities
+}}
 }
 \value{
 Returns an optimized object of a \code{gips} class.

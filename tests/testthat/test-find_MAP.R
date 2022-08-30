@@ -187,3 +187,34 @@ test_that("find_MAP will remember the right number of observations and was_mean_
     number_of_observations
   )
 })
+
+test_that("find_map wth calculate exact probabilities will return probability", {
+  g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4], number_of_observations = 13)
+  g_map <- find_MAP(g,
+    max_iter = 10, show_progress_bar = FALSE,
+    optimizer = "full", return_probabilities = TRUE
+  )
+
+  my_post_prob <- c(
+    `()` = 5.94407046962869e-14, `(3,4)` = 1.28345840497673e-08,
+    `(2,3)` = 1.79948544844116e-08, `(2,3,4)` = 0.00233067019257437,
+    `(2,4,3)` = 0.00233067019257437, `(2,4)` = 1.28345840497673e-08,
+    `(1,2)` = 1.79948544844116e-08, `(1,2)(3,4)` = 1.06664567910635e-06,
+    `(1,2,3)` = 0.00354723535607391, `(1,2,3,4)` = 0.163153035951166,
+    `(1,2,4,3)` = 0.163153035951166, `(1,2,4)` = 0.00233067019257437,
+    `(1,3,2)` = 0.00354723535607391, `(1,3,4,2)` = 0.163153035951166,
+    `(1,3)` = 1.79948544844116e-08, `(1,3,4)` = 0.00233067019257437,
+    `(1,3)(2,4)` = 1.06664567910635e-06, `(1,3,2,4)` = 0.163153035951166,
+    `(1,4,3,2)` = 0.163153035951166, `(1,4,2)` = 0.00233067019257437,
+    `(1,4,3)` = 0.00233067019257437, `(1,4)` = 1.28345840497673e-08,
+    `(1,4,2,3)` = 0.163153035951166, `(1,4)(2,3)` = 1.06664567910635e-06
+  )
+  expect_equal(
+    attr(g_map, "optimization_info")[["post_probabilities"]],
+    my_post_prob
+  )
+  expect_equal(
+    sum(attr(g_map, "optimization_info")[["post_probabilities"]]),
+    1
+  )
+})

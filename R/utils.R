@@ -72,3 +72,11 @@ wrong_argument_abort <- function(i, x = "") {
 #'
 #' @noRd
 to_perm <- function(v) permutations::as.cycle(permutations::as.word(v))
+
+change_log_probabilities_unnorm_to_probabilities <- function(log_probabilities_unnorm) {
+  log_probabilities_unnorm <- log_probabilities_unnorm - max(log_probabilities_unnorm)
+  probabilities_unnorm <- exp(log_probabilities_unnorm)
+  probabilities <- probabilities_unnorm / sum(probabilities_unnorm)
+
+  probabilities
+}

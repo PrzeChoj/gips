@@ -1362,7 +1362,7 @@ summary.gips <- function(object, ...) {
 
   structure_constants <- get_structure_constants(object[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-  if (attr(object, "was_mean_estimated")){ # correction for estimating the mean
+  if (attr(object, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
   }
 
