@@ -25,27 +25,36 @@ rearrange_vector <- function(v) {
   shift_vector(v, which.min(v) - 1)
 }
 
-is.wholenumber <-
-  function(x, tol = .Machine$double.eps^0.5) {
-    if (!is.numeric(x)) {
-      return(rep(FALSE, length(x)))
-    }
-    abs(x - round(x)) < tol
+#' Is the numeric value representing the whole number
+#'
+#' This code is copied from [base::integer()] example.
+#'
+#' @noRd
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+  if (!is.numeric(x)) {
+    return(rep(FALSE, length(x)))
   }
+  abs(x - round(x)) < tol
+}
 
 #' Is matrix symmetric
 #'
 #' We did not use the `matrixcalc::is.positive.semi.definite` function, because
 #' here we have no checks(because they were done before) and the `tol`
-#' argument is taken relative, not absolute. The `tolerance` argument here is
-#' 1e-06, which is the same as in the `MASS::mvrnorm` function.
+#' argument there is taken relative, but we want the absolute.
+#' Also, the default of the `tolerance` argument here is `1e-06`,
+#' which is the same as in the `MASS::mvrnorm` function.
 #'
 #' Watch out that this function does NOT checks weather
 #' the `matrix_of_interest` is indeed a matrix.
 #'
 #' @noRd
 is.positive.semi.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
-  eigenvalues <- eigen(matrix_of_interest, symmetric = TRUE)$values
+  eigenvalues <- eigen(
+    matrix_of_interest,
+    symmetric = TRUE,
+    only.values = TRUE
+  )[["values"]]
 
   return(all(eigenvalues >= -tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
 }
