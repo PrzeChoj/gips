@@ -1362,6 +1362,9 @@ summary.gips <- function(object, ...) {
 
   structure_constants <- get_structure_constants(object[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  if (attr(object, "was_mean_estimated")){ # correction for estimating the mean
+    n0 <- n0 + 1
+  }
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(

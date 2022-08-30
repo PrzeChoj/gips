@@ -281,10 +281,13 @@ find_MAP <- function(g, max_iter = NA, return_probabilities = FALSE,
 
   structure_constants <- get_structure_constants(gips_optimized[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
+    n0 <- n0 + 1
+  }
   if (n0 > number_of_observations) {
     rlang::warn(c("The found permutation has n0 value bigger than the number of observations of the normal variable.",
-      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For more in-depth explanation, see the Vignette (TODO)."
+      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined."
+      # "i" = "For more in-depth explanation, see the Vignette (TODO)."
     ))
   }
 

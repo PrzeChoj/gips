@@ -880,3 +880,11 @@ test_that("start_permutation_log_posteriori was calculated correctly", {
     )
   )
 })
+
+test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
+  g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+  g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
+
+  expect_equal(summary.gips(g_no_em)[["n0"]], ncol(S)) # for known mean and perm id, one needs n >= p
+  expect_equal(summary.gips(g_em)[["n0"]], ncol(S) + 1) # for estimated mean and perm id, one needs n >= (p + 1)
+})
