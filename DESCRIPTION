@@ -17,7 +17,7 @@ Description: Find the permutation symmetry group such that the covariance
     number of parameters, the covariance matrix found with 'gips' better
     approximates the actual covariance behind the data and is less
     variance.
-License: GPL (>= 3) + file LICENSE
+License: GPL (>= 3)
 URL: https://github.com/PrzeChoj/gips, https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues
 Imports: 
