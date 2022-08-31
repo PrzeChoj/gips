@@ -21,6 +21,7 @@ QDA
 Validator
 argmax
 cardinality
+equalities
 optimizers
 posteriori
 unoptimized
