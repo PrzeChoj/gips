@@ -8,3 +8,4 @@ finding_cycles_on_matrix.*
 benchmark*
 tests/testthat/Rplots.pdf
 docs
+inst/doc
