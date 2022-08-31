@@ -123,9 +123,26 @@ test_that("Properly validate the gips class with no optimization or after a sing
   ),
   optimizer = "BF", show_progress_bar = FALSE
   )
+  
+  g_BF_prob <- find_MAP(gips(
+    matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+    number_of_observations,
+    was_mean_estimated = FALSE
+  ),
+  optimizer = "BF", show_progress_bar = FALSE,
+  return_probabilities = TRUE
+  )
+  
 
 
   # tests:
+  expect_silent(validate_gips(g1))
+  expect_silent(validate_gips(g2))
+  expect_silent(validate_gips(g3))
+  expect_silent(validate_gips(g_BF))
+  expect_silent(validate_gips(g_BF_prob))
+  
+  
   g_err <- g2
   class(g_err[[1]]) <- "test"
   expect_error(validate_gips(g_err))
@@ -344,18 +361,40 @@ test_that("Properly validate the gips class after multiple optimizations", {
   g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again.
-    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
   }
   g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
+  expect_message(expect_message(
+    g_MH_MH <- find_MAP(find_MAP(gips(
+      matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+      number_of_observations,
+      was_mean_estimated = FALSE
+    ),
+    optimizer = "MH", show_progress_bar = FALSE,
+    return_probabilities = FALSE, max_iter = 10
+    ),
+    optimizer = "MH", show_progress_bar = FALSE,
+    return_probabilities = TRUE, max_iter = 10
+    ))) # 2 messages
 
 
 
   # tests:
+  expect_silent(validate_gips(g1))
+  expect_silent(validate_gips(g2))
+  expect_silent(validate_gips(g3))
+  expect_silent(validate_gips(g_MH_MH))
+  
+  expect_true(length(attr(g2, "opt")[["visited_perms"]]) >= 9)
+  expect_false(is.null(attr(g2, "optimization_info")[["post_probabilities"]]))
+  expect_false(is.null(attr(g_MH_MH, "optimization_info")[["post_probabilities"]]))
+  
+  
   g_err <- g2
   class(g_err[[1]]) <- "test"
   expect_error(validate_gips(g_err))

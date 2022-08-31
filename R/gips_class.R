@@ -452,14 +452,15 @@ validate_gips <- function(g) {
           ")`."
         )
       )
-    } else if (all(optimization_info[["optimization_algorithm_used"]] != "Metropolis_Hastings") &&
-      !is.null(optimization_info[["post_probabilities"]])) {
+    } else if ((all(optimization_info[["optimization_algorithm_used"]] != "Metropolis_Hastings") && # all optimization algorithms
+                optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") && # last optimization algorithm
+               !is.null(optimization_info[["post_probabilities"]])) {
       abort_text <- c(abort_text,
-        "i" = "`post_probabilities` can olny be obtained with 'Metropolis_Hastings' optimization method.",
+        "i" = "`post_probabilities` can olny be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method.",
         "x" = paste0(
-          "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == ",
-          optimization_info[["optimization_algorithm_used"]],
-          "` and the `attr(g, 'optimization_info')[['post_probabilities']]` is not NULL, but is of type `",
+          "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == c('",
+          paste0(optimization_info[["optimization_algorithm_used"]], collapse = "', '"),
+          "')` and the `attr(g, 'optimization_info')[['post_probabilities']]` is not NULL, but is of type `",
           typeof(optimization_info[["post_probabilities"]]), "`."
         )
       )

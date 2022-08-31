@@ -653,7 +653,7 @@ combine_gips <- function(g1, g2) {
   # first, adjust the number of observations:
   attr(g2, "number_of_observations") <- attr(g1, "number_of_observations")
   attr(g2, "was_mean_estimated") <- attr(g1, "was_mean_estimated")
-
+  
   if (is.null(attr(g1, "optimization_info")) ||
     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force") { # when brute_force was used, forget the initial optimization
 
@@ -671,9 +671,8 @@ combine_gips <- function(g1, g2) {
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
 
   if (all(optimization_algorithm_used == "Metropolis_Hastings") &&
-    !is.null(optimization_info1[["post_probabilities"]]) &&
     !is.null(optimization_info2[["post_probabilities"]])) {
-    post_probabilities <- estimate_probabilities(visited_perms) # TODO(This can be combined more optimally, but I (Adam) think this will be rarely done nevertheless.)
+    post_probabilities <- estimate_probabilities(visited_perms) # TODO(This can be combined more optimally when !is.null(optimization_info1[["post_probabilities"]]). However, I (Adam) think this will be rarely done nevertheless.)
   } else {
     post_probabilities <- NULL
   }
