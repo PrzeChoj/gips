@@ -51,7 +51,7 @@ We propose to create a set of constraints on the covariance matrix such, that th
 maximum likelihood method can be used after all. The constraint we consider is - none other than - 
 invariance by permutation symmetry. 
 
-This package provides a way to find a *reasonable* permutation to be used as constraint in covariance matrix estimation. In this case *reasonable* means such, that maximizes the posterior distribution when using Wishart disribution on symmetric, positive definite matrices as a prior. The idea, exact formulas and algorithm sketch are a contribution of PAPER.
+This package provides a way to find a *reasonable* permutation to be used as constraint in covariance matrix estimation. In this case *reasonable* means such, that maximizes the Bayesian posterior distribution when using Wishart disribution on symmetric, positive definite matrices as a prior. The idea, exact formulas and algorithm sketch are a contribution of PAPER.
 
 ## Example
 
