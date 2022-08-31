@@ -117,19 +117,23 @@ test_that("Properly validate the gips class with no optimization or after a sing
   )
 
   g_BF <- find_MAP(gips(
-    matrix(c(1, 0.5, 0.5,
-             0.5, 1, 0.5,
-             0.5, 0.5, 1), nrow = 3),
+    matrix(c(
+      1, 0.5, 0.5,
+      0.5, 1, 0.5,
+      0.5, 0.5, 1
+    ), nrow = 3),
     number_of_observations,
     was_mean_estimated = FALSE
   ),
   optimizer = "BF", show_progress_bar = FALSE
   )
-  
+
   g_BF_prob <- find_MAP(gips(
-    matrix(c(1, 0.5, 0.5,
-             0.5, 1, 0.5,
-             0.5, 0.5, 1), nrow = 3),
+    matrix(c(
+      1, 0.5, 0.5,
+      0.5, 1, 0.5,
+      0.5, 0.5, 1
+    ), nrow = 3),
     number_of_observations,
     was_mean_estimated = FALSE
   ),
@@ -144,8 +148,8 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_silent(validate_gips(g3))
   expect_silent(validate_gips(g_BF))
   expect_silent(validate_gips(g_BF_prob))
-  
-  
+
+
   g_err <- g2
   class(g_err[[1]]) <- "test"
   expect_error(validate_gips(g_err))
@@ -383,7 +387,8 @@ test_that("Properly validate the gips class after multiple optimizations", {
     ),
     optimizer = "MH", show_progress_bar = FALSE,
     return_probabilities = TRUE, max_iter = 10
-    ))) # 2 messages
+    )
+  )) # 2 messages
 
 
 
@@ -392,12 +397,12 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_silent(validate_gips(g2))
   expect_silent(validate_gips(g3))
   expect_silent(validate_gips(g_MH_MH))
-  
+
   expect_true(length(attr(g2, "opt")[["visited_perms"]]) >= 9)
   expect_false(is.null(attr(g2, "optimization_info")[["post_probabilities"]]))
   expect_false(is.null(attr(g_MH_MH, "optimization_info")[["post_probabilities"]]))
-  
-  
+
+
   g_err <- g2
   class(g_err[[1]]) <- "test"
   expect_error(validate_gips(g_err))

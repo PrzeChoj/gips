@@ -608,7 +608,7 @@ brute_force <- function(S, number_of_observations,
   if (show_progress_bar) {
     close(progressBar)
   }
-  
+
   if (return_probabilities) { # calculate exact probabilities
     probabilities <- calculate_probabilities(all_perms_list, log_posteriori_values)
   } else {
@@ -652,7 +652,7 @@ combine_gips <- function(g1, g2) {
   # first, adjust the number of observations:
   attr(g2, "number_of_observations") <- attr(g1, "number_of_observations")
   attr(g2, "was_mean_estimated") <- attr(g1, "was_mean_estimated")
-  
+
   if (is.null(attr(g1, "optimization_info")) ||
     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force") { # when brute_force was used, forget the initial optimization
 

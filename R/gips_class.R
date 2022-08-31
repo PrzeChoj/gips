@@ -453,8 +453,8 @@ validate_gips <- function(g) {
         )
       )
     } else if ((all(optimization_info[["optimization_algorithm_used"]] != "Metropolis_Hastings") && # all optimization algorithms
-                optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") && # last optimization algorithm
-               !is.null(optimization_info[["post_probabilities"]])) {
+      optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") && # last optimization algorithm
+      !is.null(optimization_info[["post_probabilities"]])) {
       abort_text <- c(abort_text,
         "i" = "`post_probabilities` can olny be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method.",
         "x" = paste0(
@@ -893,12 +893,12 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
     log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
-    if (attr(x, "optimization_info")[["optimization_algorithm_used"]][length(attr(x, "optimization_info")[["optimization_algorithm_used"]])] == "brute_force"){
+    if (attr(x, "optimization_info")[["optimization_algorithm_used"]][length(attr(x, "optimization_info")[["optimization_algorithm_used"]])] == "brute_force") {
       start_perm <- attr(x, "optimization_info")[["visited_perms"]][1] # for brute_force, you have to refer to that perm this way
     } else {
       start_perm <- attr(x, "optimization_info")[["visited_perms"]][[1]]
     }
-    
+
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
