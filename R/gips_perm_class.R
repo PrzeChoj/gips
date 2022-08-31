@@ -325,3 +325,22 @@ add_cycle <- function(cycles, new_cycle) {
   insert_index <- findInterval(new_cycle[1], min_representatives)
   append(cycles, list(new_cycle), after = insert_index)
 }
+
+#' The same as [gips_perm()], but lacks safety checks
+#' 
+#' We highly advise against using this function.
+#' Instead, use [gips_perm()]. Although, this one is slightly faster.
+#' @noRd
+gips_perm_no_checks <- function(x, size){
+  cycles <- unclass(x)[[1]]
+  all_ints <- unlist(cycles)
+  representatives <- permutations::get1(x)
+  fixed_boolean <- permutations::fixed(x)
+  if (length(fixed_boolean) < size) {
+    fixed_boolean[(length(fixed_boolean) + 1):size] <- TRUE
+  }
+  fixed_elements <- which(fixed_boolean)
+  subcycles <- c(cycles, as.list(fixed_elements))
+  
+  new_gips_perm(rearrange_cycles(subcycles), size)
+}

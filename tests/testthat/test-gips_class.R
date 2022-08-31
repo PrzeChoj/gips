@@ -117,7 +117,9 @@ test_that("Properly validate the gips class with no optimization or after a sing
   )
 
   g_BF <- find_MAP(gips(
-    matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+    matrix(c(1, 0.5, 0.5,
+             0.5, 1, 0.5,
+             0.5, 0.5, 1), nrow = 3),
     number_of_observations,
     was_mean_estimated = FALSE
   ),
@@ -125,14 +127,15 @@ test_that("Properly validate the gips class with no optimization or after a sing
   )
   
   g_BF_prob <- find_MAP(gips(
-    matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+    matrix(c(1, 0.5, 0.5,
+             0.5, 1, 0.5,
+             0.5, 0.5, 1), nrow = 3),
     number_of_observations,
     was_mean_estimated = FALSE
   ),
   optimizer = "BF", show_progress_bar = FALSE,
   return_probabilities = TRUE
   )
-  
 
 
   # tests:

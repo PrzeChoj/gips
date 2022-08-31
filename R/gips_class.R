@@ -893,7 +893,12 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
     log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
-    start_perm <- attr(x, "optimization_info")[["visited_perms"]][[1]]
+    if (attr(x, "optimization_info")[["optimization_algorithm_used"]][length(attr(x, "optimization_info")[["optimization_algorithm_used"]])] == "brute_force"){
+      start_perm <- attr(x, "optimization_info")[["visited_perms"]][1] # for brute_force, you have to refer to that perm this way
+    } else {
+      start_perm <- attr(x, "optimization_info")[["visited_perms"]][[1]]
+    }
+    
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",

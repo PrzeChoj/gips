@@ -568,7 +568,7 @@ brute_force <- function(S, number_of_observations,
 
   perm_size <- dim(S)[1]
 
-  if (perm_size > 30) { # TODO(Test and set smaller, reasonable value. 15?)
+  if (perm_size > 18) {
     rlang::abort(c("Optimizer 'brute_force' cannot browse such a big permutional space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
@@ -610,8 +610,7 @@ brute_force <- function(S, number_of_observations,
   }
   
   if (return_probabilities) { # calculate exact probabilities
-    probabilities <- change_log_probabilities_unnorm_to_probabilities(log_posteriori_values)
-    names(probabilities) <- as.character(all_perms_list)
+    probabilities <- calculate_probabilities(all_perms_list, log_posteriori_values)
   } else {
     probabilities <- NULL
   }

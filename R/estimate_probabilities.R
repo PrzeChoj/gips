@@ -72,3 +72,50 @@ get_coprimes <- function(n) {
   are_coprime <- sapply(smaller_ints, function(m) numbers::coprime(n, m))
   smaller_ints[are_coprime]
 }
+
+
+#' Calculate exact posterior probabilities
+#'
+#' We use "second approach" from the paper.
+#'
+#' @param perms An output of permutations::allperms()
+#' @param log_posteriories A vector of all values of log posteriories of all `perms`.
+#'
+#' @returns A named numeric vector. Names: character representations of permutations.
+#' Elements: estimated posterior probabilities of permutations.
+#' @noRd
+calculate_probabilities <- function(perms, log_posteriories) {
+  for (i in 1:19){
+    perms_size <- i
+    if (prod(1:perms_size) == length(perms)){
+      break
+    }
+  }
+  if (perms_size == 19){
+    rlang::abort("Too big of a perms size!")
+  }
+  
+  group_representatives <- character(0)
+  for (i in 1:length(perms)){
+    # We should use `g_perm <- gips_perm(perms[i], perms_size)`,
+    # but this is faster, because it lacks safe checks:
+    g_perm <- gips_perm_no_checks(perms[i], perms_size)
+    
+    # the `get_group_representative` is what we want to use:
+    group_representatives[i] <- as.character(get_group_representative(g_perm))
+  }
+  
+  
+  # get rid of the repeated permutations:
+  groups_unrepeated_log_posteriories <- log_posteriories[1]
+  names(groups_unrepeated_log_posteriories)[1] <- group_representatives[1]
+  for (i in 2:length(group_representatives)){
+    if (!(group_representatives[i] %in% names(groups_unrepeated_log_posteriories))){
+      groups_unrepeated_log_posteriories[length(groups_unrepeated_log_posteriories) + 1] <- log_posteriories[i]
+      names(groups_unrepeated_log_posteriories)[length(groups_unrepeated_log_posteriories)] <- group_representatives[i]
+    }
+  }
+  
+  
+  change_log_probabilities_unnorm_to_probabilities(groups_unrepeated_log_posteriories)
+}
