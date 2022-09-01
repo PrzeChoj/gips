@@ -15,8 +15,9 @@ Required if \code{perm} is of a \code{permutations::cycle} class.}
 \item{basis}{A matrix with basis vectors in COLUMNS. Identity by default.}
 }
 \value{
-A matrix \code{perm_size} x \code{perm_size} with columns from V object
-elements, sorted according to Theorem 6.
+A matrix \code{perm_size} x \code{perm_size} with columns from
+vector elements \eqn{\{v_k^{(c)}\}} according to
+\href{https://doi.org/10.1214/22-AOS2174}{Theorem 6 from references}.
 }
 \description{
 Calculate orthogonal matrix U_Gamma for decomposition in
@@ -35,14 +36,14 @@ To calculate it, \href{https://doi.org/10.1214/22-AOS2174}{Theorem 6 from refere
 }
 \examples{
 gperm <- gips_perm("(1,2,3)(4,5)", 5)
-U_g <- prepare_orthogonal_matrix(gperm)
+U_Gamma <- prepare_orthogonal_matrix(gperm)
 
 number_of_observations <- 10
 X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
 S <- cov(X)
 X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 
-t(U_g) \%*\% X \%*\% U_g # the non-zeros only on diagonal and [1,2] and [2,1]
+t(U_Gamma) \%*\% X \%*\% U_Gamma # the non-zeros only on diagonal and [1,2] and [2,1]
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.

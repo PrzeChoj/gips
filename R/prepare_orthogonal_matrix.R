@@ -17,8 +17,9 @@
 #' @param perm_size Size of permutation.
 #'     Required if `perm` is of a `permutations::cycle` class.
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
-#' @returns A matrix `perm_size` x `perm_size` with columns from V object
-#'     elements, sorted according to Theorem 6.
+#' @returns A matrix `perm_size` x `perm_size` with columns from
+#'     vector elements \eqn{\{v_k^{(c)}\}} according to
+#'     [Theorem 6 from references](https://doi.org/10.1214/22-AOS2174).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
@@ -31,14 +32,14 @@
 #'
 #' @examples
 #' gperm <- gips_perm("(1,2,3)(4,5)", 5)
-#' U_g <- prepare_orthogonal_matrix(gperm)
+#' U_Gamma <- prepare_orthogonal_matrix(gperm)
 #'
 #' number_of_observations <- 10
 #' X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
 #' S <- cov(X)
 #' X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 #'
-#' t(U_g) %*% X %*% U_g # the non-zeros only on diagonal and [1,2] and [2,1]
+#' t(U_Gamma) %*% X %*% U_Gamma # the non-zeros only on diagonal and [1,2] and [2,1]
 #' @export
 prepare_orthogonal_matrix <- function(perm, perm_size = NULL, basis = NULL) {
   if (!inherits(perm, "gips_perm")) {
