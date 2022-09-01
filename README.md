@@ -8,29 +8,36 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
-status](https://www.r-pkg.org/badges/version-last-release/gips)](https://CRAN.R-project.org/package=gips)
+status](https://www.r-pkg.org/badges/version/gips)](https://CRAN.R-project.org/package=gips)
 [![R-CMD-check](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://codecov.io/gh/PrzeChoj/gips/branch/main/graph/badge.svg)](https://codecov.io/gh/PrzeChoj/gips?branch=main)
 <!-- badges: end -->
 
 gips - Gaussian model Invariant by Permutation Symmetry
 
-`gips` is an R package that finds the permutation symmetry group such
-that the covariance matrix of the given data is invariant under it.
-Knowledge of such a permutation can drastically decrease the number of
-parameters needed to fit the model. That means that with `gips`, it is
-possible to find the Gaussian model with more parameters than the number
-of observations. Sometimes, even if the number of observations is bigger
-than the number of parameters, the covariance matrix found with `gips`
-better approximates the actual covariance behind the data.
+`gips` is an R package that performs the Bayesian model selection
+procedure within Gaussian models invariant by permutation symmetry
+described by a cyclic subgroup. Permutation invariance of the Gaussian
+distribution results in certain symmetries of its covariance matrix.
+Such symmetry conditions reduce the number of parameters to estimate.
+This is especially useful when parsimony is needed, i.e. when the number
+of variables is substantially larger than the number of observations.
+Given the Gaussian multivariate sample and two hyperparameters, through
+a brute-force search or the Metropolis-Hasting algorithm, `gips` will
+try to find a cyclic subgroup that best fits the data and will return
+the estimated posterior probabilities for all cyclic subgroups.
 
 ## `gips` will help you with two things:
 
-1.  Exploratory Data Analysis (EDA) - with `gips`, you can find the
-    permutation of features that approximately does not change the
-    covariance matrix.
-2.  Modeling - with `gips`, you can accurately use the found permutation
-    to fit the normal models like LDA or QDA.
+1.  Finding hidden symmetries between the variables. `gips` can be used
+    as an exploratory tool searching the space of permutation symmetries
+    of the Gaussian vector.
+2.  Covariance estimation. The MLE for covariance matrix is known to
+    exist if and only if the number of variables is less or equal to the
+    number of observations. Additional knowledge of symmetries allows to
+    significantly weaken this requirement. Moreover, the reduction of
+    model dimension brings the advantage in terms of precision of
+    covariance estimation.
 
 ## Installation
 
@@ -136,10 +143,10 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,2,3,4,5,6) was found after 720 log_posteriori calculations, is 2509.07979453551 times more likely than the starting,  permutation.
+#> The permutation (2,5,3,6) was found after 720 log_posteriori calculations, is 123.845008471236 times more likely than the starting, () permutation.
 
 summary(g_map)$n0
-#> [1] 1
+#> [1] 3
 summary(g_map)$n0 <= 4
 #> [1] TRUE
 
@@ -147,13 +154,13 @@ summary(g_map)$n0 <= 4
   # so we can estimate the covariance matrix
   # with the Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
-#>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
-#> [1,] 2.502065 2.270992 2.051661 1.820588 2.051661 2.270992
-#> [2,] 2.270992 2.502065 2.270992 2.051661 1.820588 2.051661
-#> [3,] 2.051661 2.270992 2.502065 2.270992 2.051661 1.820588
-#> [4,] 1.820588 2.051661 2.270992 2.502065 2.270992 2.051661
-#> [5,] 2.051661 1.820588 2.051661 2.270992 2.502065 2.270992
-#> [6,] 2.270992 2.051661 1.820588 2.051661 2.270992 2.502065
+#>              [,1]       [,2]       [,3]         [,4]       [,5]       [,6]
+#> [1,]  0.098633812 0.04607666 0.04607666 -0.006480499 0.04607666 0.04607666
+#> [2,]  0.046076656 1.16676492 1.08584461  1.352890482 0.27266235 0.27266235
+#> [3,]  0.046076656 1.08584461 1.16676492  1.352890482 0.27266235 0.27266235
+#> [4,] -0.006480499 1.35289048 1.35289048  2.712261501 1.35289048 1.35289048
+#> [5,]  0.046076656 0.27266235 0.27266235  1.352890482 1.16676492 1.08584461
+#> [6,]  0.046076656 0.27266235 0.27266235  1.352890482 1.08584461 1.16676492
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
