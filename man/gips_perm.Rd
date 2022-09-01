@@ -16,8 +16,8 @@ validate_gips_perm(g)
 \item{x}{An object created with a \code{permutations} package or any object
 that can be processed with the \code{\link[permutations:permutation]{permutations::permutation()}} function.}
 
-\item{size}{An integer. Size of permutation
-(AKA cardinality of a set, on which permutation is defined).}
+\item{size}{An integer. Size of a permutation
+(AKA cardinality of a set, on which permutation is defined; see examples).}
 
 \item{rearranged_cycles}{A list of rearranged integer vectors.
 Each vector corresponds to a single cycle of a permutation.}

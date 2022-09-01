@@ -16,11 +16,11 @@ Returns the value of the Gamma function.
 }
 \description{
 It calculates the value of the integral defined in
-\href{https://doi.org/10.1214/22-AOS2174}{Definition 11 from references}.
+\href{https://arxiv.org/pdf/2004.03503.pdf}{Definition 11 from references}.
 It is implementation of the
-\href{https://doi.org/10.1214/22-AOS2174}{Theorem 8 from references}
+\href{https://arxiv.org/pdf/2004.03503.pdf}{Theorem 8 from references}
 and is using the
-\href{https://doi.org/10.1214/22-AOS2174}{formula (19) from references}.
+\href{https://arxiv.org/pdf/2004.03503.pdf}{formula (19) from references}.
 }
 \examples{
 id_perm <- gips_perm(permutations::id, 2)
@@ -33,6 +33,7 @@ calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://arxiv.org/pdf/2004.03503.pdf}{arXiv link};
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{

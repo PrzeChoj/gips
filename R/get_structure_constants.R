@@ -3,21 +3,22 @@
 #' Constants that are useful for internal calculations of integrals and
 #' eventually the posteriori probability in [log_posteriori_of_gips()].
 #'
-#' Uses the [Theorem 5 from references](https://doi.org/10.1214/22-AOS2174)
+#' Uses the [Theorem 5 from references](https://arxiv.org/pdf/2004.03503.pdf)
 #' to calculate the constants.
 #'
 #' @param perm An object of a `gips_perm` class.
 #'
 #' @returns Returns a list of 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from
-#'     [Theorem 1 from references](https://doi.org/10.1214/22-AOS2174)
+#'     [Theorem 1 from references](https://arxiv.org/pdf/2004.03503.pdf)
 #'     and the beginning of
-#'     [section 3.1. from references](https://doi.org/10.1214/22-AOS2174).
+#'     [section 3.1. from references](https://arxiv.org/pdf/2004.03503.pdf).
 #' @export
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [arXiv link](https://arxiv.org/pdf/2004.03503.pdf);
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso

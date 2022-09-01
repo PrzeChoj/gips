@@ -1,7 +1,7 @@
 #' Prepare orthogonal matrix
 #'
 #' Calculate orthogonal matrix U_Gamma for decomposition in
-#' [Theorem 1 from references](https://doi.org/10.1214/22-AOS2174).
+#' [Theorem 1 from references](https://arxiv.org/pdf/2004.03503.pdf).
 #'
 #' Given X - invariant under the permutation `perm`. Call Gamma the
 #' permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
@@ -11,19 +11,21 @@
 #' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has
 #' a lot of zeros (see examples).
 #'
-#' To calculate it, [Theorem 6 from references](https://doi.org/10.1214/22-AOS2174) is used.
+#' To calculate it, uses
+#' [Theorem 6 from references](https://arxiv.org/pdf/2004.03503.pdf).
 #'
-#' @param perm Object of a `gips_perm` or a `permutations::cycle` class.
-#' @param perm_size Size of permutation.
+#' @param perm An object of a `gips_perm` or a `permutations::cycle` class.
+#' @param perm_size Size of a permutation.
 #'     Required if `perm` is of a `permutations::cycle` class.
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
-#' @returns A matrix `perm_size` x `perm_size` with columns from
-#'     vector elements \eqn{\{v_k^{(c)}\}} according to
-#'     [Theorem 6 from references](https://doi.org/10.1214/22-AOS2174).
+#' @returns A square matrix of size `perm_size` by `perm_size` with
+#'     columns from vector elements \eqn{v_k^{(c)}} according to
+#'     [Theorem 6 from references](https://arxiv.org/pdf/2004.03503.pdf).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [arXiv link](https://arxiv.org/pdf/2004.03503.pdf);
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso

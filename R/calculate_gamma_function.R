@@ -1,11 +1,11 @@
 #' Calculate Gamma function
 #'
 #' It calculates the value of the integral defined in
-#' [Definition 11 from references](https://doi.org/10.1214/22-AOS2174).
+#' [Definition 11 from references](https://arxiv.org/pdf/2004.03503.pdf).
 #' It is implementation of the
-#' [Theorem 8 from references](https://doi.org/10.1214/22-AOS2174)
+#' [Theorem 8 from references](https://arxiv.org/pdf/2004.03503.pdf)
 #' and is using the
-#' [formula (19) from references](https://doi.org/10.1214/22-AOS2174).
+#' [formula (19) from references](https://arxiv.org/pdf/2004.03503.pdf).
 #'
 #' @inheritParams get_structure_constants
 #' @param lambda A positive real number.
@@ -17,6 +17,7 @@
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [arXiv link](https://arxiv.org/pdf/2004.03503.pdf);
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso

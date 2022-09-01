@@ -5,8 +5,8 @@
 #'
 #' @param x An object created with a `permutations` package or any object
 #'     that can be processed with the [permutations::permutation()] function.
-#' @param size An integer. Size of permutation
-#'     (AKA cardinality of a set, on which permutation is defined).
+#' @param size An integer. Size of a permutation
+#'     (AKA cardinality of a set, on which permutation is defined; see examples).
 #'
 #' @section Methods for a `gips` class:
 #' * [as.character.gips_perm()]
