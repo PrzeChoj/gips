@@ -935,3 +935,19 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
   expect_equal(summary.gips(g_no_em)[["n0"]], ncol(S)) # for known mean and perm id, one needs n >= p
   expect_equal(summary.gips(g_em)[["n0"]], ncol(S) + 1) # for estimated mean and perm id, one needs n >= (p + 1)
 })
+
+test_that("get_probabilities_from_gips works", {
+  g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
+  g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = TRUE)
+  
+  expect_silent(probs <- get_probabilities_from_gips(g_map))
+  expect_type(probs, "double")
+  expect_named(probs)
+  
+  expect_error(get_probabilities_from_gips(g),
+               "Did You forget to optimize `g`?")
+  
+  g_map_no_prob <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = FALSE)
+  expect_silent(get_probabilities_from_gips(g_map_no_prob))
+  expect_null(get_probabilities_from_gips(g_map_no_prob))
+})

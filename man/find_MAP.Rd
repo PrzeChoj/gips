@@ -121,6 +121,9 @@ The \code{gips} object is used as the \code{g} parameter.
 \item \code{\link[=plot.gips]{plot.gips()}} - Practical plotting function for
 visualizing the optimization process.
 \item \code{\link[=summary.gips]{summary.gips()}} - The function that summarizes the output of optimization.
+\item \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}} - When
+\code{find_MAP(return_probabilities = TRUE)} was called,
+then those probabilities can be extracted with this function.
 \item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that the optimizers
 of \code{find_MAP()} tries to find the argmax of.
 }

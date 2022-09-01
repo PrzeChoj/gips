@@ -65,6 +65,9 @@
 #' * [plot.gips()] - Practical plotting function for
 #'     visualizing the optimization process.
 #' * [summary.gips()] - The function that summarizes the output of optimization.
+#' * [get_probabilities_from_gips()] - When
+#'     `find_MAP(return_probabilities = TRUE)` was called,
+#'     then those probabilities can be extracted with this function.
 #' * [log_posteriori_of_gips()] - The function that the optimizers
 #'     of `find_MAP()` tries to find the argmax of.
 #'
