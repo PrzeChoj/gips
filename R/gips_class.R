@@ -883,16 +883,6 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
         )
       )
     }
-
-    if (log_value) {
-      printing_text <- c(
-        printing_text,
-        paste0(
-          "has log posteriori ",
-          round(log_posteriori, digits = digits)
-        )
-      )
-    }
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
     log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
@@ -925,13 +915,16 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
         as.character(start_perm), " permutation"
       ))
     }
-
-    if (log_value) {
-      printing_text <- c(printing_text, paste0(
+  }
+  
+  if (log_value) {
+    printing_text <- c(
+      printing_text,
+      paste0(
         "has log posteriori ",
         round(log_posteriori, digits = digits)
-      ))
-    }
+      )
+    )
   }
 
   cat(paste0(printing_text,

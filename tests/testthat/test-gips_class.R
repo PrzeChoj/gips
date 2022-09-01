@@ -815,8 +815,18 @@ test_that("print.gips() works", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
 
-  expect_output(print(g), "The permutation \\(\\)\n - is 1 times more likely")
-  expect_output(print(g_map), "\n - was found after 10 log_posteriori calculations\n - is")
+  expect_output(
+    print(g),
+    "The permutation \\(\\)\n - is 1 times more likely than the id, \\(\\) permutation"
+  )
+  expect_output(
+    print(g, log_value = TRUE),
+    "The permutation \\(\\)\n - is 1 times more likely than the id, \\(\\) permutation\n - has log posteriori"
+  )
+  expect_output(
+    print(g_map),
+    "\n - was found after 10 log_posteriori calculations\n - is"
+  )
 
   # oneline:
   expect_output(
@@ -824,9 +834,14 @@ test_that("print.gips() works", {
     "The permutation \\(\\); is 1 times more likely"
   )
   expect_output(
+    print(g, oneline = TRUE, log_value = TRUE),
+    "permutation; has log posteriori "
+  )
+  expect_output(
     print(g_map, oneline = TRUE),
     "; was found after 10 log_posteriori calculations; is"
   )
+  
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
