@@ -17,11 +17,11 @@ Required if \code{perm} is of a \code{permutations::cycle} class.}
 \value{
 A square matrix of size \code{perm_size} by \code{perm_size} with
 columns from vector elements \eqn{v_k^{(c)}} according to
-\href{https://arxiv.org/pdf/2004.03503.pdf}{Theorem 6 from references}.
+\href{https://arxiv.org/abs/2004.03503}{Theorem 6 from references}.
 }
 \description{
 Calculate orthogonal matrix U_Gamma for decomposition in
-\href{https://arxiv.org/pdf/2004.03503.pdf}{Theorem 1 from references}.
+\href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}.
 }
 \details{
 Given X - invariant under the permutation \code{perm}. Call Gamma the
@@ -33,7 +33,7 @@ To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has
 a lot of zeros (see examples).
 
 To calculate it, uses
-\href{https://arxiv.org/pdf/2004.03503.pdf}{Theorem 6 from references}.
+\href{https://arxiv.org/abs/2004.03503}{Theorem 6 from references}.
 }
 \examples{
 gperm <- gips_perm("(1,2,3)(4,5)", 5)
@@ -50,7 +50,7 @@ t(U_Gamma) \%*\% X \%*\% U_Gamma # the non-zeros only on diagonal and [1,2] and 
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
-\href{https://arxiv.org/pdf/2004.03503.pdf}{arXiv link};
+\href{https://arxiv.org/abs/2004.03503}{arXiv link};
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{

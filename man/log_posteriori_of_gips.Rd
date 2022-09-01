@@ -22,7 +22,7 @@ the Maximum A Posteriori (MAP) Estimator.
 }
 \details{
 It is calculated using
-\href{https://arxiv.org/pdf/2004.03503.pdf}{formulas (33) and (27) from references}.
+\href{https://arxiv.org/abs/2004.03503}{formulas (33) and (27) from references}.
 
 If \code{Inf} or \code{NaN} is reached, it produces a warning.
 }
@@ -56,7 +56,7 @@ exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.7
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
-\href{https://arxiv.org/pdf/2004.03503.pdf}{arXiv link};
+\href{https://arxiv.org/abs/2004.03503}{arXiv link};
 \href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{

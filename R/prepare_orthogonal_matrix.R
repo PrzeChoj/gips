@@ -1,7 +1,7 @@
 #' Prepare orthogonal matrix
 #'
 #' Calculate orthogonal matrix U_Gamma for decomposition in
-#' [Theorem 1 from references](https://arxiv.org/pdf/2004.03503.pdf).
+#' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' Given X - invariant under the permutation `perm`. Call Gamma the
 #' permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
@@ -12,7 +12,7 @@
 #' a lot of zeros (see examples).
 #'
 #' To calculate it, uses
-#' [Theorem 6 from references](https://arxiv.org/pdf/2004.03503.pdf).
+#' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @param perm An object of a `gips_perm` or a `permutations::cycle` class.
 #' @param perm_size Size of a permutation.
@@ -20,12 +20,12 @@
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
 #' @returns A square matrix of size `perm_size` by `perm_size` with
 #'     columns from vector elements \eqn{v_k^{(c)}} according to
-#'     [Theorem 6 from references](https://arxiv.org/pdf/2004.03503.pdf).
+#'     [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
-#' [arXiv link](https://arxiv.org/pdf/2004.03503.pdf);
+#' [arXiv link](https://arxiv.org/abs/2004.03503);
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso

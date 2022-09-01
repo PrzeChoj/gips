@@ -7,7 +7,7 @@
 #' the Maximum A Posteriori (MAP) Estimator.
 #'
 #' It is calculated using
-#' [formulas (33) and (27) from references](https://arxiv.org/pdf/2004.03503.pdf).
+#' [formulas (33) and (27) from references](https://arxiv.org/abs/2004.03503).
 #'
 #' If `Inf` or `NaN` is reached, it produces a warning.
 #'
@@ -18,7 +18,7 @@
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
-#' [arXiv link](https://arxiv.org/pdf/2004.03503.pdf);
+#' [arXiv link](https://arxiv.org/abs/2004.03503);
 #' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso
