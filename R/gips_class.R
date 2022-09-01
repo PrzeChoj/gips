@@ -872,19 +872,16 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       "The permutation ", x[[1]],
       ifelse(compare_to_original,
         paste0(
-          " is ", round(exp(log_posteriori - log_posteriori_id),
+          "\n - is ", round(exp(log_posteriori - log_posteriori_id),
             digits = digits
           ),
           " times more likely than the id, () permutation"
         ),
         ""
       ),
-      ifelse(compare_to_original && log_value,
-        ",", ""
-      ),
       ifelse(log_value,
         paste0(
-          " has log posteriori ",
+          "\n - has log posteriori ",
           round(log_posteriori, digits = digits)
         ),
         ""
@@ -908,12 +905,12 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
     }
     cat(paste0(
       "The permutation ", x[[1]],
-      " was found after ",
+      "\n - was found after ",
       length(attr(x, "optimization_info")[["log_posteriori_values"]]),
       " log_posteriori calculations",
       ifelse(compare_to_original,
         paste0(
-          ", is ", round(exp(log_posteriori - log_posteriori_start),
+          "\n - is ", round(exp(log_posteriori - log_posteriori_start),
             digits = digits
           ),
           " times more likely than the starting, ",
@@ -923,7 +920,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       ),
       ifelse(log_value,
         paste0(
-          ", has log posteriori ",
+          "\n - has log posteriori ",
           round(log_posteriori, digits = digits)
         ),
         ""

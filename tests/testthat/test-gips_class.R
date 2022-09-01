@@ -813,10 +813,10 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 test_that("print.gips() works", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
-  expect_output(print(g), "The permutation \\(\\) is 1 times more likely")
+  expect_output(print(g), "The permutation \\(\\)\n - is 1 times more likely")
 
   g <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
-  expect_output(print(g), "was found after 10 log_posteriori calculations, is")
+  expect_output(print(g), "was found after 10 log_posteriori calculations\n - is")
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
