@@ -34,14 +34,21 @@ section below.}
 
 \item{show_progress_bar}{A boolean.
 Indicate whether or not to show the progress bar.
-When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.}
+\itemize{
+\item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.
+\item When \code{return_probabilities==TRUE}, then
+shows the second progress bar for the time
+when the probabilities are calculated
+}}
 
 \item{return_probabilities}{A boolean. TRUE can only be provided for:
 \itemize{
 \item \code{optimizer=="MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities
 \item \code{optimizer=="BF"} - use brute force results to
-calculate exact posterior probabilities
+calculate exact posterior probabilities;
+this is costly, so additional progress bar is shown
+(when \code{show_progress_bar==TRUE})
 }}
 }
 \value{

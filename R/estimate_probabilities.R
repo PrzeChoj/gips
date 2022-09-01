@@ -3,13 +3,26 @@
 #' We use "second approach" from the paper.
 #'
 #' @param perms A list of `gips_perm` objects. Visited groups during Metropolis-Hastings run.
+#' @param show_progress_bar A boolean. Indicate whether or not to show the progress bar.
 #'
 #' @returns A named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations.
 #' @noRd
-estimate_probabilities <- function(perms) {
-  group_representatives <- sapply(perms, function(p) as.character(get_group_representative(p)))
+estimate_probabilities <- function(perms, show_progress_bar = FALSE) {
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 1)
+  }
+  group_representatives <- sapply(1:length(perms), function(i) {
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, i)
+    }
+    as.character(get_group_representative(perms[[i]]))
+  })
   repr_counts <- table(group_representatives)
+  if (show_progress_bar) {
+    close(progressBar)
+  }
+  
   repr_weights <- sapply(names(repr_counts), function(p_str) {
     perm <- permutations::char2cycle(p_str)
     p_order <- permutations::permorder(perm)
@@ -19,6 +32,7 @@ estimate_probabilities <- function(perms) {
   probabilities <- unnormalized_probabilities / sum(unnormalized_probabilities)
   probabilities <- as.numeric(probabilities)
   names(probabilities) <- names(unnormalized_probabilities)
+  
   probabilities
 }
 
@@ -80,11 +94,16 @@ get_coprimes <- function(n) {
 #'
 #' @param perms An output of permutations::allperms()
 #' @param log_posteriories A vector of all values of log posteriories of all `perms`.
+#' @param show_progress_bar A boolean. Indicate whether or not to show the progress bar.
 #'
 #' @returns A named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations.
 #' @noRd
-calculate_probabilities <- function(perms, log_posteriories) {
+calculate_probabilities <- function(perms, log_posteriories, show_progress_bar = FALSE) {
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = 20*length(perms), initial = 1)
+  }
+  
   for (i in 1:19) {
     perms_size <- i
     if (prod(1:perms_size) == length(perms)) {
@@ -97,6 +116,10 @@ calculate_probabilities <- function(perms, log_posteriories) {
 
   group_representatives <- character(0)
   for (i in 1:length(perms)) {
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, 19*i)
+    }
+    
     # We should use `g_perm <- gips_perm(perms[i], perms_size)`,
     # but this is faster, because it lacks safe checks:
     g_perm <- gips_perm_no_checks(perms[i], perms_size)
@@ -110,10 +133,17 @@ calculate_probabilities <- function(perms, log_posteriories) {
   groups_unrepeated_log_posteriories <- log_posteriories[1]
   names(groups_unrepeated_log_posteriories)[1] <- group_representatives[1]
   for (i in 2:length(group_representatives)) {
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, 19*length(perms)+i)
+    }
     if (!(group_representatives[i] %in% names(groups_unrepeated_log_posteriories))) {
       groups_unrepeated_log_posteriories[length(groups_unrepeated_log_posteriories) + 1] <- log_posteriories[i]
       names(groups_unrepeated_log_posteriories)[length(groups_unrepeated_log_posteriories)] <- group_representatives[i]
     }
+  }
+  
+  if (show_progress_bar) {
+    close(progressBar)
   }
 
 

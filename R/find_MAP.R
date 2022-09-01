@@ -47,12 +47,17 @@
 #' section below.
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar.
-#'     When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
+#'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
+#'   * When `return_probabilities==TRUE`, then
+#'       shows the second progress bar for the time
+#'       when the probabilities are calculated
 #' @param return_probabilities A boolean. TRUE can only be provided for:
 #'   * `optimizer=="MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities
 #'   * `optimizer=="BF"` - use brute force results to
-#'       calculate exact posterior probabilities
+#'       calculate exact posterior probabilities;
+#'       this is costly, so additional progress bar is shown
+#'       (when `show_progress_bar==TRUE`)
 #'
 #'
 #' @returns Returns an optimized object of a `gips` class.
@@ -403,7 +408,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
   function_calls <- length(log_posteriori_values)
 
   if (return_probabilities) {
-    probabilities <- estimate_probabilities(visited_perms)
+    probabilities <- estimate_probabilities(visited_perms, show_progress_bar)
   } else {
     probabilities <- NULL
   }
@@ -613,7 +618,7 @@ brute_force <- function(S, number_of_observations,
   }
 
   if (return_probabilities) { # calculate exact probabilities
-    probabilities <- calculate_probabilities(all_perms_list, log_posteriori_values)
+    probabilities <- calculate_probabilities(all_perms_list, log_posteriori_values, show_progress_bar)
   } else {
     probabilities <- NULL
   }
@@ -651,7 +656,7 @@ brute_force <- function(S, number_of_observations,
 #' If g2 was optimized with "brute_force", forget the g1.
 #'
 #' @noRd
-combine_gips <- function(g1, g2) {
+combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   # first, adjust the number of observations:
   attr(g2, "number_of_observations") <- attr(g1, "number_of_observations")
   attr(g2, "was_mean_estimated") <- attr(g1, "was_mean_estimated")
@@ -674,7 +679,7 @@ combine_gips <- function(g1, g2) {
 
   if (all(optimization_algorithm_used == "Metropolis_Hastings") &&
     !is.null(optimization_info2[["post_probabilities"]])) {
-    post_probabilities <- estimate_probabilities(visited_perms) # TODO(This can be combined more optimally when !is.null(optimization_info1[["post_probabilities"]]). However, I (Adam) think this will be rarely done nevertheless.)
+    post_probabilities <- estimate_probabilities(visited_perms, show_progress_bar) # TODO(This can be combined more optimally when !is.null(optimization_info1[["post_probabilities"]]). It is significant, because those calculations are like the same speed as the MH itself. However, I (Adam) think this will be rarely done nevertheless.)
   } else {
     post_probabilities <- NULL
   }
