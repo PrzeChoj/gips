@@ -29,7 +29,8 @@ value the start permutation has
 \item \code{times_more_likely_than_id} - how many more likely
 the \code{start_permutation} is over the identity permutation, \verb{()}.
 It can be a number less than 1, which means
-the identity permutation, \verb{()}, is more likely
+the identity permutation, \verb{()}, is more likely. Keep in mind
+this number can be really big and can be overflowed to \code{Inf}
 \item \code{n0} - the minimal number of observations needed for
 a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
@@ -38,13 +39,11 @@ the posteriori value
 were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
-}
 \itemize{
 \item TRUE means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
 \item FALSE means the \code{S} parameter was calculated with
 \code{S = t(X) \%*\% X / number_of_observations}
 }
-\enumerate{
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 }
 \item For optimized \code{gips} object:
@@ -60,7 +59,8 @@ represented before optimization; the first visited permutation
 value the start permutation has
 \item \code{times_more_likely_than_start} - how many more likely
 the \code{found_permutation} is over the \code{start_permutation}.
-It cannot be a number less than 1
+It cannot be a number less than 1. Keep in mind this number
+can be really big and can be overflowed to \code{Inf}
 \item \code{n0} - the minimal number of observations needed for
 a MAP Estimator of the covariance matrix to exist
 \item \code{S_matrix} - the underlying matrix; this is used to calculate

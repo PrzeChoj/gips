@@ -1265,7 +1265,8 @@ plot.gips <- function(x, type = NA,
 #'   4. `times_more_likely_than_id` - how many more likely
 #'       the `start_permutation` is over the identity permutation, `()`.
 #'       It can be a number less than 1, which means
-#'       the identity permutation, `()`, is more likely
+#'       the identity permutation, `()`, is more likely. Keep in mind
+#'       this number can be really big and can be overflowed to `Inf`
 #'   5. `n0` - the minimal number of observations needed for
 #'       a MAP Estimator of the covariance matrix to exist
 #'   6. `S_matrix` - the underlying matrix; this is used to calculate
@@ -1274,9 +1275,9 @@ plot.gips <- function(x, type = NA,
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
 #'   8. `was_mean_estimated` - given by the user while creating the `gips` object:
-#'   * TRUE means the `S` parameter was output of [stats::cov()] function
-#'   * FALSE means the `S` parameter was calculated with
-#'       `S = t(X) %*% X / number_of_observations`
+#'       * TRUE means the `S` parameter was output of [stats::cov()] function
+#'       * FALSE means the `S` parameter was calculated with
+#'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
 #' * For optimized `gips` object:
 #'   1. `optimized` - TRUE
@@ -1290,7 +1291,8 @@ plot.gips <- function(x, type = NA,
 #'       value the start permutation has
 #'   6. `times_more_likely_than_start` - how many more likely
 #'       the `found_permutation` is over the `start_permutation`.
-#'       It cannot be a number less than 1
+#'       It cannot be a number less than 1. Keep in mind this number
+#'       can be really big and can be overflowed to `Inf`
 #'   7. `n0` - the minimal number of observations needed for
 #'       a MAP Estimator of the covariance matrix to exist
 #'   8. `S_matrix` - the underlying matrix; this is used to calculate
