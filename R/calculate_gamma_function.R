@@ -76,6 +76,8 @@ calculate_gamma_function <- function(perm, lambda) {
 #' @param d_i Single element from `get_structure_constants`.
 #'
 #' @returns Logarithm of value of Gamma function.
+#' 
+#' @noRd
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
   if (lambda <= dim_omega_i / r_i - 1) {
     rlang::warn(c("Gamma integral is divergent for the given lambda value and structure constants.",

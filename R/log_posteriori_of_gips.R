@@ -1,4 +1,4 @@
-#' A log of a posteriori that the covariance matrix is invariant under permutation.
+#' A log of a posteriori that the covariance matrix is invariant under permutation
 #'
 #' More precisely, it is the logarithm of an unnormalized
 #' posterior probability.

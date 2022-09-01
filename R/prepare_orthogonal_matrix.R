@@ -4,7 +4,7 @@
 #' [Theorem 1 from references](https://doi.org/10.1214/22-AOS2174).
 #'
 #' Given X - invariant under the permutation `perm`. Call Gamma the
-#' permutations cyclic group \eqn{<perm> = {perm, perm^2, ...}}.
+#' permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
 #'
 #' Then, U_Gamma is such an orthogonal matrix that X is *"pretty"* in it.
 #'
