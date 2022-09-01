@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-author: "Paweł Morgen, Przemysław Chojecki"
+author: "Przemysław Chojecki, Paweł Morgen"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction}
@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+options(scipen=999) # turn off scientific notation
 ```
 
 ## The problem
@@ -55,7 +57,33 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 
 ## Example
 
+```{r toy_example_data_making, include = FALSE}
+require("MASS") # for mvrnorm()
 
-```{r setup}
+perm_size <- 4
+mu <- runif(4, -10, 10) # Assume we don't know the mean
+sigma_matrix <- matrix(c(6.25, 2, 0.5, 0.5,
+                         2, 3, 0, 0.6,
+                         0.5, 0, 1, 0.8,
+                         0.5, 0.6, 0.8, 1), ncol=4)
+# sigma_matrix is a matrix invariant under permutation (3,4)
+number_of_observations <- 8
+toy_example_data <- withr::with_seed(1234, code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix))
+```
+
+```{r toy_example_data_show, fig_width = 0.3, fig.align = "center"}
 library(gips)
+
+toy_example_data
+S <- cov(toy_example_data)
+
+g <- gips(S = S, number_of_observations = nrow(toy_example_data))
+
+plot(g, type = "heatmap")
+
+g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE)
+
+plot(g_map, type = "heatmap")
+
+get_probabilities_from_gips(g_map)
 ```
