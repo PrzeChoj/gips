@@ -813,10 +813,20 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 test_that("print.gips() works", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
-  expect_output(print(g), "The permutation \\(\\)\n - is 1 times more likely")
+  g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
 
-  g <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
-  expect_output(print(g), "was found after 10 log_posteriori calculations\n - is")
+  expect_output(print(g), "The permutation \\(\\)\n - is 1 times more likely")
+  expect_output(print(g_map), "\n - was found after 10 log_posteriori calculations\n - is")
+
+  # oneline:
+  expect_output(
+    print(g, oneline = TRUE),
+    "The permutation \\(\\); is 1 times more likely"
+  )
+  expect_output(
+    print(g_map, oneline = TRUE),
+    "; was found after 10 log_posteriori calculations; is"
+  )
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
@@ -939,14 +949,16 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
 test_that("get_probabilities_from_gips works", {
   g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = TRUE)
-  
+
   expect_silent(probs <- get_probabilities_from_gips(g_map))
   expect_type(probs, "double")
   expect_named(probs)
-  
-  expect_error(get_probabilities_from_gips(g),
-               "Did You forget to optimize `g`?")
-  
+
+  expect_error(
+    get_probabilities_from_gips(g),
+    "Did You forget to optimize `g`?"
+  )
+
   g_map_no_prob <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = FALSE)
   expect_silent(get_probabilities_from_gips(g_map_no_prob))
   expect_null(get_probabilities_from_gips(g_map_no_prob))

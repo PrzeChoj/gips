@@ -4,7 +4,14 @@
 \alias{print.gips}
 \title{Printing \code{gips} object}
 \usage{
-\method{print}{gips}(x, digits = Inf, compare_to_original = TRUE, log_value = FALSE, ...)
+\method{print}{gips}(
+  x,
+  digits = Inf,
+  compare_to_original = TRUE,
+  log_value = FALSE,
+  oneline = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An object of a \code{gips} class.}
@@ -22,6 +29,9 @@ times more likely is the current permutation compared to:
 
 \item{log_value}{A logical. Whether to print the value
 of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}. Default to \code{FALSE}.}
+
+\item{oneline}{A logical. Whether to print in
+one or multiple lines. Default to \code{FALSE}.}
 
 \item{...}{The additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
