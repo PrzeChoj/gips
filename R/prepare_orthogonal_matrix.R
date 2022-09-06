@@ -8,11 +8,11 @@
 #'
 #' Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X.
 #'
-#' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a 
-#' block-diagonal structure, which is ensured by 
+#' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a
+#' block-diagonal structure, which is ensured by
 #' [Theorem 1 from references](https://arxiv.org/abs/2004.03503)
 #'
-#' Formula for U_Gamma can be found in 
+#' Formula for U_Gamma can be found in
 #' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @param perm An object of a `gips_perm` or a `permutations::cycle` class.

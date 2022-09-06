@@ -841,7 +841,6 @@ test_that("print.gips() works", {
     print(g_map, oneline = TRUE),
     "; was found after 10 log_posteriori calculations; is"
   )
-  
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {

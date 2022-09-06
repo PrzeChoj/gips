@@ -1,21 +1,22 @@
 #' Find the Maximum A Posteriori Estimation
 #'
-#' Use one of the optimization algorithms to find the permutation that maximizes
-#' a posteriori probability based on observed data. Not all optimization algorithms will
-#' always find the MAP, but they try to find a significant value.
-#' More information can be found in the
-#' 'Possible algorithms to use as optimizers' section below.
+#' Use one of the optimization algorithms to find the permutation that
+#' maximizes a posteriori probability based on observed data.
+#' Not all optimization algorithms will always find the MAP, but they try
+#' to find a significant value. More information can be found in
+#' the 'Possible algorithms to use as optimizers' section below.
 #'
 #' @section Possible algorithms to use as optimizers:
-#' 
+#'
 #' For a more in-depth explanation, see Vignette TODO().
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
 #'     The algorithm will draw a random transposition in every iteration
 #'     and consider changing the current state (permutation).
-#'     When the `max_iter` is reached, the algorithm will return
-#'     the MAP Estimator as the best permutation calculated so far.
+#'     When the `max_iter` is reached, the algorithm will return the best
+#'     permutation calculated so far as the MAP Estimator. This implements
+#'     the [*Second approach* from references, section 4.1.2](https://arxiv.org/abs/2004.03503).
 #'
 #' * `"hill_climbing"`, `"HC"` - to use hill climbing algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
@@ -30,7 +31,7 @@
 #'
 #' * `"brute_force"`, `"BF"`, `"full"` - to use the Brute Force algorithm that
 #'     checks the whole permutation space of a given size. This algorithm will
-#'     definitely find the Maximum A Posteriori Estimation but is very
+#'     definitely find the actual Maximum A Posteriori Estimation but is very
 #'     computationally expensive for bigger space.
 #'
 #' @param g Object of a `gips` class

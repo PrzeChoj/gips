@@ -20,6 +20,8 @@ Description: Find the permutation symmetry group such that the covariance
 License: GPL (>= 3)
 URL: https://github.com/PrzeChoj/gips, https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues
+Depends: 
+    R (>= 3.5.0)
 Imports: 
     numbers,
     permutations,

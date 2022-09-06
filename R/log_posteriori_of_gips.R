@@ -118,7 +118,7 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
 #' Uniformly random transposition of perm_size elements
 #'
 #' @param perm_size A size from which take transpositions.
-#' 
+#'
 #' @noRd
 runif_transposition <- function(perm_size) {
   sample(perm_size, 2, replace = FALSE)

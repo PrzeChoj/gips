@@ -22,7 +22,7 @@ estimate_probabilities <- function(perms, show_progress_bar = FALSE) {
   if (show_progress_bar) {
     close(progressBar)
   }
-  
+
   repr_weights <- sapply(names(repr_counts), function(p_str) {
     perm <- permutations::char2cycle(p_str)
     p_order <- permutations::permorder(perm)
@@ -32,7 +32,7 @@ estimate_probabilities <- function(perms, show_progress_bar = FALSE) {
   probabilities <- unnormalized_probabilities / sum(unnormalized_probabilities)
   probabilities <- as.numeric(probabilities)
   names(probabilities) <- names(unnormalized_probabilities)
-  
+
   probabilities
 }
 
@@ -101,9 +101,9 @@ get_coprimes <- function(n) {
 #' @noRd
 calculate_probabilities <- function(perms, log_posteriories, show_progress_bar = FALSE) {
   if (show_progress_bar) {
-    progressBar <- utils::txtProgressBar(min = 0, max = 20*length(perms), initial = 1)
+    progressBar <- utils::txtProgressBar(min = 0, max = 20 * length(perms), initial = 1)
   }
-  
+
   for (i in 1:19) {
     perms_size <- i
     if (prod(1:perms_size) == length(perms)) {
@@ -117,9 +117,9 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
   group_representatives <- character(0)
   for (i in 1:length(perms)) {
     if (show_progress_bar) {
-      utils::setTxtProgressBar(progressBar, 19*i)
+      utils::setTxtProgressBar(progressBar, 19 * i)
     }
-    
+
     # We should use `g_perm <- gips_perm(perms[i], perms_size)`,
     # but this is faster, because it lacks safe checks:
     g_perm <- gips_perm_no_checks(perms[i], perms_size)
@@ -134,14 +134,14 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
   names(groups_unrepeated_log_posteriories)[1] <- group_representatives[1]
   for (i in 2:length(group_representatives)) {
     if (show_progress_bar) {
-      utils::setTxtProgressBar(progressBar, 19*length(perms)+i)
+      utils::setTxtProgressBar(progressBar, 19 * length(perms) + i)
     }
     if (!(group_representatives[i] %in% names(groups_unrepeated_log_posteriories))) {
       groups_unrepeated_log_posteriories[length(groups_unrepeated_log_posteriories) + 1] <- log_posteriories[i]
       names(groups_unrepeated_log_posteriories)[length(groups_unrepeated_log_posteriories)] <- group_representatives[i]
     }
   }
-  
+
   if (show_progress_bar) {
     close(progressBar)
   }
