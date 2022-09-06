@@ -12,7 +12,7 @@
 #'
 #' @export
 #'
-#' @returns Returns the value of the Gamma function.
+#' @returns Returns the value of the Gamma function of the colored cone.
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."

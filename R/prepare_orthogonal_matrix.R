@@ -3,15 +3,16 @@
 #' Calculate orthogonal matrix U_Gamma for decomposition in
 #' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
-#' Given X - invariant under the permutation `perm`. Call Gamma the
+#' Given X - a matrix invariant under the permutation `perm`. Call Gamma the
 #' permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
 #'
-#' Then, U_Gamma is such an orthogonal matrix that X is *"pretty"* in it.
+#' Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X. 
 #'
-#' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has
-#' a lot of zeros (see examples).
+#' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a 
+#' block-diagonal structure, which is ensured by 
+#' [Theorem 1 from references](https://arxiv.org/abs/2004.03503)
 #'
-#' To calculate it, uses
+#' Formula for U_Gamma can be found in 
 #' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @param perm An object of a `gips_perm` or a `permutations::cycle` class.
