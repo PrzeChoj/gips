@@ -28,8 +28,8 @@ applicable. What now?
 
 ## Invariance by permutation
 
-Quite often, some variables can be used interchangeably. In the multivariate Gaussian 
-case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following matrix, variables X1 and X3 are interchangeable:
+In some cases, the interchange of variables in the vector does not change its distribution.
+In the multivariate Gaussian case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
 
 ```{r symvariant_matrix, echo=FALSE}
 X <- matrix(c(1, 2, 3,
@@ -39,9 +39,7 @@ X <- matrix(c(1, 2, 3,
 heatmap(X, Rowv = NA, Colv = NA, main = "", symm=TRUE)
 ```
 
-Now, we can state this interchangeability property in terms of permutations. In our case,
-swapping the first with the third row and then swapping the first and third columns results
-in the same matrix. In other words, this matrix is **invariant by permutation** (1->3, 3->1). Or in cyclic form (1,3).
+Now, we can state this interchangeability property in terms of permutations. In our case, the distribution of (X1, X2, X3) is **invariant by permutation** (1->3, 3->1), or in cyclic form (1,3). This is equivalent to saying that swapping the first with the third row and then swapping the first and third columns of covariance matrix results in the same matrix. Then we say that this covariance matrix is **invariant by permutation**.
 
 Of course, in the samples collected in the real world, no perfect equalities will be observed. 
 Still, if the respective values in the (poorly) estimated covariance matrix were close, adopting
@@ -53,7 +51,7 @@ We propose creating a set of constraints on the covariance matrix so that the
 maximum likelihood method can be used after all. The constraint we consider is - none other than - 
 invariance under permutation symmetry. 
 
-This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means such that maximizes the Bayesian posterior distribution when using Wishart distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch contribute to PAPER.
+This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means such that maximizes the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch contribute to PAPER.
 
 ## Example
 
