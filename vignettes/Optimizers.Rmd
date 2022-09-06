@@ -1,0 +1,161 @@
+---
+title: "Optimizers"
+author: "Przemysław Chojecki, Paweł Morgen"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Optimizers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(scipen=999) # turn off scientific notation
+```
+
+# Available optimizers
+
+To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. However, the space of permutations is enormous - for permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers:
+
+* `"Metropolis_Hastings"`, `"MH"`
+* `"hill_climbing"`, `"HC"`
+* `"brute_force"`, `"BF"`, `"full"`
+
+```{r setup}
+library(gips)
+
+?find_MAP
+```
+
+
+# Metropolis Hastings
+
+This optimizer is implementation of the [*Second approach* from references(1), section 4.1.2](https://arxiv.org/abs/2004.03503).
+
+### Example:
+
+```{r Metropolis_Hastings, cache=TRUE}
+perm_size <- 70
+mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size))
+number_of_observations <- 50
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+S <- cov(Z) # Assume we have to estimate the mean
+
+g <- gips(S, number_of_observations)
+plot(g)
+
+# TODO(Make the max_iter bigger:)
+g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
+g_map
+
+plot(g_map, type = 'both')
+```
+
+
+# Hill climbing
+
+This optimizer walks on the space of permutations. Let's say it is in permutation $\sigma$. Then, in iteration it will calculate all posteriori probabilities of permutations of a form $\sigma \circ (i,j)$, where $1 \le i < j \le \text{perm_size}$. Then it will choose the best among those and start the next iteration from the new $\sigma$.
+
+### Mathy definition:
+
+$$\sigma_0 = ()$$
+
+$$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{\text{posteriori}(perm)\}$$
+
+Where:
+$$\text{neighbors}(\sigma) = \{\sigma \circ (i,j) : 1 \le i < j \le \text{perm_size}\}$$
+
+### Pseudocode:
+
+```{r}
+hill_climb <- function(g){
+  perm <- g[[1]]
+  perm_posteriori <- log_posteriori_of_gips(g)
+  perm_size <- attr(perm, "size")
+  S <- attr(g, "S")
+  number_of_observations <- attr(g, "number_of_observations")
+  
+  best_neighbour <- NULL
+  best_neighbour_posteriori <- - Inf
+  
+  while (best_neighbour_posteriori > perm_posteriori){
+    best_neighbour <- NULL
+    best_neighbour_posteriori <- - Inf
+    
+    for (i in 1:(perm_size-1)){
+      for (j in (i+1):perm_size){
+        neighbour <- gips:::compose_with_transposition(perm, c(i, j))
+        neighbour_posteriori <- log_posteriori_of_gips(gips(S, number_of_observations,
+                                                            perm = neighbour))
+        
+        if (neighbour_posteriori > best_neighbour_posteriori){
+          best_neighbour <- neighbour
+          best_neighbour_posteriori <- neighbour_posteriori
+        } # end if
+      } # end for j
+    } # end for i
+  } # end while
+  
+  return(best_neighbour)
+}
+```
+
+### Example:
+
+```{r hill_climbing, cache=TRUE}
+perm_size <- 25
+mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size))
+number_of_observations <- 20
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+S <- cov(Z) # Assume we have to estimate the mean
+
+g <- gips(S, number_of_observations)
+plot(g, type = 'heatmap')
+
+# TODO(Make the max_iter bigger:)
+g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
+g_map
+plot(g_map, type = 'both')
+```
+
+
+# Brute Force
+
+This is the only optimizer that will definitely find the actual MAP Estimator. This is only recommended for small spaces ($p \le 8$). Bigger spaces can also be browsed, but the required time is probably too long.
+
+### Example:
+
+```{r brute_force, cache=TRUE}
+perm_size <- 6
+mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+number_of_observations <- 13
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+S <- cov(Z) # Assume we have to estimate the mean
+
+g <- gips(S, number_of_observations)
+
+g_map <- find_MAP(g, optimizer = "brute_force")
+g_map
+```
+
+
+# References
+
+(1) Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503.pdf); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)

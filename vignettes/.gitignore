@@ -1,2 +1,4 @@
 *.html
 *.R
+/Optimizers_cache/*
+/Optimizers_files/*
