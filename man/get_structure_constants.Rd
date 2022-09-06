@@ -17,7 +17,7 @@ and the beginning of
 \href{https://arxiv.org/abs/2004.03503.pdf}{section 3.1. from references}.
 }
 \description{
-Constants that are useful for internal calculations of integrals and
+Finds constants that are necessary for internal calculations of integrals and
 eventually the posteriori probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 }
 \details{

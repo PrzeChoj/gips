@@ -56,18 +56,20 @@ Returns an optimized object of a \code{gips} class.
 }
 \description{
 Use one of the optimization algorithms to find the permutation that maximizes
-a posteriori based on observed data. Not all optimization algorithms will
+a posteriori probability based on observed data. Not all optimization algorithms will
 always find the MAP, but they try to find a significant value.
 More information can be found in the
 'Possible algorithms to use as optimizers' section below.
 }
 \section{Possible algorithms to use as optimizers}{
 
+
+For a more in-depth explanation, see Vignette TODO().
 \itemize{
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm;
 \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
 The algorithm will draw a random transposition in every iteration
-and consider changing the current one.
+and consider changing the current state (permutation).
 When the \code{max_iter} is reached, the algorithm will return
 the MAP Estimator as the best permutation calculated so far.
 \item \code{"hill_climbing"}, \code{"HC"} - to use hill climbing algorithm;
@@ -120,6 +122,13 @@ if (require("graphics")) {
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "BF")
 summary(g_map_BF)
+}
+\references{
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+"Model selection in the space of Gaussian models invariant by symmetry."
+The Annals of Statistics, 50(3) 1747-1774 June 2022.
+\href{https://arxiv.org/abs/2004.03503.pdf}{arXiv link};
+\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
 }
 \seealso{
 \itemize{

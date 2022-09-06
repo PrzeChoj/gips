@@ -12,7 +12,7 @@ calculate_gamma_function(perm, lambda)
 \item{lambda}{A positive real number.}
 }
 \value{
-Returns the value of the Gamma function.
+Returns the value of the Gamma function of the colored cone.
 }
 \description{
 It calculates the value of the integral defined in

@@ -58,46 +58,31 @@ Assume we have the data, and we want to understand its structure:
 ``` r
 library(gips)
 
-Z <- as.matrix(mtcars)
-
-# Assume the data is normal.
-  # Looking at this (`hist(Z[,2])`) distribution,
-  # it is not a remarkably sensible assumption,
-  # but let's do it for the example.
-
-S <- cor(Z)
-g <- gips(S, nrow(Z), was_mean_estimated = TRUE)
-plot(g, type = 'heatmap')
-```
-
-<img src="man/figures/README-example_mean_unknown-1.png" width="100%" />
-
-``` r
-# We can see some strong relationships between columns in this matrix.
-  # For example, 9 and 10 have very similar correlations to other variables.
-
-# Let's see if the find_MAP will find this relationship:
-g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
-#> ========================================================================
-plot(g_MAP, type = 'heatmap')
-```
-
-<img src="man/figures/README-example_mean_unknown-2.png" width="100%" />
-
-``` r
-# Even after a short time (only 10 iterations),
-  # find_MAP found some relationship.
-
-# Let's see what it will find with a slightly bigger budget:
-g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
-#> ===============================================================================
-plot(g_MAP, type = 'heatmap')
-```
-
-<img src="man/figures/README-example_mean_unknown-3.png" width="100%" />
-
-``` r
-# find_MAP found the (9,10) relationship and even something more.
+# this example will be redo.
+# Old version:
+  # Z <- as.matrix(mtcars)
+# 
+# # Assume the data is normal.
+# # Looking at this (`hist(Z[,2])`) distribution,
+# # it is not a remarkably sensible assumption,
+# # but let's do it for the example.
+# 
+# S <- cor(Z)
+# g <- gips(S, nrow(Z), was_mean_estimated = TRUE)
+# plot(g, type = 'heatmap')
+# # We can see some strong relationships between columns in this matrix.
+# # For example, 9 and 10 have very similar correlations to other variables.
+# 
+# # Let's see if the find_MAP will find this relationship:
+# g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
+# plot(g_MAP, type = 'heatmap')
+# # Even after a short time (only 10 iterations),
+# # find_MAP found some relationship.
+# 
+# # Let's see what it will find with a slightly bigger budget:
+# g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
+# plot(g_MAP, type = 'heatmap')
+# # find_MAP found the (9,10) relationship and even something more.
 ```
 
 ### Example 2 - modeling
@@ -143,10 +128,12 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (2,5,3,6) was found after 720 log_posteriori calculations, is 123.845008471236 times more likely than the starting, () permutation.
+#> The permutation (1,3,2,4,6,5)
+#>  - was found after 720 log_posteriori calculations
+#>  - is 66.813281223385 times more likely than the starting, () permutation.
 
 summary(g_map)$n0
-#> [1] 3
+#> [1] 1
 summary(g_map)$n0 <= 4
 #> [1] TRUE
 
@@ -154,13 +141,13 @@ summary(g_map)$n0 <= 4
   # so we can estimate the covariance matrix
   # with the Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
-#>              [,1]       [,2]       [,3]         [,4]       [,5]       [,6]
-#> [1,]  0.098633812 0.04607666 0.04607666 -0.006480499 0.04607666 0.04607666
-#> [2,]  0.046076656 1.16676492 1.08584461  1.352890482 0.27266235 0.27266235
-#> [3,]  0.046076656 1.08584461 1.16676492  1.352890482 0.27266235 0.27266235
-#> [4,] -0.006480499 1.35289048 1.35289048  2.712261501 1.35289048 1.35289048
-#> [5,]  0.046076656 0.27266235 0.27266235  1.352890482 1.16676492 1.08584461
-#> [6,]  0.046076656 0.27266235 0.27266235  1.352890482 1.08584461 1.16676492
+#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+#> [1,] 0.9674321 0.9325013 0.5698557 0.5349250 0.5698557 0.9325013
+#> [2,] 0.9325013 0.9674321 0.5698557 0.5698557 0.5349250 0.9325013
+#> [3,] 0.5698557 0.5698557 0.9674321 0.9325013 0.9325013 0.5349250
+#> [4,] 0.5349250 0.5698557 0.9325013 0.9674321 0.9325013 0.5698557
+#> [5,] 0.5698557 0.5349250 0.9325013 0.9325013 0.9674321 0.5698557
+#> [6,] 0.9325013 0.9325013 0.5349250 0.5698557 0.5698557 0.9674321
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")

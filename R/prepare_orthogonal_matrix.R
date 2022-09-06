@@ -3,10 +3,10 @@
 #' Calculate orthogonal matrix U_Gamma for decomposition in
 #' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
-#' Given X - a matrix invariant under the permutation `perm`. Call Gamma the
-#' permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
+#' Given X - a matrix invariant under the permutation `perm`. Call Gamma
+#' the permutations cyclic group \eqn{<perm> = \{perm, perm^2, ...\}}.
 #'
-#' Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X. 
+#' Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X.
 #'
 #' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a 
 #' block-diagonal structure, which is ensured by 

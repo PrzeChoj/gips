@@ -7,6 +7,8 @@
 #' 'Possible algorithms to use as optimizers' section below.
 #'
 #' @section Possible algorithms to use as optimizers:
+#' 
+#' For a more in-depth explanation, see Vignette TODO().
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
@@ -14,7 +16,6 @@
 #'     and consider changing the current state (permutation).
 #'     When the `max_iter` is reached, the algorithm will return
 #'     the MAP Estimator as the best permutation calculated so far.
-#'     XXX Trzeba dopisac artykul do Articles o sposobie poruszania sie MC.
 #'
 #' * `"hill_climbing"`, `"HC"` - to use hill climbing algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
