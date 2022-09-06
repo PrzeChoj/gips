@@ -1,7 +1,7 @@
 #' Find the Maximum A Posteriori Estimation
 #'
 #' Use one of the optimization algorithms to find the permutation that maximizes
-#' a posteriori based on observed data. Not all optimization algorithms will
+#' a posteriori probability based on observed data. Not all optimization algorithms will
 #' always find the MAP, but they try to find a significant value.
 #' More information can be found in the
 #' 'Possible algorithms to use as optimizers' section below.
@@ -11,9 +11,10 @@
 #' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
 #'     The algorithm will draw a random transposition in every iteration
-#'     and consider changing the current one.
+#'     and consider changing the current state (permutation).
 #'     When the `max_iter` is reached, the algorithm will return
 #'     the MAP Estimator as the best permutation calculated so far.
+#'     XXX Trzeba dopisac artykul do Articles o sposobie poruszania sie MC.
 #'
 #' * `"hill_climbing"`, `"HC"` - to use hill climbing algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
@@ -63,6 +64,12 @@
 #' @returns Returns an optimized object of a `gips` class.
 #'
 #' @export
+#'
+#' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+#' "Model selection in the space of Gaussian models invariant by symmetry."
+#' The Annals of Statistics, 50(3) 1747-1774 June 2022.
+#' [arXiv link](https://arxiv.org/abs/2004.03503.pdf);
+#' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 #'
 #' @seealso
 #' * [gips()] - The constructor of a `gips` class.

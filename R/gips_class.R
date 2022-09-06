@@ -1273,8 +1273,8 @@ plot.gips <- function(x, type = NA,
 #'       It can be a number less than 1, which means
 #'       the identity permutation, `()`, is more likely. Keep in mind
 #'       this number can be really big and can be overflowed to `Inf`
-#'   5. `n0` - the minimal number of observations needed for
-#'       a MAP Estimator of the covariance matrix to exist
+#'   5. `n0` - the minimal number of observations needed for existence of 
+#'       the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
 #'   6. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
 #'   7. `number_of_observations` - the number of observations that
@@ -1299,8 +1299,8 @@ plot.gips <- function(x, type = NA,
 #'       the `found_permutation` is over the `start_permutation`.
 #'       It cannot be a number less than 1. Keep in mind this number
 #'       can be really big and can be overflowed to `Inf`
-#'   7. `n0` - the minimal number of observations needed for
-#'       a MAP Estimator of the covariance matrix to exist
+#'   7. `n0` - the minimal number of observations needed for existence of 
+#'       the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
 #'   8. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
 #'   9. `number_of_observations` - the number of observations that
