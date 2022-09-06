@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-author: "Przemysław Chojecki, Paweł Morgen"
+author: "Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction}

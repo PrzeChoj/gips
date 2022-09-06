@@ -64,7 +64,7 @@ the 'Possible algorithms to use as optimizers' section below.
 \section{Possible algorithms to use as optimizers}{
 
 
-For a more in-depth explanation, see Vignette TODO().
+For a more in-depth explanation, see \code{vignette("Optimizers")}.
 \itemize{
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm;
 \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
@@ -143,5 +143,7 @@ visualizing the optimization process.
 then those probabilities can be extracted with this function.
 \item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that the optimizers
 of \code{find_MAP()} tries to find the argmax of.
+\item \code{vignette("Optimizers")} - A place to learn more about
+the available optimizers.
 }
 }

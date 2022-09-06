@@ -8,7 +8,7 @@
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a more in-depth explanation, see Vignette TODO().
+#' For a more in-depth explanation, see `vignette("Optimizers")`.
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
@@ -84,6 +84,8 @@
 #'     then those probabilities can be extracted with this function.
 #' * [log_posteriori_of_gips()] - The function that the optimizers
 #'     of `find_MAP()` tries to find the argmax of.
+#' * `vignette("Optimizers")` - A place to learn more about
+#'     the available optimizers.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()

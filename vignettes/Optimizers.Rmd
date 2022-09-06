@@ -1,6 +1,6 @@
 ---
 title: "Optimizers"
-author: "Przemysław Chojecki, Paweł Morgen"
+author: "Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Optimizers}
@@ -154,6 +154,11 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
+
+
+# Discussion
+
+We encourage everyone to leave a comment on available and potential new optimizers on the [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). There, one can also find the implemented optimizers but not yet added to `gips`.
 
 
 # References
