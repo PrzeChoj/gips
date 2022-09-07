@@ -35,7 +35,7 @@ the \code{gips_perm} object or anything that can be used as
 the \code{x} parameter in the \code{\link[=gips_perm]{gips_perm()}} function.
 They do not have to be of the same class.}
 
-\item{S, number_of_observations, was_mean_estimated, delta, D_matrix}{The same parameters as in the \code{\link[=gips]{gips()}} function.
+\item{S, number_of_observations, delta, D_matrix, was_mean_estimated}{The same parameters as in the \code{\link[=gips]{gips()}} function.
 If at least one of \code{perm1} or \code{perm2} is of a \code{gips} class,
 they are overwritten.}
 

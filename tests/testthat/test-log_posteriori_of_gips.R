@@ -139,8 +139,8 @@ test_that("compare_posteriories_of_perms properly calculates", {
   gips_example_perm2 <- gips_perm(example_perm2, 6)
   gips_id <- gips_perm("()", 6)
   
-  g <- gips(matrix_invariant_by_example_perm, 13, perm = gips_example_perm)
-  g2 <- gips(matrix_invariant_by_example_perm, 13, perm = gips_example_perm2)
+  g <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm)
+  g2 <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm2)
   
   expect_equal(compare_log_posteriories_of_perms(g, example_perm, print_output = FALSE),
                0)

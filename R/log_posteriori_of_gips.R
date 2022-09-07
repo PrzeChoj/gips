@@ -202,7 +202,7 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'     the `gips_perm` object or anything that can be used as
 #'     the `x` parameter in the [gips_perm()] function.
 #'     They do not have to be of the same class.
-#' @param S,number_of_observations,was_mean_estimated,delta,D_matrix
+#' @param S,number_of_observations,delta,D_matrix,was_mean_estimated
 #'     The same parameters as in the [gips()] function.
 #'     If at least one of `perm1` or `perm2` is of a `gips` class,
 #'     they are overwritten.
@@ -347,9 +347,9 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   
   
   
-  log_post1 <- log_posteriori_of_perm(perm1, S, number_of_observations,
+  log_post1 <- log_posteriori_of_perm(perm1, S, edited_number_of_observations,
                                       delta, D_matrix)
-  log_post2 <- log_posteriori_of_perm(perm2, S, number_of_observations,
+  log_post2 <- log_posteriori_of_perm(perm2, S, edited_number_of_observations,
                                       delta, D_matrix)
   
   out <- log_post1 - log_post2
