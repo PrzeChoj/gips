@@ -213,6 +213,12 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' 
 #' @returns `compare_posteriories_of_perms` returns the value of
 #'     how many times the `perm1` is more likely than `perm2`.
+#'     
+#' @seealso
+#' * [print.gips()] - The function that prints the posterior of
+#'     the optimized `gips` object compared to the starting permutation.
+#' * [summary.gips()] - The function that calculates the posterior of
+#'     the optimized `gips` object compared to the starting permutation.
 #' 
 #' @export
 #' 
@@ -240,19 +246,19 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 #' 
 #' compare_posteriories_of_perms(g_map, g, print_output = FALSE)
-#' log_compare_posteriories_of_perms(g_map, g, print_output = FALSE)
+#' compare_log_posteriories_of_perms(g_map, g, print_output = FALSE)
 compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                           number_of_observations = NULL,
                                           delta = 3, D_matrix = NULL,
                                           was_mean_estimated = TRUE,
                                           print_output = TRUE){
-  log_compare <- log_compare_posteriories_of_perms(perm1, perm2, S = S,
+  compare_log <- compare_log_posteriories_of_perms(perm1, perm2, S = S,
                                                    number_of_observations = number_of_observations,
                                                    delta = delta, D_matrix = D_matrix,
                                                    was_mean_estimated = was_mean_estimated,
                                                    print_output = FALSE)
   
-  out <- exp(log_compare)
+  out <- exp(compare_log)
   
   if (print_output) {
     if (inherits(perm1, "gips")){
@@ -284,11 +290,11 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 #'     logarithmic version of `compare_posteriories_of_perms`.
 #'     The natural logarithm is used.
 #' 
-#' @returns `log_compare_posteriories_of_perms` returns the logarithm of
+#' @returns `compare_log_posteriories_of_perms` returns the logarithm of
 #'     how many times the `perm1` is more likely than `perm2`.
 #' 
 #' @export
-log_compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
+compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                               number_of_observations = NULL,
                                               delta = 3, D_matrix = NULL,
                                               was_mean_estimated = TRUE,

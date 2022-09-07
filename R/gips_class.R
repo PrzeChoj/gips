@@ -840,6 +840,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @seealso
 #' * [find_MAP()] - The function that makes
 #'     an optimized `gips` object out of the unoptimized one.
+#' * [compare_posteriories_of_perms()] - The function that prints
+#'     the compared posteriories between any two permutations,
+#'     not only compared to the starting one or id.
 #'
 #' @returns Returns an invisible NULL.
 #' @export

@@ -2,7 +2,7 @@
 % Please edit documentation in R/log_posteriori_of_gips.R
 \name{compare_posteriories_of_perms}
 \alias{compare_posteriories_of_perms}
-\alias{log_compare_posteriories_of_perms}
+\alias{compare_log_posteriories_of_perms}
 \title{Compare the posteriori probabilities of 2 permutations}
 \usage{
 compare_posteriories_of_perms(
@@ -16,7 +16,7 @@ compare_posteriories_of_perms(
   print_output = TRUE
 )
 
-log_compare_posteriories_of_perms(
+compare_log_posteriories_of_perms(
   perm1,
   perm2 = "()",
   S = NULL,
@@ -48,7 +48,7 @@ the computed value will be returned visibly.}
 \code{compare_posteriories_of_perms} returns the value of
 how many times the \code{perm1} is more likely than \code{perm2}.
 
-\code{log_compare_posteriories_of_perms} returns the logarithm of
+\code{compare_log_posteriories_of_perms} returns the logarithm of
 how many times the \code{perm1} is more likely than \code{perm2}.
 }
 \description{
@@ -56,7 +56,7 @@ Check which permutation is more likely and how much more likely.
 }
 \section{Functions}{
 \itemize{
-\item \code{log_compare_posteriories_of_perms()}: More stable,
+\item \code{compare_log_posteriories_of_perms()}: More stable,
 logarithmic version of \code{compare_posteriories_of_perms}.
 The natural logarithm is used.
 
@@ -85,5 +85,13 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
 
 compare_posteriories_of_perms(g_map, g, print_output = FALSE)
-log_compare_posteriories_of_perms(g_map, g, print_output = FALSE)
+compare_log_posteriories_of_perms(g_map, g, print_output = FALSE)
+}
+\seealso{
+\itemize{
+\item \code{\link[=print.gips]{print.gips()}} - The function that prints the posterior of
+the optimized \code{gips} object compared to the starting permutation.
+\item \code{\link[=summary.gips]{summary.gips()}} - The function that calculates the posterior of
+the optimized \code{gips} object compared to the starting permutation.
+}
 }
