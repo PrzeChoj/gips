@@ -191,3 +191,174 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
     det(block_matrix)
   })
 }
+
+#' Compare the posteriori probabilities of 2 permutations
+#' 
+#' Check which permutation is more likely and how much more likely.
+#' 
+#' @param perm1,perm2 Permutations to compare. They will be compared
+#'     how many times `perm1` is more likely than `perm2`.
+#'     Those can be provided as the `gips` object,
+#'     the `gips_perm` object or anything that can be used as
+#'     the `x` parameter in the [gips_perm()] function.
+#'     They do not have to be of the same class.
+#' @param S,number_of_observations,was_mean_estimated,delta,D_matrix
+#'     The same parameters as in the [gips()] function.
+#'     If at least one of `perm1` or `perm2` is of a `gips` class,
+#'     they are overwritten.
+#' @param print_output A logical (TRUE or FALSE).
+#'     When TRUE, the computed value will be printed with
+#'     additional text and returned invisibly. When FALSE,
+#'     the computed value will be returned visibly.
+#' 
+#' @returns `compare_posteriories_of_perms` returns the value of
+#'     how many times the `perm1` is more likely than `perm2`.
+#' 
+#' @export
+#' 
+#' @examples
+#' require("MASS") # for mvrnorm()
+#'
+#' perm_size <- 6
+#' mu <- runif(6, -10, 10) # Assume we don't know the mean
+#' sigma_matrix <- matrix(
+#'   data = c(
+#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'   ),
+#'   nrow = perm_size, byrow = TRUE
+#' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+#' number_of_observations <- 13
+#' Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+#' S <- cov(Z) # Assume we have to estimate the mean
+#'
+#' g <- gips(S, number_of_observations)
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' 
+#' compare_posteriories_of_perms(g_map, g, print_output = FALSE)
+#' log_compare_posteriories_of_perms(g_map, g, print_output = FALSE)
+compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
+                                          number_of_observations = NULL,
+                                          delta = 3, D_matrix = NULL,
+                                          was_mean_estimated = TRUE,
+                                          print_output = TRUE){
+  log_compare <- log_compare_posteriories_of_perms(perm1, perm2, S = S,
+                                                   number_of_observations = number_of_observations,
+                                                   delta = delta, D_matrix = D_matrix,
+                                                   was_mean_estimated = was_mean_estimated,
+                                                   print_output = FALSE)
+  
+  out <- exp(log_compare)
+  
+  if (print_output) {
+    if (inherits(perm1, "gips")){
+      validate_gips(perm1)
+      
+      perm1 <- perm1[[1]]
+    }
+    if (inherits(perm2, "gips")){
+      validate_gips(perm2)
+      
+      perm2 <- perm2[[1]]
+    }
+    
+    my_print_text <- paste0("The permutation ", as.character.gips_perm(perm1), " is ", out,
+                            " times more likely than the ", as.character.gips_perm(perm2),
+                            " permutation.")
+    if (out < 1){
+      my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
+    }
+    cat(my_print_text)
+    
+    return(invisible(out))
+  }
+  
+  out
+}
+
+#' @describeIn compare_posteriories_of_perms More stable,
+#'     logarithmic version of `compare_posteriories_of_perms`.
+#'     The natural logarithm is used.
+#' 
+#' @returns `log_compare_posteriories_of_perms` returns the logarithm of
+#'     how many times the `perm1` is more likely than `perm2`.
+#' 
+#' @export
+log_compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
+                                              number_of_observations = NULL,
+                                              delta = 3, D_matrix = NULL,
+                                              was_mean_estimated = TRUE,
+                                              print_output = TRUE){
+  
+  if (inherits(perm1, "gips")){
+    validate_gips(perm1)
+    
+    S <- attr(perm1, "S")
+    number_of_observations <- attr(perm1, "number_of_observations")
+    delta <- attr(perm1, "delta")
+    D_matrix <- attr(perm1, "D_matrix")
+    was_mean_estimated <- attr(perm1, "was_mean_estimated")
+    
+    perm1 <- perm1[[1]]
+  }
+  if (inherits(perm2, "gips")){
+    validate_gips(perm2)
+    
+    S <- attr(perm2, "S")
+    number_of_observations <- attr(perm2, "number_of_observations")
+    delta <- attr(perm2, "delta")
+    D_matrix <- attr(perm2, "D_matrix")
+    was_mean_estimated <- attr(perm2, "was_mean_estimated")
+    
+    perm2 <- perm2[[1]]
+  }
+  
+  if (was_mean_estimated) {
+    edited_number_of_observations <- number_of_observations - 1
+  } else {
+    edited_number_of_observations <- number_of_observations
+  }
+  
+  check_correctness_of_arguments(S, edited_number_of_observations, max_iter=5,
+                                 start_perm=perm1, delta=delta, D_matrix=D_matrix,
+                                 was_mean_estimated = was_mean_estimated,
+                                 return_probabilities = FALSE, show_progress_bar = FALSE)
+  
+  perm_size <- ncol(S)
+  if (!inherits(perm1, "gips_perm")){
+    perm1 <- gips_perm(perm1, perm_size)
+  }
+  if (!inherits(perm2, "gips_perm")){
+    perm2 <- gips_perm(perm2, perm_size)
+  }
+  
+  validate_gips_perm(perm1)
+  validate_gips_perm(perm2)
+  
+  
+  
+  log_post1 <- log_posteriori_of_perm(perm1, S, number_of_observations,
+                                      delta, D_matrix)
+  log_post2 <- log_posteriori_of_perm(perm2, S, number_of_observations,
+                                      delta, D_matrix)
+  
+  out <- log_post1 - log_post2
+  
+  if (print_output) {
+    my_print_text <- paste0("The permutation ", as.character.gips_perm(perm1), " is exp(", out,
+                            ") times more likely than the ", as.character.gips_perm(perm2),
+                            " permutation.")
+    if (out < 0){
+      my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
+    }
+    cat(my_print_text)
+    
+    return(invisible(out))
+  }
+  
+  out
+}

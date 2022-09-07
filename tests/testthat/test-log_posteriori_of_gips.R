@@ -133,3 +133,34 @@ test_that("calculate_block_determinants returns proper values", {
     c(3, 2, 1)
   )
 })
+
+test_that("compare_posteriories_of_perms properly calculates", {
+  gips_example_perm <- gips_perm(example_perm, 6)
+  gips_example_perm2 <- gips_perm(example_perm2, 6)
+  gips_id <- gips_perm("()", 6)
+  
+  g <- gips(matrix_invariant_by_example_perm, 13, perm = gips_example_perm)
+  g2 <- gips(matrix_invariant_by_example_perm, 13, perm = gips_example_perm2)
+  
+  expect_equal(log_compare_posteriories_of_perms(g, example_perm, print_output = FALSE),
+               0)
+  expect_equal(compare_posteriories_of_perms(g, example_perm, print_output = FALSE),
+               1)
+  expect_equal(compare_posteriories_of_perms(g, gips_example_perm, print_output = FALSE),
+               1)
+  
+  expect_equal(compare_posteriories_of_perms(g2, g, print_output = FALSE),
+               94914.44395167663)
+  expect_equal(compare_posteriories_of_perms(gips_example_perm2, g, print_output = FALSE),
+               94914.44395167663)
+  
+  expect_equal(expect_output(compare_posteriories_of_perms(g, g2, print_output = TRUE),
+                             "times more likely than the \\(1,2,3,4,5\\) permutation\\.\\nThat means, the second permutation is more likely\\."),
+               1 / 94914.44395167663)
+  expect_equal(expect_output(log_compare_posteriories_of_perms(g, g2, print_output = TRUE),
+                             "times more likely than the \\(1,2,3,4,5\\) permutation\\.\\nThat means, the second permutation is more likely\\."),
+               -log(94914.44395167663))
+  
+  expect_equal(compare_posteriories_of_perms(g, print_output = FALSE),
+               compare_posteriories_of_perms(g, gips_id, print_output = FALSE))
+})
