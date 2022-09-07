@@ -232,6 +232,7 @@ validate_gips_perm <- function(g) {
 #' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
 #' # print(g_perm)
 print.gips_perm <- function(x, ...) {
+  validate_gips_perm(x)
   x <- permutations::as.cycle(x)
   permutations::print.cycle(x, ...)
 }

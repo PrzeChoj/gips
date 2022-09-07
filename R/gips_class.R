@@ -554,9 +554,9 @@ validate_gips <- function(g) {
           paste0(class(optimization_info[["optimization_time"]]), collapse = ", "), ")."
         )
       )
-    } else if (any(optimization_info[["optimization_time"]] <= 0)) {
+    } else if (any(optimization_info[["optimization_time"]] < 0)) { # allow underflow of time float to 0
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be a time difference bigger than 0.",
+        "i" = "`attr(g, 'optimization_info')[['optimization_time']]` has to be a non negative time difference.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_time']] == ",
           optimization_info[["optimization_time"]], "`."
@@ -579,11 +579,11 @@ validate_gips <- function(g) {
           paste0(class(optimization_info[["full_optimization_time"]]), collapse = ", "), ")."
         )
       )
-    } else if (optimization_info[["full_optimization_time"]] <= 0) {
+    } else if (optimization_info[["full_optimization_time"]] < 0) { # allow underflow of time float to 0
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be a time difference bigger than 0.",
+        "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be a non negative time difference.",
         "x" = paste0(
-          "You have `attr(g, 'full_optimization_info')[['optimization_time']] == ",
+          "You have `attr(g, 'optimization_info')[['full_optimization_time']] == ",
           optimization_info[["full_optimization_time"]], "`."
         )
       )

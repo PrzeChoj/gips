@@ -318,8 +318,8 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  time_now <- Sys.time()
-  attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now)
+  time_now2 <- Sys.time()
+  attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now2)
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -336,13 +336,12 @@ test_that("Properly validate the gips class with no optimization or after a sing
     "You have `attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` of a class \\(numeric\\)"
   )
 
-  time_now1 <- Sys.time()
   g_err <- g2
-  time_now2 <- Sys.time()
-  attr(g_err, "optimization_info")[["full_optimization_time"]] <- time_now1 - time_now2
+  time_now1 <- Sys.time()
+  attr(g_err, "optimization_info")[["full_optimization_time"]] <- time_now2 - time_now1
   expect_error(
     validate_gips(g_err),
-    "`attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` has to be a time difference bigger than 0."
+    "`attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` has to be a non negative time difference"
   )
 
 
@@ -518,8 +517,8 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  time_now <- Sys.time()
-  attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now)
+  time_now2 <- Sys.time()
+  attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now2)
   expect_error(validate_gips(g_err))
 
 
