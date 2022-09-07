@@ -9,6 +9,7 @@ find_MAP(
   max_iter = NA,
   optimizer = NA,
   show_progress_bar = TRUE,
+  save_all_perms = FALSE,
   return_probabilities = FALSE
 )
 }
@@ -41,15 +42,21 @@ shows the second progress bar for the time
 when the probabilities are calculated
 }}
 
-\item{return_probabilities}{A boolean. TRUE can only be provided for:
+\item{save_all_perms}{A boolean. TRUE indicates to save a list of
+all permutations that were visited during optimization.
+This can be useful, but can occupy a significant part of RAM memory.}
+
+\item{return_probabilities}{A boolean. TRUE can only be provided
+when \code{save_all_perms} is TRUE and for:
 \itemize{
 \item \code{optimizer=="MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities
 \item \code{optimizer=="BF"} - use brute force results to
-calculate exact posterior probabilities;
-this is costly, so additional progress bar is shown
-(when \code{show_progress_bar==TRUE})
-}}
+calculate exact posterior probabilities
+}
+
+This additional calculations are costly, so second progress bar
+is shown (when \code{show_progress_bar} is \code{TRUE}).}
 }
 \value{
 Returns an optimized object of a \code{gips} class.

@@ -192,7 +192,7 @@ test_that("find_map with calculate exact probabilities will return probability",
   g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4], number_of_observations = 13)
   g_map <- find_MAP(g,
     max_iter = 10, show_progress_bar = FALSE,
-    optimizer = "full", return_probabilities = TRUE
+    optimizer = "full", return_probabilities = TRUE, save_all_perms = TRUE
   )
 
   my_post_prob <- c(

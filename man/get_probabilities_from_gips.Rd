@@ -23,13 +23,16 @@ can be extracted with this function.
 }
 \examples{
 g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
-g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = TRUE)
+g_map <- find_MAP(g,
+  optimizer = "BF", show_progress_bar = FALSE,
+  return_probabilities = TRUE, save_all_perms = TRUE
+)
 
 get_probabilities_from_gips(g_map)
 }
 \seealso{
 \itemize{
 \item \code{\link[=find_MAP]{find_MAP()}} - the \code{get_probabilities_from_gips()}
-is called on the output of \code{find_MAP(return_probabilities = TRUE)}.
+is called on the output of \code{find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)}.
 }
 }

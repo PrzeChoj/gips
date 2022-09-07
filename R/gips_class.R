@@ -92,7 +92,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     S = S, number_of_observations = number_of_observations,
     max_iter = 2, start_perm = perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    return_probabilities = FALSE, save_all_perms = TRUE, show_progress_bar = FALSE
   )
 
   if (inherits(perm, "gips_perm")) {
@@ -224,7 +224,7 @@ validate_gips <- function(g) {
     S = S, number_of_observations = number_of_observations,
     max_iter = 2, start_perm = perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    return_probabilities = FALSE, save_all_perms = TRUE, show_progress_bar = FALSE
   )
 
   if (!(is.null(optimization_info) || is.list(optimization_info))) {
@@ -238,7 +238,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "full_optimization_time")
+    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "full_optimization_time")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -264,7 +264,8 @@ validate_gips <- function(g) {
     if (length(abort_text) > 0) {
       rlang::abort(c("There was a problem with the 'optimization_info' attribute.",
         "i" = paste0(
-          "After optimiation, `attr(g, 'optimization_info')` must be a list of 11 elements with names: ",
+          "After optimiation, `attr(g, 'optimization_info')` must be a list of ",
+          length(legal_fields), " elements with names: ",
           paste(legal_fields, collapse = ", "), "."
         ),
         "x" = paste0("You have a list of ", length(names(optimization_info)), " elements."),
@@ -313,7 +314,7 @@ validate_gips <- function(g) {
       )
     }
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      if (!(is.list(optimization_info[["visited_perms"]]))) {
+      if (!is.null(optimization_info[["visited_perms"]]) && !(is.list(optimization_info[["visited_perms"]]))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
           "x" = paste0(
@@ -322,14 +323,14 @@ validate_gips <- function(g) {
             "."
           )
         )
-      } else if (!(length(optimization_info[["visited_perms"]]) != 0)) {
+      } else if (!is.null(optimization_info[["visited_perms"]]) && !(length(optimization_info[["visited_perms"]]) != 0)) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
           "x" = paste0(
             "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
           )
         )
-      } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))) { # It only checks for the first one, because checking for every would be too expensive
+      } else if (!is.null(optimization_info[["visited_perms"]]) && !(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
           "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `gips_perm` class.",
           "x" = paste0(
@@ -338,7 +339,7 @@ validate_gips <- function(g) {
             ")`."
           )
         )
-      } else if (!(identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]]))) {
+      } else if (!is.null(optimization_info[["visited_perms"]]) && !(identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]]))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be the last element of `attr(g, 'optimization_info')[['visited_perms']]` list.",
           "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` different from `attr(g, 'optimization_info')[['visited_perms']][[length(attr(g, 'optimization_info')[['visited_perms']])]]`.")
@@ -390,7 +391,7 @@ validate_gips <- function(g) {
         )
       }
     } else { # for brute_force, the visited_perms are of class "cycle"
-      if (!(is.list(optimization_info[["visited_perms"]]))) {
+      if (!is.null(optimization_info[["visited_perms"]]) && !(is.list(optimization_info[["visited_perms"]]))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
           "x" = paste0(
@@ -399,14 +400,14 @@ validate_gips <- function(g) {
             "."
           )
         )
-      } else if (!(length(optimization_info[["visited_perms"]]) != 0)) {
+      } else if (!is.null(optimization_info[["visited_perms"]]) && !(length(optimization_info[["visited_perms"]]) != 0)) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
           "x" = paste0(
             "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
           )
         )
-      } else if (!(inherits(optimization_info[["visited_perms"]][[1]], "list"))) { # It only checks for the first one, because checking for every would be too expensive
+      } else if (!is.null(optimization_info[["visited_perms"]]) && !(inherits(optimization_info[["visited_perms"]][[1]], "list"))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
           "i" = "After optimization with brute force algorithm, elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `list` class.",
           "x" = paste0(
@@ -464,7 +465,7 @@ validate_gips <- function(g) {
           typeof(optimization_info[["post_probabilities"]]), "`."
         )
       )
-    } else if (!(is.null(optimization_info[["post_probabilities"]]) ||
+    } else if (!(is.null(optimization_info[["visited_perms"]]) || is.null(optimization_info[["post_probabilities"]]) ||
       length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))) {
       abort_text <- c(abort_text,
         "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visided permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
@@ -629,7 +630,7 @@ validate_gips <- function(g) {
 
 check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
                                            start_perm, delta, D_matrix, was_mean_estimated,
-                                           return_probabilities, show_progress_bar) {
+                                           return_probabilities, save_all_perms, show_progress_bar) {
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",
@@ -772,9 +773,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   } else if (is.na(was_mean_estimated)) {
     abort_text <- c(abort_text,
       "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
-      "x" = paste0(
-        "You provided `was_mean_estimated` as an `NA`."
-      )
+      "x" = "You provided `was_mean_estimated` as an `NA`."
     )
   }
   if (!is.logical(return_probabilities)) {
@@ -785,6 +784,25 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
         typeof(return_probabilities), "."
       )
     )
+  } else if (is.na(return_probabilities)) {
+    abort_text <- c(abort_text,
+      "i" = "`return_probabilities` must be a logic value (TRUE or FALSE).",
+      "x" = "You provided `return_probabilities` as an `NA`."
+    )
+  }
+  if (!is.logical(save_all_perms)) {
+    abort_text <- c(abort_text,
+      "i" = "`save_all_perms` must be a logic value (TRUE or FALSE).",
+      "x" = paste0(
+        "You provided `save_all_perms` with type ",
+        typeof(save_all_perms), "."
+      )
+    )
+  } else if (is.na(save_all_perms)) {
+    abort_text <- c(abort_text,
+      "i" = "`save_all_perms` must be a logic value (TRUE or FALSE).",
+      "x" = "You provided `save_all_perms` as an `NA`."
+    )
   }
   if (!is.logical(show_progress_bar)) {
     abort_text <- c(abort_text,
@@ -793,6 +811,11 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
         "You provided `show_progress_bar` with type ",
         typeof(show_progress_bar), "."
       )
+    )
+  } else if (is.na(show_progress_bar)) {
+    abort_text <- c(abort_text,
+      "i" = "`show_progress_bar` must be a logic value (TRUE or FALSE).",
+      "x" = "You provided `show_progress_bar` as an `NA`."
     )
   }
 
@@ -814,6 +837,18 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     }
 
     rlang::abort(abort_text)
+  }
+
+  if (return_probabilities && !save_all_perms) {
+    rlang::abort(c("There was a problem identified with provided arguments:",
+      "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
+      "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
+      "i" = "Did You want to set `save_all_perms = TRUE`?",
+      "i" = paste0(
+        "Did You want to set `return_probabilities = FALSE`? Remember that this can be costly",
+        ifelse(show_progress_bar, " and second prograss bar will be shown.", ".")
+      )
+    ))
   }
 }
 
@@ -889,11 +924,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
     log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
-    if (attr(x, "optimization_info")[["optimization_algorithm_used"]][length(attr(x, "optimization_info")[["optimization_algorithm_used"]])] == "brute_force") {
-      start_perm <- attr(x, "optimization_info")[["visited_perms"]][1] # for brute_force, you have to refer to that perm this way
-    } else {
-      start_perm <- attr(x, "optimization_info")[["visited_perms"]][[1]]
-    }
+    start_perm <- attr(x, "optimization_info")[["start_perm"]]
 
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
@@ -919,7 +950,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       ))
     }
   }
-  
+
   if (log_value) {
     printing_text <- c(
       printing_text,
@@ -1276,7 +1307,7 @@ plot.gips <- function(x, type = NA,
 #'       It can be a number less than 1, which means
 #'       the identity permutation, `()`, is more likely. Keep in mind
 #'       this number can be really big and can be overflowed to `Inf`
-#'   5. `n0` - the minimal number of observations needed for existence of 
+#'   5. `n0` - the minimal number of observations needed for existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
 #'   6. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
@@ -1302,7 +1333,7 @@ plot.gips <- function(x, type = NA,
 #'       the `found_permutation` is over the `start_permutation`.
 #'       It cannot be a number less than 1. Keep in mind this number
 #'       can be really big and can be overflowed to `Inf`
-#'   7. `n0` - the minimal number of observations needed for existence of 
+#'   7. `n0` - the minimal number of observations needed for existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
 #'   8. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
@@ -1405,7 +1436,7 @@ summary.gips <- function(object, ...) {
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
       when_was_best <- which(optimization_info[["log_posteriori_values"]] == permutation_log_posteriori)
       log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)]
-      start_permutation <- optimization_info[["visited_perms"]][[1]]
+      start_permutation <- optimization_info[["start_perm"]]
     } else {
       # for brute_force when_was_best is useless.
       # Also, the `optimization_info[["visited_perms"]]` is a list, but
@@ -1413,7 +1444,7 @@ summary.gips <- function(object, ...) {
         # `optimization_info[["visited_perms"]] <- permutations::allperms()`
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
-      start_permutation <- gips_perm("", ncol(attr(object, "S")))
+      start_permutation <- gips_perm(optimization_info[["start_perm"]], nrow(attr(object, "S")))
     }
 
     start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
@@ -1579,11 +1610,14 @@ print.summary.gips <- function(x, ...) {
 #'
 #' @seealso
 #' * [find_MAP()] - the `get_probabilities_from_gips()`
-#'     is called on the output of `find_MAP(return_probabilities = TRUE)`.
+#'     is called on the output of `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
 #'
 #' @examples
 #' g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
-#' g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = TRUE)
+#' g_map <- find_MAP(g,
+#'   optimizer = "BF", show_progress_bar = FALSE,
+#'   return_probabilities = TRUE, save_all_perms = TRUE
+#' )
 #'
 #' get_probabilities_from_gips(g_map)
 get_probabilities_from_gips <- function(g) {

@@ -54,13 +54,18 @@
 #'   * When `return_probabilities==TRUE`, then
 #'       shows the second progress bar for the time
 #'       when the probabilities are calculated
-#' @param return_probabilities A boolean. TRUE can only be provided for:
+#' @param save_all_perms A boolean. TRUE indicates to save a list of
+#'     all permutations that were visited during optimization.
+#'     This can be useful, but can occupy a significant part of RAM memory.
+#' @param return_probabilities A boolean. TRUE can only be provided
+#'     when `save_all_perms` is TRUE and for:
 #'   * `optimizer=="MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities
 #'   * `optimizer=="BF"` - use brute force results to
-#'       calculate exact posterior probabilities;
-#'       this is costly, so additional progress bar is shown
-#'       (when `show_progress_bar==TRUE`)
+#'       calculate exact posterior probabilities
+#' 
+#' This additional calculations are costly, so second progress bar
+#'     is shown (when `show_progress_bar` is `TRUE`).
 #'
 #'
 #' @returns Returns an optimized object of a `gips` class.
@@ -122,6 +127,7 @@
 #' summary(g_map_BF)
 find_MAP <- function(g, max_iter = NA, optimizer = NA,
                      show_progress_bar = TRUE,
+                     save_all_perms = FALSE,
                      return_probabilities = FALSE) {
   # check the correctness of the g argument
   validate_gips(g)
@@ -281,6 +287,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
       return_probabilities = return_probabilities,
+      save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar
     )
   } else if (optimizer %in% c("HC", "hill_climbing")) {
@@ -288,6 +295,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       S = S, number_of_observations = edited_number_of_observations,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
+      save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar
     )
   } else if (optimizer %in% c("BF", "brute_force", "full")) {
@@ -295,6 +303,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       S = S, number_of_observations = edited_number_of_observations,
       delta = delta, D_matrix = D_matrix,
       return_probabilities = return_probabilities,
+      save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar
     )
   }
@@ -322,7 +331,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
 Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm = NULL,
                                 delta = 3, D_matrix = NULL, return_probabilities = FALSE,
-                                show_progress_bar = TRUE) {
+                                save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }
@@ -332,6 +341,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     max_iter = max_iter, start_perm = start_perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
     return_probabilities = return_probabilities,
+    save_all_perms = save_all_perms,
     show_progress_bar = show_progress_bar
   )
 
@@ -363,13 +373,18 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 
   acceptance <- rep(FALSE, max_iter)
   log_posteriori_values <- rep(0, max_iter)
-  visited_perms <- list()
-  visited_perms[[1]] <- start_perm
-
+  if (save_all_perms) {
+    visited_perms <- list()
+    visited_perms[[1]] <- start_perm
+  } else {
+    visited_perms <- NULL
+  }
+  current_perm <- start_perm
+  
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   }
-  log_posteriori_values[1] <- my_goal_function(visited_perms[[1]])
+  log_posteriori_values[1] <- my_goal_function(current_perm)
 
   found_perm <- start_perm
   found_perm_log_posteriori <- log_posteriori_values[1]
@@ -383,7 +398,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     }
 
     e <- runif_transposition(perm_size)
-    perm_proposal <- compose_with_transposition(visited_perms[[i]], e)
+    perm_proposal <- compose_with_transposition(current_perm, e)
 
     goal_function_perm_proposal <- my_goal_function(perm_proposal)
     if (is.nan(goal_function_perm_proposal) || is.infinite(goal_function_perm_proposal)) {
@@ -398,16 +413,21 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
     if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
-      visited_perms[[i + 1]] <- perm_proposal
+      current_perm <- perm_proposal
+      if (save_all_perms) {
+        visited_perms[[i + 1]] <- current_perm
+      }
       log_posteriori_values[i + 1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
 
       if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
         found_perm_log_posteriori <- log_posteriori_values[i + 1]
-        found_perm <- visited_perms[[i + 1]]
+        found_perm <- current_perm
       }
     } else {
-      visited_perms[[i + 1]] <- visited_perms[[i]]
+      if (save_all_perms) {
+        visited_perms[[i + 1]] <- current_perm
+      }
       log_posteriori_values[i + 1] <- log_posteriori_values[i] # TODO(Do we really want to forget the calculated values? The algorithm HC works differently)
     }
   }
@@ -417,17 +437,21 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
   }
 
   function_calls <- length(log_posteriori_values)
+  
+  # visited_perms are already either a list of things or a `NULL` object
 
   if (return_probabilities) {
     probabilities <- estimate_probabilities(visited_perms, show_progress_bar)
   } else {
     probabilities <- NULL
   }
+  
   optimization_info <- list(
     "acceptance_rate" = mean(acceptance),
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
-    "last_perm" = visited_perms[[function_calls]],
+    "start_perm" = start_perm,
+    "last_perm" = current_perm,
     "last_perm_log_posteriori" = log_posteriori_values[function_calls],
     "iterations_performed" = i,
     "optimization_algorithm_used" = "Metropolis_Hastings",
@@ -450,7 +474,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 hill_climbing <- function(S, number_of_observations, max_iter = 5,
                           start_perm = NULL,
                           delta = 3, D_matrix = NULL,
-                          show_progress_bar = TRUE) {
+                          save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }
@@ -459,7 +483,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
     S = S, number_of_observations = number_of_observations,
     max_iter = max_iter, start_perm = start_perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
-    return_probabilities = FALSE,
+    return_probabilities = FALSE, save_all_perms = save_all_perms,
     show_progress_bar = show_progress_bar
   )
 
@@ -493,9 +517,15 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
   log_posteriori_values <- numeric(0)
 
   # init
-  speciments <- list()
-  speciments[[1]] <- start_perm
-  goal_function_best_logvalues[1] <- my_goal_function(speciments[[1]])
+  if (save_all_perms) {
+    visited_perms <- list()
+    visited_perms[[1]] <- start_perm
+  } else {
+    visited_perms <- NULL
+  }
+  current_perm <- start_perm
+  
+  goal_function_best_logvalues[1] <- my_goal_function(current_perm)
   log_posteriori_values[1] <- goal_function_best_logvalues[1]
 
   # mail loop
@@ -511,7 +541,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
     best_neighbour_value <- -Inf
     for (i in 1:(perm_size - 1)) {
       for (j in (i + 1):perm_size) {
-        neighbour <- compose_with_transposition(speciments[[iteration]], c(i, j))
+        neighbour <- compose_with_transposition(current_perm, c(i, j))
         neighbour_value <- my_goal_function(neighbour)
         log_posteriori_values[length(log_posteriori_values) + 1] <- neighbour_value
 
@@ -524,13 +554,18 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 
     if (best_neighbour_value > goal_function_best_logvalues[iteration]) {
       goal_function_best_logvalues[iteration + 1] <- best_neighbour_value
-      speciments[[iteration + 1]] <- best_neighbour
+      current_perm <- best_neighbour
+      if (save_all_perms) {
+        visited_perms[[iteration + 1]] <- best_neighbour
+      }
     } else {
       did_converge <- TRUE
       break
     }
   }
-
+  
+  last_perm <- current_perm
+  
   if (show_progress_bar) {
     close(progressBar)
   }
@@ -548,12 +583,13 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
   }
 
   function_calls <- length(log_posteriori_values)
-
+  
   optimization_info <- list(
     "acceptance_rate" = 1 / choose(perm_size, 2),
     "log_posteriori_values" = log_posteriori_values,
-    "visited_perms" = speciments,
-    "last_perm" = speciments[[iteration]],
+    "visited_perms" = visited_perms,
+    "start_perm" = start_perm,
+    "last_perm" = last_perm,
     "last_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "iterations_performed" = iteration,
     "optimization_algorithm_used" = "hill_climbing",
@@ -566,7 +602,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 
 
   new_gips(
-    list(speciments[[iteration]]), S, number_of_observations,
+    list(last_perm), S, number_of_observations,
     delta, D_matrix,
     was_mean_estimated = FALSE, optimization_info
   ) # was_mean_estimated will be changed in the `find_MAP` function
@@ -576,12 +612,12 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 brute_force <- function(S, number_of_observations,
                         delta = 3, D_matrix = NULL,
                         return_probabilities = return_probabilities,
-                        show_progress_bar = TRUE) {
+                        save_all_perms = FALSE, show_progress_bar = TRUE) {
   check_correctness_of_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = 5, start_perm = permutations::id, # max_iter, was_mean_estimated and start_perm are not important for optimization with brute_force
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
-    return_probabilities = return_probabilities,
+    return_probabilities = return_probabilities, save_all_perms = save_all_perms,
     show_progress_bar = show_progress_bar
   )
 
@@ -635,11 +671,18 @@ brute_force <- function(S, number_of_observations,
   }
 
   best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_posteriori_values)]])), perm_size)
+  
+  if (save_all_perms) {
+    visited_perms <- all_perms_list
+  } else {
+    visited_perms <- NULL
+  }
 
   optimization_info <- list(
     "acceptance_rate" = NULL,
     "log_posteriori_values" = log_posteriori_values,
-    "visited_perms" = all_perms_list,
+    "visited_perms" = visited_perms,
+    "start_perm" = permutations::id,
     "last_perm" = NULL,
     "last_perm_log_posteriori" = NULL,
     "iterations_performed" = prod(1:perm_size),
@@ -685,7 +728,16 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   n1 <- length(optimization_info1[["log_posteriori_values"]])
   n2 <- length(optimization_info2[["log_posteriori_values"]])
 
-  visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]]) # WoW, one can use `c()` to combine lists!
+  if (is.null(optimization_info1[["visited_perms"]]) || is.null(optimization_info2[["visited_perms"]])) {
+    if (!is.null(optimization_info1[["visited_perms"]]) || !is.null(optimization_info2[["visited_perms"]])) {
+      rlang::warn("You wanted to save visited_perms on one of the optimized `gips` objects but forget it for the other. This is not possible, so both will be forgotten.")
+      optimization_info2[["post_probabilities"]] <- NULL
+      optimization_info1[["post_probabilities"]] <- NULL
+    }
+    visited_perms <- NULL
+  } else {
+    visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]]) # WoW, one can use `c()` to combine lists!
+  }
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
 
   if (all(optimization_algorithm_used == "Metropolis_Hastings") &&
@@ -699,6 +751,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
+    "start_perm" = optimization_info1[["start_perm"]],
     "last_perm" = optimization_info2[["last_perm"]],
     "last_perm_log_posteriori" = optimization_info2[["last_perm_log_posteriori"]],
     "iterations_performed" = c(optimization_info1[["iterations_performed"]], optimization_info2[["iterations_performed"]]),

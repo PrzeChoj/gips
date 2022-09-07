@@ -79,7 +79,7 @@ g <- gips(S = S, number_of_observations = nrow(toy_example_data))
 
 plot(g, type = "heatmap")
 
-g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE)
+g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE)
 
 plot(g_map, type = "heatmap")
 

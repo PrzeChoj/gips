@@ -103,12 +103,12 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g2 <- find_MAP(g1,
     max_iter = 3, show_progress_bar = FALSE,
-    optimizer = "MH", return_probabilities = TRUE
+    optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE
   )
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again. We want g2 to have at least 1 accepted transposition.
     g2 <- find_MAP(g1,
       max_iter = 3, show_progress_bar = FALSE,
-      optimizer = "MH", return_probabilities = TRUE
+      optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE
     )
   }
   g3 <- find_MAP(g1,
@@ -138,7 +138,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
     was_mean_estimated = FALSE
   ),
   optimizer = "BF", show_progress_bar = FALSE,
-  return_probabilities = TRUE
+  return_probabilities = TRUE, save_all_perms = TRUE
   )
 
 
@@ -363,19 +363,19 @@ test_that("Properly validate the gips class after multiple optimizations", {
     was_mean_estimated = FALSE, perm = custom_perm1
   )
 
-  g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+  g2 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
+  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
+  g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
   while (attr(g2, "optimization_info")[["acceptance_rate"]] == 0) { # Around 4% of time, in the optimization all permutations were rejected. Is such a case, try again.
-    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
-    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
+    g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
   }
   g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
   g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
   g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
-  expect_message(expect_message(
+  expect_warning(expect_message(expect_message(
     g_MH_MH <- find_MAP(find_MAP(gips(
       matrix(c(1, 0.5, 0.5, 5), nrow = 2),
       number_of_observations,
@@ -385,9 +385,11 @@ test_that("Properly validate the gips class after multiple optimizations", {
     return_probabilities = FALSE, max_iter = 10
     ),
     optimizer = "MH", show_progress_bar = FALSE,
-    return_probabilities = TRUE, max_iter = 10
+    return_probabilities = TRUE, save_all_perms = TRUE,
+    max_iter = 10
     )
-  )) # 2 messages
+  ))) # 2 messages and a warning
+
 
 
 
@@ -399,7 +401,7 @@ test_that("Properly validate the gips class after multiple optimizations", {
 
   expect_true(length(attr(g2, "opt")[["visited_perms"]]) >= 9)
   expect_false(is.null(attr(g2, "optimization_info")[["post_probabilities"]]))
-  expect_false(is.null(attr(g_MH_MH, "optimization_info")[["post_probabilities"]]))
+  expect_true(is.null(attr(g_MH_MH, "optimization_info")[["post_probabilities"]])) # first one was optimized without saving, so for the second one it was forgotten
 
 
   g_err <- g2
@@ -539,14 +541,14 @@ test_that("Process proper parameters", {
   expect_silent(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_silent(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = number_of_observations, max_iter = 10,
     start_perm = gips_perm(example_perm, 6), delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
 })
 
@@ -554,25 +556,25 @@ test_that("check_correctness_of_arguments properly validates arguments", {
   expect_silent(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
 
   expect_error(check_correctness_of_arguments(
     6, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     matrix(1:30, ncol = 5),
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     matrix(c(LETTERS, LETTERS)[1:36], ncol = 6),
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
 
   S_nonsymetric <- S
@@ -581,7 +583,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     S_nonsymetric,
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
 
   S_non_positive_semi_definite <- S - diag(ncol(S)) * eigen(S, symmetric = TRUE, only.values = TRUE)[["values"]][2]
@@ -589,214 +591,239 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     S_non_positive_semi_definite,
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, NULL, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, 0, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations + 0.1, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30.1,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 1,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     "(1,3)(2,4)(5,6)",
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     gips_perm("(1,3)(2,4)(5,6)", 7),
-    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    NULL, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    NULL, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    1.9, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    1.9, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    2, diag(nrow = ncol(S)), FALSE, FALSE, FALSE
+    2, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S) + 1), FALSE, FALSE, FALSE
+    3, diag(nrow = ncol(S) + 1), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, 7, FALSE, FALSE, FALSE
+    3, 7, FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, FALSE
+    3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), "FALSE", FALSE, FALSE
+    3, diag(nrow = ncol(S)), "FALSE", FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    3, diag(nrow = ncol(S)), FALSE, "FALSE", FALSE
+    3, diag(nrow = ncol(S)), FALSE, "FALSE", FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
-    S, number_of_observations + 0.1, 1,
-    "(1,3)(2,4)(5,6)",
-    2, diag(nrow = ncol(S)), FALSE, FALSE, "FALSE"
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, FALSE, "FALSE", FALSE
   ))
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, "FALSE"
+  ))
+
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, TRUE, FALSE, FALSE
+  )) # return_probabilities can be TRUE only when save_all_perms is also TRUE
+
 
   # A lot of problems ot once
   expect_error(check_correctness_of_arguments(
     S, number_of_observations + 0.1, 1,
     "(1,3)(2,4)(5,6)",
-    2, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE"
-  ), "7 problems identified with provided arguments")
+    2, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE", "FALSE"
+  ), "8 problems identified with provided arguments")
 
   # old tests:
   # A single problem at the same time:
   expect_error(check_correctness_of_arguments(
     S = NULL, number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S = matrix(c(1:30), nrow = 6),
     number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = NULL, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = 0, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = 15.5, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10.5,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 0,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 1, # TODO(Make it work for max_iter = 1)
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = NULL, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = NULL, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 2, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = 7,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = matrix(c(1:30), nrow = 6),
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = NULL,
-    was_mean_estimated = "FALSE",
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = "FALSE", return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = NULL,
-    was_mean_estimated = NA,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+    was_mean_estimated = NA, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = 7, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = 7,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = NULL, show_progress_bar = FALSE
+    was_mean_estimated = FALSE, return_probabilities = NULL,
+    save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = 7
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = "FALSE", show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
-    was_mean_estimated = FALSE,
-    return_probabilities = FALSE, show_progress_bar = NULL
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = NA, show_progress_bar = FALSE
+  ))
+  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+    max_iter = 10,
+    start_perm = example_perm, delta = 3, D_matrix = NULL,
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = 7
+  ))
+  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+    max_iter = 10,
+    start_perm = example_perm, delta = 3, D_matrix = NULL,
+    was_mean_estimated = FALSE, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = NULL
   ))
 
 
@@ -804,9 +831,9 @@ test_that("check_correctness_of_arguments properly validates arguments", {
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = -1, max_iter = 1,
     start_perm = example_perm, delta = 2, D_matrix = 7,
-    was_mean_estimated = NA,
-    return_probabilities = NULL, show_progress_bar = NULL
-  ), "\\.\\.\\. and 2 more problems")
+    was_mean_estimated = NA, return_probabilities = "FALSE",
+    save_all_perms = 7, show_progress_bar = NULL
+  ), "\\.\\.\\. and 3 more problems")
 })
 
 
@@ -961,7 +988,10 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
 
 test_that("get_probabilities_from_gips works", {
   g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
-  g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = TRUE)
+  g_map <- find_MAP(g,
+    optimizer = "BF", show_progress_bar = FALSE,
+    return_probabilities = TRUE, save_all_perms = TRUE
+  )
 
   expect_silent(probs <- get_probabilities_from_gips(g_map))
   expect_type(probs, "double")
@@ -972,7 +1002,17 @@ test_that("get_probabilities_from_gips works", {
     "Did You forget to optimize `g`?"
   )
 
-  g_map_no_prob <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE, return_probabilities = FALSE)
+  g_map_no_prob <- find_MAP(g,
+    optimizer = "BF", show_progress_bar = FALSE,
+    return_probabilities = FALSE, save_all_perms = TRUE
+  )
   expect_silent(get_probabilities_from_gips(g_map_no_prob))
   expect_null(get_probabilities_from_gips(g_map_no_prob))
+
+  g_map_no_prob_no_save <- find_MAP(g,
+    optimizer = "BF", show_progress_bar = FALSE,
+    return_probabilities = FALSE, save_all_perms = FALSE
+  )
+  expect_silent(get_probabilities_from_gips(g_map_no_prob_no_save))
+  expect_null(get_probabilities_from_gips(g_map_no_prob_no_save))
 })
