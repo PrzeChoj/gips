@@ -119,10 +119,10 @@ plot(g_MAP, type = "heatmap")
 
 <img src="man/figures/README-example_mean_unknown4-1.png" width="100%" />
 
-Keep in mind those calculations were performed on the `scale`d version
-of the dataset, so precticaly it was performed on the corelation matrix
-and not on the covariance matrix. The analysis is the same, but one have
-to remember to later come back to the original scaling:
+Remember that those calculations were performed on the `scale`d version
+of the dataset, so practically, it was performed on the correlation
+matrix and not the covariance matrix. The analysis is the same, but one
+has to remember to later come back to the original scaling:
 
 ``` r
 sqrt_diag <- diag(sqrt(diag(cov(Z))))
@@ -153,10 +153,9 @@ sigma_matrix <- matrix(
 # generate example data from a model:
 Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
+```
 
-
-
-
+``` r
 library(gips)
 (number_of_observations <- nrow(Z)) # 4 < 6, so n < p
 #> [1] 4
@@ -166,39 +165,49 @@ S <- (t(Z) %*% Z) / number_of_observations
 
 # Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+```
 
-# Find the Maximum A Posteriori Estimator for the permutation.
-  # Space is small (6! = 720), so it is reasonable to
-  # browse the whole of it:
-g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
+Find the Maximum A Posteriori Estimator for the permutation. Space is
+small
+(![6! = 720](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;6%21%20%3D%20720 "6! = 720")),
+so it is reasonable to browse the whole of it:
+
+``` r
+g_map <- find_MAP(g, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,6,5,4,3,2)
+#> The permutation (1,2,3,4,5,6)
 #>  - was found after 720 log_posteriori calculations
-#>  - is 81.8834999267771 times more likely than the starting, () permutation.
+#>  - is 1050.17320974531 times more likely than the starting, () permutation.
 
 summary(g_map)$n0
 #> [1] 1
 summary(g_map)$n0 <= 4
 #> [1] TRUE
+```
 
-# We see the number of observations (4) is bigger or equal to n0,
-  # so we can estimate the covariance matrix
-  # with the Maximum Likelihood estimator:
+We see the number of observations
+(![4](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4 "4"))
+is bigger or equal to
+![n_0 = 1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n_0%20%3D%201 "n_0 = 1"),
+so we can estimate the covariance matrix with the Maximum Likelihood
+estimator:
+
+``` r
 project_matrix(S, g_map[[1]])
-#>            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
-#> [1,] 1.06527533 0.78860552 0.34779806 0.07112825 0.34779806 0.78860552
-#> [2,] 0.78860552 1.06527533 0.78860552 0.34779806 0.07112825 0.34779806
-#> [3,] 0.34779806 0.78860552 1.06527533 0.78860552 0.34779806 0.07112825
-#> [4,] 0.07112825 0.34779806 0.78860552 1.06527533 0.78860552 0.34779806
-#> [5,] 0.34779806 0.07112825 0.34779806 0.78860552 1.06527533 0.78860552
-#> [6,] 0.78860552 0.34779806 0.07112825 0.34779806 0.78860552 1.06527533
+#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+#> [1,] 0.7429009 0.5889212 0.4131324 0.2591527 0.4131324 0.5889212
+#> [2,] 0.5889212 0.7429009 0.5889212 0.4131324 0.2591527 0.4131324
+#> [3,] 0.4131324 0.5889212 0.7429009 0.5889212 0.4131324 0.2591527
+#> [4,] 0.2591527 0.4131324 0.5889212 0.7429009 0.5889212 0.4131324
+#> [5,] 0.4131324 0.2591527 0.4131324 0.5889212 0.7429009 0.5889212
+#> [6,] 0.5889212 0.4131324 0.2591527 0.4131324 0.5889212 0.7429009
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
 ```
 
-<img src="man/figures/README-example_mean_known-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known4-1.png" width="100%" />
 
 # Credits
 

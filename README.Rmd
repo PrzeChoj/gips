@@ -57,7 +57,7 @@ Z <- DAAG::oddbooks
 
 Assume the data is normally distributed. This is a reasonable assumption, because, for example, p-values for Mardia’s normality tests: `QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are > 0.05
 
-```{r example_mean_unknown2}
+```{r example_mean_unknown2, dependson="example_mean_unknown1"}
 Z_scaled <- scale(Z)
 
 S <- cov(Z_scaled)
@@ -71,7 +71,7 @@ We can see some strong similarities between columns 2 and 3, representing the bo
 
 Let's see if the find_MAP will find this relationship:
 
-```{r example_mean_unknown3}
+```{r example_mean_unknown3, dependson="example_mean_unknown2"}
 g_MAP <- find_MAP(g, optimizer = "full")
 
 g_MAP
@@ -79,15 +79,15 @@ g_MAP
 
 `find_MAP` found the relationship (2,3). In his opinion, the covariance [1,2] and [1,3] are so close to each other that it is reasonable to consider them equal. Similarly, covariance [2,4] and [3,4] will be considered equal:
 
-```{r example_mean_unknown4}
+```{r example_mean_unknown4, dependson="example_mean_unknown3"}
 project_matrix(S, g_MAP[[1]])
 
 plot(g_MAP, type = "heatmap")
 ```
 
-Keep in mind those calculations were performed on the `scale`d version of the dataset, so precticaly it was performed on the corelation matrix and not on the covariance matrix. The analysis is the same, but one have to remember to later come back to the original scaling:
+Remember that those calculations were performed on the `scale`d version of the dataset, so practically, it was performed on the correlation matrix and not the covariance matrix. The analysis is the same, but one has to remember to later come back to the original scaling:
 
-```{r example_mean_unknown5}
+```{r example_mean_unknown5, dependson="example_mean_unknown4"}
 sqrt_diag <- diag(sqrt(diag(cov(Z))))
 estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_diag
 ```
@@ -97,7 +97,7 @@ estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_dia
 
 Assume we know the mean is 0, and we want to estimate the covariance matrix, but we don't have enough data:
 
-```{r example_mean_known}
+```{r example_mean_known1}
 # Prepare model, multivariate normal distribution
 perm_size <- 6
 mu <- numeric(perm_size)  
@@ -116,10 +116,10 @@ sigma_matrix <- matrix(
 # generate example data from a model:
 Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
+```
 
 
-
-
+```{r example_mean_known2, dependson="example_mean_known1"}
 library(gips)
 (number_of_observations <- nrow(Z)) # 4 < 6, so n < p
 
@@ -128,19 +128,21 @@ S <- (t(Z) %*% Z) / number_of_observations
 
 # Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+```
 
-# Find the Maximum A Posteriori Estimator for the permutation.
-  # Space is small (6! = 720), so it is reasonable to
-  # browse the whole of it:
-g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
+
+Find the Maximum A Posteriori Estimator for the permutation. Space is small ($6! = 720$), so it is reasonable to browse the whole of it:
+```{r example_mean_known3, dependson="example_mean_known2"}
+g_map <- find_MAP(g, optimizer = "full")
 g_map
 
 summary(g_map)$n0
 summary(g_map)$n0 <= 4
+```
 
-# We see the number of observations (4) is bigger or equal to n0,
-  # so we can estimate the covariance matrix
-  # with the Maximum Likelihood estimator:
+
+We see the number of observations ($4$) is bigger or equal to $n_0 = 1$, so we can estimate the covariance matrix with the Maximum Likelihood estimator:
+```{r example_mean_known4, dependson="example_mean_known3"}
 project_matrix(S, g_map[[1]])
 
 # Plot the found matrix:
