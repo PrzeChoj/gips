@@ -9,3 +9,4 @@ benchmark*
 tests/testthat/Rplots.pdf
 docs
 inst/doc
+README_cache

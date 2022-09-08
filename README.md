@@ -45,6 +45,7 @@ You can install the development version of gips from
 [GitHub](https://github.com/PrzeChoj/gips) with:
 
 ``` r
+# Install the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("PrzeChoj/gips")
 ```
@@ -58,31 +59,74 @@ Assume we have the data, and we want to understand its structure:
 ``` r
 library(gips)
 
-# this example will be redo.
-# Old version:
-  # Z <- as.matrix(mtcars)
-# 
-# # Assume the data is normal.
-# # Looking at this (`hist(Z[,2])`) distribution,
-# # it is not a remarkably sensible assumption,
-# # but let's do it for the example.
-# 
-# S <- cor(Z)
-# g <- gips(S, nrow(Z), was_mean_estimated = TRUE)
-# plot(g, type = 'heatmap')
-# # We can see some strong relationships between columns in this matrix.
-# # For example, 9 and 10 have very similar correlations to other variables.
-# 
-# # Let's see if the find_MAP will find this relationship:
-# g_MAP <- find_MAP(g, max_iter = 10, optimizer = "MH")
-# plot(g_MAP, type = 'heatmap')
-# # Even after a short time (only 10 iterations),
-# # find_MAP found some relationship.
-# 
-# # Let's see what it will find with a slightly bigger budget:
-# g_MAP <- find_MAP(g_MAP, max_iter = 100, optimizer = "continue")
-# plot(g_MAP, type = 'heatmap')
-# # find_MAP found the (9,10) relationship and even something more.
+Z <- DAAG::oddbooks
+```
+
+Assume the data is normally distributed. This is a reasonable
+assumption, because, for example, p-values for Mardia’s normality tests:
+`QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are \> 0.05
+
+``` r
+Z_scaled <- scale(Z)
+
+S <- cov(Z_scaled)
+S
+#>              thick     height    breadth     weight
+#> thick    1.0000000 -0.9392100 -0.8980836 -0.7897682
+#> height  -0.9392100  1.0000000  0.9859209  0.9080642
+#> breadth -0.8980836  0.9859209  1.0000000  0.9430565
+#> weight  -0.7897682  0.9080642  0.9430565  1.0000000
+
+g <- gips(S, nrow(Z_scaled), was_mean_estimated = TRUE)
+plot(g, type = "heatmap")
+```
+
+<img src="man/figures/README-example_mean_unknown2-1.png" width="100%" />
+
+We can see some strong similarities between columns 2 and 3,
+representing the book’s height and breadth. In this matrix. For example,
+covariance between \[1,2\] is very similar to \[1,3\]. And covariance
+between \[2,4\] is very similar to \[3,4\]. Other covariance does not
+seem so close to each other.
+
+Let’s see if the find_MAP will find this relationship:
+
+``` r
+g_MAP <- find_MAP(g, optimizer = "full")
+#> ================================================================================
+
+g_MAP
+#> The permutation (2,3)
+#>  - was found after 24 log_posteriori calculations
+#>  - is 1.36889598145418 times more likely than the starting, () permutation.
+```
+
+`find_MAP` found the relationship (2,3). In his opinion, the covariance
+\[1,2\] and \[1,3\] are so close to each other that it is reasonable to
+consider them equal. Similarly, covariance \[2,4\] and \[3,4\] will be
+considered equal:
+
+``` r
+project_matrix(S, g_MAP[[1]])
+#>            [,1]       [,2]       [,3]       [,4]
+#> [1,]  1.0000000 -0.9186468 -0.9186468 -0.7897682
+#> [2,] -0.9186468  1.0000000  0.9859209  0.9255604
+#> [3,] -0.9186468  0.9859209  1.0000000  0.9255604
+#> [4,] -0.7897682  0.9255604  0.9255604  1.0000000
+
+plot(g_MAP, type = "heatmap")
+```
+
+<img src="man/figures/README-example_mean_unknown4-1.png" width="100%" />
+
+Keep in mind those calculations were performed on the `scale`d version
+of the dataset, so precticaly it was performed on the corelation matrix
+and not on the covariance matrix. The analysis is the same, but one have
+to remember to later come back to the original scaling:
+
+``` r
+sqrt_diag <- diag(sqrt(diag(cov(Z))))
+estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_diag
 ```
 
 ### Example 2 - modeling
@@ -112,6 +156,7 @@ Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 
 
 
+
 library(gips)
 (number_of_observations <- nrow(Z)) # 4 < 6, so n < p
 #> [1] 4
@@ -128,9 +173,9 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, show_progress_bar = TRUE, optimizer = "full")
 #> ================================================================================
 g_map
-#> The permutation (1,3,2,4,6,5)
+#> The permutation (1,6,5,4,3,2)
 #>  - was found after 720 log_posteriori calculations
-#>  - is 66.813281223385 times more likely than the starting, () permutation.
+#>  - is 81.8834999267771 times more likely than the starting, () permutation.
 
 summary(g_map)$n0
 #> [1] 1
@@ -141,13 +186,13 @@ summary(g_map)$n0 <= 4
   # so we can estimate the covariance matrix
   # with the Maximum Likelihood estimator:
 project_matrix(S, g_map[[1]])
-#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 0.9674321 0.9325013 0.5698557 0.5349250 0.5698557 0.9325013
-#> [2,] 0.9325013 0.9674321 0.5698557 0.5698557 0.5349250 0.9325013
-#> [3,] 0.5698557 0.5698557 0.9674321 0.9325013 0.9325013 0.5349250
-#> [4,] 0.5349250 0.5698557 0.9325013 0.9674321 0.9325013 0.5698557
-#> [5,] 0.5698557 0.5349250 0.9325013 0.9325013 0.9674321 0.5698557
-#> [6,] 0.9325013 0.9325013 0.5349250 0.5698557 0.5698557 0.9674321
+#>            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+#> [1,] 1.06527533 0.78860552 0.34779806 0.07112825 0.34779806 0.78860552
+#> [2,] 0.78860552 1.06527533 0.78860552 0.34779806 0.07112825 0.34779806
+#> [3,] 0.34779806 0.78860552 1.06527533 0.78860552 0.34779806 0.07112825
+#> [4,] 0.07112825 0.34779806 0.78860552 1.06527533 0.78860552 0.34779806
+#> [5,] 0.34779806 0.07112825 0.34779806 0.78860552 1.06527533 0.78860552
+#> [6,] 0.78860552 0.34779806 0.07112825 0.34779806 0.78860552 1.06527533
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
