@@ -96,6 +96,15 @@ test_that("Handle proper parameters", {
     find_MAP(g_small, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE),
     "Consider using `optimizer = 'brute_force'`, because it will use 2! \\(factorial\\) = 2 iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
   )
+  
+  expect_silent(g_MAP_small <- find_MAP(g_small, max_iter = 10,
+                                        optimizer = "HC",
+                                        show_progress_bar = FALSE,
+                                        save_all_perms = TRUE))
+  expect_message(find_MAP(g_MAP_small, max_iter = 10,
+                          optimizer = "MH",
+                          show_progress_bar = FALSE,
+                          save_all_perms = TRUE))
 
   expect_warning(
     find_MAP(g1, max_iter = 2, optimizer = "HC", show_progress_bar = FALSE),

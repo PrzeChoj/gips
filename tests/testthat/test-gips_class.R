@@ -684,9 +684,29 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, TRUE, FALSE, FALSE
   )) # return_probabilities can be TRUE only when save_all_perms is also TRUE
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, matrix(1:30, nrow = ncol(S)), NA, FALSE, FALSE, FALSE
+  ))
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, matrix(1:30, nrow = ncol(S)), FALSE, NA, FALSE, FALSE
+  ))
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, NA, FALSE
+  ))
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, FALSE, NA
+  ))
 
 
-  # A lot of problems ot once
+  # A lot of problems at once
   expect_error(check_correctness_of_arguments(
     S, number_of_observations + 0.1, 1,
     "(1,3)(2,4)(5,6)",
