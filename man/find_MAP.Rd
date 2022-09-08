@@ -152,5 +152,9 @@ then those probabilities can be extracted with this function.
 of \code{find_MAP()} tries to find the argmax of.
 \item \code{vignette("Optimizers")} - A place to learn more about
 the available optimizers.
+\item \code{\link[=forget_perms]{forget_perms()}} - When the \code{gips} object was optimized
+with \code{find_MAP(save_all_perms = TRUE)}, it will be of
+considerable size in RAM. \code{forget_perms} can make such an object
+lighter in memory by forgetting the permutations that it was in.
 }
 }

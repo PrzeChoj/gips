@@ -314,23 +314,23 @@ validate_gips <- function(g) {
       )
     }
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      if (!is.null(optimization_info[["visited_perms"]]) && !(is.list(optimization_info[["visited_perms"]]))) {
+      if (!(all(is.na(optimization_info[["visited_perms"]])) || (is.list(optimization_info[["visited_perms"]])))) {
         abort_text <- c(abort_text,
-          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
+          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list or `NA`.",
           "x" = paste0(
             "You have `attr(g, 'optimization_info')[['visited_perms']]` of type ",
             typeof(optimization_info[["visited_perms"]]),
             "."
           )
         )
-      } else if (!is.null(optimization_info[["visited_perms"]]) && !(length(optimization_info[["visited_perms"]]) != 0)) {
+      } else if (length(optimization_info[["visited_perms"]]) == 0) {
         abort_text <- c(abort_text,
-          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
+          "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements or an `NA`.",
           "x" = paste0(
             "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
           )
         )
-      } else if (!is.null(optimization_info[["visited_perms"]]) && !(inherits(optimization_info[["visited_perms"]][[1]], "gips_perm"))) { # It only checks for the first one, because checking for every would be too expensive
+      } else if (!(all(is.na(optimization_info[["visited_perms"]])) || (inherits(optimization_info[["visited_perms"]][[1]], "gips_perm")))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
           "i" = "Elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `gips_perm` class.",
           "x" = paste0(
@@ -339,7 +339,7 @@ validate_gips <- function(g) {
             ")`."
           )
         )
-      } else if (!is.null(optimization_info[["visited_perms"]]) && !(identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]]))) {
+      } else if (!(all(is.na(optimization_info[["visited_perms"]])) || (identical(optimization_info[["last_perm"]], optimization_info[["visited_perms"]][[length(optimization_info[["visited_perms"]])]])))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['last_perm']]` must be the last element of `attr(g, 'optimization_info')[['visited_perms']]` list.",
           "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` different from `attr(g, 'optimization_info')[['visited_perms']][[length(attr(g, 'optimization_info')[['visited_perms']])]]`.")
@@ -391,7 +391,7 @@ validate_gips <- function(g) {
         )
       }
     } else { # for brute_force, the visited_perms are of class "cycle"
-      if (!is.null(optimization_info[["visited_perms"]]) && !(is.list(optimization_info[["visited_perms"]]))) {
+      if (!(all(is.na(optimization_info[["visited_perms"]])) || (is.list(optimization_info[["visited_perms"]])))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list.",
           "x" = paste0(
@@ -400,14 +400,14 @@ validate_gips <- function(g) {
             "."
           )
         )
-      } else if (!is.null(optimization_info[["visited_perms"]]) && !(length(optimization_info[["visited_perms"]]) != 0)) {
+      } else if (length(optimization_info[["visited_perms"]]) == 0) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list with some elements.",
           "x" = paste0(
             "Your `attr(g, 'optimization_info')[['visited_perms']]` is a list, but of a length 0."
           )
         )
-      } else if (!is.null(optimization_info[["visited_perms"]]) && !(inherits(optimization_info[["visited_perms"]][[1]], "list"))) { # It only checks for the first one, because checking for every would be too expensive
+      } else if (!(all(is.na(optimization_info[["visited_perms"]])) || (inherits(optimization_info[["visited_perms"]][[1]], "list")))) { # It only checks for the first one, because checking for every would be too expensive
         abort_text <- c(abort_text,
           "i" = "After optimization with brute force algorithm, elements of `attr(g, 'optimization_info')[['visited_perms']]` must be of a `list` class.",
           "x" = paste0(
@@ -465,7 +465,8 @@ validate_gips <- function(g) {
           typeof(optimization_info[["post_probabilities"]]), "`."
         )
       )
-    } else if (!(is.null(optimization_info[["visited_perms"]]) || is.null(optimization_info[["post_probabilities"]]) ||
+    } else if ((length(optimization_info[["visited_perms"]]) > 0) &&
+      !(all(is.na(optimization_info[["visited_perms"]])) || is.null(optimization_info[["post_probabilities"]]) ||
       length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))) {
       abort_text <- c(abort_text,
         "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visided permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
@@ -1606,10 +1607,11 @@ print.summary.gips <- function(x, ...) {
 #' Names contains permutations this probability represent.
 #' For `gips` object optimized with `find_MAP(return_probabilities = FALSE)`,
 #' returns a `NULL` object.
+#' 
 #' @export
 #'
 #' @seealso
-#' * [find_MAP()] - the `get_probabilities_from_gips()`
+#' * [find_MAP()] - The `get_probabilities_from_gips()`
 #'     is called on the output of `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
 #'
 #' @examples
@@ -1633,4 +1635,54 @@ get_probabilities_from_gips <- function(g) {
   }
 
   attr(g, "optimization_info")[["post_probabilities"]]
+}
+
+
+#' Forget the permutations
+#' 
+#' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
+#' 
+#' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB.
+#' 
+#' @param g An object of class "gips";
+#'     a result of a `find_MAP(save_all_perms = TRUE)`.
+#' 
+#' @returns Returns the same object `g` as given,
+#'     but without the visited permutation list.
+#' 
+#' @export
+#' 
+#' @seealso
+#' * [find_MAP()] - The `forget_perms()` is called on
+#'     the output of `find_MAP(save_all_perms = TRUE)`.
+#' 
+#' @examples
+#' example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
+#' S <- t(example_matrix) %*% example_matrix
+#' g <- gips(S, 13, was_mean_estimated = FALSE)
+#' g_map <- find_MAP(g, max_iter = 10, optimizer = "MH",
+#'                   show_progress_bar = FALSE, save_all_perms = TRUE)
+#' 
+#' object.size(g_map) # ~18 KB
+#' g_map_slim <- forget_perms(g_map)
+#' object.size(g_map_slim) # ~8 KB
+forget_perms <- function(g){
+  validate_gips(g)
+  
+  optimization_info <- attr(g, "optimization_info")
+  
+  if (is.null(optimization_info)) {
+    rlang::inform(c(
+      "Provided `g` is a `gips` object, but it was not optimized yet.",
+      "i" = "Did You provided the wrong `gips` object?"))
+  } else if (all(is.na(optimization_info[["visited_perms"]]))) {
+    rlang::inform(c(
+      "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
+      "i" = "Did You provided the wrong `gips` object?"))
+  } else {
+    optimization_info[["visited_perms"]] <- I(NA)
+    attr(g, "optimization_info") <- optimization_info
+  }
+  
+  g
 }

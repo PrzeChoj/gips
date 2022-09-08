@@ -205,7 +205,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["visited_perms"]] <- NA
+  attr(g_err, "optimization_info")[["visited_perms"]] <- "text"
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -218,7 +218,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g_BF
   attr(g_err, "optimization_info")[["visited_perms"]] <- list()
-  expect_error(validate_gips(g_err), "is a list, but of a length")
+  expect_error(validate_gips(g_err), "is a list, but of a length 0")
 
   g_err <- g_BF
   attr(g_err, "optimization_info")[["visited_perms"]] <- "()"
@@ -382,11 +382,11 @@ test_that("Properly validate the gips class after multiple optimizations", {
       was_mean_estimated = FALSE
     ),
     optimizer = "MH", show_progress_bar = FALSE,
-    return_probabilities = FALSE, max_iter = 10
+    return_probabilities = FALSE, max_iter = 3
     ),
     optimizer = "MH", show_progress_bar = FALSE,
     return_probabilities = TRUE, save_all_perms = TRUE,
-    max_iter = 10
+    max_iter = 3
     )
   ))) # 2 messages and a warning
 
@@ -444,7 +444,7 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["visited_perms"]] <- NA
+  attr(g_err, "optimization_info")[["visited_perms"]] <- "text"
   expect_error(validate_gips(g_err))
 
   g_err <- g2
@@ -1035,4 +1035,21 @@ test_that("get_probabilities_from_gips works", {
   )
   expect_silent(get_probabilities_from_gips(g_map_no_prob_no_save))
   expect_null(get_probabilities_from_gips(g_map_no_prob_no_save))
+})
+
+test_that("forget_perms works properly", {
+  g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+  g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH",
+                    save_all_perms = TRUE)
+  
+  expect_silent(validate_gips(g_map))
+  expect_message(forget_perms(g),
+                 "Provided \\`g\\` is a \\`gips\\` object, but it was not optimized yet\\.")
+  expect_false(all(is.na(attr(g_map, "optimization_info")[["visited_perms"]])))
+  expect_silent(g_map_no_perms <- forget_perms(g_map))
+  expect_true(all(is.na(attr(g_map_no_perms, "optimization_info")[["visited_perms"]])))
+  expect_silent(validate_gips(g_map_no_perms))
+  
+  expect_message(g_map_no_perms_again <- forget_perms(g_map_no_perms),
+                 "Provided \\`g\\` is an optimized \\`gips\\` object that already has forgotten all permutations\\.")
 })

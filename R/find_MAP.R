@@ -91,6 +91,10 @@
 #'     of `find_MAP()` tries to find the argmax of.
 #' * `vignette("Optimizers")` - A place to learn more about
 #'     the available optimizers.
+#' * [forget_perms()] - When the `gips` object was optimized
+#'     with `find_MAP(save_all_perms = TRUE)`, it will be of
+#'     considerable size in RAM. `forget_perms` can make such an object
+#'     lighter in memory by forgetting the permutations that it was in.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -377,7 +381,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     visited_perms <- list()
     visited_perms[[1]] <- start_perm
   } else {
-    visited_perms <- NULL
+    visited_perms <- NA
   }
   current_perm <- start_perm
   
@@ -521,7 +525,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
     visited_perms <- list()
     visited_perms[[1]] <- start_perm
   } else {
-    visited_perms <- NULL
+    visited_perms <- NA
   }
   current_perm <- start_perm
   
@@ -675,7 +679,7 @@ brute_force <- function(S, number_of_observations,
   if (save_all_perms) {
     visited_perms <- all_perms_list
   } else {
-    visited_perms <- NULL
+    visited_perms <- NA
   }
 
   optimization_info <- list(
@@ -720,7 +724,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
 
     return(g2)
   }
-
+  
   # g1 is also an effect of optimization.
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")
@@ -728,13 +732,13 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   n1 <- length(optimization_info1[["log_posteriori_values"]])
   n2 <- length(optimization_info2[["log_posteriori_values"]])
 
-  if (is.null(optimization_info1[["visited_perms"]]) || is.null(optimization_info2[["visited_perms"]])) {
-    if (!is.null(optimization_info1[["visited_perms"]]) || !is.null(optimization_info2[["visited_perms"]])) {
+  if (all(is.na(optimization_info1[["visited_perms"]])) || all(is.na(optimization_info2[["visited_perms"]]))) {
+    if (!all(is.na(optimization_info1[["visited_perms"]])) || !all(is.na(optimization_info2[["visited_perms"]]))) {
       rlang::warn("You wanted to save visited_perms on one of the optimized `gips` objects but forget it for the other. This is not possible, so both will be forgotten.")
       optimization_info2[["post_probabilities"]] <- NULL
       optimization_info1[["post_probabilities"]] <- NULL
     }
-    visited_perms <- NULL
+    visited_perms <- NA
   } else {
     visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]]) # WoW, one can use `c()` to combine lists!
   }
