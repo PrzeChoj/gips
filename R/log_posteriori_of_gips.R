@@ -332,13 +332,6 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     edited_number_of_observations <- number_of_observations
   }
 
-  check_correctness_of_arguments(S,
-    edited_number_of_observations, max_iter = 5,
-    start_perm = perm1, delta = delta, D_matrix = D_matrix,
-    was_mean_estimated = was_mean_estimated, save_all_perms = TRUE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
-  )
-
   perm_size <- ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
@@ -346,6 +339,13 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   if (!inherits(perm2, "gips_perm")) {
     perm2 <- gips_perm(perm2, perm_size)
   }
+  
+  check_correctness_of_arguments(S,
+    edited_number_of_observations, max_iter = 5,
+    start_perm = perm1, delta = delta, D_matrix = D_matrix,
+    was_mean_estimated = was_mean_estimated, save_all_perms = TRUE,
+    return_probabilities = FALSE, show_progress_bar = FALSE
+  )
 
   validate_gips_perm(perm1)
   validate_gips_perm(perm2)
