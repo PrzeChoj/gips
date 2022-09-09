@@ -23,12 +23,12 @@ BugReports: https://github.com/PrzeChoj/gips/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
-    DAAG,
     numbers,
     permutations,
     rlang,
     utils
 Suggests: 
+    DAAG,
     dplyr,
     ggplot2,
     graphics,
