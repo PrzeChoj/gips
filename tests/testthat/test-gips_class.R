@@ -976,6 +976,34 @@ test_that("summary.gips() works", {
     print(summary(g3)),
     "Optimization algorithms:"
   )
+  
+  
+  # proper log_posteriori_calls_after_best:
+  # g_fake started in (1,2,3) and then comed to (1,3,2), which had bigger log_posteriori value, but only a little bigger
+  g_fake <- structure(list(structure(list(c(1, 2, 3)), size = 3L, class = "gips_perm")), S = structure(c(
+    1, 0, 0, 0, 1, 0, 0, 0, 1
+  ), dim = c(3L, 3L)), number_of_observations = 10, delta = 3, D_matrix = structure(c(
+    1, 0, 0, 0, 1, 0, 0, 0, 1
+  ), dim = c(3L, 3L)), was_mean_estimated = TRUE, optimization_info = list(
+    acceptance_rate = 0.333333333333333, log_posteriori_values = c(
+      -16.01209771488621000000, -18.9125198086359,
+      -16.01209771488621421085
+    ), visited_perms = list(
+      structure(list(c(1, 2, 3)), size = 3L, class = "gips_perm"),
+      structure(list(1, c(2, 3)), size = 3L, class = "gips_perm"),
+      structure(list(c(1, 3, 2)), size = 3L, class = "gips_perm")
+    ),
+    start_perm = structure(list(c(1, 2, 3)), size = 3L, class = "gips_perm"),
+    last_perm = structure(list(c(1, 3, 2)), size = 3L, class = "gips_perm"),
+    last_perm_log_posteriori = -16.0120977148862, iterations_performed = 2L,
+    optimization_algorithm_used = "Metropolis_Hastings", post_probabilities = NULL,
+    did_converge = NULL, best_perm_log_posteriori = -16.0120977148862,
+    optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
+    full_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
+  ), class = "gips")
+  
+  expect_equal(summary(g_fake)[["log_posteriori_calls_after_best"]],
+               2)
 })
 
 test_that("start_permutation_log_posteriori was calculated correctly", {

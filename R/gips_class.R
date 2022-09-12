@@ -358,7 +358,7 @@ validate_gips <- function(g) {
               perm = optimization_info[["last_perm"]]
             )
 
-            if (!(optimization_info[["last_perm_log_posteriori"]] == log_posteriori_of_gips(last_perm_gips))) {
+            if (!(abs(optimization_info[["last_perm_log_posteriori"]] - log_posteriori_of_gips(last_perm_gips)) < 0.00000001)) {
               abort_text <- c(abort_text,
                 "i" = "`attr(g, 'optimization_info')[['last_perm_log_posteriori']]` must be the log_posteriori of `optimization_info[['last_perm']]`.",
                 "x" = paste0(
@@ -529,7 +529,7 @@ validate_gips <- function(g) {
       )
     }
     best_perm_gips <- gips(S, number_of_observations, delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated, perm = perm) # this perm is g[[1]]
-    if (!(optimization_info[["best_perm_log_posteriori"]] == log_posteriori_of_gips(best_perm_gips))) {
+    if (!(abs(optimization_info[["best_perm_log_posteriori"]] - log_posteriori_of_gips(best_perm_gips)) < 0.00000001)) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['best_perm_log_posteriori']]` must be the log_posteriori of the base object, `g[[1]]`.",
         "x" = paste0(
@@ -659,7 +659,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
         typeof(S), "."
       )
     )
-  } else if (sum(S == t(S)) != (nrow(S)^2)) { # this would mean the matrix is not symmetric
+  } else if (!all(abs(S - t(S)) < 0.000001)) { # this would mean the matrix is not symmetric
     abort_text <- c(abort_text,
       "i" = "`S` matrix must be a symmetric matrix.",
       "x" = "You provided `S` as a matrix, but a non-symmetric one.",
@@ -1435,8 +1435,8 @@ summary.gips <- function(object, ...) {
     optimization_info <- attr(object, "optimization_info")
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      when_was_best <- which(optimization_info[["log_posteriori_values"]] == permutation_log_posteriori)
-      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[length(when_was_best)]
+      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enought; this is the first generator of the group
+      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
       start_permutation <- optimization_info[["start_perm"]]
     } else {
       # for brute_force when_was_best is useless.
