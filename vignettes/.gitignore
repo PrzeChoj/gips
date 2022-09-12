@@ -2,3 +2,5 @@
 *.R
 /Optimizers_cache/*
 /Optimizers_files/*
+/Introduction_cache/*
+/Introduction_files/*

@@ -20,13 +20,13 @@ options(scipen=999) # turn off scientific notation
 
 # Available optimizers
 
-To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. However, the space of permutations is enormous - for permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers:
+To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. This is designed to find a permutation $\sigma$ so that the value of A Posteriori $f(\sigma)$ is as big as possible. However, the space of permutations is enormous - for permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
 
 * `"Metropolis_Hastings"`, `"MH"`
 * `"hill_climbing"`, `"HC"`
 * `"brute_force"`, `"BF"`, `"full"`
 
-```{r setup}
+```{r setup, cache = TRUE, eval=FALSE}
 library(gips)
 
 ?find_MAP
@@ -37,7 +37,26 @@ library(gips)
 
 This optimizer is implementation of the [*Second approach* from references(1), section 4.1.2](https://arxiv.org/abs/2004.03503).
 
-### Example:
+This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
+
+### Short description
+
+In every iteration $i$, an algorithm is in a permutation; call it $\sigma_i$. Then the random transposition is drawn uniformly $t_i = (j,k)$ and value of $f(\sigma_i \circ t_i)$ is computed.
+
+* If new value is bigger ($f(\sigma_i \circ t_i) \ge f(\sigma_i)$), then $\sigma_{i+1} = \sigma_i \circ t_i$ and we know the new $\sigma$ is better than the old one. 
+* If new value is smaller ($f(\sigma_i \circ t_i) < f(\sigma_i)$), then we will choose $\sigma_{i+1} = \sigma_i \circ t_i$ with probability $\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$, or we will choose $\sigma_{i+1} = \sigma_i$ with complementary probability $1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$.
+
+The final value is the best $\sigma$ that was ever computed.
+
+### Notes
+
+This algorithm was tested in multiple settings and turned out to be an outstanding optimizer. Especially given it does not need any hyperparameters tuned.
+
+The only parameter it depends on is `max_iter`, which determines the number of steps described above. One should choose this number rationally. When decided too small, there is a missed opportunity to find potentially a much better permutation. When decided too big, there is a lost time and computational power that does not lead to growth. Our recommendation is to plot the convergence plot with logarithmic OX scale: `plot(g_map, type = "both", logarithmic_x = TRUE)`. Then decide if the line has flattened already. Keep in mind that the OY scale is also logarithmic. For example, a small change on the OY scale could mean $10000$ **times** the change in A Posteriori.
+
+This algorithm has been analyzed extensively by theoretical probabilists. This lead to interesting results like, for example, that the frequency of visits can estimate the probability of the state. This is the approach explained in the [references(1), section 4.1.2](https://arxiv.org/abs/2004.03503) and shown in [references(1), section 5.2](https://arxiv.org/abs/2004.03503). One can do this by setting `return_probabilities = TRUE`.
+
+### Example
 
 ```{r Metropolis_Hastings, cache=TRUE}
 perm_size <- 70
@@ -48,7 +67,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-plot(g)
+plot(g, type = 'heatmap')
 
 # TODO(Make the max_iter bigger:)
 g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
@@ -73,7 +92,7 @@ $$\text{neighbors}(\sigma) = \{\sigma \circ (i,j) : 1 \le i < j \le \text{perm_s
 
 ### Pseudocode:
 
-```{r}
+```{r, hill_climb_pseudocode, eval=FALSE}
 hill_climb <- function(g){
   perm <- g[[1]]
   perm_posteriori <- log_posteriori_of_gips(g)
@@ -128,7 +147,7 @@ plot(g_map, type = 'both')
 
 # Brute Force
 
-This is the only optimizer that will definitely find the actual MAP Estimator. This is only recommended for small spaces ($p \le 8$). Bigger spaces can also be browsed, but the required time is probably too long.
+This is the only optimizer that will certainly find the actual MAP Estimator. This is only recommended for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long.
 
 ### Example:
 
@@ -156,8 +175,18 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
 
+# Additional parameters
+
+The `find_MAP()` function has also have 2 additional parameters, namely `show_progress_bar` and `save_all_perms`. Both can be set to `TRUE` or `FALSE`.
+
+The `show_progress_bar = TRUE` simply means `gips` will print the progress on the console. Keep in mind that when one sets the `return_probabilities = TRUE`, there will be a second progress bar indicating calculating the probabilities after optimization.
+
+The `save_all_perms = TRUE` means that `gips` will save all visited permutations in the outputted object. This will significantly increase the RAM needed for this object (for example, for $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, while with `save_all_perms = FALSE`, the 2 MB was enough). However, this is necessary for `return_probabilities = TRUE` or more complex path analysis.
+
 
 # Discussion
+
+We are aware that the optimizers mentioned above try to optimize the space of **permutations**. This is not precisely the thing we want because the found permutation is interpreted as the generator or the group of permutations. We tested the algorithms working correctly in this setting, and we are yet to see any practical advantage of optimization performed on groups. However, the theoretical advantage is clear, as the results are easier to interpret.
 
 We encourage everyone to leave a comment on available and potential new optimizers on the [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). There, one can also find the implemented optimizers but not yet added to `gips`.
 

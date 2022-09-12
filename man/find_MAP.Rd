@@ -17,9 +17,9 @@ find_MAP(
 \item{g}{Object of a \code{gips} class}
 
 \item{max_iter}{Number of iterations for an algorithm to perform.
-At least 2. For \code{optimizer=="MH"} it has to be finite;
-for \code{optimizer=="HC"} it can be infinite;
-for \code{optimizer=="BF"} it is not used.}
+At least 2. For \code{optimizer="MH"} it has to be finite;
+for \code{optimizer="HC"} it can be infinite;
+for \code{optimizer="BF"} it is not used.}
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori.
 \itemize{
@@ -37,7 +37,7 @@ section below.}
 Indicate whether or not to show the progress bar.
 \itemize{
 \item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.
-\item When \code{return_probabilities==TRUE}, then
+\item When \code{return_probabilities=TRUE}, then
 shows the second progress bar for the time
 when the probabilities are calculated
 }}
@@ -49,14 +49,17 @@ This can be useful, but can occupy a significant part of RAM memory.}
 \item{return_probabilities}{A boolean. TRUE can only be provided
 when \code{save_all_perms} is TRUE and for:
 \itemize{
-\item \code{optimizer=="MH"} - use Metropolis-Hastings results to
+\item \code{optimizer="MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities
-\item \code{optimizer=="BF"} - use brute force results to
+\item \code{optimizer="BF"} - use brute force results to
 calculate exact posterior probabilities
 }
 
 This additional calculations are costly, so second progress bar
-is shown (when \code{show_progress_bar} is \code{TRUE}).}
+is shown (when \code{show_progress_bar} is \code{TRUE}).
+
+To examine probabilities after optimization,
+call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}
 }
 \value{
 Returns an optimized object of a \code{gips} class.
@@ -71,16 +74,21 @@ the 'Possible algorithms to use as optimizers' section below.
 \section{Possible algorithms to use as optimizers}{
 
 
-For a more in-depth explanation, see \code{vignette("Optimizers")}.
+For a more in-depth explanations, see \code{vignette("Optimizers")}.
 \itemize{
-\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use Metropolis-Hastings algorithm;
+\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use
+the \strong{Metropolis-Hastings} algorithm;
 \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
 The algorithm will draw a random transposition in every iteration
 and consider changing the current state (permutation).
 When the \code{max_iter} is reached, the algorithm will return the best
 permutation calculated so far as the MAP Estimator. This implements
 the \href{https://arxiv.org/abs/2004.03503}{\emph{Second approach} from references, section 4.1.2}.
-\item \code{"hill_climbing"}, \code{"HC"} - to use hill climbing algorithm;
+This algorithm used in this context is a special case of the
+\strong{Simulated Annealing} the reader may be more familiar with;
+\href{https://en.wikipedia.org/wiki/Simulated_annealing}{see Wikipedia}.
+\item \code{"hill_climbing"}, \code{"HC"} - to use
+the \strong{hill climbing} algorithm;
 \href{https://en.wikipedia.org/wiki/Hill_climbing}{see Wikipedia}.
 The algorithm will check all transpositions in every iteration and
 go to the one with the biggest a posteriori value.
@@ -90,10 +98,11 @@ then the warning is shown, and it is recommended to start
 the optimization again on the output of the \code{find_MAP()}.
 Remember that there are \code{p*(p-1)/2} transpositions to be checked
 in every iteration. For bigger \code{p}, this may be costly.
-\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use the Brute Force algorithm that
-checks the whole permutation space of a given size. This algorithm will
-definitely find the actual Maximum A Posteriori Estimation but is very
-computationally expensive for bigger space.
+\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use
+the \strong{Brute Force} algorithm that checks the whole permutation
+space of a given size. This algorithm will definitely find
+the actual Maximum A Posteriori Estimation but is
+very computationally expensive for bigger spaces.
 }
 }
 

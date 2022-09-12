@@ -8,17 +8,22 @@
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a more in-depth explanation, see `vignette("Optimizers")`.
+#' For a more in-depth explanations, see `vignette("Optimizers")`.
 #'
-#' * `"Metropolis_Hastings"`, `"MH"` - to use Metropolis-Hastings algorithm;
+#' * `"Metropolis_Hastings"`, `"MH"` - to use
+#'     the **Metropolis-Hastings** algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
 #'     The algorithm will draw a random transposition in every iteration
 #'     and consider changing the current state (permutation).
 #'     When the `max_iter` is reached, the algorithm will return the best
 #'     permutation calculated so far as the MAP Estimator. This implements
 #'     the [*Second approach* from references, section 4.1.2](https://arxiv.org/abs/2004.03503).
+#'     This algorithm used in this context is a special case of the
+#'     **Simulated Annealing** the reader may be more familiar with;
+#'     [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 #'
-#' * `"hill_climbing"`, `"HC"` - to use hill climbing algorithm;
+#' * `"hill_climbing"`, `"HC"` - to use
+#'     the **hill climbing** algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
 #'     The algorithm will check all transpositions in every iteration and
 #'     go to the one with the biggest a posteriori value.
@@ -29,16 +34,17 @@
 #'     Remember that there are `p*(p-1)/2` transpositions to be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
-#' * `"brute_force"`, `"BF"`, `"full"` - to use the Brute Force algorithm that
-#'     checks the whole permutation space of a given size. This algorithm will
-#'     definitely find the actual Maximum A Posteriori Estimation but is very
-#'     computationally expensive for bigger space.
+#' * `"brute_force"`, `"BF"`, `"full"` - to use
+#'     the **Brute Force** algorithm that checks the whole permutation
+#'     space of a given size. This algorithm will definitely find
+#'     the actual Maximum A Posteriori Estimation but is
+#'     very computationally expensive for bigger spaces.
 #'
 #' @param g Object of a `gips` class
 #' @param max_iter Number of iterations for an algorithm to perform.
-#'     At least 2. For `optimizer=="MH"` it has to be finite;
-#'     for `optimizer=="HC"` it can be infinite;
-#'     for `optimizer=="BF"` it is not used.
+#'     At least 2. For `optimizer="MH"` it has to be finite;
+#'     for `optimizer="HC"` it can be infinite;
+#'     for `optimizer="BF"` it is not used.
 #' @param optimizer The optimizer for the search of the maximum posteriori.
 #'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings
 #'   * `"HC"` - Hill Climbing
@@ -51,7 +57,7 @@
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar.
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
-#'   * When `return_probabilities==TRUE`, then
+#'   * When `return_probabilities=TRUE`, then
 #'       shows the second progress bar for the time
 #'       when the probabilities are calculated
 #' @param save_all_perms A boolean. TRUE indicates to save a list of
@@ -59,14 +65,16 @@
 #'     This can be useful, but can occupy a significant part of RAM memory.
 #' @param return_probabilities A boolean. TRUE can only be provided
 #'     when `save_all_perms` is TRUE and for:
-#'   * `optimizer=="MH"` - use Metropolis-Hastings results to
+#'   * `optimizer="MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities
-#'   * `optimizer=="BF"` - use brute force results to
+#'   * `optimizer="BF"` - use brute force results to
 #'       calculate exact posterior probabilities
 #' 
 #' This additional calculations are costly, so second progress bar
 #'     is shown (when `show_progress_bar` is `TRUE`).
-#'
+#' 
+#' To examine probabilities after optimization,
+#'     call [get_probabilities_from_gips()].
 #'
 #' @returns Returns an optimized object of a `gips` class.
 #'
