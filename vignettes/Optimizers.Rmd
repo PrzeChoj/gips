@@ -26,9 +26,11 @@ To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` 
 * `"hill_climbing"`, `"HC"`
 * `"brute_force"`, `"BF"`, `"full"`
 
-```{r setup, cache = TRUE, eval=FALSE}
+```{r setup}
 library(gips)
+```
 
+```{r help, cache = TRUE, eval=FALSE}
 ?find_MAP
 ```
 
