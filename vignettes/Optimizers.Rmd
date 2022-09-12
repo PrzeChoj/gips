@@ -18,14 +18,6 @@ knitr::opts_chunk$set(
 options(scipen=999) # turn off scientific notation
 ```
 
-# Available optimizers
-
-To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. This is designed to find a permutation $\sigma$ so that the value of A Posteriori $f(\sigma)$ is as big as possible. However, the space of permutations is enormous - for permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
-
-* `"Metropolis_Hastings"`, `"MH"`
-* `"hill_climbing"`, `"HC"`
-* `"brute_force"`, `"BF"`, `"full"`
-
 ```{r setup}
 library(gips)
 ```
@@ -34,6 +26,13 @@ library(gips)
 ?find_MAP
 ```
 
+# Available optimizers
+
+To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. This is designed to find a permutation $\sigma$ so that the value of A Posteriori $f(\sigma)$ is as big as possible. However, the space of permutations is enormous - for permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
+
+* `"Metropolis_Hastings"`, `"MH"`
+* `"hill_climbing"`, `"HC"`
+* `"brute_force"`, `"BF"`, `"full"`
 
 # Metropolis Hastings
 
@@ -70,64 +69,86 @@ S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 plot(g, type = 'heatmap')
-
 # TODO(Make the max_iter bigger:)
 g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
 g_map
 
-plot(g_map, type = 'both')
+plot(g_map, type = 'both', logarithmic_x = TRUE)
 ```
 
 
 # Hill climbing
 
-This optimizer walks on the space of permutations. Let's say it is in permutation $\sigma$. Then, in iteration it will calculate all posteriori probabilities of permutations of a form $\sigma \circ (i,j)$, where $1 \le i < j \le \text{perm_size}$. Then it will choose the best among those and start the next iteration from the new $\sigma$.
+It uses the Hill climbing algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
 
-### Mathy definition:
+It is performing the local optimization iteratively.
 
-$$\sigma_0 = ()$$
+### Short description
+
+In every iteration $i$, an algorithm is in a permutation; call it $\sigma_i$. Then all the values of $f(\sigma_i \circ t)$ are computed for every possible transposition $t = (j,k)$. Then the next $\sigma_{i+1}$ will be the one with the biggest value:
 
 $$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{\text{posteriori}(perm)\}$$
 
 Where:
-$$\text{neighbors}(\sigma) = \{\sigma \circ (i,j) : 1 \le i < j \le \text{perm_size}\}$$
+$$\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}$$
 
-### Pseudocode:
+The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved.
 
+### Pseudocode
+
+<div id="spoiler" style="display:none">
 ```{r, hill_climb_pseudocode, eval=FALSE}
-hill_climb <- function(g){
+hill_climb <- function(g, max_iter) {
   perm <- g[[1]]
   perm_posteriori <- log_posteriori_of_gips(g)
   perm_size <- attr(perm, "size")
   S <- attr(g, "S")
   number_of_observations <- attr(g, "number_of_observations")
   
-  best_neighbour <- NULL
-  best_neighbour_posteriori <- - Inf
+  best_neighbor <- NULL
+  best_neighbor_posteriori <- -Inf
   
-  while (best_neighbour_posteriori > perm_posteriori){
-    best_neighbour <- NULL
-    best_neighbour_posteriori <- - Inf
+  i <- 1
+  
+  while (best_neighbor_posteriori > perm_posteriori && i < max_iter) {
+    best_neighbor <- NULL
+    best_neighbor_posteriori <- -Inf
     
-    for (i in 1:(perm_size-1)){
-      for (j in (i+1):perm_size){
-        neighbour <- gips:::compose_with_transposition(perm, c(i, j))
-        neighbour_posteriori <- log_posteriori_of_gips(gips(S, number_of_observations,
-                                                            perm = neighbour))
+    for (j in 1:(perm_size-1)) {
+      for (k in (j + 1):perm_size) {
+        neighbor <- gips:::compose_with_transposition(perm, c(j, k))
+        neighbor_posteriori <- log_posteriori_of_gips(gips(
+          S,
+          number_of_observations,
+          perm = neighbor
+        ))
         
-        if (neighbour_posteriori > best_neighbour_posteriori){
-          best_neighbour <- neighbour
-          best_neighbour_posteriori <- neighbour_posteriori
+        if (neighbor_posteriori > best_neighbor_posteriori) {
+          best_neighbor <- neighbor
+          best_neighbor_posteriori <- neighbor_posteriori
         } # end if
-      } # end for j
-    } # end for i
+      } # end for k
+    } # end for j
+    i <- i + 1
   } # end while
   
-  return(best_neighbour)
+  return(best_neighbor)
 }
 ```
+</div>
 
-### Example:
+<button title="Click to show answer" type="button"
+   onclick="if(document.getElementById('spoiler') .style.display=='none')
+              {document.getElementById('spoiler') .style.display=''}
+            else{document.getElementById('spoiler') .style.display='none'}">
+  Show/hide
+</button>
+
+### Notes
+
+The `max_iter` parameter works differently for this optimizer and Metropolis-Hastings. The Metropolis-Hastings will compute a posteriori of `max_iter` permutations. The Brute Force optimizer, ${p\choose 2} \cdot$ `max_iter`.
+
+### Example
 
 ```{r hill_climbing, cache=TRUE}
 perm_size <- 25
@@ -139,7 +160,6 @@ S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 plot(g, type = 'heatmap')
-
 # TODO(Make the max_iter bigger:)
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
@@ -149,9 +169,13 @@ plot(g_map, type = 'both')
 
 # Brute Force
 
-This is the only optimizer that will certainly find the actual MAP Estimator. This is only recommended for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long.
+It searches through the whole space at once.
 
-### Example:
+This is the only optimizer that will certainly find the actual MAP Estimator. 
+
+This is **only recommended** for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long.
+
+### Example
 
 ```{r brute_force, cache=TRUE}
 perm_size <- 6
