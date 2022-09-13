@@ -9,7 +9,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
+knitr::opts_chunk[["set"]](
   collapse = TRUE,
   comment = "#>",
   cache = TRUE
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 options(scipen=999) # turn off scientific notation
 ```
 
-## The problem
+# The problem
 
 Quite often, we have too little data to perform valid inference. Consider the 
 situation with multivariate Gaussian distribution, where we have few observations 
@@ -27,7 +27,7 @@ graphical models used in biology or medicine. In such a setting, the usual way
 of finding the covariance matrix (the maximum likelihood method) isn't statistically 
 applicable. What now?
 
-## Invariance by permutation
+# Invariance by permutation
 
 In some cases, the interchange of variables in the vector does not change its distribution.
 In the multivariate Gaussian case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
@@ -46,7 +46,7 @@ Of course, in the samples collected in the real world, no perfect equalities wil
 Still, if the respective values in the (poorly) estimated covariance matrix were close, adopting
 a particular assumption about invariance by permutation would be a reasonable step.
 
-## Package `gips`
+# Package `gips`
 
 We propose creating a set of constraints on the covariance matrix so that the 
 maximum likelihood method can be used after all. The constraint we consider is - none other than - 
@@ -54,7 +54,7 @@ invariance under permutation symmetry.
 
 This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means such that maximizes the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch contribute to PAPER.
 
-## Example
+# Example
 
 ```{r toy_example_data_making, include = FALSE}
 require("MASS") # for mvrnorm()

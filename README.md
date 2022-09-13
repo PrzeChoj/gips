@@ -150,7 +150,7 @@ sigma_matrix <- matrix(
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 
-# generate example data from a model:
+# Generate example data from a model:
 Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
 ```
@@ -160,7 +160,7 @@ library(gips)
 (number_of_observations <- nrow(Z)) # 4 < 6, so n < p
 #> [1] 4
 
-# calculate the covariance matrix from the data:
+# Calculate the covariance matrix from the data:
 S <- (t(Z) %*% Z) / number_of_observations
 
 # Make the gips object out of data:

@@ -1,0 +1,164 @@
+---
+title: "Theory"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Theory}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk[["set"]](
+  collapse = TRUE,
+  comment = "#>",
+  cache = TRUE
+)
+```
+
+# Theory the `gips` is based on
+
+The package is based on the paper [(1) from references](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
+
+In this vignette, we would like to give a gentle introduction. We want to point out all the most important results from this work from the user's point of view. We will also show examples of those results in the `gips` package.
+
+```{r setup}
+library(gips)
+```
+
+As we read in the abstract, the outline of the paper is to "derive the distribution of the maximum likelihood estimate of the covariance parameter $\Sigma$ (...)" and then to "perform Bayesian model selection in the class of complete Gaussian models invariant by the action of a subgroup of the symmetric group (...)". Those ideas are implemented in the `gips` package.
+
+
+# Basic definitions
+
+Let $V=\{1,\ldots,p\}$ be a finite index set and let $Z=(Z_1,\ldots, Z_p)$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$.
+Let $\mathfrak{S}_p$ denote the symmetric group
+on $V$, that is, the group of all permutations on $\{1,\ldots,p\}$ and let $\Gamma$ be a subgroup of $\mathfrak{S}_p$. A centered Gaussian model is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^T=\Sigma$ 
+(here, we identify a permutation $g$ with its permutation matrix).
+
+
+# Theorem 1
+
+Theorem basically states that given a permutation subgroup $\Gamma$ there exist constants $L \in \mathbb{N}$, $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $X$ that are invariant under the action of $\Gamma$ can be transform into block-diagonal form.
+
+`gips` implements this theorem for $\Gamma$ that are symmetric. See example:
+
+```{r th1_1}
+p <- 6
+X <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
+              0.9,1.1,0.9,0.8,0.7,0.8,
+              0.8,0.9,1.1,0.9,0.8,0.7,
+              0.7,0.8,0.9,1.1,0.9,0.8,
+              0.8,0.7,0.8,0.9,1.1,0.9,
+              0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
+```
+Now, `X` is a symmetric matrix invariant under the group $<(1,2,3,4,5,6)>$.
+
+```{r th1_2, dependson="th1_1"}
+g_perm <- gips_perm("(1,2,3,4,5,6)", p)
+U_Gamma <- prepare_orthogonal_matrix(g_perm)
+
+round(t(U_Gamma) %*% X %*% U_Gamma, 5)
+```
+We can see the diagonal matrix in the form from theorem 1. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+
+Let's see the other example:
+```{r th1_3, dependson="th1_2"}
+p <- 6
+X <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
+              0.9,1.2,0.9,0.1,0.4,0.2,
+              0.9,0.9,1.2,0.2,0.1,0.4,
+              0.4,0.1,0.2,1.2,0.9,0.9,
+              0.2,0.4,0.1,0.9,1.2,0.9,
+              0.1,0.2,0.4,0.9,0.9,1.2), nrow = p)
+```
+Now, `X` is a symmetric matrix invariant under the group $<(1,2,3)(4,5,6)>$.
+
+```{r th1_4, dependson="th1_3"}
+g_perm <- gips_perm("(1,2,3)(4,5,6)", p)
+U_Gamma <- prepare_orthogonal_matrix(g_perm)
+
+round(t(U_Gamma) %*% X %*% U_Gamma, 5)
+```
+TODO(description of this second matrix)
+
+TODO(Note that $k = d$ when the group is cyclic. `gips` only considers cyclic groups.)
+
+
+One can also take any symmetric matrix `X` and find the orthogonal projection on the space of matrices invariant under the given permutation, meaning the closest matrix to `X` in this space:
+
+```{r def3}
+p <- 6
+X <- matrix(runif(p*p, min = -10, max = 10), nrow = p)
+X <- t(X) %*% X # any symmetric matrix
+X
+project_matrix(X, perm = "(1,2,3,4,5,6)")
+project_matrix(X, perm = "(1,2)(3,4,5,6)")
+```
+
+TODO(Point out the equal elements of those matrices)
+
+# A Posteriori
+
+When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper a way how to find it.
+
+TODO(Info about the A Priori assumption)
+
+Namely, the [formula (30)]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
+
+In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation, or the other one.
+
+Let's see the example:
+```{r example2_readme1}
+# Prepare model, multivariate normal distribution
+perm_size <- 6
+number_of_observations <- 4
+mu <- numeric(perm_size)  
+sigma_matrix <- matrix(
+  data = c(
+    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+  ),
+  nrow = perm_size, byrow = TRUE
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+
+# Generate example data from a model:
+withr::with_seed(1234,{
+  Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+})
+# End of prepare model
+```
+Let's say we have this data, `Z`. It has only $4$ observations, and its dimension is $p=6$.
+Let's assume we know `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
+
+```{r, example2_readme2, dependson="example2_readme1"}
+# Calculate the covariance matrix from the data:
+S <- (t(Z) %*% Z) / number_of_observations
+
+# Make the gips object out of data:
+g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+
+g_map <- find_MAP(g, optimizer = "full")
+print(g_map)
+
+S_projected <- project_matrix(S, g_map[[1]])
+```
+
+We see the formula (30) was the biggest for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S\_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+
+TODO(Parameters delta, D_matrix)
+
+
+# Finding the MAP Estimator
+
+The space of all permutations is enormous for bigger $p$. This is why the authors of the [paper (1)](https://arxiv.org/abs/2004.03503.pdf) suggested analyzing it with the Metropolis-Hastings algorithm instead of browsing the whole of it.
+
+For more information, see `vignette(Optimizers)` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+
+
+# References
+
+(1) Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503.pdf); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
