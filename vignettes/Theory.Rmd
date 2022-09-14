@@ -104,6 +104,8 @@ project_matrix(X, perm = "(1,2)(3,4,5,6)")
 
 TODO(Point out the equal elements of those matrices)
 
+TODO(This $\pi_\Gamma(X)$ is maximum likelihood estimator as long as $n \ge n_0$)
+
 # A Posteriori
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper a way how to find it.

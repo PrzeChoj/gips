@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_class.R
 \name{forget_perms}
 \alias{forget_perms}
-\title{Forget the permutations}
+\title{Forget the permutations for \code{gips} object optimized with \code{save_all_perms = TRUE}}
 \usage{
 forget_perms(g)
 }

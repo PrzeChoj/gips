@@ -26,7 +26,7 @@ reference:
 - title: "Internal functions"
   desc: "Functions for internal calculations"
   contents:
-  - calculate_gamma_function
-  - get_structure_constants
   - log_posteriori_of_gips
   - prepare_orthogonal_matrix
+  - get_structure_constants
+  - calculate_gamma_function

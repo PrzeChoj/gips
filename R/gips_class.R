@@ -1641,7 +1641,7 @@ get_probabilities_from_gips <- function(g) {
 }
 
 
-#' Forget the permutations
+#' Forget the permutations for `gips` object optimized with `save_all_perms = TRUE`
 #' 
 #' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
 #' 
