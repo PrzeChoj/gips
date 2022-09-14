@@ -17,7 +17,7 @@ knitr::opts_chunk[["set"]](
 
 # Theory the `gips` is based on
 
-The package is based on the paper [(1) from references](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
+The package is based on the [paper (1) from references](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
 
 In this vignette, we would like to give a gentle introduction. We want to point out all the most important results from this work from the user's point of view. We will also show examples of those results in the `gips` package.
 
@@ -32,13 +32,16 @@ As we read in the abstract, the outline of the paper is to "derive the distribut
 
 Let $V=\{1,\ldots,p\}$ be a finite index set and let $Z=(Z_1,\ldots, Z_p)$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$.
 Let $\mathfrak{S}_p$ denote the symmetric group
-on $V$, that is, the group of all permutations on $\{1,\ldots,p\}$ and let $\Gamma$ be a subgroup of $\mathfrak{S}_p$. A centered Gaussian model is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^T=\Sigma$ 
+on $V$, that is, the group of all permutations on $\{1,\ldots,p\}$ and let $\Gamma$ be a subgroup of $\mathfrak{S}_p$. A centered Gaussian model is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
 (here, we identify a permutation $g$ with its permutation matrix).
 
+For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$, $$\mathcal{Z}_{\Gamma} := \{x \in \mathrm{Sym}(p;\mathbb{R})\colon x_{ij} = x_{\sigma(i)\sigma(j)} \text{ for all }\sigma \in \Gamma\},$$ and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$, $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
 
 # Theorem 1
 
 Theorem basically states that given a permutation subgroup $\Gamma$ there exist constants $L \in \mathbb{N}$, $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $X$ that are invariant under the action of $\Gamma$ can be transform into block-diagonal form.
+
+TODO(Note that $k = d$ when the group is cyclic. `gips` only considers cyclic groups.)
 
 `gips` implements this theorem for $\Gamma$ that are symmetric. See example:
 
@@ -51,15 +54,16 @@ X <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
               0.8,0.7,0.8,0.9,1.1,0.9,
               0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
 ```
-Now, `X` is a symmetric matrix invariant under the group $<(1,2,3,4,5,6)>$.
+Now, `X` is a symmetric matrix invariant under the group $\Gamma = <(1,2,3,4,5,6)>$.
 
 ```{r th1_2, dependson="th1_1"}
 g_perm <- gips_perm("(1,2,3,4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
-round(t(U_Gamma) %*% X %*% U_Gamma, 5)
+block_decomposition <- t(U_Gamma) %*% X %*% U_Gamma
+round(block_decomposition, 5)
 ```
-We can see the diagonal matrix in the form from theorem 1. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+We can see the diagonal matrix in the shape from Theorem 1. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
 ```{r th1_3, dependson="th1_2"}
@@ -71,20 +75,23 @@ X <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
               0.2,0.4,0.1,0.9,1.2,0.9,
               0.1,0.2,0.4,0.9,0.9,1.2), nrow = p)
 ```
-Now, `X` is a symmetric matrix invariant under the group $<(1,2,3)(4,5,6)>$.
+Now, `X` is a symmetric matrix invariant under the group $\Gamma = <(1,2,3)(4,5,6)>$.
 
 ```{r th1_4, dependson="th1_3"}
 g_perm <- gips_perm("(1,2,3)(4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
-round(t(U_Gamma) %*% X %*% U_Gamma, 5)
+block_decomposition <- t(U_Gamma) %*% X %*% U_Gamma
+round(block_decomposition, 5)
 ```
 TODO(description of this second matrix)
 
-TODO(Note that $k = d$ when the group is cyclic. `gips` only considers cyclic groups.)
 
+# Equation (6)
 
-One can also take any symmetric matrix `X` and find the orthogonal projection on the space of matrices invariant under the given permutation, meaning the closest matrix to `X` in this space:
+One can also take any symmetric matrix `X` and find the orthogonal projection on $\mathcal{Z}_{\Gamma}$, the space of matrices invariant under the given permutation, meaning the closest matrix to `X` in $\mathcal{Z}_{\Gamma}$:
+
+$$\pi_\Gamma(X) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot X\cdot\sigma^\top\in\mathcal{Z}_{\Gamma}$$
 
 ```{r def3}
 p <- 6
@@ -101,7 +108,7 @@ TODO(Point out the equal elements of those matrices)
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper a way how to find it.
 
-TODO(Info about the A Priori assumption)
+TODO(Info about the A Priori assumption and parameters delta, D_matrix; For D_matrix = D*I, the bigger D is, the less "structure" the `gips` will look for; For D = 0.000001, `gips` will find big structure, for D = 99999, `gips` will "find" $\text{id} = ()$.)
 
 Namely, the [formula (30)]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
@@ -147,16 +154,14 @@ print(g_map)
 S_projected <- project_matrix(S, g_map[[1]])
 ```
 
-We see the formula (30) was the biggest for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S\_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
-
-TODO(Parameters delta, D_matrix)
+We see the formula (30) gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{Sprojected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # Finding the MAP Estimator
 
 The space of all permutations is enormous for bigger $p$. This is why the authors of the [paper (1)](https://arxiv.org/abs/2004.03503.pdf) suggested analyzing it with the Metropolis-Hastings algorithm instead of browsing the whole of it.
 
-For more information, see `vignette(Optimizers)` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+For more information, see `vignette("Optimizers")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 
 # References

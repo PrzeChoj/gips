@@ -68,6 +68,9 @@ plot(g_MAP, type = "heatmap")
 \seealso{
 \itemize{
 \item \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}
+\item \code{vignette("Theory")} - A place to learn more about
+the math behind the \code{gips} package and see more examples
+of the use of \code{project_matrix()}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
 the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.

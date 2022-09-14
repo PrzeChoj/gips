@@ -45,7 +45,8 @@ X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
 S <- cov(X)
 X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 
-t(U_Gamma) \%*\% X \%*\% U_Gamma # the non-zeros only on diagonal and [1,2] and [2,1]
+block_decomposition <- t(U_Gamma) \%*\% X \%*\% U_Gamma
+round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
@@ -58,5 +59,8 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \itemize{
 \item \code{\link[=project_matrix]{project_matrix()}} - A function used in examples
 to show the properties of \code{prepare_orthogonal_matrix()}.
+\item \code{vignette("Theory")} - A place to learn more about
+the math behind the \code{gips} package and see more examples
+of the use of \code{prepare_orthogonal_matrix()}.
 }
 }

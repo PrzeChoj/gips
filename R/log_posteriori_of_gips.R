@@ -26,6 +26,8 @@
 #'     needed for `log_posteriori_of_gips()`.
 #' * [find_MAP()] - The functions that tries
 #'     to optimize the `log_posteriori_of_gips` function.
+#' * `vignette("Theory")` - A place to learn more about
+#'     the math behind the `gips` package.
 #'
 #' @returns Returns a value of
 #'     the logarithm of an unnormalized A Posteriori.
@@ -126,7 +128,8 @@ runif_transposition <- function(perm_size) {
 
 #' Calculate log phi_part of log_posteriori_of_gips
 #'
-#' @param structure_constants An output of `get_structure_constants(perm_proposal, perm_size)`.
+#' @param structure_constants An output of
+#' `get_structure_constants(perm_proposal, perm_size)`.
 #' Rest of params as in `log_posteriori_of_gips()`.
 #'
 #' @noRd

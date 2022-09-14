@@ -34,6 +34,9 @@
 #'
 #' @seealso
 #' * [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices)
+#' * `vignette("Theory")` - A place to learn more about
+#'     the math behind the `gips` package and see more examples
+#'     of the use of `project_matrix()`.
 #' * [find_MAP()] - The function that finds
 #'     the Maximum A Posteriori (MAP) Estimator
 #'     for a given `gips` object.

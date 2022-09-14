@@ -99,6 +99,8 @@
 #'     of `find_MAP()` tries to find the argmax of.
 #' * `vignette("Optimizers")` - A place to learn more about
 #'     the available optimizers.
+#' * `vignette("Theory")` - A place to learn more about
+#'     the math behind the `gips` package.
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms` can make such an object

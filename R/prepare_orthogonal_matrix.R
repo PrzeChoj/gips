@@ -32,6 +32,9 @@
 #' @seealso
 #' * [project_matrix()] - A function used in examples
 #'     to show the properties of `prepare_orthogonal_matrix()`.
+#' * `vignette("Theory")` - A place to learn more about
+#'     the math behind the `gips` package and see more examples
+#'     of the use of `prepare_orthogonal_matrix()`.
 #'
 #' @examples
 #' gperm <- gips_perm("(1,2,3)(4,5)", 5)
@@ -42,7 +45,8 @@
 #' S <- cov(X)
 #' X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 #'
-#' t(U_Gamma) %*% X %*% U_Gamma # the non-zeros only on diagonal and [1,2] and [2,1]
+#' block_decomposition <- t(U_Gamma) %*% X %*% U_Gamma
+#' round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]
 #' @export
 prepare_orthogonal_matrix <- function(perm, perm_size = NULL, basis = NULL) {
   if (!inherits(perm, "gips_perm")) {

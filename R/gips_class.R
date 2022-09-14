@@ -1612,7 +1612,10 @@ print.summary.gips <- function(x, ...) {
 #'
 #' @seealso
 #' * [find_MAP()] - The `get_probabilities_from_gips()`
-#'     is called on the output of `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
+#'     is called on the output of
+#'     `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
+#' * `vignette("Optimizers")` - A place to learn more about
+#'     the available optimizers.
 #'
 #' @examples
 #' g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)

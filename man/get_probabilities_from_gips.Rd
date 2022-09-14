@@ -33,6 +33,9 @@ get_probabilities_from_gips(g_map)
 \seealso{
 \itemize{
 \item \code{\link[=find_MAP]{find_MAP()}} - The \code{get_probabilities_from_gips()}
-is called on the output of \code{find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)}.
+is called on the output of
+\code{find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)}.
+\item \code{vignette("Optimizers")} - A place to learn more about
+the available optimizers.
 }
 }
