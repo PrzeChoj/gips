@@ -1,9 +1,9 @@
 ---
-title: "Introduction"
+title: "gips"
 author: "Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction}
+  %\VignetteIndexEntry{gips}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -88,5 +88,5 @@ get_probabilities_from_gips(g_map)
 
 # Further reading
 
-1. To learn more about the avaiable optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).

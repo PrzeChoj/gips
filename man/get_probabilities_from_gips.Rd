@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_class.R
 \name{get_probabilities_from_gips}
 \alias{get_probabilities_from_gips}
-\title{Extract probabilities for optimized \code{gips} object}
+\title{Extract probabilities for \code{gips} object optimized with \code{return_probabilities = TRUE}}
 \usage{
 get_probabilities_from_gips(g)
 }

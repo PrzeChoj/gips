@@ -2,7 +2,7 @@
 *.R
 /Optimizers_cache/*
 /Optimizers_files/*
-/Introduction_cache/*
-/Introduction_files/*
+/gips_cache/*
+/gips_files/*
 /Theory_cache/*
 /Theory_files/*

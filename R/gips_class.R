@@ -896,7 +896,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
     log_posteriori <- log_posteriori_of_gips(x)
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
-      # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
         "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
@@ -928,7 +928,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
     start_perm <- attr(x, "optimization_info")[["start_perm"]]
 
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
-      # See ISSUE#5; We hope the introduction of log calculations have stopped this problem.
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
         "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
@@ -1594,7 +1594,7 @@ print.summary.gips <- function(x, ...) {
   invisible(NULL)
 }
 
-#' Extract probabilities for optimized `gips` object
+#' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
 #'
 #' After the `gips` object was optimized with [find_MAP()] function with
 #' `return_probabilities = TRUE`, then those calculated probabilities

@@ -1,4 +1,32 @@
 url: https://przechoj.github.io/gips/
 template:
   bootstrap: 5
-
+reference:
+- title: "Core functions"
+  desc: >
+    Functions for finding the permutation the matrix is approximately
+    invariant under and estimate the covariance matrix.
+    It is the core `gips` purpose.
+  contents: 
+  - gips
+  - find_MAP
+  - project_matrix
+- title: "Helper functions"
+  desc: "Functions for pleasant work in `gips`."
+  contents:
+  - plot.gips
+  - print.gips
+  - summary.gips
+  - gips_perm
+  - print.gips_perm
+  - as.character.gips_perm
+  - compare_posteriories_of_perms
+  - forget_perms
+  - get_probabilities_from_gips
+- title: "Internal functions"
+  desc: "Functions for internal calculations"
+  contents:
+  - calculate_gamma_function
+  - get_structure_constants
+  - log_posteriori_of_gips
+  - prepare_orthogonal_matrix
