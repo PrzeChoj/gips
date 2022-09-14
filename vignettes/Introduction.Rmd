@@ -57,8 +57,6 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 # Example
 
 ```{r toy_example_data_making, include = FALSE}
-require("MASS") # for mvrnorm()
-
 perm_size <- 4
 mu <- runif(4, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(c(6.25, 2, 0.5, 0.5,
@@ -86,3 +84,9 @@ plot(g_map, type = "heatmap")
 
 get_probabilities_from_gips(g_map)
 ```
+
+
+# Further reading
+
+1. To learn more about the avaiable optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).

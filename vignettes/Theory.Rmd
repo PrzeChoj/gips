@@ -154,7 +154,7 @@ print(g_map)
 S_projected <- project_matrix(S, g_map[[1]])
 ```
 
-We see the formula (30) gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{Sprojected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+We see the formula (30) gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # Finding the MAP Estimator
