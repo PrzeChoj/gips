@@ -82,7 +82,7 @@ do an "HC")
 \item \code{number_of_log_posteriori_calls} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
 the optimization
-\item \code{full_optimization_time} - how long was the optimization process;
+\item \code{whole_optimization_time} - how long was the optimization process;
 the sum of all optimization times (when there were multiple)
 \item \code{log_posteriori_calls_after_best} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called after

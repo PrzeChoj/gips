@@ -238,7 +238,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "full_optimization_time")
+    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -565,28 +565,28 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (is.na(optimization_info[["full_optimization_time"]])) {
+    if (is.na(optimization_info[["whole_optimization_time"]])) {
       additional_info <- additional_info + 2
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
-        "x" = "You have `is.na(attr(g, 'optimization_info')[['full_optimization_time']]) == TRUE`.",
+        "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
+        "x" = "You have `is.na(attr(g, 'optimization_info')[['whole_optimization_time']]) == TRUE`.",
         "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
         "i" = "Did You modified the `find_MAP()` function?"
       )
-    } else if (!inherits(optimization_info[["full_optimization_time"]], "difftime")) {
+    } else if (!inherits(optimization_info[["whole_optimization_time"]], "difftime")) {
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be of a class 'difftime'.",
+        "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` has to be of a class 'difftime'.",
         "x" = paste0(
-          "You have `attr(g, 'optimization_info')[['full_optimization_time']]` of a class (",
-          paste0(class(optimization_info[["full_optimization_time"]]), collapse = ", "), ")."
+          "You have `attr(g, 'optimization_info')[['whole_optimization_time']]` of a class (",
+          paste0(class(optimization_info[["whole_optimization_time"]]), collapse = ", "), ")."
         )
       )
-    } else if (optimization_info[["full_optimization_time"]] < 0) { # allow underflow of time float to 0
+    } else if (optimization_info[["whole_optimization_time"]] < 0) { # allow underflow of time float to 0
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['full_optimization_time']]` has to be a non negative time difference.",
+        "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` has to be a non negative time difference.",
         "x" = paste0(
-          "You have `attr(g, 'optimization_info')[['full_optimization_time']] == ",
-          optimization_info[["full_optimization_time"]], "`."
+          "You have `attr(g, 'optimization_info')[['whole_optimization_time']] == ",
+          optimization_info[["whole_optimization_time"]], "`."
         )
       )
     }
@@ -1353,7 +1353,7 @@ plot.gips <- function(x, type = NA,
 #'   14. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   15. `full_optimization_time` - how long was the optimization process;
+#'   15. `whole_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
 #'   16. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
@@ -1466,7 +1466,7 @@ summary.gips <- function(object, ...) {
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
-      full_optimization_time = optimization_info[["full_optimization_time"]],
+      whole_optimization_time = optimization_info[["whole_optimization_time"]],
       log_posteriori_calls_after_best = log_posteriori_calls_after_best,
       acceptance_rate = optimization_info[["acceptance_rate"]]
     )
@@ -1575,8 +1575,8 @@ print.summary.gips <- function(x, ...) {
 
     cat("\n\nNumber of log_posteriori calls:\n ",
       x[["number_of_log_posteriori_calls"]],
-      "\n\nOptimization time:\n ", unclass(x[["full_optimization_time"]]),
-      " ", attr(x[["full_optimization_time"]], "units"),
+      "\n\nOptimization time:\n ", unclass(x[["whole_optimization_time"]]),
+      " ", attr(x[["whole_optimization_time"]], "units"),
       sep = ""
     )
 

@@ -324,7 +324,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
   end_time <- Sys.time()
   attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
-  attr(gips_optimized, "optimization_info")[["full_optimization_time"]] <- end_time - start_time
+  attr(gips_optimized, "optimization_info")[["whole_optimization_time"]] <- end_time - start_time
 
   structure_constants <- get_structure_constants(gips_optimized[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
@@ -473,7 +473,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
     "did_converge" = NULL,
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
-    "full_optimization_time" = NA
+    "whole_optimization_time" = NA
   )
 
 
@@ -611,7 +611,7 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
     "did_converge" = did_converge,
     "best_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "optimization_time" = NA,
-    "full_optimization_time" = NA
+    "whole_optimization_time" = NA
   )
 
 
@@ -705,7 +705,7 @@ brute_force <- function(S, number_of_observations,
     "did_converge" = TRUE,
     "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,
-    "full_optimization_time" = NA
+    "whole_optimization_time" = NA
   )
 
 
@@ -774,7 +774,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
     "did_converge" = optimization_info2[["did_converge"]],
     "best_perm_log_posteriori" = max(optimization_info1[["best_perm_log_posteriori"]], optimization_info2[["best_perm_log_posteriori"]]),
     "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
-    "full_optimization_time" = optimization_info1[["full_optimization_time"]] + optimization_info2[["full_optimization_time"]]
+    "whole_optimization_time" = optimization_info1[["whole_optimization_time"]] + optimization_info2[["whole_optimization_time"]]
   )
 
   if (optimization_info1[["best_perm_log_posteriori"]] > optimization_info2[["best_perm_log_posteriori"]]) {

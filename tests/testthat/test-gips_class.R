@@ -323,25 +323,25 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(validate_gips(g_err))
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["full_optimization_time"]] <- NA
+  attr(g_err, "optimization_info")[["whole_optimization_time"]] <- NA
   expect_error(
     validate_gips(g_err),
-    "You have `is.na\\(attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]\\)"
+    "You have `is.na\\(attr\\(g, 'optimization_info'\\)\\[\\['whole_optimization_time'\\]\\]\\)"
   )
 
   g_err <- g2
-  attr(g_err, "optimization_info")[["full_optimization_time"]] <- 7
+  attr(g_err, "optimization_info")[["whole_optimization_time"]] <- 7
   expect_error(
     validate_gips(g_err),
-    "You have `attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` of a class \\(numeric\\)"
+    "You have `attr\\(g, 'optimization_info'\\)\\[\\['whole_optimization_time'\\]\\]` of a class \\(numeric\\)"
   )
 
   g_err <- g2
   time_now1 <- Sys.time()
-  attr(g_err, "optimization_info")[["full_optimization_time"]] <- time_now2 - time_now1
+  attr(g_err, "optimization_info")[["whole_optimization_time"]] <- time_now2 - time_now1
   expect_error(
     validate_gips(g_err),
-    "`attr\\(g, 'optimization_info'\\)\\[\\['full_optimization_time'\\]\\]` has to be a non negative time difference"
+    "`attr\\(g, 'optimization_info'\\)\\[\\['whole_optimization_time'\\]\\]` has to be a non negative time difference"
   )
 
 
@@ -999,7 +999,7 @@ test_that("summary.gips() works", {
     optimization_algorithm_used = "Metropolis_Hastings", post_probabilities = NULL,
     did_converge = NULL, best_perm_log_posteriori = -16.0120977148862,
     optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
-    full_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
+    whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
   ), class = "gips")
   
   expect_equal(summary(g_fake)[["log_posteriori_calls_after_best"]],
