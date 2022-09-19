@@ -59,20 +59,44 @@ This algorithm has been analyzed extensively by theoretical probabilists. This l
 
 ### Example
 
-```{r Metropolis_Hastings, cache=TRUE}
+<div id="spoiler1" style="display:none">
+```{r Metropolis_Hastings_1, cache=TRUE}
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
-sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size))
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 50
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler1') .style.display=='none')
+              {document.getElementById('spoiler1') .style.display=''}
+            else{document.getElementById('spoiler1') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
+Let's say we have the data `Z` from the unknown process:
+
+```{r Metropolis_Hastings_2, cache=TRUE, dependson="Metropolis_Hastings_1"}
+dim(Z)
+number_of_observations <- nrow(Z) # 50
+perm_size <- ncol(Z) # 70
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-plot(g, type = 'heatmap')
-# TODO(Make the max_iter bigger:)
+suppressMessages( # message from ggplot2
+  plot(g, type = 'heatmap') +
+    ggplot2::scale_x_continuous(breaks = c(1,10,20,30,40,50,60,70)) +
+    ggplot2::scale_y_continuous(breaks = c(1,10,20,30,40,50,60,70))
+)
 g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
 g_map
+```
 
+Only after 10 iterations the found permutations is unimaginably more likely than the original, `()` permutation.
+
+```{r Metropolis_Hastings_3, cache=TRUE, dependson="Metropolis_Hastings_2"}
 plot(g_map, type = 'both', logarithmic_x = TRUE)
 ```
 
@@ -96,7 +120,7 @@ The algorithm ends when all neighbors are less likely, or the `max_iter` was ach
 
 ### Pseudocode
 
-<div id="spoiler" style="display:none">
+<div id="spoiler2" style="display:none">
 ```{r, hill_climb_pseudocode, eval=FALSE}
 hill_climb <- function(g, max_iter) {
   perm <- g[[1]]
@@ -137,10 +161,10 @@ hill_climb <- function(g, max_iter) {
 ```
 </div>
 
-<button title="Click to show answer" type="button"
-   onclick="if(document.getElementById('spoiler') .style.display=='none')
-              {document.getElementById('spoiler') .style.display=''}
-            else{document.getElementById('spoiler') .style.display='none'}">
+<button title="Click to show pseudocode" type="button"
+   onclick="if(document.getElementById('spoiler2') .style.display=='none')
+              {document.getElementById('spoiler2') .style.display=''}
+            else{document.getElementById('spoiler2') .style.display='none'}">
   Show/hide
 </button>
 
@@ -150,17 +174,33 @@ The `max_iter` parameter works differently for this optimizer and Metropolis-Has
 
 ### Example
 
-```{r hill_climbing, cache=TRUE}
+<div id="spoiler3" style="display:none">
+```{r hill_climbing_1, cache=TRUE}
 perm_size <- 25
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
-sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size))
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 20
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler3') .style.display=='none')
+              {document.getElementById('spoiler3') .style.display=''}
+            else{document.getElementById('spoiler3') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
+Let’s say we have the data Z from the unknown process:
+
+```{r hill_climbing_2, cache=TRUE, dependson="hill_climbing_1"}
+dim(Z)
+number_of_observations <- nrow(Z) # 20
+perm_size <- ncol(Z) # 25
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 plot(g, type = 'heatmap')
-# TODO(Make the max_iter bigger:)
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
 plot(g_map, type = 'both')
@@ -177,7 +217,8 @@ This is **only recommended** for small spaces ($p \le 8$). It can also browse bi
 
 ### Example
 
-```{r brute_force, cache=TRUE}
+<div id="spoiler4" style="display:none">
+```{r brute_force_1, cache=TRUE}
 perm_size <- 6
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
@@ -190,9 +231,25 @@ sigma_matrix <- matrix(
     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
   ),
   nrow = perm_size, byrow = TRUE
-) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+) # the real covariance matrix, that we want to estimate, is invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler4') .style.display=='none')
+              {document.getElementById('spoiler4') .style.display=''}
+            else{document.getElementById('spoiler4') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
+Let’s say we have the data Z from the unknown process:
+
+```{r brute_force_2, cache=TRUE, dependson="brute_force_1"}
+dim(Z)
+number_of_observations <- nrow(Z) # 13
+perm_size <- ncol(Z) # 6
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
@@ -205,14 +262,14 @@ g_map
 
 The `find_MAP()` function has also have 2 additional parameters, namely `show_progress_bar` and `save_all_perms`. Both can be set to `TRUE` or `FALSE`.
 
-The `show_progress_bar = TRUE` simply means `gips` will print the progress on the console. Keep in mind that when one sets the `return_probabilities = TRUE`, there will be a second progress bar indicating calculating the probabilities after optimization.
+The `show_progress_bar = TRUE` simply means `gips` will print the "=" characters on the console, as the optimization run. Keep in mind that when one sets the `return_probabilities = TRUE`, there will be a second progress bar indicating calculating the probabilities after optimization.
 
 The `save_all_perms = TRUE` means that `gips` will save all visited permutations in the outputted object. This will significantly increase the RAM needed for this object (for example, for $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, while with `save_all_perms = FALSE`, the 2 MB was enough). However, this is necessary for `return_probabilities = TRUE` or more complex path analysis.
 
 
 # Discussion
 
-We are aware that the optimizers mentioned above try to optimize the space of **permutations**. This is not precisely the thing we want because the found permutation is interpreted as the generator or the group of permutations. We tested the algorithms working correctly in this setting, and we are yet to see any practical advantage of optimization performed on groups. However, the theoretical advantage is clear, as the results are easier to interpret.
+We are aware that the optimizers mentioned above try to optimize the space of **permutations**. This is not precisely the thing we want because the found permutation is interpreted as the generator or the group of permutations. We tested the above algorithms working correctly in this setting, and we are yet to see any practical advantage of optimization performed on groups. However, the theoretical advantage is clear, as the results would be easier to interpret.
 
 We encourage everyone to leave a comment on available and potential new optimizers on the [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). There, one can also find the implemented optimizers but not yet added to `gips`.
 
