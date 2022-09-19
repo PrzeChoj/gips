@@ -1,34 +1,36 @@
 test_examples("../..") # example for Metropolis_Hastings and hill_climbing are here
 
 test_that("Handle improper parameters", {
-  expect_error(hill_climbing(
+  expect_error(hill_climbing_optimizer(
     S = matrix_invariant_by_example_perm, number_of_observations = 13,
     max_iter = Inf, show_progress_bar = TRUE
-  ))
+  ), "rogress bar is not yet supported for infinite max_iter")
 
-  expect_error(Metropolis_Hastings(
+  expect_error(Metropolis_Hastings_optimizer(
     S = matrix_invariant_by_example_perm, number_of_observations = 13, max_iter = Inf,
     start_perm = permutations::permutation("(1,2,3)(4,5)"), show_progress_bar = TRUE
-  ))
+  ), "`max_iter` in `Metropolis_Hastings_optimizer` must")
 
   g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
-  expect_error(find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"))
-  expect_error(find_MAP(g1, 10, optimizer = "BD"))
+  expect_error(find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"),
+               "ilities can only be returned with the `optimizer == 'Metropoli")
+  expect_error(find_MAP(g1, 10, optimizer = "BD"),
+               "imizer\\` must be one of: c\\('MH', 'Me")
   expect_error(
     find_MAP(g1, 10,
       optimizer = c("MH", "BG")
     ),
     "`optimizer` must be the character vector of length 1."
   )
-  expect_error(find_MAP(g1, 10, optimizer = "BD"))
+  expect_error(find_MAP(g1, 10, optimizer = "BD"), "You provided `optimizer == 'BD'`")
   expect_error(
     find_MAP(g1, max_iter = NA, optimizer = "MH"),
     "You provided `optimizer == MH` and `max_iter = NA`."
   )
   expect_error(
     find_MAP(g1, Inf, optimizer = "MH"),
-    "`max_iter` in `Metropolis_Hastings\\(\\)` must be finite."
+    "You provided `max_iter == Inf`."
   )
   expect_error(
     find_MAP(g1, 10, optimizer = "continue"),
@@ -36,7 +38,7 @@ test_that("Handle improper parameters", {
   )
 
   g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, was_mean_estimated = FALSE)
-  g_BF <- find_MAP(g_small, optimizer = "full", show_progress_bar = FALSE)
+  g_BF <- find_MAP(g_small, optimizer = "brute_force", show_progress_bar = FALSE)
   expect_error(
     find_MAP(g_BF, max_iter = 10, optimizer = "continue"),
     "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`"
@@ -47,7 +49,7 @@ test_that("Handle improper parameters", {
   g_big <- gips(matrix_big_space, number_of_observations = 13, was_mean_estimated = FALSE)
 
   expect_error(
-    find_MAP(g_big, optimizer = "full", show_progress_bar = FALSE),
+    find_MAP(g_big, optimizer = "brute_force", show_progress_bar = FALSE),
     "Optimizer 'brute_force' cannot browse such a big permutional space."
   )
 })
@@ -60,13 +62,13 @@ test_that("Handle proper parameters", {
     "The 'optimizer = NA' was automatically changed to 'optimizer = \"MH\"."
   )
 
-  expect_silent(out <- Metropolis_Hastings(
+  expect_silent(out <- Metropolis_Hastings_optimizer(
     S = matrix_invariant_by_example_perm,
     number_of_observations = 13, max_iter = 2,
     show_progress_bar = FALSE
   ))
   expect_output(
-    out <- Metropolis_Hastings(
+    out <- Metropolis_Hastings_optimizer(
       S = matrix_invariant_by_example_perm,
       number_of_observations = 13, max_iter = 3,
       start_perm = permutations::permutation("(1,2,3)(4,5)"),
@@ -75,7 +77,7 @@ test_that("Handle proper parameters", {
     "===="
   )
   expect_output(
-    out <- hill_climbing(
+    out <- hill_climbing_optimizer(
       S = matrix_invariant_by_example_perm,
       number_of_observations = 13, max_iter = 8,
       show_progress_bar = TRUE
@@ -83,7 +85,7 @@ test_that("Handle proper parameters", {
     "===="
   )
   expect_warning(expect_output(
-    out <- hill_climbing(
+    out <- hill_climbing_optimizer(
       S = matrix_invariant_by_example_perm,
       number_of_observations = 13, max_iter = 2,
       show_progress_bar = TRUE
@@ -201,7 +203,7 @@ test_that("find_map with calculate exact probabilities will return probability",
   g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4], number_of_observations = 13)
   g_map <- find_MAP(g,
     max_iter = 10, show_progress_bar = FALSE,
-    optimizer = "full", return_probabilities = TRUE, save_all_perms = TRUE
+    optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE
   )
 
   my_post_prob <- c(
@@ -224,3 +226,4 @@ test_that("find_map with calculate exact probabilities will return probability",
     1
   )
 })
+

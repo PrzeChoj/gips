@@ -296,7 +296,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   start_time <- Sys.time()
 
   if (optimizer %in% c("MH", "Metropolis_Hastings")) {
-    gips_optimized <- Metropolis_Hastings(
+    gips_optimized <- Metropolis_Hastings_optimizer(
       S = S, number_of_observations = edited_number_of_observations,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
@@ -305,7 +305,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       show_progress_bar = show_progress_bar
     )
   } else if (optimizer %in% c("HC", "hill_climbing")) {
-    gips_optimized <- hill_climbing(
+    gips_optimized <- hill_climbing_optimizer(
       S = S, number_of_observations = edited_number_of_observations,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
@@ -313,7 +313,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       show_progress_bar = show_progress_bar
     )
   } else if (optimizer %in% c("BF", "brute_force", "full")) {
-    gips_optimized <- brute_force(
+    gips_optimized <- brute_force_optimizer(
       S = S, number_of_observations = edited_number_of_observations,
       delta = delta, D_matrix = D_matrix,
       return_probabilities = return_probabilities,
@@ -343,9 +343,10 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 }
 
 
-Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm = NULL,
-                                delta = 3, D_matrix = NULL, return_probabilities = FALSE,
-                                save_all_perms = FALSE, show_progress_bar = TRUE) {
+Metropolis_Hastings_optimizer <- function(S,
+    number_of_observations, max_iter, start_perm = NULL,
+    delta = 3, D_matrix = NULL, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }
@@ -365,7 +366,7 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 
   if (is.infinite(max_iter)) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`max_iter` in `Metropolis_Hastings()` must be finite.",
+      "i" = "`max_iter` in `Metropolis_Hastings_optimizer` must be finite.",
       "x" = paste0("You provided `max_iter == ", max_iter, "`.")
     ))
   }
@@ -485,10 +486,10 @@ Metropolis_Hastings <- function(S, number_of_observations, max_iter, start_perm 
 }
 
 
-hill_climbing <- function(S, number_of_observations, max_iter = 5,
-                          start_perm = NULL,
-                          delta = 3, D_matrix = NULL,
-                          save_all_perms = FALSE, show_progress_bar = TRUE) {
+hill_climbing_optimizer <- function(S,
+    number_of_observations, max_iter = 5,
+    start_perm = NULL, delta = 3, D_matrix = NULL,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }
@@ -506,7 +507,12 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
   }
 
   if (show_progress_bar && is.infinite(max_iter)) {
-    stop("Progress bar is not yet supported for infinite max_iter. Rerun the algorithm with show_progress_bar=FALSE or finite max_iter. For more information see ISSUE#8.") # See ISSUE#8
+    rlang::abort(c("There was a problem identified with provided arguments:",
+      "x" = "You tried to run `find_MAP(show_progress_bar=TRUE, max_iter=Inf)`.",
+      "i" = "Progress bar is not yet supported for infinite max_iter.",
+      "i" = "Do You want to use `show_progress_bar=FALSE` or a finite `max_iter`?",
+      "i" = "For more information on progress bar see ISSUE#8."
+    ))
   }
 
   if (show_progress_bar) {
@@ -623,10 +629,11 @@ hill_climbing <- function(S, number_of_observations, max_iter = 5,
 }
 
 
-brute_force <- function(S, number_of_observations,
-                        delta = 3, D_matrix = NULL,
-                        return_probabilities = return_probabilities,
-                        save_all_perms = FALSE, show_progress_bar = TRUE) {
+brute_force_optimizer <- function(S,
+    number_of_observations,
+    delta = 3, D_matrix = NULL,
+    return_probabilities = return_probabilities,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
   check_correctness_of_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = 5, start_perm = permutations::id, # max_iter, was_mean_estimated and start_perm are not important for optimization with brute_force
