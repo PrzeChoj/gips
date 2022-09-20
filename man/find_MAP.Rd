@@ -71,6 +71,18 @@ Not all optimization algorithms will always find the MAP, but they try
 to find a significant value. More information can be found in
 the "\strong{Possible algorithms to use as optimizers}" section below.
 }
+\details{
+\code{find_MAP} can produce a warning when:
+\itemize{
+\item the optimizer "hill_climbing" gets to the end of
+its \code{max_iter} without converging.
+\item the optimizer will find the permutation with smaller \code{n0} than
+\code{number_of_observations} (for more information on what it means,
+see \strong{\eqn{C\sigma} and \code{n0}} section
+in \code{vignette("Theory")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+}
+}
 \section{Possible algorithms to use as optimizers}{
 
 

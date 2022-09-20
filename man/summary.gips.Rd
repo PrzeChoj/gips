@@ -32,7 +32,10 @@ It can be a number less than 1, which means
 the identity permutation, \verb{()}, is more likely. Keep in mind
 this number can be really big and can be overflowed to \code{Inf}
 \item \code{n0} - the minimal number of observations needed for existence of
-the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
+the maximum likelihood estimator (corresponding to a MAP) of
+the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
+section in \code{vignette("Theory")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
 the posteriori value
 \item \code{number_of_observations} - the number of observations that
@@ -62,7 +65,10 @@ the \code{found_permutation} is over the \code{start_permutation}.
 It cannot be a number less than 1. Keep in mind this number
 can be really big and can be overflowed to \code{Inf}
 \item \code{n0} - the minimal number of observations needed for existence of
-the maximum likelihood estimator (corresponding to a MAP) of the covariance matrix
+the maximum likelihood estimator (corresponding to a MAP) of
+the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
+section in \code{vignette("Theory")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 \item \code{S_matrix} - the underlying matrix; this is used to calculate
 the posteriori value
 \item \code{number_of_observations} - the number of observations that

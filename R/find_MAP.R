@@ -5,6 +5,15 @@
 #' Not all optimization algorithms will always find the MAP, but they try
 #' to find a significant value. More information can be found in
 #' the "**Possible algorithms to use as optimizers**" section below.
+#' 
+#' `find_MAP` can produce a warning when:
+#' * the optimizer "hill_climbing" gets to the end of
+#'   its `max_iter` without converging.
+#' * the optimizer will find the permutation with smaller `n0` than
+#'   `number_of_observations` (for more information on what it means,
+#'   see **\eqn{C\sigma} and `n0`** section
+#'   in `vignette("Theory")` or in its
+#'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
@@ -333,8 +342,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
   if (n0 > number_of_observations) {
     rlang::warn(c("The found permutation has n0 value bigger than the number of observations of the normal variable.",
-      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined."
-      # "i" = "For more in-depth explanation, see the Vignette (TODO)."
+      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
+      "i" = "For more in-depth explanation, see the Vignette `vignette('Theory')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 
