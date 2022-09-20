@@ -1,4 +1,4 @@
-#' Project matrix
+#' Project matrix after optimization
 #'
 #' After the MAP permutation was found with [find_MAP()],
 #' use this permutation to better approximate the covariance matrix.
@@ -39,7 +39,7 @@
 #'     If it is not the case, leave this parameter as `NULL`, and
 #'     those will be computed.
 #'
-#' @returns A projected matrix.
+#' @returns Returns a projected matrix.
 #' @export
 #'
 #' @seealso

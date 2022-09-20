@@ -41,9 +41,7 @@ For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.
 
 Theorem basically states that given a permutation subgroup $\Gamma$ there exist constants $L \in \mathbb{N}$, $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S$ that are invariant under the action of $\Gamma$ can be transform into block-diagonal form.
 
-TODO(Note that $k = d$ when the group is cyclic. `gips` only considers cyclic groups.)
-
-`gips` implements this theorem for $\Gamma$ that are symmetric. See example:
+It is worth to point out that constants $k = d$ for cyclic group $\Gamma = <\sigma>$ and that `gips` only considers cyclic groups. See example:
 
 ```{r th1_1}
 p <- 6
@@ -54,7 +52,7 @@ S <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
               0.8,0.7,0.8,0.9,1.1,0.9,
               0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
 ```
-Now, `X` is a symmetric matrix invariant under the group $\Gamma = <(1,2,3,4,5,6)>$.
+Now, `S` is a symmetric matrix invariant under the group $\Gamma = <(1,2,3,4,5,6)>$.
 
 ```{r th1_2, dependson="th1_1"}
 g_perm <- gips_perm("(1,2,3,4,5,6)", p)
@@ -95,8 +93,9 @@ $$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\si
 
 ```{r def3}
 p <- 6
-X <- matrix(runif(p*p, min = -10, max = 10), nrow = p)
-S <- t(X) %*% X # any symmetric matrix
+n <- 10
+Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
+S <- t(Z) %*% Z / n
 S
 project_matrix(S, perm = "(1,2,3,4,5,6)")
 project_matrix(S, perm = "(1,2)(3,4,5,6)")
@@ -104,19 +103,42 @@ project_matrix(S, perm = "(1,2)(3,4,5,6)")
 
 TODO(Point out the equal elements of those matrices)
 
-TODO(This $\pi_\Gamma(S)$ is maximum likelihood estimator as long as $n \ge n_0$)
+## $C_\sigma$ and `n0`
+It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
+required for the MLE to exist is lower than $p$. It is equal to the number of cycles, denoted hereafter by $C_\sigma$.
+
+For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$ and so 2 observations would be enough.
+
+To get this $C_\sigma$ number in `gips`, one can call `summary()` on the appropriate `gips` object:
+```{r n0_2, dependson="def3"}
+g1 <- gips(S, n, perm = "(1,2,3,4,5,6)", was_mean_estimated = FALSE)
+summary(g1)$n0
+g2 <- gips(S, n, perm = "(1,2)(3,4,5,6)", was_mean_estimated = FALSE)
+summary(g2)$n0
+```
+This is called `n0` and not $C_\sigma$, because it is increased by 1 when the mean was estimated:
+
+```{r n0_1, dependson="def3"}
+S <- cov(Z)
+g1 <- gips(S, n, perm = "(1,2,3,4,5,6)", was_mean_estimated = TRUE)
+summary(g1)$n0
+g2 <- gips(S, n, perm = "(1,2)(3,4,5,6)", was_mean_estimated = TRUE)
+summary(g2)$n0
+```
 
 # A Posteriori
 
-When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper a way how to find it.
+When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-TODO(Info about the A Priori assumption and parameters delta, D_matrix; For D_matrix = D*I, the bigger D is, the less "structure" the `gips` will look for; For D = 0.000001, `gips` will find big structure, for D = 99999, `gips` will "find" $\text{id} = ()$.)
+TODO(Short info about the A Priori assumption and parameters delta, D_matrix; For D_matrix = D*I, the bigger D is, the less "structure" the `gips` will look for; For D = 0.000001, `gips` will find big structure, for D = 99999, `gips` will "find" $\text{id} = ()$.)
 
 Namely, the [formula (30)]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
 In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation, or the other one.
 
 Let's see the example:
+
+<div id="spoiler3" style="display:none">
 ```{r example2_readme1}
 # Prepare model, multivariate normal distribution
 perm_size <- 6
@@ -124,12 +146,12 @@ number_of_observations <- 4
 mu <- numeric(perm_size)  
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.05, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.05, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.05, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.05, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.05, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.05
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -140,11 +162,24 @@ withr::with_seed(1234,{
 })
 # End of prepare model
 ```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler3') .style.display=='none')
+              {document.getElementById('spoiler3') .style.display=''}
+            else{document.getElementById('spoiler3') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
 Let's say we have this data, `Z`. It has only $4$ observations, and its dimension is $p=6$.
 Let's assume we know `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
 
 ```{r, example2_readme2, dependson="example2_readme1"}
-# Calculate the covariance matrix from the data:
+dim(Z)
+number_of_observations <- nrow(Z) # 4
+perm_size <- ncol(Z) # 6
+
+# Calculate the covariance matrix from the data (assume we know the mean is 0):
 S <- (t(Z) %*% Z) / number_of_observations
 
 # Make the gips object out of data:
@@ -156,7 +191,7 @@ print(g_map)
 S_projected <- project_matrix(S, g_map[[1]])
 ```
 
-We see the formula (30) gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 200 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions, it is over 200 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+We see the formula (30) gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality and the mean 0), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # Finding the MAP Estimator

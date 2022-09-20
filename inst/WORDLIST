@@ -43,6 +43,7 @@ mathbb
 mathcal
 mathfrak
 mathrm
+mvrnorm
 optimizers
 pkgdown
 posteriori
@@ -50,3 +51,4 @@ posteriories
 probabilists
 th
 unoptimized
+withr

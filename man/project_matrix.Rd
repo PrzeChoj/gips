@@ -2,7 +2,7 @@
 % Please edit documentation in R/project_matrix.R
 \name{project_matrix}
 \alias{project_matrix}
-\title{Project matrix}
+\title{Project matrix after optimization}
 \usage{
 project_matrix(S, perm, precomputed_equal_indices = NULL)
 }
@@ -20,7 +20,7 @@ If it is not the case, leave this parameter as \code{NULL}, and
 those will be computed.}
 }
 \value{
-A projected matrix.
+Returns a projected matrix.
 }
 \description{
 After the MAP permutation was found with \code{\link[=find_MAP]{find_MAP()}},
