@@ -31,13 +31,16 @@ the estimated posterior probabilities for all cyclic subgroups.
 
 1.  Finding hidden symmetries between the variables. `gips` can be used
     as an exploratory tool searching the space of permutation symmetries
-    of the Gaussian vector.
+    of the Gaussian vector. Useful in the Exploratory Data Analysis
+    (EDA).
 2.  Covariance estimation. The MLE for covariance matrix is known to
     exist if and only if the number of variables is less or equal to the
     number of observations. Additional knowledge of symmetries allows to
     significantly weaken this requirement. Moreover, the reduction of
     model dimension brings the advantage in terms of precision of
-    covariance estimation.
+    covariance estimation. This is useful in models like Linear
+    Discriminant Analysis (LDA) or Quadratic Discriminant Analysis
+    (QDA). Especially with small number of observations.
 
 ## Installation
 
@@ -64,7 +67,8 @@ Z <- DAAG::oddbooks
 
 Assume the data is normally distributed. This is a reasonable
 assumption, because, for example, p-values for Mardia’s normality tests:
-`QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are \> 0.05
+`QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are \>
+0.05.
 
 ``` r
 Z_scaled <- scale(Z)
@@ -131,8 +135,7 @@ estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_dia
 
 ### Example 2 - modeling
 
-Assume we know the mean is 0, and we want to estimate the covariance
-matrix, but we don’t have enough data:
+We will now construct a data for example:
 
 ``` r
 # Prepare model, multivariate normal distribution
@@ -140,30 +143,44 @@ perm_size <- 6
 mu <- numeric(perm_size)  
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+
 
 # Generate example data from a model:
 Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
 ```
 
+Imagine we have the data `Z` but we don’t know how it was generated. We
+will assume it was generated from the normal distribution with the mean
+![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0").
+However, we cannot estimate the covariance matrix, because there is not
+enough data
+(![4 \< 6](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4%20%3C%206 "4 < 6"),
+![n \< p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n%20%3C%20p "n < p")).
+
 ``` r
 library(gips)
-(number_of_observations <- nrow(Z)) # 4 < 6, so n < p
-#> [1] 4
+dim(Z)
+#> [1] 4 6
+number_of_observations <- nrow(Z) # 4
+perm_size <- ncol(Z) # 6
 
 # Calculate the covariance matrix from the data:
 S <- (t(Z) %*% Z) / number_of_observations
+```
 
-# Make the gips object out of data:
+Make the gips object out of data:
+
+``` r
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
@@ -178,15 +195,21 @@ g_map <- find_MAP(g, optimizer = "full")
 g_map
 #> The permutation (1,2,3,4,5,6)
 #>  - was found after 720 log_posteriori calculations
-#>  - is 1050.17320974531 times more likely than the starting, () permutation.
+#>  - is 294.500410325793 times more likely than the starting, () permutation.
+```
 
+We see that the found permutation is multiple hundreds times more likely
+than doing no additional assumption. That means, the additional
+assumptions are justified.
+
+``` r
 summary(g_map)$n0
 #> [1] 1
-summary(g_map)$n0 <= 4
+summary(g_map)$n0 <= number_of_observations # 1 <= 4
 #> [1] TRUE
 ```
 
-We see the number of observations
+What is more, we see the number of observations
 (![4](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4 "4"))
 is bigger or equal to
 ![n_0 = 1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n_0%20%3D%201 "n_0 = 1"),
@@ -196,18 +219,27 @@ estimator:
 ``` r
 project_matrix(S, g_map[[1]])
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 0.7429009 0.5889212 0.4131324 0.2591527 0.4131324 0.5889212
-#> [2,] 0.5889212 0.7429009 0.5889212 0.4131324 0.2591527 0.4131324
-#> [3,] 0.4131324 0.5889212 0.7429009 0.5889212 0.4131324 0.2591527
-#> [4,] 0.2591527 0.4131324 0.5889212 0.7429009 0.5889212 0.4131324
-#> [5,] 0.4131324 0.2591527 0.4131324 0.5889212 0.7429009 0.5889212
-#> [6,] 0.5889212 0.4131324 0.2591527 0.4131324 0.5889212 0.7429009
+#> [1,] 0.7388719 0.5214638 0.2926088 0.1536667 0.2926088 0.5214638
+#> [2,] 0.5214638 0.7388719 0.5214638 0.2926088 0.1536667 0.2926088
+#> [3,] 0.2926088 0.5214638 0.7388719 0.5214638 0.2926088 0.1536667
+#> [4,] 0.1536667 0.2926088 0.5214638 0.7388719 0.5214638 0.2926088
+#> [5,] 0.2926088 0.1536667 0.2926088 0.5214638 0.7388719 0.5214638
+#> [6,] 0.5214638 0.2926088 0.1536667 0.2926088 0.5214638 0.7388719
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
 ```
 
-<img src="man/figures/README-example_mean_known4-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known6-1.png" width="100%" />
+
+We see `gips` found the structure of the data and we were able to
+estimate covariance matrix with the huge accuracy only with the small
+amount of data.
+
+# Further reading
+
+For more examples and introduction, see `vignette("gips")` or its
+[pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
 # Credits
 

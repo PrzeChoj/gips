@@ -56,17 +56,29 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 
 # Example
 
-```{r toy_example_data_making, include = FALSE}
+<div id="spoiler1" style="display:none">
+```{r toy_example_data_making, include = TRUE}
 perm_size <- 4
 mu <- runif(4, -10, 10) # Assume we don't know the mean
-sigma_matrix <- matrix(c(6.25, 2, 0.5, 0.5,
-                         2, 3, 0, 0.6,
-                         0.5, 0, 1, 0.8,
-                         0.5, 0.6, 0.8, 1), ncol=4)
+sigma_matrix <- matrix(c(6.25, 2,   0.5, 0.5,
+                         2,    3,   0.3, 0.3,
+                         0.5,  0.3, 1,   0.8,
+                         0.5,  0.3, 0.8, 1), ncol=4)
 # sigma_matrix is a matrix invariant under permutation (3,4)
-number_of_observations <- 8
-toy_example_data <- withr::with_seed(1234, code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix))
+number_of_observations <- 9
+toy_example_data <- withr::with_seed(1234,
+    code = MASS::mvrnorm(number_of_observations,
+                         mu = mu, Sigma = sigma_matrix)
+)
 ```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler1') .style.display=='none')
+              {document.getElementById('spoiler1') .style.display=''}
+            else{document.getElementById('spoiler1') .style.display='none'}">
+  Show/hide data preparation
+</button>
 
 ```{r toy_example_data_show, fig_width = 0.3, fig.align = "center"}
 library(gips)
@@ -77,16 +89,14 @@ S <- cov(toy_example_data)
 g <- gips(S = S, number_of_observations = nrow(toy_example_data))
 
 plot(g, type = "heatmap")
-
 g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE)
 
 plot(g_map, type = "heatmap")
-
 get_probabilities_from_gips(g_map)
 ```
 
 
 # Further reading
 
-1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
-2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory")` or the [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
