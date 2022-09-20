@@ -22,7 +22,7 @@ statistics of the given \code{gips} object. Those are:
 \itemize{
 \item For unoptimized \code{gips} object:
 \enumerate{
-\item \code{optimized} - FALSE
+\item \code{optimized} - \code{FALSE}
 \item \code{start_permutation} - the permutation this \code{gips} represents
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
 value the start permutation has
@@ -40,15 +40,15 @@ were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item TRUE means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
-\item FALSE means the \code{S} parameter was calculated with
+\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item \code{FALSE} means the \code{S} parameter was calculated with
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
 }
 \item For optimized \code{gips} object:
 \enumerate{
-\item \code{optimized} - TRUE
+\item \code{optimized} - \code{TRUE}
 \item \code{found_permutation} - the permutation this \code{gips} represents;
 the visited permutation with the biggest a posteriori value
 \item \code{found_permutation_log_posteriori} - the log of the a posteriori
@@ -70,8 +70,8 @@ were observed for the \code{S_matrix} to be calculated; this is
 used to calculate the posteriori value
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item TRUE means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
-\item FALSE means the \code{S} parameter was calculated with
+\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item \code{FALSE} means the \code{S} parameter was calculated with
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method

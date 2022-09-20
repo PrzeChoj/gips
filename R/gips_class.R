@@ -1299,7 +1299,7 @@ plot.gips <- function(x, type = NA,
 #' @return The function `summary.gips` computes and returns a list of summary
 #'     statistics of the given `gips` object. Those are:
 #' * For unoptimized `gips` object:
-#'   1. `optimized` - FALSE
+#'   1. `optimized` - `FALSE`
 #'   2. `start_permutation` - the permutation this `gips` represents
 #'   3. `start_permutation_log_posteriori` - the log of the a posteriori
 #'       value the start permutation has
@@ -1316,12 +1316,12 @@ plot.gips <- function(x, type = NA,
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
 #'   8. `was_mean_estimated` - given by the user while creating the `gips` object:
-#'       * TRUE means the `S` parameter was output of [stats::cov()] function
-#'       * FALSE means the `S` parameter was calculated with
+#'       * `TRUE` means the `S` parameter was output of [stats::cov()] function
+#'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
 #' * For optimized `gips` object:
-#'   1. `optimized` - TRUE
+#'   1. `optimized` - `TRUE`
 #'   2. `found_permutation` - the permutation this `gips` represents;
 #'       the visited permutation with the biggest a posteriori value
 #'   3. `found_permutation_log_posteriori` - the log of the a posteriori
@@ -1342,8 +1342,8 @@ plot.gips <- function(x, type = NA,
 #'       were observed for the `S_matrix` to be calculated; this is
 #'       used to calculate the posteriori value
 #'   10. `was_mean_estimated` - given by the user while creating the `gips` object:
-#'       * TRUE means the `S` parameter was output of [stats::cov()] function
-#'       * FALSE means the `S` parameter was calculated with
+#'       * `TRUE` means the `S` parameter was output of [stats::cov()] function
+#'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
 #'   12. `optimization_algorithm_used` - all used optimization algorithms
