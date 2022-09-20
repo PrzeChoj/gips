@@ -30,7 +30,7 @@ for \code{optimizer="BF"} it is not used.}
 the \code{g} was optimized by (see Examples).
 }
 
-For more details, see the "Possible algorithms to use as optimizers"
+For more details, see the "\strong{Possible algorithms to use as optimizers}"
 section below.}
 
 \item{show_progress_bar}{A boolean.
@@ -42,12 +42,12 @@ shows the second progress bar for the time
 when the probabilities are calculated
 }}
 
-\item{save_all_perms}{A boolean. TRUE indicates to save a list of
+\item{save_all_perms}{A boolean. \code{TRUE} indicates to save a list of
 all permutations that were visited during optimization.
-This can be useful, but can occupy a significant part of RAM memory.}
+This can be useful, but need a lot more RAM.}
 
-\item{return_probabilities}{A boolean. TRUE can only be provided
-when \code{save_all_perms} is TRUE and for:
+\item{return_probabilities}{A boolean. \code{TRUE} can only be provided
+when \code{save_all_perms} is \code{TRUE} and for:
 \itemize{
 \item \code{optimizer="MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities
@@ -69,14 +69,14 @@ Use one of the optimization algorithms to find the permutation that
 maximizes a posteriori probability based on observed data.
 Not all optimization algorithms will always find the MAP, but they try
 to find a significant value. More information can be found in
-the 'Possible algorithms to use as optimizers' section below.
+the "\strong{Possible algorithms to use as optimizers}" section below.
 }
 \section{Possible algorithms to use as optimizers}{
 
 
 For a more in-depth explanations, see \code{vignette("Optimizers")}.
 \itemize{
-\item \code{"Metropolis_Hastings"}, \code{"MH"} - to use
+\item \code{"Metropolis_Hastings"}, \code{"MH"} - use
 the \strong{Metropolis-Hastings} algorithm;
 \href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
 The algorithm will draw a random transposition in every iteration
@@ -87,7 +87,7 @@ the \href{https://arxiv.org/abs/2004.03503}{\emph{Second approach} from referenc
 This algorithm used in this context is a special case of the
 \strong{Simulated Annealing} the reader may be more familiar with;
 \href{https://en.wikipedia.org/wiki/Simulated_annealing}{see Wikipedia}.
-\item \code{"hill_climbing"}, \code{"HC"} - to use
+\item \code{"hill_climbing"}, \code{"HC"} - use
 the \strong{hill climbing} algorithm;
 \href{https://en.wikipedia.org/wiki/Hill_climbing}{see Wikipedia}.
 The algorithm will check all transpositions in every iteration and
@@ -98,7 +98,7 @@ then the warning is shown, and it is recommended to start
 the optimization again on the output of the \code{find_MAP()}.
 Remember that there are \code{p*(p-1)/2} transpositions to be checked
 in every iteration. For bigger \code{p}, this may be costly.
-\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - to use
+\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - use
 the \strong{Brute Force} algorithm that checks the whole permutation
 space of a given size. This algorithm will definitely find
 the actual Maximum A Posteriori Estimation but is
@@ -159,13 +159,13 @@ visualizing the optimization process.
 then those probabilities can be extracted with this function.
 \item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that the optimizers
 of \code{find_MAP()} tries to find the argmax of.
-\item \code{vignette("Optimizers")} - A place to learn more about
-the available optimizers.
-\item \code{vignette("Theory")} - A place to learn more about
-the math behind the \code{gips} package.
 \item \code{\link[=forget_perms]{forget_perms()}} - When the \code{gips} object was optimized
 with \code{find_MAP(save_all_perms = TRUE)}, it will be of
 considerable size in RAM. \code{forget_perms} can make such an object
 lighter in memory by forgetting the permutations that it was in.
+\item \code{vignette("Optimizers")} - A place to learn more about
+the available optimizers.
+\item \code{vignette("Theory")} - A place to learn more about
+the math behind the \code{gips} package.
 }
 }

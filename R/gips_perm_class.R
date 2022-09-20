@@ -151,7 +151,7 @@ new_gips_perm <- function(rearranged_cycles, size) {
 #'     a proper element of a `gips_perm` class.
 #'
 #' @returns `validate_gips_perm()` returns its argument unchanged.
-#'     If the argument is not a correct element of a `gips_perm` class,
+#'     If the argument is not a proper element of a `gips_perm` class,
 #'     it produces an error.
 #'
 #' @export

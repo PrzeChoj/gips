@@ -36,7 +36,7 @@ one or multiple lines. Default to \code{FALSE}.}
 \item{...}{The additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
 \value{
-Returns an invisible NULL.
+Returns an invisible \code{NULL}.
 }
 \description{
 Printing function for a \code{gips} class.

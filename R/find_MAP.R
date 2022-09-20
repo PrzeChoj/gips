@@ -4,13 +4,13 @@
 #' maximizes a posteriori probability based on observed data.
 #' Not all optimization algorithms will always find the MAP, but they try
 #' to find a significant value. More information can be found in
-#' the 'Possible algorithms to use as optimizers' section below.
+#' the "**Possible algorithms to use as optimizers**" section below.
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
 #' For a more in-depth explanations, see `vignette("Optimizers")`.
 #'
-#' * `"Metropolis_Hastings"`, `"MH"` - to use
+#' * `"Metropolis_Hastings"`, `"MH"` - use
 #'     the **Metropolis-Hastings** algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
 #'     The algorithm will draw a random transposition in every iteration
@@ -22,7 +22,7 @@
 #'     **Simulated Annealing** the reader may be more familiar with;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 #'
-#' * `"hill_climbing"`, `"HC"` - to use
+#' * `"hill_climbing"`, `"HC"` - use
 #'     the **hill climbing** algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
 #'     The algorithm will check all transpositions in every iteration and
@@ -34,7 +34,7 @@
 #'     Remember that there are `p*(p-1)/2` transpositions to be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
-#' * `"brute_force"`, `"BF"`, `"full"` - to use
+#' * `"brute_force"`, `"BF"`, `"full"` - use
 #'     the **Brute Force** algorithm that checks the whole permutation
 #'     space of a given size. This algorithm will definitely find
 #'     the actual Maximum A Posteriori Estimation but is
@@ -52,7 +52,7 @@
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
-#' For more details, see the "Possible algorithms to use as optimizers"
+#' For more details, see the "**Possible algorithms to use as optimizers**"
 #' section below.
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar.
@@ -60,11 +60,11 @@
 #'   * When `return_probabilities=TRUE`, then
 #'       shows the second progress bar for the time
 #'       when the probabilities are calculated
-#' @param save_all_perms A boolean. TRUE indicates to save a list of
+#' @param save_all_perms A boolean. `TRUE` indicates to save a list of
 #'     all permutations that were visited during optimization.
-#'     This can be useful, but can occupy a significant part of RAM memory.
-#' @param return_probabilities A boolean. TRUE can only be provided
-#'     when `save_all_perms` is TRUE and for:
+#'     This can be useful, but need a lot more RAM.
+#' @param return_probabilities A boolean. `TRUE` can only be provided
+#'     when `save_all_perms` is `TRUE` and for:
 #'   * `optimizer="MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities
 #'   * `optimizer="BF"` - use brute force results to
@@ -97,14 +97,14 @@
 #'     then those probabilities can be extracted with this function.
 #' * [log_posteriori_of_gips()] - The function that the optimizers
 #'     of `find_MAP()` tries to find the argmax of.
-#' * `vignette("Optimizers")` - A place to learn more about
-#'     the available optimizers.
-#' * `vignette("Theory")` - A place to learn more about
-#'     the math behind the `gips` package.
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms` can make such an object
 #'     lighter in memory by forgetting the permutations that it was in.
+#' * `vignette("Optimizers")` - A place to learn more about
+#'     the available optimizers.
+#' * `vignette("Theory")` - A place to learn more about
+#'     the math behind the `gips` package.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()

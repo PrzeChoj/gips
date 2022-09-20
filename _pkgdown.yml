@@ -4,9 +4,9 @@ template:
 reference:
 - title: "Core functions"
   desc: >
-    Functions for finding the permutation the matrix is approximately
-    invariant under and estimate the covariance matrix.
-    It is the core `gips` purpose.
+    Functions for the core `gips` purpose. Finding
+    the permutation the matrix is approximately
+    invariant under. Estimate the covariance matrix.
   contents: 
   - gips
   - find_MAP

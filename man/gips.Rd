@@ -29,11 +29,11 @@ validate_gips(g)
 }
 \arguments{
 \item{S}{A matrix; estimated covariance matrix.
-When Z is the observed data:
+When \code{Z} is the observed data:
 \itemize{
 \item if one does not know the theoretical mean and has to
-estimate it with the observed mean, use \code{S = cov(Z)}, and set
-parameter \code{was_mean_estimated = FALSE}.
+estimate it with the observed mean, use \code{S = cov(Z)},
+and leave parameter \code{was_mean_estimated = TRUE} as default.
 \item if one know the theoretical mean is 0, use
 \code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
 parameter \code{was_mean_estimated = FALSE};
@@ -47,11 +47,11 @@ Has to be bigger than 2.}
 
 \item{D_matrix}{A hyper-parameter of a Bayesian model.
 Square matrix of the same size as \code{S}.
-When NULL, the identity matrix is taken.}
+When \code{NULL}, the identity matrix is taken.}
 
-\item{was_mean_estimated}{A logical (TRUE or FALSE).
+\item{was_mean_estimated}{A logical (\code{TRUE} or \code{FALSE}).
 \itemize{
-\item Set TRUE (default) when your \code{S} parameter is a result of
+\item Set \code{TRUE} (default) when your \code{S} parameter is a result of
 a \code{\link[stats:cor]{stats::cov()}} function.
 \item Set FALSE when your \code{S} parameter is a result of
 a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
@@ -64,7 +64,7 @@ the function \code{\link[permutations:permutation]{permutations::permutation()}}
 \item{list_of_gips_perm}{A list with a single element of
 a \code{gips_perm} class. The base object for the \code{gips} object.}
 
-\item{optimization_info}{NULL or the list with
+\item{optimization_info}{\code{NULL} or the list with
 information about the optimization process.}
 
 \item{g}{Element to be checked if it is proper element of a \code{gips} class.}
@@ -77,7 +77,7 @@ a \code{gips} class after the safety checks.
 a \code{gips} class without the safety checks.
 
 \code{validate_gips()} returns its argument unchanged.
-If the argument is not a correct element of a \code{gips} class,
+If the argument is not a proper element of a \code{gips} class,
 it produces an error.
 }
 \description{
@@ -145,7 +145,7 @@ the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.
 \item \code{\link[=gips_perm]{gips_perm()}} - The constructor of a \code{gips_perm} class.
 The \code{gips_perm} object is used as the base object for
-the \code{gips} object. To be more precise, the \code{gips} object has
-a one-element list of a \code{gips_perm} object as the base object.
+the \code{gips} object. To be more precise, the base object
+for \code{gips} is a one-element list of a \code{gips_perm} object.
 }
 }

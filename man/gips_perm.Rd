@@ -33,7 +33,7 @@ a \code{gips_perm} class after the safety checks.
 a \code{gips_perm} class without the safety checks.
 
 \code{validate_gips_perm()} returns its argument unchanged.
-If the argument is not a correct element of a \code{gips_perm} class,
+If the argument is not a proper element of a \code{gips_perm} class,
 it produces an error.
 }
 \description{

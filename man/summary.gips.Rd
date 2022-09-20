@@ -97,7 +97,7 @@ in an iteration
 }
 }
 
-\code{print.summary.gips} returns an invisible NULL.
+\code{print.summary.gips} returns an invisible \code{NULL}.
 }
 \description{
 \code{summary} method for class "gips".

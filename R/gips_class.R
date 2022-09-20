@@ -7,10 +7,10 @@
 #' function to do it. See examples below.
 #'
 #' @param S A matrix; estimated covariance matrix.
-#'     When Z is the observed data:
+#'     When `Z` is the observed data:
 #' * if one does not know the theoretical mean and has to
-#'     estimate it with the observed mean, use `S = cov(Z)`, and set
-#'     parameter `was_mean_estimated = FALSE`.
+#'     estimate it with the observed mean, use `S = cov(Z)`,
+#'     and leave parameter `was_mean_estimated = TRUE` as default.
 #' * if one know the theoretical mean is 0, use
 #'     `S = (t(Z) %*% Z) / number_of_observations`, and set
 #'     parameter `was_mean_estimated = FALSE`;
@@ -20,9 +20,9 @@
 #'     Has to be bigger than 2.
 #' @param D_matrix A hyper-parameter of a Bayesian model.
 #'     Square matrix of the same size as `S`.
-#'     When NULL, the identity matrix is taken.
-#' @param was_mean_estimated A logical (TRUE or FALSE).
-#' * Set TRUE (default) when your `S` parameter is a result of
+#'     When `NULL`, the identity matrix is taken.
+#' @param was_mean_estimated A logical (`TRUE` or `FALSE`).
+#' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
 #' * Set FALSE when your `S` parameter is a result of
 #'     a `(t(Z) %*% Z) / number_of_observations` calculation.
@@ -49,8 +49,8 @@
 #'     for a given `gips` object.
 #' * [gips_perm()] - The constructor of a `gips_perm` class.
 #'     The `gips_perm` object is used as the base object for
-#'     the `gips` object. To be more precise, the `gips` object has
-#'     a one-element list of a `gips_perm` object as the base object.
+#'     the `gips` object. To be more precise, the base object
+#'     for `gips` is a one-element list of a `gips_perm` object.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -118,7 +118,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'
 #' @param list_of_gips_perm A list with a single element of
 #'     a `gips_perm` class. The base object for the `gips` object.
-#' @param optimization_info NULL or the list with
+#' @param optimization_info `NULL` or the list with
 #'     information about the optimization process.
 #'
 #' @returns `new_gips()` returns an object of
@@ -153,7 +153,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 #' @param g Element to be checked if it is proper element of a `gips` class.
 #'
 #' @returns `validate_gips()` returns its argument unchanged.
-#'     If the argument is not a correct element of a `gips` class,
+#'     If the argument is not a proper element of a `gips` class,
 #'     it produces an error.
 #'
 #' @export
@@ -229,7 +229,7 @@ validate_gips <- function(g) {
 
   if (!(is.null(optimization_info) || is.list(optimization_info))) {
     rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "The `optimization_info` value must be either a NULL, or a list.",
+      "i" = "The `optimization_info` value must be either a `NULL`, or a list.",
       "x" = paste0(
         "You provided `attr(g, 'optimization_info')` with type ",
         typeof(optimization_info), "."
@@ -295,7 +295,7 @@ validate_gips <- function(g) {
     if (!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force" ||
       is.null(optimization_info[["acceptance_rate"]]))) {
       abort_text <- c(abort_text,
-        "i" = "When brute force algorithm was used for optimization, `attr(g, 'optimization_info')[['acceptance_rate']]` must be a NULL.",
+        "i" = "When brute force algorithm was used for optimization, `attr(g, 'optimization_info')[['acceptance_rate']]` must be a `NULL`.",
         "x" = paste0(
           "You have used brute force algorithm, but `attr(g, 'optimization_info')[['acceptance_rate']] == (",
           paste(optimization_info[["acceptance_rate"]], collapse = ", "),
@@ -418,7 +418,7 @@ validate_gips <- function(g) {
         )
       } else if (!(is.null(optimization_info[["last_perm"]]))) {
         abort_text <- c(abort_text,
-          "i" = "After optimization with brute force algorithm, `attr(g, 'optimization_info')[['last_perm']]` must be a NULL.",
+          "i" = "After optimization with brute force algorithm, `attr(g, 'optimization_info')[['last_perm']]` must be a `NULL`.",
           "x" = paste0("You have `attr(g, 'optimization_info')[['last_perm']]` of type ", typeof(optimization_info[["last_perm"]]), ".")
         )
       }
@@ -457,11 +457,11 @@ validate_gips <- function(g) {
       optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") && # last optimization algorithm
       !is.null(optimization_info[["post_probabilities"]])) {
       abort_text <- c(abort_text,
-        "i" = "`post_probabilities` can olny be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method.",
+        "i" = "`post_probabilities` can only be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == c('",
           paste0(optimization_info[["optimization_algorithm_used"]], collapse = "', '"),
-          "')` and the `attr(g, 'optimization_info')[['post_probabilities']]` is not NULL, but is of type `",
+          "')` and the `attr(g, 'optimization_info')[['post_probabilities']]` is not `NULL`, but is of type `",
           typeof(optimization_info[["post_probabilities"]]), "`."
         )
       )
@@ -502,14 +502,14 @@ validate_gips <- function(g) {
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(attr(g, 'optimization_info')[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
-          "` and the `attr(g, 'optimization_info')[['did_converge']]` is not NULL, but is of type ",
+          "` and the `attr(g, 'optimization_info')[['did_converge']]` is not `NULL`, but is of type ",
           typeof(optimization_info[["did_converge"]]), "."
         )
       )
     } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "hill_climbing") &&
       !is.logical(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be TRUE or FALSE.",
+        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(attr(g, 'optimization_info')[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
@@ -520,7 +520,7 @@ validate_gips <- function(g) {
     } else if ((optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "hill_climbing") &&
       is.na(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be TRUE or FALSE.",
+        "i" = "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(optimization_info[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],
@@ -543,7 +543,7 @@ validate_gips <- function(g) {
     if (any(is.na(optimization_info[["optimization_time"]]))) {
       additional_info <- additional_info + 2
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
+        "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to `NA`, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
         "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
         "i" = "Did You modified the `find_MAP()` function?"
@@ -568,7 +568,7 @@ validate_gips <- function(g) {
     if (is.na(optimization_info[["whole_optimization_time"]])) {
       additional_info <- additional_info + 2
       abort_text <- c(abort_text,
-        "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` is initially set to NA, but that state of the gips object should not be available to the user.",
+        "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` is initially set to `NA`, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['whole_optimization_time']]) == TRUE`.",
         "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
         "i" = "Did You modified the `find_MAP()` function?"
@@ -675,7 +675,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   if (is.null(number_of_observations)) {
     abort_text <- c(abort_text,
       "i" = "`number_of_observations` must not be `NULL`.",
-      "x" = "Your provided `number_of_observations` is NULL."
+      "x" = "Your provided `number_of_observations` is `NULL`."
     )
   } else if (number_of_observations < 1) {
     abort_text <- c(abort_text,
@@ -728,7 +728,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   if (is.null(delta)) {
     abort_text <- c(abort_text,
       "i" = "`delta` must not be `NULL`.",
-      "x" = "Your provided `delta` is a NULL."
+      "x" = "Your provided `delta` is a `NULL`."
     )
   } else if (delta <= 2) {
     abort_text <- c(abort_text,
@@ -765,7 +765,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   }
   if (!is.logical(was_mean_estimated)) {
     abort_text <- c(abort_text,
-      "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
+      "i" = "`was_mean_estimated` must be a logic value (`TRUE` or `FALSE`).",
       "x" = paste0(
         "You provided `was_mean_estimated` with type ",
         typeof(was_mean_estimated), "."
@@ -773,13 +773,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     )
   } else if (is.na(was_mean_estimated)) {
     abort_text <- c(abort_text,
-      "i" = "`was_mean_estimated` must be a logic value (TRUE or FALSE).",
+      "i" = "`was_mean_estimated` must be a logic value (`TRUE` or `FALSE`).",
       "x" = "You provided `was_mean_estimated` as an `NA`."
     )
   }
   if (!is.logical(return_probabilities)) {
     abort_text <- c(abort_text,
-      "i" = "`return_probabilities` must be a logic value (TRUE or FALSE).",
+      "i" = "`return_probabilities` must be a logic value (`TRUE` or `FALSE`).",
       "x" = paste0(
         "You provided `return_probabilities` with type ",
         typeof(return_probabilities), "."
@@ -787,13 +787,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     )
   } else if (is.na(return_probabilities)) {
     abort_text <- c(abort_text,
-      "i" = "`return_probabilities` must be a logic value (TRUE or FALSE).",
+      "i" = "`return_probabilities` must be a logic value (`TRUE` or `FALSE`).",
       "x" = "You provided `return_probabilities` as an `NA`."
     )
   }
   if (!is.logical(save_all_perms)) {
     abort_text <- c(abort_text,
-      "i" = "`save_all_perms` must be a logic value (TRUE or FALSE).",
+      "i" = "`save_all_perms` must be a logic value (`TRUE` or `FALSE`).",
       "x" = paste0(
         "You provided `save_all_perms` with type ",
         typeof(save_all_perms), "."
@@ -801,13 +801,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     )
   } else if (is.na(save_all_perms)) {
     abort_text <- c(abort_text,
-      "i" = "`save_all_perms` must be a logic value (TRUE or FALSE).",
+      "i" = "`save_all_perms` must be a logic value (`TRUE` or `FALSE`).",
       "x" = "You provided `save_all_perms` as an `NA`."
     )
   }
   if (!is.logical(show_progress_bar)) {
     abort_text <- c(abort_text,
-      "i" = "`show_progress_bar` must be a logic value (TRUE or FALSE).",
+      "i" = "`show_progress_bar` must be a logic value (`TRUE` or `FALSE`).",
       "x" = paste0(
         "You provided `show_progress_bar` with type ",
         typeof(show_progress_bar), "."
@@ -815,7 +815,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     )
   } else if (is.na(show_progress_bar)) {
     abort_text <- c(abort_text,
-      "i" = "`show_progress_bar` must be a logic value (TRUE or FALSE).",
+      "i" = "`show_progress_bar` must be a logic value (`TRUE` or `FALSE`).",
       "x" = "You provided `show_progress_bar` as an `NA`."
     )
   }
@@ -880,7 +880,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #'     the compared posteriories between any two permutations,
 #'     not only compared to the starting one or id.
 #'
-#' @returns Returns an invisible NULL.
+#' @returns Returns an invisible `NULL`.
 #' @export
 #'
 #' @examples
@@ -1006,7 +1006,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #' @param ... Additional arguments passed to [stats::heatmap()]
 #'     or other various elements of the plot.
 #'
-#' @returns Returns an invisible NULL.
+#' @returns Returns an invisible `NULL`.
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
@@ -1482,7 +1482,7 @@ summary.gips <- function(object, ...) {
 #' @param x An object of class "summary.gips" to be printed
 #' @describeIn summary.gips Printing method for class "summary.gips".
 #'     Prints every interesting information in a pleasant, human readable form
-#' @returns `print.summary.gips` returns an invisible NULL.
+#' @returns `print.summary.gips` returns an invisible `NULL`.
 #' @export
 #'
 #' @examples
