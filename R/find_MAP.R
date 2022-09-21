@@ -341,9 +341,12 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     n0 <- n0 + 1
   }
   if (n0 > number_of_observations) {
-    rlang::warn(c("The found permutation has n0 value bigger than the number of observations of the normal variable.",
+    rlang::warn(c(
+      paste0("The found permutation has n0 = ", n0,
+             " which is bigger than the number_of_observations = ",
+             number_of_observations, "."),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For more in-depth explanation, see the Vignette `vignette('Theory')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+      "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 

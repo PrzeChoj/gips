@@ -1085,15 +1085,17 @@ test_that("get_probabilities_from_gips works", {
     optimizer = "BF", show_progress_bar = FALSE,
     return_probabilities = FALSE, save_all_perms = TRUE
   )
-  expect_silent(get_probabilities_from_gips(g_map_no_prob))
-  expect_null(get_probabilities_from_gips(g_map_no_prob))
+  expect_message(out <- get_probabilities_from_gips(g_map_no_prob),
+                 "on the `gips` object that does not have saved probabilities.")
+  expect_null(out)
 
   g_map_no_prob_no_save <- find_MAP(g,
     optimizer = "BF", show_progress_bar = FALSE,
     return_probabilities = FALSE, save_all_perms = FALSE
   )
-  expect_silent(get_probabilities_from_gips(g_map_no_prob_no_save))
-  expect_null(get_probabilities_from_gips(g_map_no_prob_no_save))
+  expect_message(out <- get_probabilities_from_gips(g_map_no_prob_no_save),
+                 "on the `gips` object that does not have saved probabilities.")
+  expect_null(out)
 })
 
 test_that("forget_perms works properly", {

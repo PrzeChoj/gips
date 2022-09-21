@@ -1642,6 +1642,16 @@ get_probabilities_from_gips <- function(g) {
       "i" = "Did You forget to optimize `g`?"
     ))
   }
+  
+  if (is.null(attr(g, "optimization_info")[["post_probabilities"]])) {
+    rlang::inform(c(
+      "You called `get_probabilities_from_gips(g)` on the `gips` object that does not have saved probabilities.",
+      "x" = "`NULL` will be returned",
+      "i" = "Did You used the wrong `g` as an argument for this function?",
+      "i" = "Did You forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?",
+      "i" = "Did You unintentionally used `g <- forget_perms(g)`?"
+    ))
+  }
 
   attr(g, "optimization_info")[["post_probabilities"]]
 }
