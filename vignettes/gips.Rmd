@@ -55,8 +55,7 @@ a particular assumption about invariance by permutation would be a reasonable st
 
 # Package `gips`
 
-We propose creating a set of constraints on the covariance matrix so that the 
-maximum likelihood method can be used. The constraint we consider is - none other than - invariance under permutation symmetry. 
+We propose creating a set of constraints on the covariance matrix to use the maximum likelihood method. The constraint we consider is - none other than - invariance under permutation symmetry. 
 
 This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means maximizing the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch are explored in another vignette that can be accessed by `vignette("Theory")` or on its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 
@@ -110,16 +109,19 @@ g <- gips(S = S, number_of_observations = nrow(toy_example_data))
 
 plot(g, type = "heatmap")
 ```
+
 Looking at the plot, one can see the similarities between columns 3, 4, and 5. They have similar variance and covariance to each other. The 3 and 5 have similar covariance with columns 1 and 2. However, the 4 is not far from them.
 
 Let's see if `gips` will find the relationship:
 
 ```{r toy_example_data_show3, dependson="toy_example_data_show2"}
-g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE)
+g_map <- find_MAP(g, optimizer = "brute_force",
+                  return_probabilities = TRUE, save_all_perms = TRUE)
 
 plot(g_map, type = "heatmap")
 ```
-`gips` decided the $(3,4,5)$ was the most reasonable assumption. Let's see how much better it is:
+
+`gips` decided that $(3,4,5)$ was the most reasonable assumption. Let's see how much better it is:
 
 ```{r toy_example_data_show4, dependson="toy_example_data_show3"}
 g_map
@@ -129,15 +131,15 @@ This assumption is over two times more believable than making no assumption. Let
 ```{r toy_example_data_show5, dependson="toy_example_data_show4"}
 get_probabilities_from_gips(g_map)
 ```
-We see that assumption $(3,4,5)$ is the most likely with $19.9\%$ posterior probability. However, the assumption $(3,5)$ is also quite possible with a posterior probability of $19.6\%$. So it is up to us to decide which one to choose.
+We see that assumption $(3,4,5)$ is the most likely with $19.9\%$ posterior probability. However, the assumption $(3,5)$ is also reasonable, with a posterior probability of $19.6\%$. So it is up to us to decide which one to choose.
 
-Remember that with assumption $(3,5)$, the `n0` will be 4, which would be insufficient for us to estimate covariance properly. The assumption $(3,4,5)$ will be just right:
+Remember that with the assumption $(3,5)$, the `n0` will be 4, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6, dependson="toy_example_data_show5"}
 S_projected <- project_matrix(S, g_map[[1]])
 sum(eigen(S_projected)$values > 0.00000001)
 ```
-Now, the estimated covariance matrix is full rank (5).
+Now, the estimated covariance matrix is of full rank (5).
 
 
 # Further reading

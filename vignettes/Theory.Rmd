@@ -30,9 +30,9 @@ As we read in the abstract, the outline of the paper is to "derive the distribut
 
 # Basic definitions
 
-Let $V=\{1,\ldots,p\}$ be a finite index set and let $Z=(Z_1,\ldots, Z_p)$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$.
+Let $V=\{1,\ldots,p\}$ be a finite index set, and $Z=(Z_1,\ldots, Z_p)$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$.
 Let $\mathfrak{S}_p$ denote the symmetric group
-on $V$, that is, the group of all permutations on $\{1,\ldots,p\}$ and let $\Gamma$ be a subgroup of $\mathfrak{S}_p$. A centered Gaussian model is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
+on $V$, that is, the group of all permutations on $\{1,\ldots,p\}$, and let $\Gamma$ be a subgroup of $\mathfrak{S}_p$. A centered Gaussian model is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
 (here, we identify a permutation $g$ with its permutation matrix).
 
 For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$, $$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{ij} = S_{\sigma(i)\sigma(j)} \text{ for all }\sigma \in \Gamma\},$$ and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$, $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
@@ -41,7 +41,7 @@ For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.
 
 Theorem basically states that given a permutation subgroup $\Gamma$ there exist constants $L \in \mathbb{N}$, $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S$ that are invariant under the action of $\Gamma$ can be transform into block-diagonal form.
 
-It is worth to point out that constants $k = d$ for cyclic group $\Gamma = <\sigma>$ and that `gips` only considers cyclic groups. See example:
+It is worth pointing out that constants $k = d$ for cyclic group $\Gamma = <\sigma>$ and that `gips` only considers cyclic groups. See example:
 
 ```{r th1_1}
 p <- 6
@@ -134,7 +134,7 @@ TODO(Short info about the A Priori assumption and parameters delta, D_matrix; Fo
 
 Namely, the [formula (30)]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
-In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation, or the other one.
+In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation or the other one.
 
 Let's see the example:
 
