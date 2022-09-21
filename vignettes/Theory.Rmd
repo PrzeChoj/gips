@@ -172,14 +172,14 @@ withr::with_seed(1234,{
 </button>
 
 Let's say we have this data, `Z`. It has only $4$ observations, and its dimension is $p=6$.
-Let's assume we know `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
+Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
 
 ```{r, example2_readme2, dependson="example2_readme1"}
 dim(Z)
 number_of_observations <- nrow(Z) # 4
 perm_size <- ncol(Z) # 6
 
-# Calculate the covariance matrix from the data (assume we know the mean is 0):
+# Calculate the covariance matrix from the data (assume the mean is 0):
 S <- (t(Z) %*% Z) / number_of_observations
 
 # Make the gips object out of data:

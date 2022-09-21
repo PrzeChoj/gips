@@ -18,14 +18,16 @@ knitr::opts_chunk[["set"]](
 options(scipen=999) # turn off scientific notation
 ```
 
+
 # The problem
 
 Quite often, we have too little data to perform valid inference. Consider the 
 situation with multivariate Gaussian distribution, where we have few observations 
-compared to the number of variables. That's the case for 
+compared to the number of variables. For example, that's the case for
 graphical models used in biology or medicine. In such a setting, the usual way
-of finding the covariance matrix (the maximum likelihood method) isn't statistically 
-applicable. What now?
+of finding the covariance matrix (the maximum likelihood method) isn't 
+statistically applicable. What now?
+
 
 # Invariance by permutation
 
@@ -33,39 +35,45 @@ In some cases, the interchange of variables in the vector does not change its di
 In the multivariate Gaussian case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
 
 ```{r symvariant_matrix, echo=FALSE}
-X <- matrix(c(1, 2, 3,
-         2, 4, 2,
-         3, 2, 1), byrow=TRUE, ncol=3, dimnames=list(c('X1', 'X2', 'X3'), 
-                                                     c('X1', 'X2', 'X3')))
-heatmap(X, Rowv = NA, Colv = NA, main = "", symm=TRUE)
+X <- matrix(c(
+  1, 2, 3,
+  2, 4, 2,
+  3, 2, 1
+), byrow = TRUE, ncol = 3, dimnames = list(
+  c("X1", "X2", "X3"),
+  c("X1", "X2", "X3")
+))
+heatmap(X, Rowv = NA, Colv = NA, main = "", symm = TRUE)
 ```
 
-Now, we can state this interchangeability property in terms of permutations. In our case, the distribution of (X1, X2, X3) is **invariant by permutation** (1->3, 3->1), or in cyclic form (1,3). This is equivalent to saying that swapping the first with the third row and then swapping the first and third columns of covariance matrix results in the same matrix. Then we say that this covariance matrix is **invariant by permutation**.
+Now, we can state this interchangeability property in terms of permutations. In our case, the distribution of (X1, X2, X3) is **invariant by permutation** ($1\mapsto3$, $3\mapsto1$), or in cyclic form $(1,3)(2)$. This is equivalent to saying that swapping the first with the third row and then swapping the first and third columns of the covariance matrix results in the same matrix. Then we say that this covariance matrix is **invariant by permutation**.
 
 Of course, in the samples collected in the real world, no perfect equalities will be observed. 
 Still, if the respective values in the (poorly) estimated covariance matrix were close, adopting
 a particular assumption about invariance by permutation would be a reasonable step.
 
+
 # Package `gips`
 
 We propose creating a set of constraints on the covariance matrix so that the 
-maximum likelihood method can be used after all. The constraint we consider is - none other than - 
-invariance under permutation symmetry. 
+maximum likelihood method can be used. The constraint we consider is - none other than - invariance under permutation symmetry. 
 
-This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means such that maximizes the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch contribute to PAPER.
+This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means maximizing the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch are explored in another vignette that can be accessed by `vignette("Theory")` or on its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+
 
 # Example
 
 <div id="spoiler1" style="display:none">
 ```{r toy_example_data_making, include = TRUE}
-perm_size <- 4
-mu <- runif(4, -10, 10) # Assume we don't know the mean
-sigma_matrix <- matrix(c(6.25, 2,   0.5, 0.5,
-                         2,    3,   0.3, 0.3,
-                         0.5,  0.3, 1,   0.8,
-                         0.5,  0.3, 0.8, 1), ncol=4)
-# sigma_matrix is a matrix invariant under permutation (3,4)
-number_of_observations <- 9
+perm_size <- 5
+mu <- runif(5, -10, 10) # Assume we don't know the mean
+sigma_matrix <- matrix(c(7.5, 5,   0.5, 0.5, 0.5,
+                         5,   4.5, 0.3, 0.3, 0.3,
+                         0.5, 0.3, 1,   0.8, 0.8,
+                         0.5, 0.3, 0.8, 1,   0.8,
+                         0.5, 0.3, 0.8, 0.8, 1), ncol=5)
+# sigma_matrix is a matrix invariant under permutation (3,4,5)
+number_of_observations <- 4
 toy_example_data <- withr::with_seed(1234,
     code = MASS::mvrnorm(number_of_observations,
                          mu = mu, Sigma = sigma_matrix)
@@ -80,20 +88,56 @@ toy_example_data <- withr::with_seed(1234,
   Show/hide data preparation
 </button>
 
-```{r toy_example_data_show, fig_width = 0.3, fig.align = "center"}
+```{r toy_example_data_show1}
 library(gips)
 
 toy_example_data
+
+dim(toy_example_data)
+number_of_observations <- nrow(toy_example_data) # 4
+perm_size <- ncol(toy_example_data) # 5
+
 S <- cov(toy_example_data)
 
+sum(eigen(S)$values > 0.00000001)
+```
+Note that the rank of the `S` matrix is 3, despite the `number_of_observations` being 4. This is because `cov()` estimated the mean on every column to compute `S`.
+
+We want to find reasonable additional assumptions on `S` to make it easier to estimate.
+
+```{r toy_example_data_show2, dependson="toy_example_data_show1"}
 g <- gips(S = S, number_of_observations = nrow(toy_example_data))
 
 plot(g, type = "heatmap")
+```
+Looking at the plot, one can see the similarities between columns 3, 4, and 5. They have similar variance and covariance to each other. The 3 and 5 have similar covariance with columns 1 and 2. However, the 4 is not far from them.
+
+Let's see if `gips` will find the relationship:
+
+```{r toy_example_data_show3, dependson="toy_example_data_show2"}
 g_map <- find_MAP(g, optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE)
 
 plot(g_map, type = "heatmap")
+```
+`gips` decided the $(3,4,5)$ was the most reasonable assumption. Let's see how much better it is:
+
+```{r toy_example_data_show4, dependson="toy_example_data_show3"}
+g_map
+```
+This assumption is over two times more believable than making no assumption. Let's examine how reasonable are other possible assumptions:
+
+```{r toy_example_data_show5, dependson="toy_example_data_show4"}
 get_probabilities_from_gips(g_map)
 ```
+We see that assumption $(3,4,5)$ is the most likely with $19.9\%$ posterior probability. However, the assumption $(3,5)$ is also quite possible with a posterior probability of $19.6\%$. So it is up to us to decide which one to choose.
+
+Remember that with assumption $(3,5)$, the `n0` will be 4, which would be insufficient for us to estimate covariance properly. The assumption $(3,4,5)$ will be just right:
+
+```{r toy_example_data_show6, dependson="toy_example_data_show5"}
+S_projected <- project_matrix(S, g_map[[1]])
+sum(eigen(S_projected)$values > 0.00000001)
+```
+Now, the estimated covariance matrix is full rank (5).
 
 
 # Further reading
