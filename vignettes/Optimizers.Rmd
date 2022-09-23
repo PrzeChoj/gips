@@ -36,7 +36,7 @@ To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` 
 
 # Metropolis Hastings
 
-This optimizer is implementation of the [*Second approach* from references(1), section 4.1.2](https://arxiv.org/abs/2004.03503).
+This optimizer is implementation of the [*Second approach* from references [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
 
 This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 
@@ -55,7 +55,7 @@ This algorithm was tested in multiple settings and turned out to be an outstandi
 
 The only parameter it depends on is `max_iter`, which determines the number of steps described above. One should choose this number rationally. When decided too small, there is a missed opportunity to find potentially a much better permutation. When decided too big, there is a lost time and computational power that does not lead to growth. Our recommendation is to plot the convergence plot with a logarithmic OX scale: `plot(g_map, type = "both", logarithmic_x = TRUE)`. Then decide if the line has flattened already. Keep in mind that the OY scale is also logarithmic. For example, a small change on the OY scale could mean $10000$ **times** the change in A Posteriori.
 
-This algorithm has been analyzed extensively by theoretical probabilists. This lead to exciting results like, for example, that the frequency of visits can estimate the probability of the state. This is the approach explained in the [references(1), section 4.1.2](https://arxiv.org/abs/2004.03503) and shown in [references(1), section 5.2](https://arxiv.org/abs/2004.03503). One can do this by setting `return_probabilities = TRUE`.
+This algorithm has been analyzed extensively by statisticians. Thanks to the ergodic theorem, the frequency of visits of a given state converges almost sutely to the probability of that state. This is the approach explained in the [[1, Sec.4.1.2]](https://arxiv.org/abs/2004.03503) and shown in [[1, Sec. 5.2]](https://arxiv.org/abs/2004.03503). One can obtain estimates of posterior probabilities by setting `return_probabilities = TRUE`.
 
 ### Example
 
@@ -269,11 +269,11 @@ The `save_all_perms = TRUE` means that `gips` will save all visited permutations
 
 # Discussion
 
-We are aware that the optimizers mentioned above try to optimize the space of **permutations**. This is not precisely what we want because the found permutation is interpreted as the generator or the group of permutations. We tested the above algorithms working correctly in this setting, and we are yet to see any practical advantage of optimization performed on groups. However, the theoretical advantage is clear, as the results would be easier to interpret.
+We are considering implementing the **First approach** from [1] in the future as well. In this approach, the Markov chain travels along cyclic groups rather than permutations. 
 
 We encourage everyone to leave a comment on available and potential new optimizers on the [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). There, one can also find the implemented optimizers but not yet added to `gips`.
 
 
 # References
 
-(1) Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503.pdf); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
+[1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503.pdf); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
