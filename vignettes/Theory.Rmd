@@ -129,7 +129,7 @@ summary(g2)$n0
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-`gips` performs Bayesian model selection. The method has two parameters of the prior distribution, delta and D_matrix. By default they are set to 3 and diag(p), respectively. However, it is worth to run the procedure for several parameters D_matrix of the form $D*diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favours small groups. 
+`gips` performs Bayesian model selection. The method has two parameters of the prior distribution, delta and D_matrix. By default they are set to 3 and diag(p), respectively. However, it is worth to run the procedure for several parameters D_matrix of the form $D*diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. 
 
 Namely, the formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 

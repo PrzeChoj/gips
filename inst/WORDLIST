@@ -3,6 +3,7 @@ CMD
 CyberiADa
 DOI
 EDA
+Eq
 Graczyk
 HC
 Hideyuki
@@ -21,7 +22,6 @@ Paweł
 Ph
 Piotr
 Posteriori
-Priori
 Przemysław
 Pseudocode
 QDA
@@ -34,6 +34,7 @@ cdot
 circ
 data's
 data’s
+diag
 diagonalizes
 equalities
 frac
@@ -48,6 +49,7 @@ mathbb
 mathcal
 mathfrak
 mathrm
+mbox
 mvrnorm
 optimizers
 pkgdown
