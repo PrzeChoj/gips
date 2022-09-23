@@ -80,3 +80,8 @@ change_log_probabilities_unnorm_to_probabilities <- function(log_probabilities_u
 
   probabilities
 }
+
+pretty_plot_matrix <- function(S){
+  plot(gips(S, 1), type="heatmap") +
+    ggplot2::labs(title = "", x = "", y = "", fill="value")
+}

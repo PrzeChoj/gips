@@ -52,19 +52,29 @@ S <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
               0.8,0.7,0.8,0.9,1.1,0.9,
               0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
 ```
+
+```{r th1_2, dependson="th1_1", echo=FALSE}
+gips:::pretty_plot_matrix(S)
+```
+
 `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3,4,5,6)\right>$.
 
-```{r th1_2, dependson="th1_1"}
+```{r th1_3, dependson="th1_1"}
 g_perm <- gips_perm("(1,2,3,4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
 block_decomposition <- t(U_Gamma) %*% S %*% U_Gamma
 round(block_decomposition, 5)
 ```
+
+```{r th1_4, dependson="th1_3", echo=FALSE}
+gips:::pretty_plot_matrix(block_decomposition)
+```
+
 The transformed matrix is in the block-diagonal form of [1,Theorem 1]. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
-```{r th1_3, dependson="th1_2"}
+```{r th1_5}
 p <- 6
 S <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
               0.9,1.2,0.9,0.1,0.4,0.2,
@@ -73,15 +83,25 @@ S <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
               0.2,0.4,0.1,0.9,1.2,0.9,
               0.1,0.2,0.4,0.9,0.9,1.2), nrow = p)
 ```
+
+```{r th1_6, dependson="th1_5", echo=FALSE}
+gips:::pretty_plot_matrix(S)
+```
+
 Now, `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3)(4,5,6)\right>$.
 
-```{r th1_4, dependson="th1_3"}
+```{r th1_7, dependson="th1_5"}
 g_perm <- gips_perm("(1,2,3)(4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
 block_decomposition <- t(U_Gamma) %*% S %*% U_Gamma
 round(block_decomposition, 5)
 ```
+
+```{r th1_8, dependson="th1_7", echo=FALSE}
+gips:::pretty_plot_matrix(block_decomposition)
+```
+
 Again, this result is in accordance with [1,Theorem 1]. Note the zeros: $\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$
 
 # Project Matrix - [1,Eq. (6)]
@@ -99,7 +119,7 @@ round(S, 2)
 ```
 
 ```{r def3_2, dependson="def3_1", echo=FALSE}
-plot(gips(S, n), type="heatmap")
+gips:::pretty_plot_matrix(S)
 ```
 
 ```{r def3_3, dependson="def3_2"}
@@ -108,7 +128,7 @@ round(S_projected, 2)
 ```
 
 ```{r def3_4, dependson="def3_3", echo=FALSE}
-plot(gips(S_projected, n), type="heatmap")
+gips:::pretty_plot_matrix(S_projected)
 ```
 
 TODO(Point out the equal elements of those matrices)
