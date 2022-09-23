@@ -1414,14 +1414,16 @@ summary.gips <- function(object, ...) {
 
   structure_constants <- get_structure_constants(object[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  edited_number_of_observations <- attr(object, "number_of_observations")
   if (attr(object, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
+    edited_number_of_observations <- edited_number_of_observations - 1
   }
-
+  
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
       perm_proposal = "", S = attr(object, "S"),
-      number_of_observations = attr(object, "number_of_observations"),
+      number_of_observations = edited_number_of_observations,
       delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
     )
 

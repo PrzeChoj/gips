@@ -1065,6 +1065,16 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
   expect_equal(summary.gips(g_em)[["n0"]], ncol(S) + 1) # for estimated mean and perm id, one needs n >= (p + 1)
 })
 
+test_that("summary.gips returns proper Times more likely than identity permutation", {
+  g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+  g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
+  
+  expect_equal(summary.gips(g_no_em)[["times_more_likely_than_id"]],
+               1) # for known mean
+  expect_equal(summary.gips(g_em)[["times_more_likely_than_id"]],
+               1) # for estimated
+})
+
 test_that("get_probabilities_from_gips works", {
   g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
   g_map <- find_MAP(g,
