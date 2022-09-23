@@ -82,7 +82,7 @@ U_Gamma <- prepare_orthogonal_matrix(g_perm)
 block_decomposition <- t(U_Gamma) %*% S %*% U_Gamma
 round(block_decomposition, 5)
 ```
-Again, this result is in accordance with [1,Theorem 1]. 
+Again, this result is in accordance with [1,Theorem 1]. Note the zeros: $\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$
 
 # Project Matrix - [1,Eq. (6)]
 
@@ -90,14 +90,25 @@ One can also take any symmetric matrix `S` and find the orthogonal projection on
 
 $$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top\in\mathcal{Z}_{\Gamma}$$
 
-```{r def3}
+```{r def3_1}
 p <- 6
 n <- 10
 Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
 S <- t(Z) %*% Z / n
-S
-project_matrix(S, perm = "(1,2,3,4,5,6)")
-project_matrix(S, perm = "(1,2)(3,4,5,6)")
+round(S, 2)
+```
+
+```{r def3_2, dependson="def3_1", echo=FALSE}
+plot(gips(S, n), type="heatmap")
+```
+
+```{r def3_3, dependson="def3_2"}
+S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
+round(S_projected, 2)
+```
+
+```{r def3_4, dependson="def3_3", echo=FALSE}
+plot(gips(S_projected, n), type="heatmap")
 ```
 
 TODO(Point out the equal elements of those matrices)
@@ -129,7 +140,7 @@ summary(g2)$n0
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-`gips` performs Bayesian model selection. The method has two parameters of the prior distribution, delta and D_matrix. By default they are set to 3 and diag(p), respectively. However, it is worth to run the procedure for several parameters D_matrix of the form $D*diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. 
+`gips` performs Bayesian model selection. The method has two parameters of the prior distribution, `delta` and `D_matrix`. By default they are set to 3 and `diag(p)`, respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. 
 
 Namely, the formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
