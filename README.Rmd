@@ -175,7 +175,7 @@ Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` 
 For more examples and introduction, see `vignette("gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
 
-# Credits
+# Acknowledgment
 
-`gips` was developed in 2022 by Przemysław Chojecki and Paweł Morgen under the leadership of Ph.D. Bartosz Kołodziejek under the "CyberiADa-3" (2021) grant from the Warsaw University of Technology.
+Project was funded by Warsaw University of Technology within the Excellence Initiative: Research University (IDUB) programme.
 

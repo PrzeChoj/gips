@@ -160,7 +160,9 @@ summary(g2)$n0
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-`gips` performs Bayesian model selection. The method has two parameters of the a prior distribution (TODO: Name of this distribution; Diaconis–Ylvisaker?), `delta` (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and `D_matrix` (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?). By default they are set to 3 and `diag(p)`, respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups.
+A priori: We consider a prior distribution on $\Gamma$ and $K=\Sigma^{-1}$ in the following way: $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$ and $K\given \Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [1, Sec. 3.4].
+
+In `gips`, $D$ is named `D_matrix`. By default they are set to $3$ and `diag(p)` respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. (TODO: There are two $D$ that means something else. This should be renamed)
 
 The formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
