@@ -156,13 +156,13 @@ g2 <- gips(S, n, perm = "(1,2)(3,4,5,6)", was_mean_estimated = TRUE)
 summary(g2)$n0
 ```
 
-# A Posteriori
+# Bayesian model selection
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-`gips` performs Bayesian model selection. The method has two parameters of the prior distribution, `delta` and `D_matrix`. By default they are set to 3 and `diag(p)`, respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. 
+`gips` performs Bayesian model selection. The method has two parameters of the a prior distribution (TODO: Name of this distribution; Diaconis–Ylvisaker?), `delta` (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and `D_matrix` (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?). By default they are set to 3 and `diag(p)`, respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups.
 
-Namely, the formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
+The formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
 
 In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation or the other one.
 

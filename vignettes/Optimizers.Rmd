@@ -26,9 +26,15 @@ library(gips)
 ?find_MAP
 ```
 
+# What are we optimizing?
+
+The goal of the `find_MAP()` is to find the permutation $\sigma$ that maximizes the a posteriori probability (MAP - Maximum A Posteriori). Such a permutation represents the most plausible symmetry given the data.
+
+This a posteriory probability function is described more in-depth in the **Bayesian model selection** section of the `vignette("Theory")`, also available as a [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can calculate the logarithm of it by `log_posteriori_of_gips()` function. In the following paragraphs, we will refer to this a posteriory probability function as $f(\sigma)$.
+
 # Available optimizers
 
-To find the Maximum A Posteriori Estimation, one wants to call the `find_MAP()` function. This is designed to find a permutation $\sigma$ so that the value of A Posteriori $f(\sigma)$ is as big as possible. However, the space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
+The space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
 
 * `"Metropolis_Hastings"`, `"MH"`
 * `"hill_climbing"`, `"HC"`
