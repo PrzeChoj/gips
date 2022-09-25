@@ -98,7 +98,7 @@ seem so close to each other.
 Let’s see if the `find_MAP()` will find this relationship:
 
 ``` r
-g_MAP <- find_MAP(g, optimizer = "full")
+g_MAP <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 
 g_MAP
@@ -162,13 +162,16 @@ Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
 ```
 
-Imagine we have the data `Z` but don’t know how it was generated. We
-assume it was generated from the normal distribution with the mean
-![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0").
-However, we cannot estimate the covariance matrix because there is
-insufficient data
+Suppose we do not know the true covariance matrix
+![\Sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CSigma "\Sigma")
+and we want to estimate it. We cannot use the standard MLE because it
+does not exists
 (![4 \< 6](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4%20%3C%206 "4 < 6"),
 ![n \< p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n%20%3C%20p "n < p")).
+
+We will assume it was generated from the normal distribution with the
+mean
+![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0").
 
 ``` r
 library(gips)
@@ -193,7 +196,7 @@ small
 so it is reasonable to browse the whole of it:
 
 ``` r
-g_map <- find_MAP(g, optimizer = "full")
+g_map <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 g_map
 #> The permutation (1,2,3,4,5,6)

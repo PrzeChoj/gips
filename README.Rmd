@@ -79,7 +79,7 @@ We can see some strong similarities between columns 2 and 3, representing the bo
 Let's see if the `find_MAP()` will find this relationship:
 
 ```{r example_mean_unknown3, dependson="example_mean_unknown2"}
-g_MAP <- find_MAP(g, optimizer = "full")
+g_MAP <- find_MAP(g, optimizer = "brute_force")
 
 g_MAP
 ```
@@ -126,7 +126,9 @@ Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
 ```
 
-Imagine we have the data `Z` but don't know how it was generated. We assume it was generated from the normal distribution with the mean $0$. However, we cannot estimate the covariance matrix because there is insufficient data ($4 < 6$, $n < p$).
+Suppose we do not know the true covariance matrix $\Sigma$ and we want to estimate it. We cannot use the standard MLE because it does not exists ($4 < 6$, $n < p$).
+
+We will assume it was generated from the normal distribution with the mean $0$.
 ```{r example_mean_known2, dependson="example_mean_known1"}
 library(gips)
 dim(Z)
@@ -144,7 +146,7 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
 Find the Maximum A Posteriori Estimator for the permutation. Space is small ($6! = 720$), so it is reasonable to browse the whole of it:
 ```{r example_mean_known4, dependson="example_mean_known3"}
-g_map <- find_MAP(g, optimizer = "full")
+g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
 

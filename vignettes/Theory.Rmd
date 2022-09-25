@@ -215,7 +215,7 @@ S <- (t(Z) %*% Z) / number_of_observations
 # Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 
-g_map <- find_MAP(g, optimizer = "full")
+g_map <- find_MAP(g, optimizer = "brute_force")
 print(g_map)
 
 S_projected <- project_matrix(S, g_map[[1]])
