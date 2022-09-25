@@ -142,6 +142,46 @@ sum(eigen(S_projected)$values > 0.00000001)
 Now, the estimated covariance matrix is of full rank (5).
 
 
+# Practical example
+
+Let's examine 12 books' thick, height, and breadth data:
+```{r}
+library(gips)
+
+Z <-DAAG::oddbooks[,c(1,2,3)]
+
+number_of_observations <- nrow(Z) # 12
+p <- ncol(Z) # 3
+
+S <- cov(Z)
+S
+g <- gips(S, number_of_observations, D_matrix=diag(p)) # the default D_matrix
+plot(g, type = "heatmap")
+```
+
+We can see similarities between columns 2 and 3, representing the book’s height and breadth. In particular, covariance between [1,2] is very similar to [1,3] and variance if [2] is similar to variance of [3].
+
+```{r}
+g_map <- find_MAP(g, optimizer = "full",
+                  return_probabilities = TRUE, save_all_perms = TRUE)
+
+g_map
+get_probabilities_from_gips(g_map)
+```
+We see the search was too restrictive and did not find the permutation. We will weaken the restrictions by changing the `D_matrix` parameter.
+
+```{r}
+g <- gips(S, number_of_observations, D_matrix=0.05*diag(p))
+g_map <- find_MAP(g, optimizer = "full",
+                  return_probabilities = TRUE, save_all_perms = TRUE)
+
+g_map
+get_probabilities_from_gips(g_map)
+```
+`find_MAP` found the symmetry represented by permutation (2,3). The result depends on two input parameters, `delta` and `D_matrix`. By default they are set to `3` and `diag(p)`, respectively. The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `D * diag(p)`).
+```
+
+
 # Further reading
 
 1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).

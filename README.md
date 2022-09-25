@@ -15,54 +15,23 @@ status](https://www.r-pkg.org/badges/version/gips)](https://CRAN.R-project.org/p
 
 gips - Gaussian model Invariant by Permutation Symmetry
 
-TODO(Choose one:)
-
-**Kolodziejek’s introduction**:
-
-`gips` is an R package that performs the Bayesian model selection
-procedure within Gaussian models invariant by permutation symmetry
-described by a cyclic subgroup. Permutation invariance of the Gaussian
-distribution results in certain symmetries of its covariance matrix.
-Such symmetry conditions reduce the number of parameters to estimate.
-This is especially useful when parsimony is needed, i.e. when the number
-of variables is substantially larger than the number of observations.
-Given the Gaussian multivariate sample and two hyperparameters, through
-a brute-force search or the Metropolis-Hasting algorithm, `gips` will
-try to find a cyclic subgroup that best fits the data and will return
-the estimated posterior probabilities for all cyclic subgroups.
-
-**Adam’s introduction**:
-
-`gips` is an R package that finds the permutation symmetry group such
-that the covariance matrix of the given data is invariant under it.
-Knowledge of such a permutation can drastically decrease the number of
-parameters needed to fit the model. That means that with `gips`, it is
-possible to find the Gaussian model with more parameters than the number
-of observations. In case when the number of observations is bigger than
-the number of parameters, the covariance matrix found with `gips` better
-approximates the actual covariance behind the data.
-
-**Mixed introduction**:
-
-`gips` is an R package that finds the believable permutation symmetry of
-the covariance matrix. Such a symmetry condition reduces the number of
-parameters to estimate. This is especially useful when the number of
+`gips` is an R package that looks for permutation symmetries in the
+Gaussian sample. Such symmetries reduce the free parameters in the
+unknown covariance matrix. This is especially useful when the number of
 variables is substantially larger than the number of observations.
 
 ## `gips` will help you with two things:
 
 1.  Finding hidden symmetries between the variables. `gips` can be used
-    as an exploratory tool searching the space of permutation symmetries
-    of the Gaussian vector. Useful in the Exploratory Data Analysis
-    (EDA).
+    as an exploratory tool for searching the space of permutation
+    symmetries of the Gaussian vector. Useful in the Exploratory Data
+    Analysis (EDA).
 2.  Covariance estimation. The MLE for the covariance matrix is known to
     exist if and only if the number of variables is less or equal to the
-    number of observations. Additional knowledge of symmetries (which
-    `gips` can find) significantly weakens this requirement. Moreover,
-    the reduction of model dimension brings the advantage in terms of
-    precision of covariance estimation. This is useful in models like
-    Linear Discriminant Analysis (LDA) or Quadratic Discriminant
-    Analysis (QDA). Especially with a small number of observations.
+    number of observations. Additional knowledge of symmetries
+    significantly weakens this requirement. Moreover, the reduction of
+    model dimension brings the advantage in terms of precision of
+    covariance estimation.
 
 ## Installation
 
