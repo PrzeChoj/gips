@@ -35,7 +35,10 @@ Let $\mathfrak{S}_p$ denote the symmetric group
 on $V$, that is, the set of all permutations on $\{1,\ldots,p\}$ with function composition as the group operation. Let $\Gamma$ be an arbitrary subgroup of $\mathfrak{S}_p$. The model $\mathrm{N}_p(0,\Sigma)$ is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
 (here, we identify a permutation $g$ with its permutation matrix).
 
-For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$, $$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{ij} = S_{\sigma(i)\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},$$ and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$, $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
+For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$,
+$$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{ij} = S_{\sigma(i)\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},$$
+and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$,
+$$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
 
 # Block Decomposition - [1, Theorem 1]
 
@@ -160,15 +163,46 @@ summary(g2)$n0
 
 When one has the data matrix `Z`, one would like to know if it has a hidden structure of dependencies between features. Luckily, the paper demonstrates a way how to find it.
 
-A priori: We consider a prior distribution on $\Gamma$ and $K=\Sigma^{-1}$ in the following way: $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$ and $K\given \Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [1, Sec. 3.4].
+### General workflow
 
-In `gips`, $D$ is named `D_matrix`. By default they are set to $3$ and `diag(p)` respectively. However, it is worth to run the procedure for several parameters `D_matrix` of the form $D\cdot diag(p)$ for positive constant $D$. Large $D$ (compared to the data) favors small groups. (TODO: There are two $D$ that means something else. This should be renamed)
+1. Make the A Priori, high entropy assumptions on the distributions of $\Gamma$ and $\Sigma$.
+2. Calculate the A Posteriori distribution (accurate to within a constant) by formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)).
+3. Use the Metropolis-Hastings algorithm to find the permutation with the biggest value of 2.
 
-The formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)) states the proportion of A Posteriori distribution given data. With that, one can easily decide which permutation is more likely given the data.
+### Details on A Priori
 
-In other words, the formula (30) states how likely the provided data was drawn from the invariant distribution under a given permutation (accurate to within a constant). When one calculates this likelihood on all permutations, one will know which permutation is the most likely. It may be the trivial $\text{id} = (1)(2)...(p)$ permutation or the other one.
+The considered A Prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
 
-Let's see the example:
+1. $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [1, Sec. 3.4].
+
+### `gips` technical details
+
+In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(p)`, respectively. However, it is worth running the procedure for several parameters `D_matrix` of form $C\cdot diag(p)$ for positive constant $C$. Large $C$ (compared to the data) favors small groups.
+
+One can calculate the logarithm of formula (30) with function `log_posteriori_of_gips()`.
+
+### Interpretation
+
+When all assumptions are met, the formula (30) puts a number on the permutations cyclic group. The bigger its value, the more likely the data was drawn from within that model.
+
+When one finds the permutations group $c_{\text{max}}$ that maximizes (30),
+$$c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)$$
+
+one can reasonably assume the data $Z$ was drawn from the model
+$$\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))$$
+
+where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$
+
+In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
+
+### Finding the MAP Estimator
+
+The space of all permutations is enormous for bigger $p$ ($p\ge9$). It is more reasonable to estimate the MAP in such a big space than to calculate it precisely.
+
+Metropolis-Hastings algorithm suggested by the authors of the [[1]](https://arxiv.org/abs/2004.03503.pdf) is one way. It is a good one. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+
+### Example
 
 <div id="spoiler3" style="display:none">
 ```{r example2_readme1}
@@ -223,14 +257,11 @@ print(g_map)
 S_projected <- project_matrix(S, g_map[[1]])
 ```
 
-We see the formula [1,(30)] gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality and the mean 0), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+```{r, example2_readme3, dependson="example2_readme2", echo=FALSE}
+gips:::pretty_plot_matrix(S_projected)
+```
 
-
-# Finding the MAP Estimator
-
-The space of all permutations is enormous for bigger $p$. This is why the authors of the [[1]](https://arxiv.org/abs/2004.03503.pdf) suggested analyzing it with the Metropolis-Hastings algorithm instead of browsing the whole of it.
-
-For more information, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+We see the formula [1,(30)] gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality, the mean 0 and the A Priori), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # References
