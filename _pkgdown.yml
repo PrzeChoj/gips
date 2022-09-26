@@ -2,11 +2,11 @@ url: https://przechoj.github.io/gips/
 template:
   bootstrap: 5
 reference:
-- title: "Core functions"
+- title: "Main functions"
   desc: >
-    Functions for the core `gips` purpose. Finding
-    the permutation the matrix is approximately
-    invariant under. Estimate the covariance matrix.
+    Functions for the main `gips` purpose: Finding
+    the permutation, under which a matrix is (approximately) 
+    invariant under, and estimating the covariance matrix.
   contents: 
   - gips
   - find_MAP
