@@ -1150,7 +1150,7 @@ plot.gips <- function(x, type = NA,
         ggplot2::scale_y_reverse(breaks = 1:p) +
         ggplot2::theme_bw() +
         ggplot2::labs(
-          title = paste0("Covariance matrix projected on permutation ", x[[1]], "."),
+          title = paste0("Covariance matrix projected on permutation ", x[[1]]),
           x = "", y = ""
         )
 
