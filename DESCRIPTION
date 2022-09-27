@@ -28,6 +28,7 @@ Imports:
     rlang,
     utils
 Suggests: 
+    DAAG,
     dplyr,
     ggplot2,
     graphics,
