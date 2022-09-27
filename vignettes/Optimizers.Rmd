@@ -92,9 +92,9 @@ S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 suppressMessages( # message from ggplot2
-  plot(g, type = 'heatmap') +
+  plot(g, type = "heatmap") +
     ggplot2::scale_x_continuous(breaks = c(1,10,20,30,40,50,60,70)) +
-    ggplot2::scale_y_continuous(breaks = c(1,10,20,30,40,50,60,70))
+    ggplot2::scale_y_reverse(breaks = c(1,10,20,30,40,50,60,70))
 )
 g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
 g_map
@@ -103,7 +103,7 @@ g_map
 Only after ten iterations the found permutation is unimaginably more likely than the original, `()` permutation.
 
 ```{r Metropolis_Hastings_3, cache=TRUE, dependson="Metropolis_Hastings_2"}
-plot(g_map, type = 'both', logarithmic_x = TRUE)
+plot(g_map, type = "both", logarithmic_x = TRUE)
 ```
 
 
@@ -206,10 +206,10 @@ perm_size <- ncol(Z) # 25
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-plot(g, type = 'heatmap')
+plot(g, type = "heatmap")
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
-plot(g_map, type = 'both')
+plot(g_map, type = "both")
 ```
 
 

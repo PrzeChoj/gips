@@ -17,7 +17,7 @@ knitr::opts_chunk[["set"]](
 
 # Theory the `gips` is based on
 
-The package is based on the [paper [1] from references](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
+The package is based on [[1]](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
 
 In this vignette, we would like to give a gentle introduction. We want to point out all the most important results from this work from the user's point of view. We will also show examples of those results in the `gips` package.
 
@@ -40,9 +40,9 @@ $$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{ij} = S_{\
 and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$,
 $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
 
-# Block Decomposition - [1, Theorem 1]
+# Block Decomposition - [1], Theorem 1
 
-The main theoretical result in this theory (Theorem 1 in [1]) states that given a permutation subgroup $\Gamma$ there exist structure constants $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S\in\mathcal{Z}_\Gamma$ can be transformed into block-diagonal form.
+The main theoretical result in this theory (Theorem 1 in [[1]](https://arxiv.org/abs/2004.03503.pdf)) states that given a permutation subgroup $\Gamma$ there exist structure constants $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S\in\mathcal{Z}_\Gamma$ can be transformed into block-diagonal form.
 
 It is worth pointing out that constants $k = d$ for cyclic group $\Gamma = \left<\sigma\right>$ and that `gips` searches within cyclic subgroups only. Consider example:
 
@@ -57,7 +57,7 @@ S <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
 ```
 
 ```{r th1_2, dependson="th1_1", echo=FALSE}
-gips:::pretty_plot_matrix(S)
+gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3,4,5,6)\right>$.
@@ -71,10 +71,10 @@ round(block_decomposition, 5)
 ```
 
 ```{r th1_4, dependson="th1_3", echo=FALSE}
-gips:::pretty_plot_matrix(block_decomposition)
+gips:::pretty_plot_matrix(block_decomposition, title = "block_decomposition matrix")
 ```
 
-The transformed matrix is in the block-diagonal form of [1,Theorem 1]. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503.pdf), Theorem 1. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
 ```{r th1_5}
@@ -88,7 +88,7 @@ S <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
 ```
 
 ```{r th1_6, dependson="th1_5", echo=FALSE}
-gips:::pretty_plot_matrix(S)
+gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 Now, `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3)(4,5,6)\right>$.
@@ -102,12 +102,13 @@ round(block_decomposition, 5)
 ```
 
 ```{r th1_8, dependson="th1_7", echo=FALSE}
-gips:::pretty_plot_matrix(block_decomposition)
+gips:::pretty_plot_matrix(block_decomposition, title = "block_decomposition matrix")
 ```
 
-Again, this result is in accordance with [1,Theorem 1]. Note the zeros: $\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$
+Again, this result is in accordance with [[1]](https://arxiv.org/abs/2004.03503.pdf), Theorem 1. Notice the zeros in `block_decomposition`:
+$$\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$$
 
-# Project Matrix - [1,Eq. (6)]
+# Project Matrix - [1, Eq. (6)]
 
 One can also take any symmetric matrix `S` and find the orthogonal projection on $\mathcal{Z}_{\Gamma}$, the space of matrices invariant under the given permutation:
 
@@ -122,7 +123,7 @@ round(S, 2)
 ```
 
 ```{r def3_2, dependson="def3_1", echo=FALSE}
-gips:::pretty_plot_matrix(S)
+gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 ```{r def3_3, dependson="def3_2"}
@@ -131,7 +132,7 @@ round(S_projected, 2)
 ```
 
 ```{r def3_4, dependson="def3_3", echo=FALSE}
-gips:::pretty_plot_matrix(S_projected)
+gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
 TODO(Point out the equal elements of those matrices)
@@ -166,7 +167,7 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 ### General workflow
 
 1. Make the A Priori, high entropy assumptions on the distributions of $\Gamma$ and $\Sigma$.
-2. Calculate the A Posteriori distribution (accurate to within a constant) by formula [[1,(30)]]((https://arxiv.org/abs/2004.03503.pdf)).
+2. Calculate the A Posteriori distribution (accurate to within a constant) by formula [[1]]((https://arxiv.org/abs/2004.03503.pdf)), (30).
 3. Use the Metropolis-Hastings algorithm to find the permutation with the biggest value of 2.
 
 ### Details on A Priori
@@ -174,7 +175,7 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 The considered A Prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
 
 1. $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
-2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [1, Sec. 3.4].
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
 
 ### `gips` technical details
 
@@ -200,7 +201,7 @@ In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
 
 The space of all permutations is enormous for bigger $p$ ($p\ge9$). It is more reasonable to estimate the MAP in such a big space than to calculate it precisely.
 
-Metropolis-Hastings algorithm suggested by the authors of the [[1]](https://arxiv.org/abs/2004.03503.pdf) is one way. It is a good one. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503.pdf) is one way. It is a good one. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 ### Example
 
@@ -258,10 +259,10 @@ S_projected <- project_matrix(S, g_map[[1]])
 ```
 
 ```{r, example2_readme3, dependson="example2_readme2", echo=FALSE}
-gips:::pretty_plot_matrix(S_projected)
+gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
-We see the formula [1,(30)] gave the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality, the mean 0 and the A Priori), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+We see the formula [[1]](https://arxiv.org/abs/2004.03503.pdf), (30) had the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality, the mean 0 and the A Priori), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # References
