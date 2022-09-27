@@ -112,19 +112,36 @@ $$\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$$
 
 One can also take any symmetric matrix `S` and find the orthogonal projection on $\mathcal{Z}_{\Gamma}$, the space of matrices invariant under the given permutation:
 
-$$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top\in\mathcal{Z}_{\Gamma}$$
+$$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top$$
 
-```{r def3_1}
+The projected matrix is the element of the cone:
+$\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}$, which means:
+$$\forall_{i,\ j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma$$
+
+So it has some equal elements.
+
+### Example
+Let `S` be any square matrix:
+
+```{r def3_0, echo=FALSE}
 p <- 6
 n <- 10
-Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
+withr::with_seed(1234,
+  code = Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
+)
+Z[,1] <- 2*Z[,1]
 S <- t(Z) %*% Z / n
+```
+
+```{r def3_1, dependson="def3_0"}
 round(S, 2)
 ```
 
 ```{r def3_2, dependson="def3_1", echo=FALSE}
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
+
+One can project this matrix for example on $\Gamma = <(1,2)(3,4,5,6)>$:
 
 ```{r def3_3, dependson="def3_2"}
 S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
@@ -135,7 +152,7 @@ round(S_projected, 2)
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
-TODO(Point out the equal elements of those matrices)
+Notice in the `S_projected` matrix, there are identical elements according to the equation from the beginning of this section. For example, `S_projected[1,1] = S_projected[2,2]`.
 
 ## $C_\sigma$ and `n0`
 It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
