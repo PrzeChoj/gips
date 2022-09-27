@@ -114,11 +114,10 @@ One can also take any symmetric matrix `S` and find the orthogonal projection on
 
 $$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top$$
 
-The projected matrix is the element of the cone:
-$\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}$, which means:
+The projected matrix is the element of the cone $\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}$, which means:
 $$\forall_{i,\ j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma$$
 
-So it has some equal elements.
+So it has some identical elements.
 
 ### Example
 Let `S` be any square matrix:
@@ -141,7 +140,7 @@ round(S, 2)
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
-One can project this matrix for example on $\Gamma = <(1,2)(3,4,5,6)>$:
+One can project this matrix, for example, on $\Gamma = <(1,2)(3,4,5,6)>$:
 
 ```{r def3_3, dependson="def3_2"}
 S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
