@@ -53,28 +53,51 @@ install.packages("gips")
 
 Assume we have the data, and we want to understand its structure:
 
-```{r example_mean_unknown1}
+```{r example_mean_unknown0}
 library(gips)
 
-Z <- DAAG::oddbooks
+Z <- HSAUR::aspirin
+
+# Renumber the columns for better readability:
+Z[,c(2,3)] <- Z[,c(3,2)]
 ```
 
-Assume the data is normally distributed. This is a reasonable assumption, because, for example, p-values for Mardia’s normality tests: `QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are > 0.05.
+```{r example_mean_unknown1, include=FALSE, dependson="example_mean_unknown0"}
+names(Z) <- NULL
+my_add_text <- function(gg_plot_object){
+  my_col_names <- c("deaths after placebo", "deaths after Aspirin",
+                    "treated with placebo", "treated with Aspirin")
+  
+  suppressMessages( # message from ggplot2
+    out <- gg_plot_object +
+      ggplot2::scale_x_continuous(labels = my_col_names,
+                                  breaks = 1:4) +
+      ggplot2::scale_y_reverse(labels = my_col_names,
+                               breaks = 1:4) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle=8))
+  )
+  
+  out
+}
+```
+
+Assume the data `Z` is normally distributed.
 
 ```{r example_mean_unknown2, dependson="example_mean_unknown1"}
-Z_scaled <- scale(Z)
-dim(Z_scaled)
-number_of_observations <- nrow(Z) # 12
+dim(Z)
+number_of_observations <- nrow(Z) # 7
 perm_size <- ncol(Z) # 4
 
-S <- cov(Z_scaled)
-S
+S <- cov(Z)
+round(S)
 
 g <- gips(S, number_of_observations)
-plot(g, type = "heatmap")
+my_add_text(plot(g, type = "heatmap"))
 ```
 
-We can see some strong similarities between columns 2 and 3, representing the book's height and breadth. In this matrix. For example, covariance between [1,2] is very similar to [1,3]. And covariance between [2,4] is very similar to [3,4]. Other covariance does not seem so close to each other.
+Remember, we analyze the covariance matrix. We can see some strong similarities between the covariances of columns 3 and 4. Those have similar variances (`S[3,3]` $\approx$ `S[4,4]`), and their covariances with the rest of the columns are alike (`S[1,3]` $\approx$ `S[1,4]` and `S[2,3]` $\approx$ `S[2,4]`).
+
+Note that the variances of columns 1 and 2 are also similar, but the covariances with other columns (3 and 4) are not alike.
 
 Let's see if the `find_MAP()` will find this relationship:
 
@@ -84,22 +107,18 @@ g_MAP <- find_MAP(g, optimizer = "brute_force")
 g_MAP
 ```
 
-`find_MAP` found the relationship (2,3). In its opinion, the covariance [1,2] and [1,3] are so close to each other that it is reasonable to consider them equal. Similarly, covariance [2,4] and [3,4] will be considered equal:
+The `find_MAP` found the relationship (3,4). In its opinion, the variances [3,3] and [4,4] are so close to each other that it is reasonable to consider them equal. Similarly, the covariances [1,3] and [1,4]; just as covariances [2,3] and [3,4], also will be considered equal:
 
 ```{r example_mean_unknown4, dependson="example_mean_unknown3"}
 S_projected <- project_matrix(S, g_MAP[[1]])
-S_projected
+round(S_projected)
 
-plot(g_MAP, type = "heatmap")
+my_add_text(plot(g_MAP, type = "heatmap"))
 ```
 
-Remember that `gips` performed those calculations on the `scale`d version of the dataset, so practically, it was performed on the correlation matrix and not the covariance matrix. The analysis is the same, but one has to remember to come back to the original scaling:
+This `S_projected` matrix can now be interpreted as a more stable covariance matrix estimator.
 
-```{r example_mean_unknown5, dependson="example_mean_unknown4"}
-sqrt_diag <- diag(sqrt(diag(cov(Z))))
-estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_diag
-```
-
+We can also interpret the data suggesting there is, for example, the same covariance of "number of deaths after Aspirin" with "number of people treated with \*" no matter if the "\*" represents the placebo or Aspirin.
 
 ### Example 2 - modeling
 

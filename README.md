@@ -60,40 +60,47 @@ Assume we have the data, and we want to understand its structure:
 ``` r
 library(gips)
 
-Z <- DAAG::oddbooks
+Z <- HSAUR::aspirin
+
+# Renumber the columns for better readability:
+Z[,c(2,3)] <- Z[,c(3,2)]
 ```
 
-Assume the data is normally distributed. This is a reasonable
-assumption, because, for example, p-values for Mardia’s normality tests:
-`QuantPsyc::mult.norm(Z)$mult.test` are 0.53 and 0.22, which are \>
-0.05.
+Assume the data `Z` is normally distributed.
 
 ``` r
-Z_scaled <- scale(Z)
-dim(Z_scaled)
-#> [1] 12  4
-number_of_observations <- nrow(Z) # 12
+dim(Z)
+#> [1] 7 4
+number_of_observations <- nrow(Z) # 7
 perm_size <- ncol(Z) # 4
 
-S <- cov(Z_scaled)
-S
-#>              thick     height    breadth     weight
-#> thick    1.0000000 -0.9392100 -0.8980836 -0.7897682
-#> height  -0.9392100  1.0000000  0.9859209  0.9080642
-#> breadth -0.8980836  0.9859209  1.0000000  0.9430565
-#> weight  -0.7897682  0.9080642  0.9430565  1.0000000
+S <- cov(Z)
+round(S)
+#>         [,1]    [,2]    [,3]    [,4]
+#> [1,]  381405  345527 1864563 1813725
+#> [2,]  345527  316411 1711853 1663065
+#> [3,] 1864563 1711853 9305049 8991343
+#> [4,] 1813725 1663065 8991343 8755176
 
 g <- gips(S, number_of_observations)
-plot(g, type = "heatmap")
+my_add_text(plot(g, type = "heatmap"))
 ```
 
 <img src="man/figures/README-example_mean_unknown2-1.png" width="100%" />
 
-We can see some strong similarities between columns 2 and 3,
-representing the book’s height and breadth. In this matrix. For example,
-covariance between \[1,2\] is very similar to \[1,3\]. And covariance
-between \[2,4\] is very similar to \[3,4\]. Other covariance does not
-seem so close to each other.
+Remember, we analyze the covariance matrix. We can see some strong
+similarities between the covariances of columns 3 and 4. Those have
+similar variances (`S[3,3]`
+![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
+`S[4,4]`), and their covariances with the rest of the columns are alike
+(`S[1,3]`
+![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
+`S[1,4]` and `S[2,3]`
+![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
+`S[2,4]`).
+
+Note that the variances of columns 1 and 2 are also similar, but the
+covariances with other columns (3 and 4) are not alike.
 
 Let’s see if the `find_MAP()` will find this relationship:
 
@@ -102,39 +109,38 @@ g_MAP <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 
 g_MAP
-#> The permutation (2,3)
+#> The permutation (3,4)
 #>  - was found after 24 log_posteriori calculations
-#>  - is 1.36889598145418 times more likely than the starting, () permutation.
+#>  - is 106222567640989 times more likely than the starting, () permutation.
 ```
 
-`find_MAP` found the relationship (2,3). In its opinion, the covariance
-\[1,2\] and \[1,3\] are so close to each other that it is reasonable to
-consider them equal. Similarly, covariance \[2,4\] and \[3,4\] will be
+The `find_MAP` found the relationship (3,4). In its opinion, the
+variances \[3,3\] and \[4,4\] are so close to each other that it is
+reasonable to consider them equal. Similarly, the covariances \[1,3\]
+and \[1,4\]; just as covariances \[2,3\] and \[3,4\], also will be
 considered equal:
 
 ``` r
 S_projected <- project_matrix(S, g_MAP[[1]])
-S_projected
-#>            [,1]       [,2]       [,3]       [,4]
-#> [1,]  1.0000000 -0.9186468 -0.9186468 -0.7897682
-#> [2,] -0.9186468  1.0000000  0.9859209  0.9255604
-#> [3,] -0.9186468  0.9859209  1.0000000  0.9255604
-#> [4,] -0.7897682  0.9255604  0.9255604  1.0000000
+round(S_projected)
+#>         [,1]    [,2]    [,3]    [,4]
+#> [1,]  381405  345527 1839144 1839144
+#> [2,]  345527  316411 1687459 1687459
+#> [3,] 1839144 1687459 9030113 8991343
+#> [4,] 1839144 1687459 8991343 9030113
 
-plot(g_MAP, type = "heatmap")
+my_add_text(plot(g_MAP, type = "heatmap"))
 ```
 
 <img src="man/figures/README-example_mean_unknown4-1.png" width="100%" />
 
-Remember that `gips` performed those calculations on the `scale`d
-version of the dataset, so practically, it was performed on the
-correlation matrix and not the covariance matrix. The analysis is the
-same, but one has to remember to come back to the original scaling:
+This `S_projected` matrix can now be interpreted as a more stable
+covariance matrix estimator.
 
-``` r
-sqrt_diag <- diag(sqrt(diag(cov(Z))))
-estimated_covariance <- sqrt_diag %*% project_matrix(S, g_MAP[[1]]) %*% sqrt_diag
-```
+We can also interpret the data suggesting there is, for example, the
+same covariance of “number of deaths after Aspirin” with “number of
+people treated with \*” no matter if the “\*” represents the placebo or
+Aspirin.
 
 ### Example 2 - modeling
 

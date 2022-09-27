@@ -28,10 +28,10 @@ Imports:
     rlang,
     utils
 Suggests: 
-    DAAG,
     dplyr,
     ggplot2,
     graphics,
+    HSAUR,
     knitr,
     MASS (>= 7.3-39),
     rmarkdown,
