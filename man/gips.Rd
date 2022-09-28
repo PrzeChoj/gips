@@ -42,14 +42,14 @@ parameter \code{was_mean_estimated = FALSE};
 \item{number_of_observations}{A number of data points
 that \code{S} is based on.}
 
-\item{delta}{A hyper-parameter of a Bayesian model.
+\item{delta}{A number, hyper-parameter of a Bayesian model.
 Has to be bigger than 2.}
 
-\item{D_matrix}{A hyper-parameter of a Bayesian model.
-Square matrix of the same size as \code{S}.
+\item{D_matrix}{A symmetric, positive-definite matrix of the same size as \code{S}.
+Hyper-parameter of a Bayesian model.
 When \code{NULL}, the identity matrix is taken.}
 
-\item{was_mean_estimated}{A logical (\code{TRUE} or \code{FALSE}).
+\item{was_mean_estimated}{A boolean.
 \itemize{
 \item Set \code{TRUE} (default) when your \code{S} parameter is a result of
 a \code{\link[stats:cor]{stats::cov()}} function.
@@ -67,7 +67,7 @@ a \code{gips_perm} class. The base object for the \code{gips} object.}
 \item{optimization_info}{\code{NULL} or the list with
 information about the optimization process.}
 
-\item{g}{Element to be checked if it is proper element of a \code{gips} class.}
+\item{g}{Object to be checked whether it is proper object of a \code{gips} class.}
 }
 \value{
 \code{gips()} returns an object of
@@ -101,6 +101,13 @@ function to do it. See examples below.
 \item \code{\link[=plot.gips]{plot.gips()}}
 \item \code{\link[=print.gips]{print.gips()}}
 }
+}
+
+\section{Hyperparameters}{
+
+In the Bayesian model, the prior distribution for the covariance matrix is
+\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
+There the meaning of parameters \code{delta} and \code{D_matrix} can be checked.
 }
 
 \examples{

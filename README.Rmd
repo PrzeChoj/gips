@@ -25,7 +25,7 @@ knitr::opts_chunk[["set"]](
 
 gips - Gaussian model Invariant by Permutation Symmetry
 
-`gips` is an R package that looks for permutation symmetries in the Gaussian sample. Such symmetries reduce the free parameters in the unknown covariance matrix. This is especially useful when the number of variables is substantially larger than the number of observations.
+`gips` is an R package that looks for permutation symmetries in the multivariate Gaussian sample. Such symmetries reduce the free parameters in the unknown covariance matrix. This is especially useful when the number of variables is substantially larger than the number of observations.
 
 
 ## `gips` will help you with two things:
@@ -184,7 +184,7 @@ S_projected
 plot(g_map, type = "heatmap")
 ```
 
-We see `gips` found the data's structure, and we could estimate the covariance matrix with huge accuracy only with a small amount of data.
+We see `gips` found the data's structure, and we could estimate the covariance matrix with huge accuracy only with a small amount of data and additional reasonable assumptions.
 
 Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` matrix was 6.
 

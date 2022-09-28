@@ -16,12 +16,12 @@
 #'     parameter `was_mean_estimated = FALSE`;
 #' @param number_of_observations A number of data points
 #'     that `S` is based on.
-#' @param delta A hyper-parameter of a Bayesian model.
+#' @param delta A number, hyper-parameter of a Bayesian model.
 #'     Has to be bigger than 2.
-#' @param D_matrix A hyper-parameter of a Bayesian model.
-#'     Square matrix of the same size as `S`.
+#' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
+#'     Hyper-parameter of a Bayesian model.
 #'     When `NULL`, the identity matrix is taken.
-#' @param was_mean_estimated A logical (`TRUE` or `FALSE`).
+#' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
 #' * Set FALSE when your `S` parameter is a result of
@@ -34,6 +34,11 @@
 #' * [summary.gips()]
 #' * [plot.gips()]
 #' * [print.gips()]
+#' 
+#' @section Hyperparameters:
+#' In the Bayesian model, the prior distribution for the covariance matrix is
+#' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
+#' There the meaning of parameters `delta` and `D_matrix` can be checked.
 #'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.
@@ -150,7 +155,7 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 
 #' @describeIn gips Validator. Only intended for low-level use.
 #'
-#' @param g Element to be checked if it is proper element of a `gips` class.
+#' @param g Object to be checked whether it is proper object of a `gips` class.
 #'
 #' @returns `validate_gips()` returns its argument unchanged.
 #'     If the argument is not a proper element of a `gips` class,

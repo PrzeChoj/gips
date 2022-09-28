@@ -147,8 +147,8 @@ new_gips_perm <- function(rearranged_cycles, size) {
 
 #' @describeIn gips_perm Validator. Only intended for low-level use.
 #'
-#' @param g Element to be checked if it is
-#'     a proper element of a `gips_perm` class.
+#' @param g Object to be checked if it is
+#'     a proper object of a `gips_perm` class.
 #'
 #' @returns `validate_gips_perm()` returns its argument unchanged.
 #'     If the argument is not a proper element of a `gips_perm` class,
