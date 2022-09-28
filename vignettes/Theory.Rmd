@@ -17,7 +17,7 @@ knitr::opts_chunk[["set"]](
 
 # Theory the `gips` is based on
 
-The package is based on the article [[1]](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
+The package is based on the article [[1]](https://arxiv.org/abs/2004.03503.pdf). There the math behind the package is precisely demonstrated, and all the theorems are proven.
 
 In this vignette, we would like to give a gentle introduction. We want to point out all the most important results from this work from the user's point of view. We will also show examples of those results in the `gips` package.
 
@@ -25,7 +25,7 @@ In this vignette, we would like to give a gentle introduction. We want to point 
 library(gips)
 ```
 
-As we read in the abstract, the outline of the paper is to "derive the distribution of the maximum likelihood estimate of the covariance parameter $\Sigma$ (...)" and then to "perform Bayesian model selection in the class of complete Gaussian models invariant by the action of a subgroup of the symmetric group (...)". Those ideas are implemented in the `gips` package.
+As mentioned in the abstract, the outline of the paper is to "derive the distribution of the maximum likelihood estimate of the covariance parameter $\Sigma$ (...)" and then to "perform Bayesian model selection in the class of complete Gaussian models invariant by the action of a subgroup of the symmetric group (...)". Those ideas are implemented in the `gips` package.
 
 
 # Basic definitions
