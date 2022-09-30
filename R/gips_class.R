@@ -1102,10 +1102,9 @@ plot.gips <- function(x, type = NA,
     rlang::abort(
       c(
         "There was a problem identified with provided arguments:",
-        "i" = "For non-optimized `gips` objects only the `type = 'heatmap'` can be used.",
+        "i" = "For non-optimized `gips` objects only the `type = 'heatmap' or 'block_heatmap'` can be used.",
         "x" = paste0("You did not optimized `x` and provided `type = '",
                      type, "'`."),
-        
       "i" = paste0(
         "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
         type, "')`?"
