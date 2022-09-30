@@ -1092,7 +1092,7 @@ plot.gips <- function(x, type = NA,
     ))
   }
 
-  if ((type != "block_heatmap" || type != "heatmap") &&
+  if (type != "block_heatmap" && type != "heatmap" &&
       is.null(attr(x, "optimization_info"))) {
     rlang::abort(
       c(
