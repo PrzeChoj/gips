@@ -43,9 +43,11 @@ $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R})
 
 # Block Decomposition - [1], Theorem 1
 
-The main theoretical result in this theory (Theorem 1 in [[1]](https://arxiv.org/abs/2004.03503.pdf)) states that given a permutation subgroup $\Gamma$ there exist structure constants $(k_i,d_i,r_i)_{i=1}^L$ and orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S\in\mathcal{Z}_\Gamma$ can be transformed into block-diagonal form.
+The main theoretical result in this theory (Theorem 1 in [[1]](https://arxiv.org/abs/2004.03503.pdf)) states that given a permutation subgroup $\Gamma$ there exists an orthogonal matrix $U_\Gamma$ such that all the symmetric matrices $S\in\mathcal{Z}_\Gamma$ can be transformed into block-diagonal form.
 
-It is worth pointing out that constants $k = d$ for cyclic group $\Gamma = \left<\sigma\right>$ and that `gips` searches within cyclic subgroups only. Consider example:
+The exact form of blocks depends on so-called *structure constants* $(k_i,d_i,r_i)_{i=1}^L$. It is worth pointing out that constants $k = d$ for cyclic group $\Gamma = \left<\sigma\right>$ and that `gips` searches within cyclic subgroups only. 
+
+Consider example:
 
 ```{r th1_1}
 p <- 6
