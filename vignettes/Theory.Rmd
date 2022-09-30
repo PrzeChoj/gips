@@ -71,10 +71,10 @@ round(block_decomposition, 5)
 ```
 
 ```{r th1_4, dependson="th1_3", echo=FALSE}
-gips:::pretty_plot_matrix(block_decomposition, title = "block_decomposition matrix")
+gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
-The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503.pdf), Theorem 1. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503.pdf), Theorem 1. Blank entries are off-block entries and equal to 0. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
 ```{r th1_5}
@@ -102,7 +102,7 @@ round(block_decomposition, 5)
 ```
 
 ```{r th1_8, dependson="th1_7", echo=FALSE}
-gips:::pretty_plot_matrix(block_decomposition, title = "block_decomposition matrix")
+gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
 Again, this result is in accordance with [[1]](https://arxiv.org/abs/2004.03503.pdf), Theorem 1. Notice the zeros in `block_decomposition`:

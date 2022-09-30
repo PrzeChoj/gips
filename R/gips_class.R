@@ -980,10 +980,12 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #' The plot depends on the `type` argument.
 #'
 #' @param x Object of a `gips` class.
-#' @param type A single character. One of `c("heatmap", "all", "best", "both")`.
+#' @param type A single character. One of `c("heatmap", "block_heatmap", "all", "best", "both")`.
 #'   * "heatmap" - Plots a heatmap of the `S` matrix
 #'       inside the `gips` object projected
 #'       on the permutation in the `gips` object.
+#'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
+#'       Non-block entries (equal to 0) are white for better clarity.
 #'   * "all" - Plots the line of a posteriori for all visited states.
 #'   * "best" - Plots the line of the biggest a posteriori up to the moment.
 #'   * "both" - Plots both lines from "all" and "best".
@@ -1082,7 +1084,7 @@ plot.gips <- function(x, type = NA,
     ))
   }
 
-  if (!(type %in% c("heatmap", "all", "best", "both"))) {
+  if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both"))) {
     rlang::abort(c("There was a problem identified with provided arguments:",
       "i" = "`type` must be one of: c('heatmap', 'all', 'best', 'both').",
       "x" = paste0("You provided `type == ", type, "`."),
@@ -1090,7 +1092,7 @@ plot.gips <- function(x, type = NA,
     ))
   }
 
-  if ((type != "heatmap") && is.null(attr(x, "optimization_info"))) {
+  if ((!type %in% c("block_heatmap", "heatmap")) && is.null(attr(x, "optimization_info"))) {
     rlang::abort(c("There was a problem identified with provided arguments:",
       "i" = "For non-optimized `gips` objects only the `type = 'heatmap'` can be used.",
       "x" = paste0(
@@ -1106,11 +1108,15 @@ plot.gips <- function(x, type = NA,
   }
 
   # plotting:
-  if (type == "heatmap") {
+  if (type == "heatmap" || type=='block_heatmap') {
     rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
       reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used"
     )
-    my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
+    if(type=='block_heatmap')
+      my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
+    else
+      my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
+    
     if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
       p <- ncol(my_projected_matrix)
 
@@ -1145,7 +1151,7 @@ plot.gips <- function(x, type = NA,
         ggplot2::aes(x = col_id, y = row_id, fill = covariance_value)
       ) +
         ggplot2::geom_raster() +
-        ggplot2::scale_fill_viridis_c() +
+        ggplot2::scale_fill_viridis_c(na.value = 'white') +
         ggplot2::scale_x_continuous(breaks = 1:p) +
         ggplot2::scale_y_reverse(breaks = 1:p) +
         ggplot2::theme_bw() +
@@ -1286,7 +1292,31 @@ plot.gips <- function(x, type = NA,
 
   invisible(NULL)
 }
+#' Replace all non-block entries with NA
+#' 
+#' Diagonalize matrix using found permutation and 
+#' replace all entries outside blocks (equal to 0) with NA.
+#' This is done, because later these fields are plotted with background color.
+#' It is more clear then.
+#' 
+#' @param g `gips` object.
+#' @noRd
 
+get_diagonalized_matrix_for_heatmap <- function(g){
+  perm <- g[[1]]
+  projected_matrix <- gips::project_matrix(attr(g, "S"), perm)
+  diagonalising_matrix <- gips::prepare_orthogonal_matrix(perm)
+  full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
+  block_ends <- get_block_ends(get_structure_constants(perm))
+  block_starts <- c(1, block_ends[-length(block_ends)] + 1)
+  block_matrix <- matrix(nrow=nrow(full_block_matrix),
+                         ncol=ncol(full_block_matrix))
+  for(i in 1:length(block_starts)){
+    slice <- block_starts[i]:block_ends[i]
+    block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop=FALSE]
+  }
+  block_matrix
+}
 
 # Based on `stats::summary.lm()`
 #' Summarizing the gips object

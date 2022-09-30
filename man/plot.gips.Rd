@@ -22,11 +22,13 @@
 \arguments{
 \item{x}{Object of a \code{gips} class.}
 
-\item{type}{A single character. One of \code{c("heatmap", "all", "best", "both")}.
+\item{type}{A single character. One of \code{c("heatmap", "block_heatmap", "all", "best", "both")}.
 \itemize{
 \item "heatmap" - Plots a heatmap of the \code{S} matrix
 inside the \code{gips} object projected
 on the permutation in the \code{gips} object.
+\item "block_heatmap" - Plots a heatmap of diagonally block representation of \code{S}.
+Non-block entries (equal to 0) are white for better clarity.
 \item "all" - Plots the line of a posteriori for all visited states.
 \item "best" - Plots the line of the biggest a posteriori up to the moment.
 \item "both" - Plots both lines from "all" and "best".

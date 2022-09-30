@@ -85,3 +85,12 @@ pretty_plot_matrix <- function(S, title = ""){
   plot(gips(S, 1), type="heatmap") +
     ggplot2::labs(title = title, x = "", y = "", fill="value")
 }
+
+pretty_plot_block_matrix <- function(S, perm, title=""){
+  # S is the original cov estimator - not diagonalized!
+  plot(gips(S, 1, perm=perm), type="block_heatmap") +
+    ggplot2::labs(title = title, x = "", y = "", fill="value")
+}
+
+get_block_ends <- function(structure_constants)
+  cumsum(structure_constants[["r"]] * structure_constants[["d"]])
