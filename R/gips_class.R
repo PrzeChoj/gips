@@ -704,7 +704,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "`max_iter` must be either infinite (for hill_climbing optimizer) or a whole number.",
       "x" = paste0("You provided `max_iter == ", max_iter, "`.")
     )
-  } else if (max_iter < 2) { # TODO(Make it work for max_iter == 1)
+  } else if (max_iter < 2) {
     abort_text <- c(abort_text,
       "i" = "`max_iter` must be at least 2.",
       "x" = paste0("You provided `max_iter == ", max_iter, "`.")

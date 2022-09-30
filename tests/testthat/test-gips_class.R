@@ -790,7 +790,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
-    max_iter = 1, # TODO(Make it work for max_iter = 1)
+    max_iter = 1,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE

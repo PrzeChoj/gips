@@ -201,7 +201,9 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 The considered prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
 
 1. $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
-2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 0$) and $D$ (positive definite matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$) and $D$ (symmetric, positive definite matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
+
+Footnote: Actually in some cases smaller values for $\delta$ parameter are theoretically correct. Refer to the [[1]](https://arxiv.org/abs/2004.03503.pdf).
 
 ### `gips` technical details
 
