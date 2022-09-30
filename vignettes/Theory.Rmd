@@ -30,13 +30,14 @@ As we read in the abstract, the outline of the paper is to "derive the distribut
 
 # Basic definitions
 
-Let $V=\{1,\ldots,p\}$ be a finite index set, and $Z=(Z_1,\ldots, Z_p)^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$.
+Let $V=\{1,\ldots,p\}$ be a finite index set, and for every $i\in V$, $Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$, and let $Z^{(1)},\ldots, Z^{(n)}$ be an i.i.d. (independent and identically distributed) sample from this distribution. Name the whole sample $Z = (Z^{(1)},\ldots, Z^{(n)})$.
+
 Let $\mathfrak{S}_p$ denote the symmetric group
 on $V$, that is, the set of all permutations on $\{1,\ldots,p\}$ with function composition as the group operation. Let $\Gamma$ be an arbitrary subgroup of $\mathfrak{S}_p$. The model $\mathrm{N}_p(0,\Sigma)$ is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
 (here, we identify a permutation $g$ with its permutation matrix).
 
 For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$,
-$$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{ij} = S_{\sigma(i)\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},$$
+$$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},$$
 and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$,
 $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
 
@@ -110,17 +111,24 @@ $$\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0$$
 
 # Project Matrix - [1, Eq. (6)]
 
-One can also take any symmetric matrix `S` and find the orthogonal projection on $\mathcal{Z}_{\Gamma}$, the space of matrices invariant under the given permutation:
+One can also take any symmetric square matrix `S` and find the orthogonal projection on $\mathcal{Z}_{\Gamma}$, the space of matrices invariant under the given permutation:
 
 $$\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top$$
 
 The projected matrix is the element of the cone $\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}$, which means:
-$$\forall_{i,\ j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma$$
+$$\forall_{i,j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma$$
 
 So it has some identical elements.
 
+### Trivial case
+
+Note that for $\Gamma = \{\text{id}\} = \{(1),(2),\dots,(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
+
+So no additional assumptions are made. This is the standard covariance estimator.
+
+
 ### Example
-Let `S` be any square matrix:
+Let `S` be any symmetric square matrix:
 
 ```{r def3_0, echo=FALSE}
 p <- 6
@@ -140,7 +148,7 @@ round(S, 2)
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
-One can project this matrix, for example, on $\Gamma = <(1,2)(3,4,5,6)>$:
+One can project this matrix, for example, on $\Gamma = \left<(1,2)(3,4,5,6)\right>$:
 
 ```{r def3_3, dependson="def3_2"}
 S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
@@ -224,9 +232,9 @@ Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.or
 <div id="spoiler3" style="display:none">
 ```{r example2_readme1}
 # Prepare model, multivariate normal distribution
-perm_size <- 6
+p <- 6
 number_of_observations <- 4
-mu <- numeric(perm_size)  
+mu <- numeric(p)
 sigma_matrix <- matrix(
   data = c(
     1.05, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -236,7 +244,7 @@ sigma_matrix <- matrix(
     0.6, 0.4, 0.6, 0.8, 1.05, 0.8,
     0.8, 0.6, 0.4, 0.6, 0.8, 1.05
   ),
-  nrow = perm_size, byrow = TRUE
+  nrow = p, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 
 # Generate example data from a model:
@@ -260,7 +268,7 @@ Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,
 ```{r, example2_readme2, dependson="example2_readme1"}
 dim(Z)
 number_of_observations <- nrow(Z) # 4
-perm_size <- ncol(Z) # 6
+p <- ncol(Z) # 6
 
 # Calculate the covariance matrix from the data (assume the mean is 0):
 S <- (t(Z) %*% Z) / number_of_observations
