@@ -28,8 +28,8 @@ compare_log_posteriories_of_perms(
 )
 }
 \arguments{
-\item{perm1, perm2}{Permutations to compare. They will be compared
-how many times \code{perm1} is more likely than \code{perm2}.
+\item{perm1, perm2}{Permutations to compare.
+How many times \code{perm1} is more likely than \code{perm2}?
 Those can be provided as the \code{gips} object,
 the \code{gips_perm} object or anything that can be used as
 the \code{x} parameter in the \code{\link[=gips_perm]{gips_perm()}} function.
@@ -37,7 +37,7 @@ They do not have to be of the same class.}
 
 \item{S, number_of_observations, delta, D_matrix, was_mean_estimated}{The same parameters as in the \code{\link[=gips]{gips()}} function.
 If at least one of \code{perm1} or \code{perm2} is of a \code{gips} class,
-they are overwritten.}
+they overwritten with those from \code{gips} object.}
 
 \item{print_output}{A logical (TRUE or FALSE).
 When TRUE, the computed value will be printed with
