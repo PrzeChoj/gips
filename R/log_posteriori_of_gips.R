@@ -199,8 +199,8 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'
 #' Check which permutation is more likely and how much more likely.
 #'
-#' @param perm1,perm2 Permutations to compare. They will be compared
-#'     how many times `perm1` is more likely than `perm2`.
+#' @param perm1,perm2 Permutations to compare. 
+#'     How many times `perm1` is more likely than `perm2`?
 #'     Those can be provided as the `gips` object,
 #'     the `gips_perm` object or anything that can be used as
 #'     the `x` parameter in the [gips_perm()] function.
@@ -208,7 +208,7 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' @param S,number_of_observations,delta,D_matrix,was_mean_estimated
 #'     The same parameters as in the [gips()] function.
 #'     If at least one of `perm1` or `perm2` is of a `gips` class,
-#'     they are overwritten.
+#'     they overwritten with those from `gips` object.
 #' @param print_output A logical (TRUE or FALSE).
 #'     When TRUE, the computed value will be printed with
 #'     additional text and returned invisibly. When FALSE,
