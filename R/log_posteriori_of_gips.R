@@ -156,7 +156,7 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc + Dc) %*% diagonalising_matrix
 
   # block part
-  block_ends <- cumsum(structure_constants[["r"]] * structure_constants[["d"]])
+  block_ends <- get_block_ends(structure_constants)
   Dc_block_dets <- calculate_determinants_of_block_matrices(
     Dc_diagonalised,
     block_ends
