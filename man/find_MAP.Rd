@@ -38,7 +38,7 @@ Indicate whether or not to show the progress bar.
 \itemize{
 \item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.
 \item When \code{return_probabilities=TRUE}, then
-shows the second progress bar for the time
+shows an additional progress bar for the time
 when the probabilities are calculated
 }}
 

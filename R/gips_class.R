@@ -36,8 +36,8 @@
 #' * [print.gips()]
 #' 
 #' @section Hyperparameters:
-#' In the Bayesian model, the prior distribution for the covariance matrix is
-#' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
+#' In the Bayesian model, the prior distribution for the covariance matrix is a 
+#' generalized case of [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
 #' There the meaning of parameters `delta` and `D_matrix` can be checked.
 #'
 #' @returns `gips()` returns an object of
@@ -123,7 +123,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'
 #' @param list_of_gips_perm A list with a single element of
 #'     a `gips_perm` class. The base object for the `gips` object.
-#' @param optimization_info `NULL` or the list with
+#' @param optimization_info For internal use only. `NULL` or the list with
 #'     information about the optimization process.
 #'
 #' @returns `new_gips()` returns an object of

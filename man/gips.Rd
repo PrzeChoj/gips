@@ -64,7 +64,7 @@ the function \code{\link[permutations:permutation]{permutations::permutation()}}
 \item{list_of_gips_perm}{A list with a single element of
 a \code{gips_perm} class. The base object for the \code{gips} object.}
 
-\item{optimization_info}{\code{NULL} or the list with
+\item{optimization_info}{For internal use only. \code{NULL} or the list with
 information about the optimization process.}
 
 \item{g}{Object to be checked whether it is proper object of a \code{gips} class.}
@@ -105,8 +105,8 @@ function to do it. See examples below.
 
 \section{Hyperparameters}{
 
-In the Bayesian model, the prior distribution for the covariance matrix is
-\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
+In the Bayesian model, the prior distribution for the covariance matrix is a
+generalized case of \href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
 There the meaning of parameters \code{delta} and \code{D_matrix} can be checked.
 }
 
