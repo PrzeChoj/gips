@@ -150,7 +150,6 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   Uc <- Uc / 2
 
   # diagonalization
-  # TODO add basis argument? ISSUE#6
   diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal)
   Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
   DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc + Dc) %*% diagonalising_matrix
