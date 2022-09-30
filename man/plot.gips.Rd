@@ -30,7 +30,7 @@ on the permutation in the \code{gips} object.
 \item "block_heatmap" - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 \item "all" - Plots the line of a posteriori for all visited states.
-\item "best" - Plots the line of the biggest a posteriori up to the moment.
+\item "best" - Plots the line of the biggest a posteriori found over time.
 \item "both" - Plots both lines from "all" and "best".
 }
 

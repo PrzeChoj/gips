@@ -992,7 +992,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'   * "all" - Plots the line of a posteriori for all visited states.
-#'   * "best" - Plots the line of the biggest a posteriori up to the moment.
+#'   * "best" - Plots the line of the biggest a posteriori found over time.
 #'   * "both" - Plots both lines from "all" and "best".
 #'
 #' The default value is `NA`, which will be changed to "heatmap" for
