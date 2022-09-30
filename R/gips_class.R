@@ -1092,13 +1092,15 @@ plot.gips <- function(x, type = NA,
     ))
   }
 
-  if ((!type %in% c("block_heatmap", "heatmap")) && is.null(attr(x, "optimization_info"))) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "For non-optimized `gips` objects only the `type = 'heatmap'` can be used.",
-      "x" = paste0(
-        "You did not optimized `x` and provided `type = '",
-        type, "'`."
-      ),
+  if ((type != "block_heatmap" || type != "heatmap") &&
+      is.null(attr(x, "optimization_info"))) {
+    rlang::abort(
+      c(
+        "There was a problem identified with provided arguments:",
+        "i" = "For non-optimized `gips` objects only the `type = 'heatmap'` can be used.",
+        "x" = paste0("You did not optimized `x` and provided `type = '",
+                     type, "'`."),
+        
       "i" = paste0(
         "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
         type, "')`?"
@@ -1108,7 +1110,7 @@ plot.gips <- function(x, type = NA,
   }
 
   # plotting:
-  if (type == "heatmap" || type=='block_heatmap') {
+  if (type == "heatmap" || type=="block_heatmap") {
     rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
       reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used"
     )
