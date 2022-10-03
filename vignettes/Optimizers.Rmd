@@ -42,16 +42,16 @@ The space of permutations is enormous - for the permutation of size $p$, the spa
 
 # Metropolis Hastings
 
-This optimizer is implementation of the [*Second approach* from references [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
+This optimizer is implementation of the *Second approach* from [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
 
 This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 ### Short description
 
-In every iteration $i$, an algorithm is in a permutation; call it $\sigma_i$. Then the random transposition is drawn uniformly $t_i = (j,k)$ and value of $f(\sigma_i \circ t_i)$ is computed.
+In every iteration $i$, an algorithm is in a permutation, say, $\sigma_i$. Then a random transposition is drawn uniformly $t_i = (j,k)$ and the value of $f(\sigma_i \circ t_i)$ is computed.
 
-* If new value is bigger ($f(\sigma_i \circ t_i) \ge f(\sigma_i)$), then $\sigma_{i+1} = \sigma_i \circ t_i$ and we know the new $\sigma$ is better than the old one. 
-* If new value is smaller ($f(\sigma_i \circ t_i) < f(\sigma_i)$), then we will choose $\sigma_{i+1} = \sigma_i \circ t_i$ with probability $\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$, or we will choose $\sigma_{i+1} = \sigma_i$ with complementary probability $1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$.
+* If new value is bigger than the previous one, (i.e. $f(\sigma_i \circ t_i) \ge f(\sigma_i)$), then we set $\sigma_{i+1} = \sigma_i \circ t_i$. 
+* If new value is smaller ($f(\sigma_i \circ t_i) < f(\sigma_i)$), then we will choose $\sigma_{i+1} = \sigma_i \circ t_i$ with probability $\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$. Otherwise, we set $\sigma_{i+1} = \sigma_i$ with complementary probability $1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$.
 
 The final value is the best $\sigma$ that was ever computed.
 
@@ -122,7 +122,7 @@ $$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{\text{po
 Where:
 $$\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}$$
 
-The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved.
+The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved. The algorithm will always end in a local maximum, but there is no guarantee that this is also the global maximum.
 
 ### Pseudocode
 
