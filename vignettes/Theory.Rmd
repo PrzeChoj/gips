@@ -17,7 +17,7 @@ knitr::opts_chunk[["set"]](
 
 # Theory the `gips` is based on
 
-The package is based on [[1]](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
+The package is based on the article [[1]](https://arxiv.org/abs/2004.03503.pdf). The math behind the package is precisely demonstrated, and all the theorems are proven.
 
 In this vignette, we would like to give a gentle introduction. We want to point out all the most important results from this work from the user's point of view. We will also show examples of those results in the `gips` package.
 
@@ -162,7 +162,7 @@ gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 Notice in the `S_projected` matrix, there are identical elements according to the equation from the beginning of this section. For example, `S_projected[1,1] = S_projected[2,2]`.
 
 ## $C_\sigma$ and `n0`
-It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
+It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix in the Gaussian model exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
 required for the MLE to exist is lower than $p$. It is equal to the number of cycles, denoted hereafter by $C_\sigma$.
 
 For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$ and so 2 observations would be enough.
@@ -190,16 +190,16 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 
 ### General workflow
 
-1. Make the A Priori, high entropy assumptions on the distributions of $\Gamma$ and $\Sigma$.
-2. Calculate the A Posteriori distribution (accurate to within a constant) by formula [[1]]((https://arxiv.org/abs/2004.03503.pdf)), (30).
-3. Use the Metropolis-Hastings algorithm to find the permutation with the biggest value of 2.
+1. Choose the prior distribution on $\Gamma$ and $\Sigma$.
+2. Calculate the posteriori distribution (up to a normalizing constant) by formula [[1]]((https://arxiv.org/abs/2004.03503.pdf)), (30).
+3. Use the Metropolis-Hastings algorithm to find the permutation with the biggest value of the posterior probability $\mathbb{P}(\Gamma|Z)$.
 
-### Details on A Priori
+### Details on the prior distribution
 
-The considered A Prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
+The considered prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
 
 1. $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
-2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$; TODO: this $\delta > 2$ is a simplification; Maybe put a note on the bottom of the page with the correct restriction?) and $D$ (matrix of the same size as `S`, TODO: Additional assumptions? Full rank? Can it be the zero matrix? Negative definite?), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 0$) and $D$ (positive definite matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
 
 ### `gips` technical details
 
@@ -209,7 +209,7 @@ One can calculate the logarithm of formula (30) with function `log_posteriori_of
 
 ### Interpretation
 
-When all assumptions are met, the formula (30) puts a number on the permutations cyclic group. The bigger its value, the more likely the data was drawn from within that model.
+When all assumptions are met, the formula (30) puts a number on each permutation cyclic group. The bigger its value, the more likely the data was drawn from that model.
 
 When one finds the permutations group $c_{\text{max}}$ that maximizes (30),
 $$c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)$$
@@ -225,7 +225,7 @@ In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
 
 The space of all permutations is enormous for bigger $p$ ($p\ge9$). It is more reasonable to estimate the MAP in such a big space than to calculate it precisely.
 
-Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503.pdf) is one way. It is a good one. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503.pdf) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 ### Example
 
@@ -286,7 +286,7 @@ S_projected <- project_matrix(S, g_map[[1]])
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
-We see the formula [[1]](https://arxiv.org/abs/2004.03503.pdf), (30) had the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)...(p)$ permutation. We interpret that under the assumptions (normality, the mean 0 and the A Priori), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503.pdf) has the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 150 times bigger than for the trivial $\text{id} = (1)(2)\ldots(p)$ permutation. We interpret that under the assumptions (centered Gaussian), it is over 150 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # References
