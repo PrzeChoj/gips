@@ -5,7 +5,7 @@
 #' Not all optimization algorithms will always find the MAP, but they try
 #' to find a significant value. More information can be found in
 #' the "**Possible algorithms to use as optimizers**" section below.
-#' 
+#'
 #' `find_MAP` can produce a warning when:
 #' * the optimizer "hill_climbing" gets to the end of
 #'   its `max_iter` without converging.
@@ -78,10 +78,10 @@
 #'       estimate posterior probabilities
 #'   * `optimizer="BF"` - use brute force results to
 #'       calculate exact posterior probabilities
-#' 
+#'
 #' This additional calculations are costly, so second progress bar
 #'     is shown (when `show_progress_bar` is `TRUE`).
-#' 
+#'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
 #'
@@ -342,9 +342,11 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
   if (n0 > number_of_observations) {
     rlang::warn(c(
-      paste0("The found permutation has n0 = ", n0,
-             " which is bigger than the number_of_observations = ",
-             number_of_observations, "."),
+      paste0(
+        "The found permutation has n0 = ", n0,
+        " which is bigger than the number_of_observations = ",
+        number_of_observations, "."
+      ),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
       "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
@@ -407,7 +409,7 @@ Metropolis_Hastings_optimizer <- function(S,
     visited_perms <- NA
   }
   current_perm <- start_perm
-  
+
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   }
@@ -464,7 +466,7 @@ Metropolis_Hastings_optimizer <- function(S,
   }
 
   function_calls <- length(log_posteriori_values)
-  
+
   # visited_perms are already either a list of things or a `NULL` object
 
   if (return_probabilities) {
@@ -472,7 +474,7 @@ Metropolis_Hastings_optimizer <- function(S,
   } else {
     probabilities <- NULL
   }
-  
+
   optimization_info <- list(
     "acceptance_rate" = mean(acceptance),
     "log_posteriori_values" = log_posteriori_values,
@@ -556,7 +558,7 @@ hill_climbing_optimizer <- function(S,
     visited_perms <- NA
   }
   current_perm <- start_perm
-  
+
   goal_function_best_logvalues[1] <- my_goal_function(current_perm)
   log_posteriori_values[1] <- goal_function_best_logvalues[1]
 
@@ -595,9 +597,9 @@ hill_climbing_optimizer <- function(S,
       break
     }
   }
-  
+
   last_perm <- current_perm
-  
+
   if (show_progress_bar) {
     close(progressBar)
   }
@@ -615,7 +617,7 @@ hill_climbing_optimizer <- function(S,
   }
 
   function_calls <- length(log_posteriori_values)
-  
+
   optimization_info <- list(
     "acceptance_rate" = 1 / choose(perm_size, 2),
     "log_posteriori_values" = log_posteriori_values,
@@ -704,7 +706,7 @@ brute_force_optimizer <- function(S,
   }
 
   best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_posteriori_values)]])), perm_size)
-  
+
   if (save_all_perms) {
     visited_perms <- all_perms_list
   } else {
@@ -753,7 +755,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
 
     return(g2)
   }
-  
+
   # g1 is also an effect of optimization.
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")

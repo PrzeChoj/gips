@@ -198,7 +198,7 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'
 #' Check which permutation is more likely and how much more likely.
 #'
-#' @param perm1,perm2 Permutations to compare. 
+#' @param perm1,perm2 Permutations to compare.
 #'     How many times `perm1` is more likely than `perm2`?
 #'     Those can be provided as the `gips` object,
 #'     the `gips_perm` object or anything that can be used as
@@ -255,7 +255,8 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                           was_mean_estimated = TRUE,
                                           print_output = TRUE) {
   compare_log <- compare_log_posteriories_of_perms(
-    perm1, perm2, S = S,
+    perm1, perm2,
+    S = S,
     number_of_observations = number_of_observations,
     delta = delta, D_matrix = D_matrix,
     was_mean_estimated = was_mean_estimated,
@@ -341,9 +342,10 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   if (!inherits(perm2, "gips_perm")) {
     perm2 <- gips_perm(perm2, perm_size)
   }
-  
+
   check_correctness_of_arguments(S,
-    edited_number_of_observations, max_iter = 5,
+    edited_number_of_observations,
+    max_iter = 5,
     start_perm = perm1, delta = delta, D_matrix = D_matrix,
     was_mean_estimated = was_mean_estimated, save_all_perms = TRUE,
     return_probabilities = FALSE, show_progress_bar = FALSE

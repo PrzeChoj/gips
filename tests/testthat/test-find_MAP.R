@@ -13,10 +13,14 @@ test_that("Handle improper parameters", {
 
   g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
-  expect_error(find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"),
-               "ilities can only be returned with the `optimizer == 'Metropoli")
-  expect_error(find_MAP(g1, 10, optimizer = "BD"),
-               "imizer\\` must be one of: c\\('MH', 'Me")
+  expect_error(
+    find_MAP(g1, 10, return_probabilities = TRUE, optimizer = "HC"),
+    "ilities can only be returned with the `optimizer == 'Metropoli"
+  )
+  expect_error(
+    find_MAP(g1, 10, optimizer = "BD"),
+    "imizer\\` must be one of: c\\('MH', 'Me"
+  )
   expect_error(
     find_MAP(g1, 10,
       optimizer = c("MH", "BG")
@@ -98,15 +102,19 @@ test_that("Handle proper parameters", {
     find_MAP(g_small, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE),
     "Consider using `optimizer = 'brute_force'`, because it will use 2! \\(factorial\\) = 2 iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
   )
-  
-  expect_silent(g_MAP_small <- find_MAP(g_small, max_iter = 10,
-                                        optimizer = "HC",
-                                        show_progress_bar = FALSE,
-                                        save_all_perms = TRUE))
-  expect_message(find_MAP(g_MAP_small, max_iter = 10,
-                          optimizer = "MH",
-                          show_progress_bar = FALSE,
-                          save_all_perms = TRUE))
+
+  expect_silent(g_MAP_small <- find_MAP(g_small,
+    max_iter = 10,
+    optimizer = "HC",
+    show_progress_bar = FALSE,
+    save_all_perms = TRUE
+  ))
+  expect_message(find_MAP(g_MAP_small,
+    max_iter = 10,
+    optimizer = "MH",
+    show_progress_bar = FALSE,
+    save_all_perms = TRUE
+  ))
 
   expect_warning(
     find_MAP(g1, max_iter = 2, optimizer = "HC", show_progress_bar = FALSE),
@@ -226,4 +234,3 @@ test_that("find_map with calculate exact probabilities will return probability",
     1
   )
 })
-

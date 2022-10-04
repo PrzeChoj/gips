@@ -36,12 +36,12 @@
 #' * [summary.gips()]
 #' * [plot.gips()]
 #' * [print.gips()]
-#' 
+#'
 #' @section Hyperparameters:
 #' In the Bayesian model, the prior distribution for
 #' the covariance matrix is a generalized case of
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
-#' 
+#'
 #' For brief introduction, see **Bayesian model selection**
 #' section in `vignette("Theory")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
@@ -478,7 +478,7 @@ validate_gips <- function(g) {
       )
     } else if ((length(optimization_info[["visited_perms"]]) > 0) &&
       !(all(is.na(optimization_info[["visited_perms"]])) || is.null(optimization_info[["post_probabilities"]]) ||
-      length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))) {
+        length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))) {
       abort_text <- c(abort_text,
         "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visided permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
         "x" = paste0(
@@ -997,6 +997,9 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #'       on the permutation in the `gips` object.
 #'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
+#'       For more information see **Block Decomposition - [1], Theorem 1**
+#'       section in `vignette("Theory")` or in its
+#'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   * "all" - Plots the line of a posteriori for all visited states.
 #'   * "best" - Plots the line of the biggest a posteriori found over time.
 #'   * "both" - Plots both lines from "all" and "best".
@@ -1104,31 +1107,35 @@ plot.gips <- function(x, type = NA,
   }
 
   if (type != "block_heatmap" && type != "heatmap" &&
-      is.null(attr(x, "optimization_info"))) {
+        is.null(attr(x, "optimization_info"))) {
     rlang::abort(
       c(
         "There was a problem identified with provided arguments:",
         "i" = "For non-optimized `gips` objects only the `type = 'heatmap' or 'block_heatmap'` can be used.",
-        "x" = paste0("You did not optimized `x` and provided `type = '",
-                     type, "'`."),
-      "i" = paste0(
-        "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
-        type, "')`?"
-      ),
-      "i" = "Did You want to use `type = 'heatmap'`?"
-    ))
+        "x" = paste0(
+          "You did not optimized `x` and provided `type = '",
+          type, "'`."
+        ),
+        "i" = paste0(
+          "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
+          type, "')`?"
+        ),
+        "i" = "Did You want to use `type = 'heatmap'`?"
+      )
+    )
   }
 
   # plotting:
-  if (type == "heatmap" || type=="block_heatmap") {
+  if (type == "heatmap" || type == "block_heatmap") {
     rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
       reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used"
     )
-    if(type=="block_heatmap")
+    if (type == "block_heatmap") {
       my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
-    else
+    } else {
       my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
-    
+    }
+
     if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
       p <- ncol(my_projected_matrix)
 
@@ -1306,26 +1313,28 @@ plot.gips <- function(x, type = NA,
 }
 
 #' Replace all non-block entries with NA
-#' 
-#' Diagonalize matrix using found permutation and 
+#'
+#' Diagonalize matrix using found permutation and
 #' replace all entries outside blocks (equal to 0) with NA.
 #' This is done, because later these fields are plotted with background color.
 #' It is more clear then.
-#' 
+#'
 #' @param g `gips` object.
 #' @noRd
-get_diagonalized_matrix_for_heatmap <- function(g){
+get_diagonalized_matrix_for_heatmap <- function(g) {
   perm <- g[[1]]
   projected_matrix <- gips::project_matrix(attr(g, "S"), perm)
   diagonalising_matrix <- gips::prepare_orthogonal_matrix(perm)
   full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
   block_ends <- get_block_ends(get_structure_constants(perm))
   block_starts <- c(1, block_ends[-length(block_ends)] + 1)
-  block_matrix <- matrix(nrow=nrow(full_block_matrix),
-                         ncol=ncol(full_block_matrix))
-  for(i in 1:length(block_starts)){
+  block_matrix <- matrix(
+    nrow = nrow(full_block_matrix),
+    ncol = ncol(full_block_matrix)
+  )
+  for (i in 1:length(block_starts)) {
     slice <- block_starts[i]:block_ends[i]
-    block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop=FALSE]
+    block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop = FALSE]
   }
   block_matrix
 }
@@ -1461,7 +1470,7 @@ summary.gips <- function(object, ...) {
     n0 <- n0 + 1
     edited_number_of_observations <- edited_number_of_observations - 1
   }
-  
+
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
       perm_proposal = "", S = attr(object, "S"),
@@ -1657,7 +1666,7 @@ print.summary.gips <- function(x, ...) {
 #' Names contains permutations this probability represent.
 #' For `gips` object optimized with `find_MAP(return_probabilities = FALSE)`,
 #' returns a `NULL` object.
-#' 
+#'
 #' @export
 #'
 #' @seealso
@@ -1686,7 +1695,7 @@ get_probabilities_from_gips <- function(g) {
       "i" = "Did You forget to optimize `g`?"
     ))
   }
-  
+
   if (is.null(attr(g, "optimization_info")[["post_probabilities"]])) {
     rlang::inform(c(
       "You called `get_probabilities_from_gips(g)` on the `gips` object that does not have saved probabilities.",
@@ -1702,50 +1711,54 @@ get_probabilities_from_gips <- function(g) {
 
 
 #' Forget the permutations for `gips` object optimized with `save_all_perms = TRUE`
-#' 
+#'
 #' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
-#' 
+#'
 #' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB.
-#' 
+#'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(save_all_perms = TRUE)`.
-#' 
+#'
 #' @returns Returns the same object `g` as given,
 #'     but without the visited permutation list.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @seealso
 #' * [find_MAP()] - The `forget_perms()` is called on
 #'     the output of `find_MAP(save_all_perms = TRUE)`.
-#' 
+#'
 #' @examples
 #' example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
 #' S <- t(example_matrix) %*% example_matrix
 #' g <- gips(S, 13, was_mean_estimated = FALSE)
-#' g_map <- find_MAP(g, max_iter = 10, optimizer = "MH",
-#'                   show_progress_bar = FALSE, save_all_perms = TRUE)
-#' 
+#' g_map <- find_MAP(g,
+#'   max_iter = 10, optimizer = "MH",
+#'   show_progress_bar = FALSE, save_all_perms = TRUE
+#' )
+#'
 #' object.size(g_map) # ~18 KB
 #' g_map_slim <- forget_perms(g_map)
 #' object.size(g_map_slim) # ~8 KB
-forget_perms <- function(g){
+forget_perms <- function(g) {
   validate_gips(g)
-  
+
   optimization_info <- attr(g, "optimization_info")
-  
+
   if (is.null(optimization_info)) {
     rlang::inform(c(
       "Provided `g` is a `gips` object, but it was not optimized yet.",
-      "i" = "Did You provided the wrong `gips` object?"))
+      "i" = "Did You provided the wrong `gips` object?"
+    ))
   } else if (all(is.na(optimization_info[["visited_perms"]]))) {
     rlang::inform(c(
       "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
-      "i" = "Did You provided the wrong `gips` object?"))
+      "i" = "Did You provided the wrong `gips` object?"
+    ))
   } else {
     optimization_info[["visited_perms"]] <- I(NA)
     attr(g, "optimization_info") <- optimization_info
   }
-  
+
   g
 }

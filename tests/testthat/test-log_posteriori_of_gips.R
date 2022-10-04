@@ -183,7 +183,7 @@ test_that("compare_posteriories_of_perms properly calculates", {
     compare_posteriories_of_perms(g, print_output = FALSE),
     compare_posteriories_of_perms(g, gips_id, print_output = FALSE)
   )
-  
-  expect_output(compare_posteriories_of_perms(g2, '(34)'))
-  expect_output(compare_posteriories_of_perms('(34)', g2))
+
+  expect_output(compare_posteriories_of_perms(g2, "(34)"))
+  expect_output(compare_posteriories_of_perms("(34)", g2))
 })

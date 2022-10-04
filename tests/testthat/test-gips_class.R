@@ -152,18 +152,24 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   class(g_err[[1]]) <- "test"
-  expect_error(validate_gips(g_err),
-               "must be an object of a `gips_perm` class.")
+  expect_error(
+    validate_gips(g_err),
+    "must be an object of a `gips_perm` class."
+  )
 
   g_err <- g2
   g_err[[2]] <- g_err[[1]]
-  expect_error(validate_gips(g_err),
-               "The `length\\(g\\)` must be `1`.")
+  expect_error(
+    validate_gips(g_err),
+    "The `length\\(g\\)` must be `1`."
+  )
 
   g_err <- "(1,2)(3,4,5)"
   attributes(g_err) <- attributes(g2)
-  expect_error(validate_gips(g_err),
-               "The `g` must be a list.")
+  expect_error(
+    validate_gips(g_err),
+    "The `g` must be a list."
+  )
 
   g_err <- list("(1,2)(3,4,5)")
   class(g_err[[1]]) <- "gips_perm"
@@ -177,30 +183,40 @@ test_that("Properly validate the gips class with no optimization or after a sing
   # test of "optimization_info" validation:
   g_err <- g2
   attr(g_err, "optimization_info") <- "test"
-  expect_error(validate_gips(g_err),
-               "The `optimization_info` value must be either a `NULL`, or a list.")
+  expect_error(
+    validate_gips(g_err),
+    "The `optimization_info` value must be either a `NULL`, or a list."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["non_existing"]] <- "test"
-  expect_error(validate_gips(g_err),
-               "You have a list of 14 elements.")
+  expect_error(
+    validate_gips(g_err),
+    "You have a list of 14 elements."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
-  expect_error(validate_gips(g_err),
-               "You have a list of 12 elements.")
+  expect_error(
+    validate_gips(g_err),
+    "You have a list of 12 elements."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["non_existing"]] <- "test"
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
-  expect_error(validate_gips(g_err),
-               "You have a list of 13 elements.")
+  expect_error(
+    validate_gips(g_err),
+    "You have a list of 13 elements."
+  )
   # this one showed an error that one have the list of 13 elements, which is actually expected, but the names of the fields are not expected.
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
-  expect_error(validate_gips(g_err),
-               "must be a number in range \\[0, 1\\].")
+  expect_error(
+    validate_gips(g_err),
+    "must be a number in range \\[0, 1\\]."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "brute_force" # in general, brute_force is all right, but then the acceptance_rate has to be NULL
@@ -211,28 +227,38 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   attr(g_err, "optimization_info")[["log_posteriori_values"]] <- as.character(attr(g_err, "optimization_info")[["log_posteriori_values"]])
-  expect_error(validate_gips(g_err),
-               "must be a vector of numbers.")
+  expect_error(
+    validate_gips(g_err),
+    "must be a vector of numbers."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["visited_perms"]] <- "text"
-  expect_error(validate_gips(g_err),
-               "must be a list or `NA`.")
+  expect_error(
+    validate_gips(g_err),
+    "must be a list or `NA`."
+  )
 
   g_err <- g2
   class(attr(g_err, "optimization_info")[["visited_perms"]][[1]]) <- "test"
-  expect_error(validate_gips(g_err),
-               "must be of a `gips_perm` class.")
+  expect_error(
+    validate_gips(g_err),
+    "must be of a `gips_perm` class."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["visited_perms"]] <- list()
-  expect_error(validate_gips(g_err),
-               "is a list, but of a length 0.")
+  expect_error(
+    validate_gips(g_err),
+    "is a list, but of a length 0."
+  )
 
   g_err <- g_BF
   attr(g_err, "optimization_info")[["visited_perms"]] <- list()
-  expect_error(validate_gips(g_err),
-               "is a list, but of a length 0")
+  expect_error(
+    validate_gips(g_err),
+    "is a list, but of a length 0"
+  )
 
   g_err <- g_BF
   attr(g_err, "optimization_info")[["visited_perms"]] <- "()"
@@ -250,13 +276,17 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm"]] <- 7
-  expect_error(validate_gips(g_err),
-               "must be the last element of")
+  expect_error(
+    validate_gips(g_err),
+    "must be the last element of"
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm"]] <- gips_perm("", 6)
-  expect_error(validate_gips(g_err),
-               "must be the log_posteriori of")
+  expect_error(
+    validate_gips(g_err),
+    "must be the log_posteriori of"
+  )
 
   g_err <- g2
   fake_gips_perm <- "()"
@@ -269,18 +299,24 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- 7
-  expect_error(validate_gips(g_err),
-               "must be the log_posteriori of")
+  expect_error(
+    validate_gips(g_err),
+    "must be the log_posteriori of"
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["last_perm_log_posteriori"]] <- "7"
-  expect_error(validate_gips(g_err),
-               "must be an object of a `gips_perm` class.")
+  expect_error(
+    validate_gips(g_err),
+    "must be an object of a `gips_perm` class."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["iterations_performed"]] <- 4 # there were 2 iterations + init (+ additional 2 iterations if repeated); so it cannot be 4
-  expect_error(validate_gips(g_err),
-               "In every iteration at least one value of log_posteriori is calculated.")
+  expect_error(
+    validate_gips(g_err),
+    "In every iteration at least one value of log_posteriori is calculated."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["iterations_performed"]] <- 4.5
@@ -291,39 +327,53 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "MH" # Even if MH was used, it would produce the text "Metropolis_Hastings"
-  expect_error(validate_gips(g_err),
-               "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing' and 'brute_force'.")
+  expect_error(
+    validate_gips(g_err),
+    "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing' and 'brute_force'."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "hill_climbing" # hill_climbing is legal, but the post_probabilities are not with this optimization_algorithm_used
-  expect_error(validate_gips(g_err),
-               "`post_probabilities` can only be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method.")
+  expect_error(
+    validate_gips(g_err),
+    "`post_probabilities` can only be obtained with 'Metropolis_Hastings' or 'brute_force' optimization method."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + 0.1
-  expect_error(validate_gips(g_err),
-               "must have properties of probability. All elements in range")
+  expect_error(
+    validate_gips(g_err),
+    "must have properties of probability. All elements in range"
+  )
 
   g_err <- g2
   len_post_prob <- length(attr(g_err, "optimization_info")[["post_probabilities"]])
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1 / (len_post_prob - 1), len_post_prob - 1))
-  expect_error(validate_gips(g_err),
-               "must have properties of probability. All elements in range")
+  expect_error(
+    validate_gips(g_err),
+    "must have properties of probability. All elements in range"
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["did_converge"]] <- TRUE
-  expect_error(validate_gips(g_err),
-               "`did_converge` can only be obtained with 'hill_climbing' or 'brute_force' optimization method.")
+  expect_error(
+    validate_gips(g_err),
+    "`did_converge` can only be obtained with 'hill_climbing' or 'brute_force' optimization method."
+  )
 
   g_err <- g3
   attr(g_err, "optimization_info")[["did_converge"]] <- "test"
-  expect_error(validate_gips(g_err),
-               "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`.")
+  expect_error(
+    validate_gips(g_err),
+    "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`."
+  )
 
   g_err <- g3
   attr(g_err, "optimization_info")[["did_converge"]] <- NA
-  expect_error(validate_gips(g_err),
-               "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`.")
+  expect_error(
+    validate_gips(g_err),
+    "When 'hill_climbing' optimization method, the `did_converge` must be `TRUE` or `FALSE`."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
@@ -331,26 +381,34 @@ test_that("Properly validate the gips class with no optimization or after a sing
 
   g_err <- g2
   attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
-  expect_error(validate_gips(g_err),
-               "is initially set to `NA`, but that state of the gips object should not be available to the user.")
+  expect_error(
+    validate_gips(g_err),
+    "is initially set to `NA`, but that state of the gips object should not be available to the user."
+  )
 
   g_err <- g2
   time_now <- Sys.time()
   attr(g_err, "optimization_info")[["optimization_time"]] <- time_now
-  expect_error(validate_gips(g_err),
-               "has to be of a class 'difftime'.")
+  expect_error(
+    validate_gips(g_err),
+    "has to be of a class 'difftime'."
+  )
 
   g_err <- g2
   time_now <- Sys.time()
   attr(g_err, "optimization_info")[["optimization_time"]] <- 1
-  expect_error(validate_gips(g_err),
-               " has to be of a class 'difftime'.")
+  expect_error(
+    validate_gips(g_err),
+    " has to be of a class 'difftime'."
+  )
 
   g_err <- g2
   time_now2 <- Sys.time()
   attr(g_err, "optimization_info")[["optimization_time"]] <- (time_now - time_now2)
-  expect_error(validate_gips(g_err),
-               "has to be a non negative time difference.")
+  expect_error(
+    validate_gips(g_err),
+    "has to be a non negative time difference."
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["whole_optimization_time"]] <- NA
@@ -384,8 +442,10 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["post_probabilities"]] <- attr(g_err, "optimization_info")[["post_probabilities"]] + c(0, rep(1 / (len_post_prob - 1), len_post_prob - 1))
   attr(g_err, "optimization_info")[["best_perm_log_posteriori"]] <- 7
   attr(g_err, "optimization_info")[["optimization_time"]] <- I(NA)
-  expect_error(validate_gips(g_err),
-               "and 3 more problems")
+  expect_error(
+    validate_gips(g_err),
+    "and 3 more problems"
+  )
 })
 
 test_that("Properly validate the gips class after multiple optimizations", {
@@ -953,16 +1013,16 @@ test_that("plot.gips() works or abords for wrong arguments", {
   )
 })
 
-test_that("get_diagonalized_matrix_for_heatmap works",{
+test_that("get_diagonalized_matrix_for_heatmap works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5)(6)", 6)
   g1 <- gips(S, number_of_observations,
-             was_mean_estimated = FALSE, perm = custom_perm1
+    was_mean_estimated = FALSE, perm = custom_perm1
   )
   actual <- get_diagonalized_matrix_for_heatmap(g1)
   # block_ends: 3,5,6
   actual[1:3, 1:3] <- NA
   actual[4:5, 4:5] <- NA
-  actual[6,6] <- NA
+  actual[6, 6] <- NA
   expect_true(all(is.na(actual)))
 })
 
@@ -1020,8 +1080,8 @@ test_that("summary.gips() works", {
     print(summary(g3)),
     "Optimization algorithms:"
   )
-  
-  
+
+
   # proper log_posteriori_calls_after_best:
   # g_fake started in (1,2,3) and then comed to (1,3,2), which had bigger log_posteriori value, but only a little bigger
   g_fake <- structure(list(structure(list(c(1, 2, 3)), size = 3L, class = "gips_perm")), S = structure(c(
@@ -1045,9 +1105,11 @@ test_that("summary.gips() works", {
     optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
     whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
   ), class = "gips")
-  
-  expect_equal(summary(g_fake)[["log_posteriori_calls_after_best"]],
-               2)
+
+  expect_equal(
+    summary(g_fake)[["log_posteriori_calls_after_best"]],
+    2
+  )
 })
 
 test_that("start_permutation_log_posteriori was calculated correctly", {
@@ -1081,11 +1143,15 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
 test_that("summary.gips returns proper Times more likely than identity permutation", {
   g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
-  
-  expect_equal(summary.gips(g_no_em)[["times_more_likely_than_id"]],
-               1) # for known mean
-  expect_equal(summary.gips(g_em)[["times_more_likely_than_id"]],
-               1) # for estimated
+
+  expect_equal(
+    summary.gips(g_no_em)[["times_more_likely_than_id"]],
+    1 # for known mean
+  )
+  expect_equal(
+    summary.gips(g_em)[["times_more_likely_than_id"]],
+    1 # for estimated mean
+  )
 })
 
 test_that("get_probabilities_from_gips works", {
@@ -1108,33 +1174,42 @@ test_that("get_probabilities_from_gips works", {
     optimizer = "BF", show_progress_bar = FALSE,
     return_probabilities = FALSE, save_all_perms = TRUE
   )
-  expect_message(out <- get_probabilities_from_gips(g_map_no_prob),
-                 "on the `gips` object that does not have saved probabilities.")
+  expect_message(
+    out <- get_probabilities_from_gips(g_map_no_prob),
+    "on the `gips` object that does not have saved probabilities."
+  )
   expect_null(out)
 
   g_map_no_prob_no_save <- find_MAP(g,
     optimizer = "BF", show_progress_bar = FALSE,
     return_probabilities = FALSE, save_all_perms = FALSE
   )
-  expect_message(out <- get_probabilities_from_gips(g_map_no_prob_no_save),
-                 "on the `gips` object that does not have saved probabilities.")
+  expect_message(
+    out <- get_probabilities_from_gips(g_map_no_prob_no_save),
+    "on the `gips` object that does not have saved probabilities."
+  )
   expect_null(out)
 })
 
 test_that("forget_perms works properly", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
-  g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH",
-                    save_all_perms = TRUE)
-  
+  g_map <- find_MAP(g, 10,
+    show_progress_bar = FALSE, optimizer = "MH",
+    save_all_perms = TRUE
+  )
+
   expect_silent(validate_gips(g_map))
-  expect_message(forget_perms(g),
-                 "Provided \\`g\\` is a \\`gips\\` object, but it was not optimized yet\\.")
+  expect_message(
+    forget_perms(g),
+    "Provided \\`g\\` is a \\`gips\\` object, but it was not optimized yet\\."
+  )
   expect_false(all(is.na(attr(g_map, "optimization_info")[["visited_perms"]])))
   expect_silent(g_map_no_perms <- forget_perms(g_map))
   expect_true(all(is.na(attr(g_map_no_perms, "optimization_info")[["visited_perms"]])))
   expect_silent(validate_gips(g_map_no_perms))
-  
-  expect_message(g_map_no_perms_again <- forget_perms(g_map_no_perms),
-                 "Provided \\`g\\` is an optimized \\`gips\\` object that already has forgotten all permutations\\.")
-})
 
+  expect_message(
+    g_map_no_perms_again <- forget_perms(g_map_no_perms),
+    "Provided \\`g\\` is an optimized \\`gips\\` object that already has forgotten all permutations\\."
+  )
+})
