@@ -997,7 +997,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #'       on the permutation in the `gips` object.
 #'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
-#'       For more information see **Block Decomposition - [1], Theorem 1**
+#'       For more information see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   * "all" - Plots the line of a posteriori for all visited states.

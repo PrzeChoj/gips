@@ -29,7 +29,7 @@ inside the \code{gips} object projected
 on the permutation in the \code{gips} object.
 \item "block_heatmap" - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
-For more information see \strong{Block Decomposition - \link{1}, Theorem 1}
+For more information see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 \item "all" - Plots the line of a posteriori for all visited states.

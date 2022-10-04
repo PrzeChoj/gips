@@ -59,7 +59,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \itemize{
 \item \code{\link[=project_matrix]{project_matrix()}} - A function used in examples
 to show the properties of \code{prepare_orthogonal_matrix()}.
-\item \strong{Block Decomposition - \link{1}, Theorem 1} section of
+\item \strong{Block Decomposition - [1], Theorem 1} section of
 \code{vignette("Theory", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}) -
 A place to learn more about the math behind the \code{gips} package

@@ -32,7 +32,7 @@
 #' @seealso
 #' * [project_matrix()] - A function used in examples
 #'     to show the properties of `prepare_orthogonal_matrix()`.
-#' * **Block Decomposition - [1], Theorem 1** section of
+#' * **Block Decomposition - \[1\], Theorem 1** section of
 #'     `vignette("Theory", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)) -
 #'     A place to learn more about the math behind the `gips` package
