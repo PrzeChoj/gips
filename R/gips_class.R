@@ -43,7 +43,7 @@
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
 #'
 #' For brief introduction, see **Bayesian model selection**
-#' section in `vignette("Theory")` or in its
+#' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @returns `gips()` returns an object of
@@ -998,7 +998,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information see **Block Decomposition - [1], Theorem 1**
-#'       section in `vignette("Theory")` or in its
+#'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   * "all" - Plots the line of a posteriori for all visited states.
 #'   * "best" - Plots the line of the biggest a posteriori found over time.
@@ -1362,7 +1362,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'   5. `n0` - the minimal number of observations needed for existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of
 #'       the covariance matrix (see **\eqn{C\sigma} and `n0`**
-#'       section in `vignette("Theory")` or in its
+#'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   6. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
@@ -1391,7 +1391,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'   7. `n0` - the minimal number of observations needed for existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of
 #'       the covariance matrix (see **\eqn{C\sigma} and `n0`**
-#'       section in `vignette("Theory")` or in its
+#'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   8. `S_matrix` - the underlying matrix; this is used to calculate
 #'       the posteriori value
@@ -1673,8 +1673,9 @@ print.summary.gips <- function(x, ...) {
 #' * [find_MAP()] - The `get_probabilities_from_gips()`
 #'     is called on the output of
 #'     `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
-#' * `vignette("Optimizers")` - A place to learn more about
-#'     the available optimizers.
+#' * `vignette("Optimizers", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)) -
+#'     A place to learn more about the available optimizers.
 #'
 #' @examples
 #' g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)

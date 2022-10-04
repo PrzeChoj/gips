@@ -65,7 +65,8 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 needed for \code{log_posteriori_of_gips()}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The functions that tries
 to optimize the \code{log_posteriori_of_gips} function.
-\item \code{vignette("Theory")} - A place to learn more about
-the math behind the \code{gips} package.
+\item \code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
+A place to learn more about the math behind the \code{gips} package.
 }
 }

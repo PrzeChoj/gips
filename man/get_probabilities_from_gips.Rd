@@ -35,7 +35,8 @@ get_probabilities_from_gips(g_map)
 \item \code{\link[=find_MAP]{find_MAP()}} - The \code{get_probabilities_from_gips()}
 is called on the output of
 \code{find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)}.
-\item \code{vignette("Optimizers")} - A place to learn more about
-the available optimizers.
+\item \code{vignette("Optimizers", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}) -
+A place to learn more about the available optimizers.
 }
 }

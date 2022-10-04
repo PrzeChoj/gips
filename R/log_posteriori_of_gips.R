@@ -26,8 +26,9 @@
 #'     needed for `log_posteriori_of_gips()`.
 #' * [find_MAP()] - The functions that tries
 #'     to optimize the `log_posteriori_of_gips` function.
-#' * `vignette("Theory")` - A place to learn more about
-#'     the math behind the `gips` package.
+#' * `vignette("Theory", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     A place to learn more about the math behind the `gips` package.
 #'
 #' @returns Returns a value of
 #'     the logarithm of an unnormalized A Posteriori.

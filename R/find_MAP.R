@@ -12,12 +12,14 @@
 #' * the optimizer will find the permutation with smaller `n0` than
 #'   `number_of_observations` (for more information on what it means,
 #'   see **\eqn{C\sigma} and `n0`** section
-#'   in `vignette("Theory")` or in its
+#'   in `vignette("Theory", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a more in-depth explanations, see `vignette("Optimizers")`.
+#' For a more in-depth explanations, see
+#'   `vignette("Optimizers", package = "gips")` or in its
+#'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)).
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - use
 #'     the **Metropolis-Hastings** algorithm;
@@ -110,9 +112,13 @@
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms` can make such an object
 #'     lighter in memory by forgetting the permutations that it was in.
-#' * `vignette("Optimizers")` - A place to learn more about
+#' * `vignette("Optimizers", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)) - 
+#'     A place to learn more about
 #'     the available optimizers.
-#' * `vignette("Theory")` - A place to learn more about
+#' * `vignette("Theory", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)) - 
+#'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
 #' @examples
@@ -348,7 +354,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
         number_of_observations, "."
       ),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+      "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 

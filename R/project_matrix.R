@@ -24,12 +24,14 @@
 #' The estimator will be invariant under the given permutation. Also, it
 #' will **need fewer observations** for the maximum likelihood estimator to
 #' exist (see **Project Matrix - Equation (6)** section in
-#' `vignette("Theory")`). For some permutations, even \eqn{n = 2} could be enough.
+#' `vignette("Theory", package = "gips")` or in its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
+#' For some permutations, even \eqn{n = 2} could be enough.
 #' The minimal number of observations needed are named `n0` and
 #' can be calculated by [summary.gips()].
 #'
 #' For more details, see the **Project Matrix - Equation (6)**
-#' section in `vignette("Theory")` or in its
+#' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
 #' @param S A square matrix to be projected.
@@ -45,10 +47,12 @@
 #'
 #' @seealso
 #' * [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices)
-#' * `vignette("Theory")`, section
-#'     **Project Matrix - Equation (6)** - A place to learn
-#'     more about the math behind the `gips` package and
-#'     see more examples of the use of `project_matrix()`.
+#' * **Project Matrix - Equation (6)** section of
+#'     `vignette("Theory", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     A place to learn more about the math
+#'     behind the `gips` package and see
+#'     more examples of `project_matrix()`.
 #' * [find_MAP()] - The function that finds
 #'     the Maximum A Posteriori (MAP) Estimator
 #'     for a given `gips` object.

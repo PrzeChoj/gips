@@ -24,8 +24,10 @@ For \code{perm_size = 150} and \code{max_iter = 150000} we checked it saves ~350
 example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
 S <- t(example_matrix) \%*\% example_matrix
 g <- gips(S, 13, was_mean_estimated = FALSE)
-g_map <- find_MAP(g, max_iter = 10, optimizer = "MH",
-                  show_progress_bar = FALSE, save_all_perms = TRUE)
+g_map <- find_MAP(g,
+  max_iter = 10, optimizer = "MH",
+  show_progress_bar = FALSE, save_all_perms = TRUE
+)
 
 object.size(g_map) # ~18 KB
 g_map_slim <- forget_perms(g_map)

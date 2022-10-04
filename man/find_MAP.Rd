@@ -79,14 +79,16 @@ its \code{max_iter} without converging.
 \item the optimizer will find the permutation with smaller \code{n0} than
 \code{number_of_observations} (for more information on what it means,
 see \strong{\eqn{C\sigma} and \code{n0}} section
-in \code{vignette("Theory")} or in its
+in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 }
 \section{Possible algorithms to use as optimizers}{
 
 
-For a more in-depth explanations, see \code{vignette("Optimizers")}.
+For a more in-depth explanations, see
+\code{vignette("Optimizers", package = "gips")} or in its
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}).
 \itemize{
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - use
 the \strong{Metropolis-Hastings} algorithm;
@@ -175,9 +177,13 @@ of \code{find_MAP()} tries to find the argmax of.
 with \code{find_MAP(save_all_perms = TRUE)}, it will be of
 considerable size in RAM. \code{forget_perms} can make such an object
 lighter in memory by forgetting the permutations that it was in.
-\item \code{vignette("Optimizers")} - A place to learn more about
+\item \code{vignette("Optimizers", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}) -
+A place to learn more about
 the available optimizers.
-\item \code{vignette("Theory")} - A place to learn more about
+\item \code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}) -
+A place to learn more about
 the math behind the \code{gips} package.
 }
 }

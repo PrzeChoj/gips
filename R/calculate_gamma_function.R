@@ -13,7 +13,9 @@
 #' @export
 #'
 #' @returns Returns the value of the Gamma function of the colored cone
-#'     (for definition of colored cone see `vignette("Theory")`).
+#'     (for definition of colored cone see **Basic definitions** section in
+#'     `vignette("Theory", package = "gips")` or in its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
@@ -27,7 +29,9 @@
 #' * [log_posteriori_of_gips()] - The function that uses
 #'     the values of the gamma function calculable
 #'     with `calculate_gamma_function()`.
-#' * `vignette("Theory")` - A place to learn more about
+#' * `vignette("Theory", package = "gips")` or its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
 #' @examples

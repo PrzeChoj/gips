@@ -46,12 +46,14 @@ not only be symmetric but also have some values repeated (see examples and
 The estimator will be invariant under the given permutation. Also, it
 will \strong{need fewer observations} for the maximum likelihood estimator to
 exist (see \strong{Project Matrix - Equation (6)} section in
-\code{vignette("Theory")}). For some permutations, even \eqn{n = 2} could be enough.
+\code{vignette("Theory", package = "gips")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+For some permutations, even \eqn{n = 2} could be enough.
 The minimal number of observations needed are named \code{n0} and
 can be calculated by \code{\link[=summary.gips]{summary.gips()}}.
 
 For more details, see the \strong{Project Matrix - Equation (6)}
-section in \code{vignette("Theory")} or in its
+section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 \examples{
@@ -79,10 +81,12 @@ plot(g_MAP, type = "heatmap")
 \seealso{
 \itemize{
 \item \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}
-\item \code{vignette("Theory")}, section
-\strong{Project Matrix - Equation (6)} - A place to learn
-more about the math behind the \code{gips} package and
-see more examples of the use of \code{project_matrix()}.
+\item \strong{Project Matrix - Equation (6)} section of
+\code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
+A place to learn more about the math
+behind the \code{gips} package and see
+more examples of \code{project_matrix()}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that finds
 the Maximum A Posteriori (MAP) Estimator
 for a given \code{gips} object.

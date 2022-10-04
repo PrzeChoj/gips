@@ -112,7 +112,7 @@ the covariance matrix is a generalized case of
 \href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
 
 For brief introduction, see \strong{Bayesian model selection}
-section in \code{vignette("Theory")} or in its
+section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 

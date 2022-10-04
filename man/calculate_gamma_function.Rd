@@ -13,7 +13,9 @@ calculate_gamma_function(perm, lambda)
 }
 \value{
 Returns the value of the Gamma function of the colored cone
-(for definition of colored cone see \code{vignette("Theory")}).
+(for definition of colored cone see \strong{Basic definitions} section in
+\code{vignette("Theory", package = "gips")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 \description{
 It calculates the value of the integral defined in
@@ -44,7 +46,9 @@ the \code{calculate_gamma_function()} function.
 \item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that uses
 the values of the gamma function calculable
 with \code{calculate_gamma_function()}.
-\item \code{vignette("Theory")} - A place to learn more about
+\item \code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
+A place to learn more about
 the math behind the \code{gips} package.
 }
 }
