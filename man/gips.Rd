@@ -43,11 +43,13 @@ parameter \code{was_mean_estimated = FALSE};
 that \code{S} is based on.}
 
 \item{delta}{A number, hyper-parameter of a Bayesian model.
-Has to be bigger than 2.}
+Has to be bigger than 2.
+See \strong{Hyperparameters} section bellow.}
 
 \item{D_matrix}{A symmetric, positive-definite matrix of the same size as \code{S}.
 Hyper-parameter of a Bayesian model.
-When \code{NULL}, the identity matrix is taken.}
+When \code{NULL}, the identity matrix is taken.
+See \strong{Hyperparameters} section bellow.}
 
 \item{was_mean_estimated}{A boolean.
 \itemize{
@@ -105,9 +107,13 @@ function to do it. See examples below.
 
 \section{Hyperparameters}{
 
-In the Bayesian model, the prior distribution for the covariance matrix is a
-generalized case of \href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
-There the meaning of parameters \code{delta} and \code{D_matrix} can be checked.
+In the Bayesian model, the prior distribution for
+the covariance matrix is a generalized case of
+\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
+
+For brief introduction, see \strong{Bayesian model selection}
+section in \code{vignette("Theory")} or in its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 
 \examples{

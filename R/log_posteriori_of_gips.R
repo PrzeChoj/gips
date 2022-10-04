@@ -208,7 +208,7 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'     The same parameters as in the [gips()] function.
 #'     If at least one of `perm1` or `perm2` is of a `gips` class,
 #'     they overwritten with those from `gips` object.
-#' @param print_output A logical (TRUE or FALSE).
+#' @param print_output A boolean.
 #'     When TRUE, the computed value will be printed with
 #'     additional text and returned invisibly. When FALSE,
 #'     the computed value will be returned visibly.

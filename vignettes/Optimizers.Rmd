@@ -122,7 +122,7 @@ $$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{\text{po
 Where:
 $$\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}$$
 
-The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved. The algorithm will always end in a local maximum, but there is no guarantee that this is also the global maximum.
+The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved. In the first case, the algorithm will end in a local maximum, but there is no guarantee that this is also the global maximum.
 
 ### Pseudocode
 

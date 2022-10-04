@@ -18,9 +18,11 @@
 #'     that `S` is based on.
 #' @param delta A number, hyper-parameter of a Bayesian model.
 #'     Has to be bigger than 2.
+#'     See **Hyperparameters** section bellow.
 #' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
 #'     When `NULL`, the identity matrix is taken.
+#'     See **Hyperparameters** section bellow.
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
@@ -36,9 +38,13 @@
 #' * [print.gips()]
 #' 
 #' @section Hyperparameters:
-#' In the Bayesian model, the prior distribution for the covariance matrix is a 
-#' generalized case of [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
-#' There the meaning of parameters `delta` and `D_matrix` can be checked.
+#' In the Bayesian model, the prior distribution for
+#' the covariance matrix is a generalized case of
+#' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
+#' 
+#' For brief introduction, see **Bayesian model selection**
+#' section in `vignette("Theory")` or in its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.
@@ -1118,7 +1124,7 @@ plot.gips <- function(x, type = NA,
     rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
       reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used"
     )
-    if(type=='block_heatmap')
+    if(type=="block_heatmap")
       my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
     else
       my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
@@ -1157,7 +1163,7 @@ plot.gips <- function(x, type = NA,
         ggplot2::aes(x = col_id, y = row_id, fill = covariance_value)
       ) +
         ggplot2::geom_raster() +
-        ggplot2::scale_fill_viridis_c(na.value = 'white') +
+        ggplot2::scale_fill_viridis_c(na.value = "white") +
         ggplot2::scale_x_continuous(breaks = 1:p) +
         ggplot2::scale_y_reverse(breaks = 1:p) +
         ggplot2::theme_bw() +
@@ -1298,6 +1304,7 @@ plot.gips <- function(x, type = NA,
 
   invisible(NULL)
 }
+
 #' Replace all non-block entries with NA
 #' 
 #' Diagonalize matrix using found permutation and 
@@ -1307,7 +1314,6 @@ plot.gips <- function(x, type = NA,
 #' 
 #' @param g `gips` object.
 #' @noRd
-
 get_diagonalized_matrix_for_heatmap <- function(g){
   perm <- g[[1]]
   projected_matrix <- gips::project_matrix(attr(g, "S"), perm)

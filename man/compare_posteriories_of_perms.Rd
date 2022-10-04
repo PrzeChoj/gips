@@ -39,7 +39,7 @@ They do not have to be of the same class.}
 If at least one of \code{perm1} or \code{perm2} is of a \code{gips} class,
 they overwritten with those from \code{gips} object.}
 
-\item{print_output}{A logical (TRUE or FALSE).
+\item{print_output}{A boolean.
 When TRUE, the computed value will be printed with
 additional text and returned invisibly. When FALSE,
 the computed value will be returned visibly.}

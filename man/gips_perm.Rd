@@ -22,7 +22,7 @@ that can be processed with the \code{\link[permutations:permutation]{permutation
 \item{rearranged_cycles}{A list of rearranged integer vectors.
 Each vector corresponds to a single cycle of a permutation.}
 
-\item{g}{Object to be checked if it is
+\item{g}{Object to be checked whether it is
 a proper object of a \code{gips_perm} class.}
 }
 \value{

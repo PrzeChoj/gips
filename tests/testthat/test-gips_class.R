@@ -953,7 +953,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
   )
 })
 
-test_that('get_diagonalized_matrix_for_heatmap works',{
+test_that("get_diagonalized_matrix_for_heatmap works",{
   custom_perm1 <- gips_perm("(1,2)(3,4,5)(6)", 6)
   g1 <- gips(S, number_of_observations,
              was_mean_estimated = FALSE, perm = custom_perm1

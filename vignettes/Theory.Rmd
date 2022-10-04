@@ -47,7 +47,7 @@ The main theoretical result in this theory (Theorem 1 in [[1]](https://arxiv.org
 
 The exact form of blocks depends on so-called *structure constants* $(k_i,d_i,r_i)_{i=1}^L$. It is worth pointing out that constants $k = d$ for cyclic group $\Gamma = \left<\sigma\right>$ and that `gips` searches within cyclic subgroups only. 
 
-Consider example:
+### Examples
 
 ```{r th1_1}
 p <- 6
@@ -124,9 +124,9 @@ So it has some identical elements.
 
 ### Trivial case
 
-Note that for $\Gamma = \{\text{id}\} = \{(1),(2),\dots,(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
+Note that for $\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
 
-So no additional assumptions are made. This is the standard covariance estimator.
+So no additional assumptions are made; thus the standard covariance estimator is the best we can do.
 
 
 ### Example
@@ -198,10 +198,10 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 
 ### Details on the prior distribution
 
-The considered prior distribution on $\Gamma$ and $K=\Sigma^{-1}$:
+The considered prior distribution of $\Gamma$ and $K=\Sigma^{-1}$:
 
-1. $G$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
-2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$) and $D$ (symmetric, positive definite matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
+1. $\Gamma$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$) and $D$ (symmetric, positive definite square matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503.pdf), Sec. 3.4.
 
 Footnote: Actually in some cases smaller (but still positive) values for $\delta$ parameter are theoretically correct. Refer to the [[1]](https://arxiv.org/abs/2004.03503.pdf).
 
@@ -213,7 +213,7 @@ One can calculate the logarithm of formula (30) with function `log_posteriori_of
 
 ### Interpretation
 
-When all assumptions are met, the formula (30) puts a number on each permutation cyclic group. The bigger its value, the more likely the data was drawn from that model.
+When all assumptions are met, the formula (30) puts a number on each permutation's cyclic group. The bigger its value, the more likely the data was drawn from that model.
 
 When one finds the permutations group $c_{\text{max}}$ that maximizes (30),
 $$c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)$$
