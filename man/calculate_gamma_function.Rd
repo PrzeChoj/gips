@@ -33,7 +33,7 @@ calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
 # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
 }
 \references{
-Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://arxiv.org/abs/2004.03503}{arXiv link};

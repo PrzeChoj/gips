@@ -8,9 +8,7 @@ GitHub Actions using `usethis::use_github_actions_check_standard()`
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-Non-standard file/directory found at top level: ‘cran-comments.md’
+0 errors | 0 warnings | 0 notes
 
 R CMD check succeeded
 

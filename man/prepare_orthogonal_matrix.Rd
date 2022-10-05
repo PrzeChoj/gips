@@ -49,7 +49,7 @@ block_decomposition <- t(U_Gamma) \%*\% X \%*\% U_Gamma
 round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]
 }
 \references{
-Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://arxiv.org/abs/2004.03503}{arXiv link};

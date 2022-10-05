@@ -1,22 +1,20 @@
 Type: Package
 Package: gips
 Title: Gaussian Model Invariant by Permutation Symmetry
-Version: 0.9.0
+Version: 1.0.0
 Authors@R: c(
-    person("Przemyslaw", "Chojecki", , "premysl.choj@gmail.com", role = c("aut", "cre")),
-    person("Pawel", "Morgen", , "seriousmorgen@protonmail.com", role = "aut"),
-    person("Bartosz", "Kolodziejek", , "b.kolodziejek@mini.pw.edu.pl", role = "aut",
+    person("Przemysław", "Chojecki", , "premysl.choj@gmail.com", role = c("aut", "cre")),
+    person("Paweł", "Morgen", , "seriousmorgen@protonmail.com", role = "aut"),
+    person("Bartosz", "Kołodziejek", , "b.kolodziejek@mini.pw.edu.pl", role = "aut",
            comment = c(ORCID = "0000-0002-5220-9012"))
   )
 Description: Find the permutation symmetry group such that the covariance
-    matrix of the given data is invariant under it.  Knowledge of such a
-    permutation can drastically decrease the number of parameters needed
-    to fit the model.  That means that with 'gips', it is possible to find
-    a Gaussian model with more parameters than the number of observations.
-    Sometimes, even if the number of observations is bigger than the
-    number of parameters, the covariance matrix found with 'gips' better
-    approximates the actual covariance behind the data and is less
-    variance.
+    matrix of the given data is invariant under it.  Discovering such a
+    permutation decreases the number of observations needed to fit 
+    a Gaussian model, which is of great use when it is smaller than 
+    the number of variables. Even if that is not the case, 
+    the covariance matrix found with 'gips'
+    approximates the actual covariance with less statistical error.
 License: GPL (>= 3)
 URL: https://github.com/PrzeChoj/gips, https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues

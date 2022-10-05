@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/gips)](https://CRAN.R-project.org/package=gips)
 [![R-CMD-check](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml)
@@ -36,20 +36,19 @@ observations.
 
 ## Installation
 
+From [CRAN](https://CRAN.R-project.org/package=gips):
+
+``` r
+# Install the released version from CRAN:
+install.packages("gips")
+```
+
 From [GitHub](https://github.com/PrzeChoj/gips):
 
 ``` r
 # Install the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("PrzeChoj/gips")
-```
-
-From [CRAN](https://CRAN.R-project.org/package=gips) (it is yet to be
-published):
-
-``` r
-# Install the released version from CRAN:
-install.packages("gips")
 ```
 
 ## Examples
