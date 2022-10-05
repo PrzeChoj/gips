@@ -53,7 +53,7 @@ exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.7
 # This is the expected outcome because S[1,1] is very close to S[2,2].
 }
 \references{
-Piotr Graczyk, Hideyuki Ishi, Bartosz Kolodziejek, Hélène Massam.
+Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://arxiv.org/abs/2004.03503}{arXiv link};
