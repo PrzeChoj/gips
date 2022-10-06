@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Change the URL in README.md from https://codecov.io/gh/PrzeChoj/gips?branch=main to https://app.codecov.io/gh/PrzeChoj/gips?branch=main
+
+
 ## Test environments
 
 GitHub Actions using `usethis::use_github_actions_check_standard()`
