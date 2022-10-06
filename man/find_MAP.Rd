@@ -92,7 +92,7 @@ For a more in-depth explanations, see
 \itemize{
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - use
 the \strong{Metropolis-Hastings} algorithm;
-\href{https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm}{see Wikipedia}.
+\href{https://en.wikipedia.org/wiki/Metropolis\%E2\%80\%93Hastings_algorithm}{see Wikipedia}.
 The algorithm will draw a random transposition in every iteration
 and consider changing the current state (permutation).
 When the \code{max_iter} is reached, the algorithm will return the best
@@ -158,8 +158,8 @@ summary(g_map_BF)
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
-\href{https://arxiv.org/abs/2004.03503.pdf}{arXiv link};
-\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
+\href{https://arxiv.org/abs/2004.03503}{arXiv link};
+\doi{10.1214/22-AOS2174}
 }
 \seealso{
 \itemize{

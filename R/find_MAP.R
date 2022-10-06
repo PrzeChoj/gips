@@ -23,7 +23,7 @@
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - use
 #'     the **Metropolis-Hastings** algorithm;
-#'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm).
+#'     [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).
 #'     The algorithm will draw a random transposition in every iteration
 #'     and consider changing the current state (permutation).
 #'     When the `max_iter` is reached, the algorithm will return the best
@@ -94,8 +94,8 @@
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
 #' The Annals of Statistics, 50(3) 1747-1774 June 2022.
-#' [arXiv link](https://arxiv.org/abs/2004.03503.pdf);
-#' [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
+#' [arXiv link](https://arxiv.org/abs/2004.03503);
+#' \doi{10.1214/22-AOS2174}
 #'
 #' @seealso
 #' * [gips()] - The constructor of a `gips` class.

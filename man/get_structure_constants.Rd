@@ -12,16 +12,16 @@ get_structure_constants(perm)
 \value{
 Returns a list of 5 items:
 \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from
-\href{https://arxiv.org/abs/2004.03503.pdf}{Theorem 1 from references}
+\href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}
 and the beginning of
-\href{https://arxiv.org/abs/2004.03503.pdf}{section 3.1. from references}.
+\href{https://arxiv.org/abs/2004.03503}{section 3.1. from references}.
 }
 \description{
 Finds constants that are necessary for internal calculations of integrals and
 eventually the posteriori probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 }
 \details{
-Uses the \href{https://arxiv.org/abs/2004.03503.pdf}{Theorem 5 from references}
+Uses the \href{https://arxiv.org/abs/2004.03503}{Theorem 5 from references}
 to calculate the constants.
 }
 \examples{
@@ -32,8 +32,8 @@ get_structure_constants(perm)
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
-\href{https://arxiv.org/abs/2004.03503.pdf}{arXiv link};
-\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
+\href{https://arxiv.org/abs/2004.03503}{arXiv link};
+\doi{10.1214/22-AOS2174}
 }
 \seealso{
 \itemize{

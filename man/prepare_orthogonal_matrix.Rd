@@ -53,7 +53,7 @@ Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 "Model selection in the space of Gaussian models invariant by symmetry."
 The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \href{https://arxiv.org/abs/2004.03503}{arXiv link};
-\href{https://doi.org/10.1214/22-AOS2174}{DOI: 10.1214/22-AOS2174}
+\doi{10.1214/22-AOS2174}
 }
 \seealso{
 \itemize{

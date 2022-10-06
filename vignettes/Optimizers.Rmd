@@ -44,7 +44,7 @@ The space of permutations is enormous - for the permutation of size $p$, the spa
 
 This optimizer is implementation of the *Second approach* from [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
 
-This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
+This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 ### Short description
 
@@ -282,4 +282,4 @@ We encourage everyone to leave a comment on available and potential new optimize
 
 # References
 
-[1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503.pdf); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
+[1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
