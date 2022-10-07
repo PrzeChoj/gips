@@ -17,7 +17,7 @@ GitHub Actions using `usethis::use_github_actions_check_standard()`
 
 R CMD check succeeded
 
-* This is initial submission of this package to CRAN.
+* This is the initial submission of this package to CRAN.
 * This is my first submission of any package to CRAN.
 * All exported functions document their return value.
 * All exported functions documentations contain some runnable examples. We commented out examples of "print.*" functions so that those will not be printed on the console while testing.
@@ -26,3 +26,8 @@ R CMD check succeeded
 Found the following (possibly) invalid URLs:
     URL: https://doi.org/10.1214/22-AOS2174
 This is mysterious for me, because in the whole of documentation we used `\doi{10.1214/22-AOS2174}`.
+
+## devtools::check_rhub()
+Found the following (possibly) invalid URLs:
+    URL: https://doi.org/10.1214/22-AOS2174
+This is mysterious to me because, in the whole of the documentation, we used `\doi{10.1214/22-AOS2174}`.
