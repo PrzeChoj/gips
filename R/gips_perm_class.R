@@ -28,8 +28,10 @@
 #' gperm <- gips_perm("(1,2)(5,4)", 7)
 #' gperm
 #'
-#' # gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3)
+#' \dontrun{
+#' gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3))
 #' # Error, `size` equals 3 while the maximum element is 5.
+#' }
 #'
 #' @export
 gips_perm <- function(x, size) {
@@ -230,7 +232,7 @@ validate_gips_perm <- function(g) {
 #'
 #' @examples
 #' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-#' # print(g_perm)
+#' \donttest{print(g_perm)}
 print.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
   x <- permutations::as.cycle(x)

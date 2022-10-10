@@ -897,7 +897,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @examples
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' # print(g, digits = 4)
+#' \donttest{print(g, digits = 4)}
 print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
                        log_value = FALSE, oneline = FALSE, ...) {
   validate_gips(x)
@@ -1548,7 +1548,7 @@ summary.gips <- function(object, ...) {
 #' # ================================================================================
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' # print(summary(g))
+#' \donttest{print(summary(g))}
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
     "The optimized",

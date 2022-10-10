@@ -19,5 +19,5 @@ Printing function for a \code{gips_perm} class.
 }
 \examples{
 g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-# print(g_perm)
+\donttest{print(g_perm)}
 }
