@@ -15,7 +15,7 @@ knitr::opts_chunk[["set"]](
   cache = TRUE
 )
 
-options(scipen=999) # turn off scientific notation
+old_options <- options(scipen=999) # turn off scientific notation
 ```
 
 
@@ -187,3 +187,7 @@ The method is not scale-invariant and therefore we recommend to run gips for dif
 
 1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+
+```{r options_back, include = FALSE}
+options(old_options)
+```

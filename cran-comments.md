@@ -3,6 +3,7 @@ This is a resubmission. In this version I have changed the following:
 
 * Added reference paper to DESCRIPTION file.
 * Uncommented examples. Change to \dontrun{} and \donttest{} accordingly.
+* Reset to user's options() in vignettes.
 
 ## Test environments
 
