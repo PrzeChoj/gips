@@ -1,9 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have changed the following:
 
-* Added reference paper to DESCRIPTION file.
-* Uncommented examples. Change to \dontrun{} and \donttest{} accordingly.
-* Reset to user's options() in vignettes.
+* Used try() to wrap the unexecutable code in man/gips_perm.Rd and man/calculate_gamma_function.Rd
 
 ## Test environments
 
