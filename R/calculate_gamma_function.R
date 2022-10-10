@@ -39,7 +39,10 @@
 #' calculate_gamma_function(id_perm, 0.5001) # 10.7...
 #' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 #' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
-#' # calculate_gamma_function(id_perm, 0.5) # integral diverges; returns Inf and warning
+#' \dontrun{
+#' calculate_gamma_function(id_perm, 0.5)
+#' # Error, integral diverges; returns Inf and warning
+#' }
 calculate_gamma_function <- function(perm, lambda) {
   constants <- get_structure_constants(perm)
   r <- constants[["r"]]

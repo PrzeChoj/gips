@@ -104,8 +104,9 @@ if (require("graphics")) {
 
 if (require("graphics")) {
   plot(g_map, type = "heatmap")
-} # Now, the output is (most likely) different because the permutation
-    # `g_map[[1]]` is (most likely) not an identity permutation.
+}
+# Now, the output is (most likely) different because the permutation
+  # `g_map[[1]]` is (most likely) not an identity permutation.
 }
 \seealso{
 \itemize{
