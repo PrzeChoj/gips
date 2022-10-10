@@ -97,7 +97,7 @@ if (require("graphics")) {
   plot(g, type = "heatmap")
 }
 
-g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "HC")
+g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)
 }

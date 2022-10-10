@@ -1057,7 +1057,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 #'   plot(g, type = "heatmap")
 #' }
 #'
-#' g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "HC")
+#' g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
 #' if (require("graphics")) {
 #'   plot(g_map, type = "both", logarithmic_x = TRUE)
 #' }
@@ -1454,10 +1454,10 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'
 #' g <- gips(S, number_of_observations)
 #'
-#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #' unclass(summary(g_map))
 #'
-#' g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "HC")
+#' g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "hill_climbing")
 #' summary(g_map2)
 summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
@@ -1734,7 +1734,7 @@ get_probabilities_from_gips <- function(g) {
 #' S <- t(example_matrix) %*% example_matrix
 #' g <- gips(S, 13, was_mean_estimated = FALSE)
 #' g_map <- find_MAP(g,
-#'   max_iter = 10, optimizer = "MH",
+#'   max_iter = 10, optimizer = "Metropolis_Hastings",
 #'   show_progress_bar = FALSE, save_all_perms = TRUE
 #' )
 #'

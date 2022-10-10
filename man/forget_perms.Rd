@@ -25,7 +25,7 @@ example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
 S <- t(example_matrix) \%*\% example_matrix
 g <- gips(S, 13, was_mean_estimated = FALSE)
 g_map <- find_MAP(g,
-  max_iter = 10, optimizer = "MH",
+  max_iter = 10, optimizer = "Metropolis_Hastings",
   show_progress_bar = FALSE, save_all_perms = TRUE
 )
 

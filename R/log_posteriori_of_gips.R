@@ -246,7 +246,7 @@ calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
-#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "MH")
+#' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #'
 #' compare_posteriories_of_perms(g_map, g, print_output = FALSE)
 #' compare_log_posteriories_of_perms(g_map, g, print_output = FALSE)
