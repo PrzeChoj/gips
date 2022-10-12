@@ -4,6 +4,7 @@ This is a resubmission. In this version I have changed the following:
 * Used `\donttest{}` instead of `\dontrun{}` in man/gips_perm.Rd and man/calculate_gamma_function.Rd.
 * Double spaces changed to single spaces in the description.
 
+
 ## Test environments
 
 GitHub Actions using `usethis::use_github_actions_check_standard()`
@@ -11,6 +12,9 @@ GitHub Actions using `usethis::use_github_actions_check_standard()`
 * MacOS-latest (release)
 * Windows-latest (release)
 * Ubuntu-latest (oldrel-1, release, devel)
+
+Testing with `devtools::check_rhub()` - no Errors, no Warnings, only technical Notes (Possibly misspelled words; URL doi; folder 'lastMiKTeXException')
+
 
 ## R CMD check results
 
