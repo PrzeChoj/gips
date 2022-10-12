@@ -1,4 +1,6 @@
-test_examples("../..") # example for Metropolis_Hastings and hill_climbing are here
+#test_examples("../..")
+# there are examples that throws errors in gips_perm.R and calculate_gamma_function.R
+# Those are on purpose and are wrapped in \donttest{}
 
 test_that("Handle improper parameters", {
   expect_error(hill_climbing_optimizer(

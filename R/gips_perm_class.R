@@ -28,7 +28,7 @@
 #' gperm <- gips_perm("(1,2)(5,4)", 7)
 #' gperm
 #'
-#' \dontrun{
+#' \donttest{
 #' try(gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3))
 #' # Error, `size` equals 3 while the maximum element is 5.
 #' }
