@@ -144,7 +144,7 @@ summary(g_map2)
 # ================================================================================
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
-\donttest{print(summary(g))}
+print(summary(g))
 }
 \seealso{
 \itemize{

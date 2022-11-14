@@ -10,8 +10,6 @@
 #' @inheritParams get_structure_constants
 #' @param lambda A positive real number.
 #'
-#' @export
-#'
 #' @returns Returns the value of the Gamma function of the colored cone
 #'     (for definition of colored cone see **Basic definitions** section in
 #'     `vignette("Theory", package = "gips")` or in its
@@ -39,10 +37,14 @@
 #' calculate_gamma_function(id_perm, 0.5001) # 10.7...
 #' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 #' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
-#' \donttest{
-#' try(calculate_gamma_function(id_perm, 0.5))
-#' # Error, integral diverges; returns Inf and warning
-#' }
+#' 
+#' oldw <- getOption("warn")
+#' options(warn = -1)
+#' calculate_gamma_function(id_perm, 0.5) # Inf
+#' # Integral diverges; returns Inf and warning
+#' options(warn = oldw)
+#' 
+#' @export
 calculate_gamma_function <- function(perm, lambda) {
   constants <- get_structure_constants(perm)
   r <- constants[["r"]]

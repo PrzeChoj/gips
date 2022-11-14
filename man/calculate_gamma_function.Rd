@@ -30,10 +30,13 @@ id_perm <- gips_perm(permutations::id, 2)
 calculate_gamma_function(id_perm, 0.5001) # 10.7...
 calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
-\donttest{
-try(calculate_gamma_function(id_perm, 0.5))
-# Error, integral diverges; returns Inf and warning
-}
+
+oldw <- getOption("warn")
+options(warn = -1)
+calculate_gamma_function(id_perm, 0.5) # Inf
+# Integral diverges; returns Inf and warning
+options(warn = oldw)
+
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
