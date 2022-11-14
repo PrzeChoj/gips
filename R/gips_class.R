@@ -490,11 +490,11 @@ validate_gips <- function(g) {
       )
     } else if (!(is.null(optimization_info[["post_probabilities"]]) ||
       (all(optimization_info[["post_probabilities"]] <= 1) &&
-        all(optimization_info[["post_probabilities"]] > 0) &&
+        all(optimization_info[["post_probabilities"]] >= 0) && # it should be >0, but it sometimes underflow to 0
         (sum(optimization_info[["post_probabilities"]]) < 1.001) && # Allow small error
         (sum(optimization_info[["post_probabilities"]]) > 0.999)))) {
       abort_text <- c(abort_text,
-        "i" = "The vector of `attr(g, 'optimization_info')[['post_probabilities']]` must have properties of probability. All elements in range [0, 1] and sums to 1. What is more, every element of `attr(g, 'optimization_info')[['post_probabilities']]` was visided, so has to have post_probability bigger than 0.",
+        "i" = "The vector of `attr(g, 'optimization_info')[['post_probabilities']]` must have properties of probability. All elements in range [0, 1] and sums to 1.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['post_probabilities']]` in a range [",
           min(optimization_info[["post_probabilities"]]), ",",

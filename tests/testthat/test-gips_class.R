@@ -353,6 +353,13 @@ test_that("Properly validate the gips class with no optimization or after a sing
     validate_gips(g_err),
     "must have properties of probability. All elements in range"
   )
+  
+  g_good <- g2
+  attr(g_good, "optimization_info")[["post_probabilities"]] <- c(1, rep(0, length(attr(g_good, "optimization_info")[["post_probabilities"]]) - 1)) # this could underflow to 0
+  names(attr(g_good, "optimization_info")[["post_probabilities"]]) <- names(attr(g2, "optimization_info")[["post_probabilities"]])
+  expect_silent(
+    validate_gips(g_good)
+  )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["did_converge"]] <- TRUE
