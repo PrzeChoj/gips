@@ -3,6 +3,7 @@
 ### Bugfixes:
 
 * Sometimes `post_probabilities` underflows to 0. This is appropriately validated now.
+* Typos in Vignettes
 
 
 # gips 1.0.0

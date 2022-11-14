@@ -255,8 +255,9 @@ Note that the rank of the `S` matrix was 4, while the rank of the
 
 # Further reading
 
-For more examples and introduction, see `vignette("gips")` or its
-[pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
+For more examples and introduction, see
+`vignette("gips", package="gips")` or its [pkgdown
+page](https://przechoj.github.io/gips/articles/gips.html).
 
 # Acknowledgment
 
