@@ -24,7 +24,7 @@ Depends:
 Imports: 
     numbers,
     permutations,
-    rlang,
+    rlang (>= 4.0.10),
     utils
 Suggests: 
     DAAG,
