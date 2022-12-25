@@ -156,27 +156,16 @@ test_that("Properly validate the gips class with no optimization or after a sing
     S[1:4, 1:4], number_of_observations,
     was_mean_estimated = FALSE
   )
-  attr(g_small,"D_matrix") <- attr(g1,"D_matrix")[1:4,1:4] * 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  D_coef <- 1e350 # gips can process 1e300 here, but 1e350 is too big
+  attr(g_small,"D_matrix") <- attr(g1,"D_matrix")[1:4,1:4] * D_coef
   
-  g_err <- g_small
-  expect_warning(expect_error(g_err <- find_MAP(
-    g_err, show_progress_bar = FALSE,
-    optimizer = "BF", return_probabilities = FALSE
-  ), "value of NaN occured"))
+  for (optimizer_name in c("BF", "MH", "HC")) {
+    expect_warning(expect_error(g_err <- find_MAP(
+      g_small, max_iter = 2, show_progress_bar = FALSE,
+      optimizer = optimizer_name, return_probabilities = FALSE
+    ), "value of NaN occured"), "The NaN value of a posteriori was produced")
+  }
   
-  g_err <- g_small
-  expect_warning(expect_error(g_err <- find_MAP(
-    g_err, max_iter = 2, show_progress_bar = FALSE,
-    optimizer = "MH", return_probabilities = FALSE
-  ), "value of NaN occured"))
-  
-  g_err <- g_small
-  expect_warning(expect_error(g_err <- find_MAP(
-    g_err, max_iter = 2, show_progress_bar = FALSE,
-    optimizer = "HC", return_probabilities = FALSE
-  ), "value of NaN occured"))
-  
-
 
   # Other tests
   g_err <- g2

@@ -157,11 +157,11 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
 
   # block part
   block_ends <- get_block_ends(structure_constants)
-  Dc_block_dets <- calculate_determinants_of_block_matrices(
+  Dc_block_log_dets <- calculate_log_determinants_of_block_matrices(
     Dc_diagonalised,
     block_ends
   )
-  DcUc_block_dets <- calculate_determinants_of_block_matrices(
+  DcUc_block_log_dets <- calculate_log_determinants_of_block_matrices(
     DcUc_diagonalised,
     block_ends
   )
@@ -170,12 +170,12 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   DcUc_exponent <- -(number_of_observations + delta - 2) / 2 - structure_constants[["dim_omega"]] /
     (structure_constants[["r"]] * structure_constants[["k"]])
 
-  out <- sum(log(Dc_block_dets) * Dc_exponent + log(DcUc_block_dets) * DcUc_exponent)
+  out <- sum(Dc_block_log_dets * Dc_exponent + DcUc_block_log_dets * DcUc_exponent)
 
   out
 }
 
-#' Calculate determinants of matrices from block decomposition
+#' Calculate log of determinants of matrices from block decomposition
 #'
 #' Block decomposition 1 from paper
 #'
@@ -185,13 +185,13 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
 #'
 #' @returns A numeric vector.
 #' @noRd
-calculate_determinants_of_block_matrices <- function(diagonalised_matrix,
-                                                     block_ends) {
+calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
+                                                         block_ends) {
   block_starts <- c(0, block_ends[-length(block_ends)] + 1)
   sapply(1:length(block_starts), function(i) {
     slice <- block_starts[i]:block_ends[i]
     block_matrix <- diagonalised_matrix[slice, slice, drop = FALSE]
-    det(block_matrix)
+    determinant(block_matrix, logarithm = TRUE)[["modulus"]]
   })
 }
 
