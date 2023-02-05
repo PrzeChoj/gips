@@ -1,5 +1,6 @@
 ---
 title: "Theory"
+author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Theory}

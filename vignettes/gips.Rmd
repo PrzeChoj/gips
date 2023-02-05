@@ -1,6 +1,6 @@
 ---
 title: "gips"
-author: "Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek"
+author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{gips}
