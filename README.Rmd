@@ -167,6 +167,7 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 Find the Maximum A Posteriori Estimator for the permutation. Space is small ($6! = 720$), so it is reasonable to browse the whole of it:
 ```{r example_mean_known4, dependson="example_mean_known3"}
 g_map <- find_MAP(g, optimizer = "brute_force")
+
 g_map
 ```
 

@@ -91,14 +91,9 @@ my_add_text(plot(g, type = "heatmap"))
 
 Remember, we analyze the covariance matrix. We can see some strong
 similarities between the covariances of columns 3 and 4. Those have
-similar variances (`S[3,3]`
-![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
-`S[4,4]`), and their covariances with the rest of the columns are alike
-(`S[1,3]`
-![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
-`S[1,4]` and `S[2,3]`
-![\approx](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Capprox "\approx")
-`S[2,4]`).
+similar variances (`S[3,3]` $\approx$ `S[4,4]`), and their covariances
+with the rest of the columns are alike (`S[1,3]` $\approx$ `S[1,4]` and
+`S[2,3]` $\approx$ `S[2,4]`).
 
 Note that the variances of columns 1 and 2 are also similar, but the
 covariances with other columns (3 and 4) are not alike.
@@ -112,7 +107,7 @@ g_MAP <- find_MAP(g, optimizer = "brute_force")
 g_MAP
 #> The permutation (3,4)
 #>  - was found after 24 log_posteriori calculations
-#>  - is 106222567640989 times more likely than the starting, () permutation.
+#>  - is 1.062e+14 times more likely than the starting, () permutation.
 ```
 
 The `find_MAP` found the relationship (3,4). In its opinion, the
@@ -169,16 +164,12 @@ Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 # End of prepare model
 ```
 
-Suppose we do not know the true covariance matrix
-![\Sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CSigma "\Sigma")
-and we want to estimate it. We cannot use the standard MLE because it
-does not exists
-(![4 \< 6](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4%20%3C%206 "4 < 6"),
-![n \< p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n%20%3C%20p "n < p")).
+Suppose we do not know the true covariance matrix $\Sigma$ and we want
+to estimate it. We cannot use the standard MLE because it does not
+exists ($4 < 6$, $n < p$).
 
 We will assume it was generated from the normal distribution with the
-mean
-![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0").
+mean $0$.
 
 ``` r
 library(gips)
@@ -198,17 +189,16 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
 Find the Maximum A Posteriori Estimator for the permutation. Space is
-small
-(![6! = 720](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;6%21%20%3D%20720 "6! = 720")),
-so it is reasonable to browse the whole of it:
+small ($6! = 720$), so it is reasonable to browse the whole of it:
 
 ``` r
 g_map <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
+
 g_map
-#> The permutation (1,2,3,4,5,6)
+#> The permutation (1,6,5,4,3,2)
 #>  - was found after 720 log_posteriori calculations
-#>  - is 234.659014400441 times more likely than the starting, () permutation.
+#>  - is 317.423 times more likely than the starting, () permutation.
 ```
 
 We see that the found permutation is hundreds of times more likely than
@@ -222,23 +212,20 @@ summary(g_map)$n0 <= number_of_observations # 1 <= 4
 #> [1] TRUE
 ```
 
-What is more, we see the number of observations
-(![4](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;4 "4"))
-is bigger or equal to
-![n_0 = 1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n_0%20%3D%201 "n_0 = 1"),
-so we can estimate the covariance matrix with the Maximum Likelihood
-estimator:
+What is more, we see the number of observations ($4$) is bigger or equal
+to $n_0 = 1$, so we can estimate the covariance matrix with the Maximum
+Likelihood estimator:
 
 ``` r
 S_projected <- project_matrix(S, g_map[[1]])
 S_projected
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 1.0432544 0.8066746 0.5881748 0.4007521 0.5881748 0.8066746
-#> [2,] 0.8066746 1.0432544 0.8066746 0.5881748 0.4007521 0.5881748
-#> [3,] 0.5881748 0.8066746 1.0432544 0.8066746 0.5881748 0.4007521
-#> [4,] 0.4007521 0.5881748 0.8066746 1.0432544 0.8066746 0.5881748
-#> [5,] 0.5881748 0.4007521 0.5881748 0.8066746 1.0432544 0.8066746
-#> [6,] 0.8066746 0.5881748 0.4007521 0.5881748 0.8066746 1.0432544
+#> [1,] 1.3485771 1.1166886 0.8786652 0.6818492 0.8786652 1.1166886
+#> [2,] 1.1166886 1.3485771 1.1166886 0.8786652 0.6818492 0.8786652
+#> [3,] 0.8786652 1.1166886 1.3485771 1.1166886 0.8786652 0.6818492
+#> [4,] 0.6818492 0.8786652 1.1166886 1.3485771 1.1166886 0.8786652
+#> [5,] 0.8786652 0.6818492 0.8786652 1.1166886 1.3485771 1.1166886
+#> [6,] 1.1166886 0.8786652 0.6818492 0.8786652 1.1166886 1.3485771
 
 # Plot the found matrix:
 plot(g_map, type = "heatmap")
