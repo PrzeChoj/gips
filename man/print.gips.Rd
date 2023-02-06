@@ -6,7 +6,7 @@
 \usage{
 \method{print}{gips}(
   x,
-  digits = Inf,
+  digits = 3,
   compare_to_original = TRUE,
   log_value = FALSE,
   oneline = FALSE,

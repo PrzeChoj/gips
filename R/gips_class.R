@@ -897,10 +897,10 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
 #' print(g, digits = 4)
-print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
+print.gips <- function(x, digits = 3, compare_to_original = TRUE,
                        log_value = FALSE, oneline = FALSE, ...) {
   validate_gips(x)
-
+  
   printing_text <- paste0("The permutation ", as.character(x[[1]]))
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
@@ -921,13 +921,11 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
         was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
       )
       log_posteriori_id <- log_posteriori_of_gips(x_id)
-
+      
       printing_text <- c(
         printing_text,
         paste0(
-          "is ", round(exp(log_posteriori - log_posteriori_id),
-            digits = digits
-          ),
+          "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_id, digits),
           " times more likely than the id, () permutation"
         )
       )
@@ -953,9 +951,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 
     if (compare_to_original) {
       printing_text <- c(printing_text, paste0(
-        "is ", round(exp(log_posteriori - log_posteriori_start),
-          digits = digits
-        ),
+        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_start, digits),
         " times more likely than the starting, ",
         as.character(start_perm), " permutation"
       ))
@@ -972,14 +968,36 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
     )
   }
 
-  cat(paste0(printing_text,
+  cat(
+    paste0(printing_text,
     collapse = ifelse(oneline, "; ", "\n - ")
-  ),
-  ".",
-  sep = "", ...
+    ),
+    ".",
+    sep = "", ...
   )
 }
 
+
+#' Convert the log difference to the appropriate string
+#' 
+#' @examples
+#' convert_log_diff_to_str(1009.5, 3) == "3.162e+1009"
+#' 
+#' @noRd
+convert_log_diff_to_str <- function(log_diff, digits){
+  times_more_likely <- round(
+    exp(log_diff), digits = digits
+  )
+  
+  ifelse(is.finite(times_more_likely),
+    as.character(times_more_likely),
+    paste0(
+      round(10^(log_diff - floor(log_diff)), digits = digits),
+      "e+",
+      floor(log_diff)
+    )
+  )
+}
 
 
 

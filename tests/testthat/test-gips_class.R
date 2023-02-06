@@ -974,6 +974,11 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 
 test_that("print.gips() works", {
+  expect_identical(
+    convert_log_diff_to_str(1009.5, 3),
+    "3.162e+1009"
+  )
+  
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
 
