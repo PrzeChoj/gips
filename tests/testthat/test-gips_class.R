@@ -976,7 +976,19 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 test_that("print.gips() works", {
   expect_identical(
     convert_log_diff_to_str(1009.5, 3),
-    "3.162e+1009"
+    "2.632e+438"
+  )
+  expect_identical(
+    convert_log_diff_to_str(16.1, 3),
+    "9820670.922"
+  )
+  expect_identical(
+    convert_log_diff_to_str(16.2, 3),
+    "1.085e+7"
+  )
+  expect_identical(
+    convert_log_diff_to_str(Inf, 3),
+    "Inf"
   )
   
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
@@ -1075,6 +1087,7 @@ test_that("summary.gips() works", {
     ), size = 6, class = "gips_perm"),
     start_permutation_log_posteriori = start_permutation_log_posteriori,
     times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
+    log_times_more_likely_than_id = start_permutation_log_posteriori - log_posteriori_id,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(

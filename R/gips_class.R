@@ -978,23 +978,31 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
 }
 
 
-#' Convert the log difference to the appropriate string
+#' Convert the log difference to the appropriate string.
+#' If bigger than 10 millions, use the scientific notation
 #' 
 #' @examples
 #' convert_log_diff_to_str(1009.5, 3) == "3.162e+1009"
+#' convert_log_diff_to_str(16.1, 3) == "9820670.922"
+#' convert_log_diff_to_str(16.2, 3) == "1.585e+16"
 #' 
 #' @noRd
 convert_log_diff_to_str <- function(log_diff, digits){
+  if(is.infinite(log_diff))
+    return("Inf")
+  
   times_more_likely <- round(
     exp(log_diff), digits = digits
   )
   
-  ifelse(is.finite(times_more_likely),
+  log10_diff <- log_diff * log10(exp(1))
+  
+  ifelse(times_more_likely < 10000000,
     as.character(times_more_likely),
     paste0(
-      round(10^(log_diff - floor(log_diff)), digits = digits),
+      round(10^(log10_diff - floor(log10_diff)), digits = digits),
       "e+",
-      floor(log_diff)
+      floor(log10_diff)
     )
   )
 }
@@ -1501,6 +1509,7 @@ summary.gips <- function(object, ...) {
       start_permutation = object[[1]],
       start_permutation_log_posteriori = permutation_log_posteriori,
       times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
+      log_times_more_likely_than_id = permutation_log_posteriori - log_posteriori_id,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1534,6 +1543,7 @@ summary.gips <- function(object, ...) {
       start_permutation = start_permutation,
       start_permutation_log_posteriori = start_permutation_log_posteriori,
       times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
+      log_times_more_likely_than_start = permutation_log_posteriori - start_permutation_log_posteriori,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1586,11 +1596,11 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["optimized"]],
     paste0(
       "starting permutation:\n",
-      x[["times_more_likely_than_start"]]
+      convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
     ),
     paste0(
       "identity permutation:\n",
-      x[["times_more_likely_than_id"]]
+      convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
     )
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],
