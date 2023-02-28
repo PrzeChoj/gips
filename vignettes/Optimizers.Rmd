@@ -12,9 +12,10 @@ vignette: >
 knitr::opts_chunk[["set"]](
   collapse = TRUE,
   comment = "#>",
-  cache = TRUE
+  cache = FALSE
 )
 
+set.seed(2022)
 old_options <- options(scipen=999) # turn off scientific notation
 ```
 
@@ -22,7 +23,7 @@ old_options <- options(scipen=999) # turn off scientific notation
 library(gips)
 ```
 
-```{r help, cache = TRUE, eval=FALSE}
+```{r help, eval=FALSE}
 ?find_MAP
 ```
 
@@ -66,7 +67,7 @@ This algorithm has been analyzed extensively by statisticians. Thanks to the erg
 ### Example
 
 <div id="spoiler1" style="display:none">
-```{r Metropolis_Hastings_1, cache=TRUE}
+```{r Metropolis_Hastings_1}
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
@@ -84,7 +85,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 
 Let's say we have the data `Z` from the unknown process:
 
-```{r Metropolis_Hastings_2, cache=TRUE, dependson="Metropolis_Hastings_1"}
+```{r Metropolis_Hastings_2}
 dim(Z)
 number_of_observations <- nrow(Z) # 50
 perm_size <- ncol(Z) # 70
@@ -102,7 +103,7 @@ g_map
 
 Only after ten iterations the found permutation is unimaginably more likely than the original, `()` permutation.
 
-```{r Metropolis_Hastings_3, cache=TRUE, dependson="Metropolis_Hastings_2"}
+```{r Metropolis_Hastings_3}
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```
 
@@ -181,7 +182,7 @@ The `max_iter` parameter works differently for this optimizer and Metropolis-Has
 ### Example
 
 <div id="spoiler3" style="display:none">
-```{r hill_climbing_1, cache=TRUE}
+```{r hill_climbing_1}
 perm_size <- 25
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
@@ -199,7 +200,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 
 Let’s say we have the data Z from the unknown process:
 
-```{r hill_climbing_2, cache=TRUE, dependson="hill_climbing_1"}
+```{r hill_climbing_2}
 dim(Z)
 number_of_observations <- nrow(Z) # 20
 perm_size <- ncol(Z) # 25
@@ -212,6 +213,7 @@ g_map
 plot(g_map, type = "both")
 ```
 
+The above warning is expected.
 
 # Brute Force
 
@@ -224,7 +226,7 @@ This is **only recommended** for small spaces ($p \le 8$). It can also browse bi
 ### Example
 
 <div id="spoiler4" style="display:none">
-```{r brute_force_1, cache=TRUE}
+```{r brute_force_1}
 perm_size <- 6
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
@@ -252,7 +254,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 
 Let’s say we have the data Z from the unknown process:
 
-```{r brute_force_2, cache=TRUE, dependson="brute_force_1"}
+```{r brute_force_2}
 dim(Z)
 number_of_observations <- nrow(Z) # 13
 perm_size <- ncol(Z) # 6

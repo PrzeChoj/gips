@@ -12,8 +12,10 @@ vignette: >
 knitr::opts_chunk[["set"]](
   collapse = TRUE,
   comment = "#>",
-  cache = TRUE
+  cache = FALSE
 )
+
+set.seed(2022)
 ```
 
 # Theory the `gips` is based on
@@ -60,13 +62,13 @@ S <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
               0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
 ```
 
-```{r th1_2, dependson="th1_1", echo=FALSE}
+```{r th1_2, echo=FALSE}
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3,4,5,6)\right>$.
 
-```{r th1_3, dependson="th1_1"}
+```{r th1_3}
 g_perm <- gips_perm("(1,2,3,4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
@@ -74,7 +76,7 @@ block_decomposition <- t(U_Gamma) %*% S %*% U_Gamma
 round(block_decomposition, 5)
 ```
 
-```{r th1_4, dependson="th1_3", echo=FALSE}
+```{r th1_4, echo=FALSE}
 gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
@@ -91,13 +93,13 @@ S <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
               0.1,0.2,0.4,0.9,0.9,1.2), nrow = p)
 ```
 
-```{r th1_6, dependson="th1_5", echo=FALSE}
+```{r th1_6, echo=FALSE}
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 Now, `S` is a symmetric matrix invariant under the group $\Gamma = \left<(1,2,3)(4,5,6)\right>$.
 
-```{r th1_7, dependson="th1_5"}
+```{r th1_7}
 g_perm <- gips_perm("(1,2,3)(4,5,6)", p)
 U_Gamma <- prepare_orthogonal_matrix(g_perm)
 
@@ -105,7 +107,7 @@ block_decomposition <- t(U_Gamma) %*% S %*% U_Gamma
 round(block_decomposition, 5)
 ```
 
-```{r th1_8, dependson="th1_7", echo=FALSE}
+```{r th1_8, echo=FALSE}
 gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
@@ -143,22 +145,22 @@ Z[,1] <- 2*Z[,1]
 S <- t(Z) %*% Z / n
 ```
 
-```{r def3_1, dependson="def3_0"}
+```{r def3_1}
 round(S, 2)
 ```
 
-```{r def3_2, dependson="def3_1", echo=FALSE}
+```{r def3_2, echo=FALSE}
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
 One can project this matrix, for example, on $\Gamma = \left<(1,2)(3,4,5,6)\right>$:
 
-```{r def3_3, dependson="def3_2"}
+```{r def3_3}
 S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
 round(S_projected, 2)
 ```
 
-```{r def3_4, dependson="def3_3", echo=FALSE}
+```{r def3_4, echo=FALSE}
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
@@ -171,7 +173,7 @@ required for the MLE to exist is lower than $p$. It is equal to the number of cy
 For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$ and so 2 observations would be enough.
 
 To get this $C_\sigma$ number in `gips`, one can call `summary()` on the appropriate `gips` object:
-```{r n0_2, dependson="def3"}
+```{r n0_2}
 g1 <- gips(S, n, perm = "(1,2,3,4,5,6)", was_mean_estimated = FALSE)
 summary(g1)$n0
 g2 <- gips(S, n, perm = "(1,2)(3,4,5,6)", was_mean_estimated = FALSE)
@@ -179,7 +181,7 @@ summary(g2)$n0
 ```
 This is called `n0` and not $C_\sigma$, because it is increased by 1 when the mean was estimated:
 
-```{r n0_1, dependson="def3"}
+```{r n0_1}
 S <- cov(Z)
 g1 <- gips(S, n, perm = "(1,2,3,4,5,6)", was_mean_estimated = TRUE)
 summary(g1)$n0
@@ -270,7 +272,7 @@ withr::with_seed(1234,{
 Let's say we have this data, `Z`. It has only $4$ observations, and its dimension is $p=6$.
 Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
 
-```{r, example2_readme2, dependson="example2_readme1"}
+```{r, example2_readme2}
 dim(Z)
 number_of_observations <- nrow(Z) # 4
 p <- ncol(Z) # 6
@@ -287,7 +289,7 @@ print(g_map)
 S_projected <- project_matrix(S, g_map[[1]])
 ```
 
-```{r, example2_readme3, dependson="example2_readme2", echo=FALSE}
+```{r, example2_readme3, echo=FALSE}
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
