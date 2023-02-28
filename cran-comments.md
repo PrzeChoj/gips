@@ -1,6 +1,7 @@
 * This is submission of the new version of this package to CRAN.
 * All exported functions document their return value.
 * All exported functions documentations contain some runnable examples.
+* All modifications are listed in `NEWS.md`.
 
 ## Test environments
 
