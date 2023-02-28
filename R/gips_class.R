@@ -490,11 +490,11 @@ validate_gips <- function(g) {
       )
     } else if (!(is.null(optimization_info[["post_probabilities"]]) ||
       (all(optimization_info[["post_probabilities"]] <= 1) &&
-        all(optimization_info[["post_probabilities"]] > 0) &&
+        all(optimization_info[["post_probabilities"]] >= 0) && # it should be >0, but it sometimes underflow to 0
         (sum(optimization_info[["post_probabilities"]]) < 1.001) && # Allow small error
         (sum(optimization_info[["post_probabilities"]]) > 0.999)))) {
       abort_text <- c(abort_text,
-        "i" = "The vector of `attr(g, 'optimization_info')[['post_probabilities']]` must have properties of probability. All elements in range [0, 1] and sums to 1. What is more, every element of `attr(g, 'optimization_info')[['post_probabilities']]` was visided, so has to have post_probability bigger than 0.",
+        "i" = "The vector of `attr(g, 'optimization_info')[['post_probabilities']]` must have properties of probability. All elements in range [0, 1] and sums to 1.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['post_probabilities']]` in a range [",
           min(optimization_info[["post_probabilities"]]), ",",
@@ -896,11 +896,11 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 #' @examples
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' \donttest{print(g, digits = 4)}
-print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
+#' print(g, digits = 4)
+print.gips <- function(x, digits = 3, compare_to_original = TRUE,
                        log_value = FALSE, oneline = FALSE, ...) {
   validate_gips(x)
-
+  
   printing_text <- paste0("The permutation ", as.character(x[[1]]))
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
@@ -909,7 +909,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
-        "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
 
@@ -921,13 +921,11 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
         was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
       )
       log_posteriori_id <- log_posteriori_of_gips(x_id)
-
+      
       printing_text <- c(
         printing_text,
         paste0(
-          "is ", round(exp(log_posteriori - log_posteriori_id),
-            digits = digits
-          ),
+          "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_id, digits),
           " times more likely than the id, () permutation"
         )
       )
@@ -941,7 +939,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
-        "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
 
@@ -953,9 +951,7 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
 
     if (compare_to_original) {
       printing_text <- c(printing_text, paste0(
-        "is ", round(exp(log_posteriori - log_posteriori_start),
-          digits = digits
-        ),
+        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_start, digits),
         " times more likely than the starting, ",
         as.character(start_perm), " permutation"
       ))
@@ -972,14 +968,44 @@ print.gips <- function(x, digits = Inf, compare_to_original = TRUE,
     )
   }
 
-  cat(paste0(printing_text,
+  cat(
+    paste0(printing_text,
     collapse = ifelse(oneline, "; ", "\n - ")
-  ),
-  ".",
-  sep = "", ...
+    ),
+    ".",
+    sep = "", ...
   )
 }
 
+
+#' Convert the log difference to the appropriate string.
+#' If bigger than 10 millions, use the scientific notation
+#' 
+#' @examples
+#' convert_log_diff_to_str(1009.5, 3) == "3.162e+1009"
+#' convert_log_diff_to_str(16.1, 3) == "9820670.922"
+#' convert_log_diff_to_str(16.2, 3) == "1.585e+16"
+#' 
+#' @noRd
+convert_log_diff_to_str <- function(log_diff, digits){
+  if(is.infinite(log_diff))
+    return("Inf")
+  
+  times_more_likely <- round(
+    exp(log_diff), digits = digits
+  )
+  
+  log10_diff <- log_diff * log10(exp(1))
+  
+  ifelse(times_more_likely < 10000000,
+    as.character(times_more_likely),
+    paste0(
+      round(10^(log10_diff - floor(log10_diff)), digits = digits),
+      "e+",
+      floor(log10_diff)
+    )
+  )
+}
 
 
 
@@ -1483,6 +1509,7 @@ summary.gips <- function(object, ...) {
       start_permutation = object[[1]],
       start_permutation_log_posteriori = permutation_log_posteriori,
       times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
+      log_times_more_likely_than_id = permutation_log_posteriori - log_posteriori_id,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1516,6 +1543,7 @@ summary.gips <- function(object, ...) {
       start_permutation = start_permutation,
       start_permutation_log_posteriori = start_permutation_log_posteriori,
       times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
+      log_times_more_likely_than_start = permutation_log_posteriori - start_permutation_log_posteriori,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1548,7 +1576,7 @@ summary.gips <- function(object, ...) {
 #' # ================================================================================
 #' S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g <- gips(S, 10)
-#' \donttest{print(summary(g))}
+#' print(summary(g))
 print.summary.gips <- function(x, ...) {
   cat(ifelse(x[["optimized"]],
     "The optimized",
@@ -1568,11 +1596,11 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["optimized"]],
     paste0(
       "starting permutation:\n",
-      x[["times_more_likely_than_start"]]
+      convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
     ),
     paste0(
       "identity permutation:\n",
-      x[["times_more_likely_than_id"]]
+      convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
     )
   ),
   "\n\nNumber of observations:\n ", x[["number_of_observations"]],

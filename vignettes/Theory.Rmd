@@ -1,5 +1,6 @@
 ---
 title: "Theory"
+author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Theory}
@@ -229,7 +230,7 @@ In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
 
 The space of all permutations is enormous for bigger $p$ ($p\ge9$). It is more reasonable to estimate the MAP in such a big space than to calculate it precisely.
 
-Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
+Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 ### Example
 

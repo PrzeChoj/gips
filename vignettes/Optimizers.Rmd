@@ -1,6 +1,6 @@
 ---
 title: "Optimizers"
-author: "Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek"
+author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Optimizers}
@@ -30,7 +30,7 @@ library(gips)
 
 The goal of the `find_MAP()` is to find the permutation $\sigma$ that maximizes the a posteriori probability (MAP - Maximum A Posteriori). Such a permutation represents the most plausible symmetry given the data.
 
-This a posteriori probability function is described more in-depth in the **Bayesian model selection** section of the `vignette("Theory")`, also available as a [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can calculate the logarithm of it by `log_posteriori_of_gips()` function. In the following paragraphs, we will refer to this a posteriori probability function as $f(\sigma)$.
+This a posteriori probability function is described more in-depth in the **Bayesian model selection** section of the `vignette("Theory", package="gips")`, also available as a [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can calculate the logarithm of it by `log_posteriori_of_gips()` function. In the following paragraphs, we will refer to this a posteriori probability function as $f(\sigma)$.
 
 # Available optimizers
 
@@ -96,7 +96,7 @@ suppressMessages( # message from ggplot2
     ggplot2::scale_x_continuous(breaks = c(1,10,20,30,40,50,60,70)) +
     ggplot2::scale_y_reverse(breaks = c(1,10,20,30,40,50,60,70))
 )
-g_map <- find_MAP(g, max_iter = 10, optimizer = "Metropolis_Hastings")
+g_map <- find_MAP(g, max_iter = 500, optimizer = "Metropolis_Hastings")
 g_map
 ```
 
@@ -285,5 +285,5 @@ We encourage everyone to leave a comment on available and potential new optimize
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 
 ```{r options_back, include = FALSE}
-options(old_options)
+options(old_options) # back to the original options
 ```

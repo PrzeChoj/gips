@@ -148,8 +148,26 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_silent(validate_gips(g3))
   expect_silent(validate_gips(g_BF))
   expect_silent(validate_gips(g_BF_prob))
+  
+  
+  
+  # All NaN's
+  g_small <- gips(
+    S[1:4, 1:4], number_of_observations,
+    was_mean_estimated = FALSE
+  )
+  D_coef <- 1e350 # gips can process 1e300 here, but 1e350 is too big
+  attr(g_small,"D_matrix") <- attr(g1,"D_matrix")[1:4,1:4] * D_coef
+  
+  for (optimizer_name in c("BF", "MH", "HC")) {
+    expect_warning(expect_error(g_err <- find_MAP(
+      g_small, max_iter = 2, show_progress_bar = FALSE,
+      optimizer = optimizer_name, return_probabilities = FALSE
+    ), "value of NaN occured"), "The NaN value of a posteriori was produced")
+  }
+  
 
-
+  # Other tests
   g_err <- g2
   class(g_err[[1]]) <- "test"
   expect_error(
@@ -352,6 +370,13 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_error(
     validate_gips(g_err),
     "must have properties of probability. All elements in range"
+  )
+  
+  g_good <- g2
+  attr(g_good, "optimization_info")[["post_probabilities"]] <- c(1, rep(0, length(attr(g_good, "optimization_info")[["post_probabilities"]]) - 1)) # this could underflow to 0
+  names(attr(g_good, "optimization_info")[["post_probabilities"]]) <- names(attr(g2, "optimization_info")[["post_probabilities"]])
+  expect_silent(
+    validate_gips(g_good)
   )
 
   g_err <- g2
@@ -949,6 +974,23 @@ test_that("check_correctness_of_arguments properly validates arguments", {
 
 
 test_that("print.gips() works", {
+  expect_identical(
+    convert_log_diff_to_str(1009.5, 3),
+    "2.632e+438"
+  )
+  expect_identical(
+    convert_log_diff_to_str(16.1, 3),
+    "9820670.922"
+  )
+  expect_identical(
+    convert_log_diff_to_str(16.2, 3),
+    "1.085e+7"
+  )
+  expect_identical(
+    convert_log_diff_to_str(Inf, 3),
+    "Inf"
+  )
+  
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
 
@@ -1045,6 +1087,7 @@ test_that("summary.gips() works", {
     ), size = 6, class = "gips_perm"),
     start_permutation_log_posteriori = start_permutation_log_posteriori,
     times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
+    log_times_more_likely_than_id = start_permutation_log_posteriori - log_posteriori_id,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(

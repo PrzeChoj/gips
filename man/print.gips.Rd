@@ -6,7 +6,7 @@
 \usage{
 \method{print}{gips}(
   x,
-  digits = Inf,
+  digits = 3,
   compare_to_original = TRUE,
   log_value = FALSE,
   oneline = FALSE,
@@ -44,7 +44,7 @@ Printing function for a \code{gips} class.
 \examples{
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
-\donttest{print(g, digits = 4)}
+print(g, digits = 4)
 }
 \seealso{
 \itemize{

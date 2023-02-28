@@ -400,11 +400,22 @@ Metropolis_Hastings_optimizer <- function(S,
     D_matrix <- diag(nrow = perm_size)
   }
 
-  my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+                     "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
   }
 
   acceptance <- rep(FALSE, max_iter)
@@ -420,7 +431,7 @@ Metropolis_Hastings_optimizer <- function(S,
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   }
-  log_posteriori_values[1] <- my_goal_function(current_perm)
+  log_posteriori_values[1] <- my_goal_function(current_perm, 0)
 
   found_perm <- start_perm
   found_perm_log_posteriori <- log_posteriori_values[1]
@@ -436,16 +447,7 @@ Metropolis_Hastings_optimizer <- function(S,
     e <- runif_transposition(perm_size)
     perm_proposal <- compose_with_transposition(current_perm, e)
 
-    goal_function_perm_proposal <- my_goal_function(perm_proposal)
-    if (is.nan(goal_function_perm_proposal) || is.infinite(goal_function_perm_proposal)) {
-      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
-      rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(goal_function_perm_proposal), "NaN", "Inf"), " occured!"),
-        "i" = "We think it can only happen for ncol(S) > 500. If it is not the case for You, please get in touch with us on ISSUE#5."
-      ))
-
-      break()
-    }
+    goal_function_perm_proposal <- my_goal_function(perm_proposal, i)
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
     if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
@@ -547,11 +549,22 @@ hill_climbing_optimizer <- function(S,
   }
 
 
-  my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+                     "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
   }
 
   goal_function_best_logvalues <- numeric(0)
@@ -566,7 +579,7 @@ hill_climbing_optimizer <- function(S,
   }
   current_perm <- start_perm
 
-  goal_function_best_logvalues[1] <- my_goal_function(current_perm)
+  goal_function_best_logvalues[1] <- my_goal_function(current_perm, 0)
   log_posteriori_values[1] <- goal_function_best_logvalues[1]
 
   # mail loop
@@ -583,7 +596,7 @@ hill_climbing_optimizer <- function(S,
     for (i in 1:(perm_size - 1)) {
       for (j in (i + 1):perm_size) {
         neighbour <- compose_with_transposition(current_perm, c(i, j))
-        neighbour_value <- my_goal_function(neighbour)
+        neighbour_value <- my_goal_function(neighbour, iteration)
         log_posteriori_values[length(log_posteriori_values) + 1] <- neighbour_value
 
         if (neighbour_value > best_neighbour_value) {
@@ -684,11 +697,22 @@ brute_force_optimizer <- function(S,
     D_matrix <- diag(nrow = perm_size)
   }
 
-  my_goal_function <- function(perm) {
-    log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+                     "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
   }
 
   # main loop
@@ -699,7 +723,7 @@ brute_force_optimizer <- function(S,
       utils::setTxtProgressBar(progressBar, i)
     }
     this_perm <- permutations::cycle(list(all_perms_list[[i]]))
-    my_goal_function(this_perm)
+    my_goal_function(this_perm, i)
   })
 
   if (show_progress_bar) {

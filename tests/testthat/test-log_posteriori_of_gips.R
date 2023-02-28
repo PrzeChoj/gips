@@ -126,10 +126,10 @@ test_that("calculate_block_determinants returns proper values", {
   ), byrow = TRUE, ncol = 5)
 
   expect_equal(
-    calculate_determinants_of_block_matrices(
+    exp(calculate_log_determinants_of_block_matrices(
       block_diagonal_matrix,
       c(2, 3, 5)
-    ),
+    )),
     c(3, 2, 1)
   )
 })

@@ -1,7 +1,3 @@
-#test_examples("../..")
-# there are examples that throws errors in gips_perm.R and calculate_gamma_function.R
-# Those are on purpose and are wrapped in \donttest{}
-
 test_that("Handle improper parameters", {
   expect_error(hill_climbing_optimizer(
     S = matrix_invariant_by_example_perm, number_of_observations = 13,
