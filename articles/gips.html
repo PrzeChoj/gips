@@ -148,14 +148,14 @@ page</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7.5</span>, <span class="fl">5</span>,   <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>,</span>
-<span>                         <span class="fl">5</span>,   <span class="fl">4.5</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
-<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
-<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>,</span>
-<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>,   <span class="fl">3</span>,   <span class="fl">1.9</span>, <span class="fl">1.9</span>, <span class="fl">1.9</span>,</span>
+<span>                         <span class="fl">3</span>,   <span class="fl">2.5</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span>                         <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
+<span>                         <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>,</span>
+<span>                         <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co"># sigma_matrix is a matrix invariant under permutation (3,4,5)</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
-<span><span class="va">toy_example_data</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">1234</span>,</span>
+<span><span class="va">toy_example_data</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
 <span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
 <span>                         mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -169,11 +169,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;            [,1]      [,2]      [,3]      [,4]      [,5]</span></span>
-<span><span class="co">#&gt; [1,]  2.8181700  1.012460 -8.360508 0.5727701 -7.153198</span></span>
-<span><span class="co">#&gt; [2,]  6.6399900  4.214481 -8.293846 0.7081888 -6.545662</span></span>
-<span><span class="co">#&gt; [3,]  8.9282996  5.338056 -7.187332 1.5884158 -5.101108</span></span>
-<span><span class="co">#&gt; [4,] -0.5567522 -1.129723 -6.718341 0.3266866 -6.625041</span></span>
+<span><span class="co">#&gt;          [,1]       [,2]      [,3]       [,4]      [,5]</span></span>
+<span><span class="co">#&gt; [1,] 9.101251  3.3096739 -7.299517  1.9096186 -5.726362</span></span>
+<span><span class="co">#&gt; [2,] 3.104331 -1.5073322 -7.191268  1.6300504 -5.302019</span></span>
+<span><span class="co">#&gt; [3,] 4.140044  0.4397725 -7.540909  0.5288461 -6.891902</span></span>
+<span><span class="co">#&gt; [4,] 2.200807  1.6987716 -8.435086 -0.2853477 -7.689881</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -205,9 +205,6 @@ not far from them.</p>
 <span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; Warning: The found permutation has n0 = 5 which is bigger than the number_of_observations = 4.</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/toy_example_data_show3-1.png" width="700"></p>
@@ -215,62 +212,60 @@ not far from them.</p>
 assumption. Let’s see how much better it is:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (4,5)</span></span>
+<span><span class="co">#&gt; The permutation (3,4,5)</span></span>
 <span><span class="co">#&gt;  - was found after 120 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 4.17 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 19.055 times more likely than the starting, () permutation.</span></span></code></pre></div>
 <p>This assumption is over two times more believable than making no
 assumption. Let’s examine how reasonable are other possible
 assumptions:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             ()          (4,5)          (3,4)        (3,4,5)          (3,5) </span></span>
-<span><span class="co">#&gt; 0.067893194946 0.283096591236 0.093466164415 0.194079307932 0.052143066473 </span></span>
-<span><span class="co">#&gt;          (2,3)     (2,3)(4,5)        (2,3,4)      (2,3,4,5)      (2,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.001373694401 0.001710706424 0.000480879912 0.000066456140 0.000068540392 </span></span>
-<span><span class="co">#&gt;        (2,3,5)          (2,4)        (2,4,5)     (2,4)(3,5)      (2,4,3,5) </span></span>
-<span><span class="co">#&gt; 0.000481960538 0.001562021078 0.000890490915 0.003100068788 0.000233967979 </span></span>
-<span><span class="co">#&gt;          (2,5)     (2,5)(3,4)          (1,2)     (1,2)(4,5)     (1,2)(3,4) </span></span>
-<span><span class="co">#&gt; 0.002539568797 0.006013763295 0.018767461252 0.065683490369 0.036754154706 </span></span>
-<span><span class="co">#&gt;   (1,2)(3,4,5)     (1,2)(3,5)        (1,2,3)   (1,2,3)(4,5)      (1,2,3,4) </span></span>
-<span><span class="co">#&gt; 0.070161666438 0.041858920906 0.000251459601 0.001033791650 0.000419715879 </span></span>
-<span><span class="co">#&gt;    (1,2,3,4,5)    (1,2,3,5,4)      (1,2,3,5)      (1,2,4,3)    (1,2,4,5,3) </span></span>
-<span><span class="co">#&gt; 0.000017132526 0.000013116877 0.004672338594 0.000027477001 0.000006983041 </span></span>
-<span><span class="co">#&gt;        (1,2,4)      (1,2,4,5)   (1,2,4)(3,5)    (1,2,4,3,5)    (1,2,5,4,3) </span></span>
-<span><span class="co">#&gt; 0.000066822889 0.000067273612 0.000062191654 0.000318951515 0.000007559938 </span></span>
-<span><span class="co">#&gt;      (1,2,5,3)      (1,2,5,4)        (1,2,5)    (1,2,5,3,4)   (1,2,5)(3,4) </span></span>
-<span><span class="co">#&gt; 0.000133792587 0.000037405606 0.000167128742 0.000217395974 0.000281925623 </span></span>
-<span><span class="co">#&gt;          (1,3)     (1,3)(4,5)        (1,3,4)      (1,3,4,5)      (1,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.001179452433 0.001040089203 0.000077560927 0.000001911051 0.000001962057 </span></span>
-<span><span class="co">#&gt;        (1,3,5)     (1,3)(2,4)   (1,3)(2,4,5)      (1,3,2,4)   (1,3,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.000117198204 0.002248534839 0.000089159537 0.000576330970 0.000004983230 </span></span>
-<span><span class="co">#&gt;     (1,3)(2,5)      (1,3,2,5)   (1,3,4)(2,5)          (1,4)        (1,4,5) </span></span>
-<span><span class="co">#&gt; 0.022834896903 0.003402451591 0.000020551910 0.000180820494 0.000036685354 </span></span>
-<span><span class="co">#&gt;     (1,4)(3,5)      (1,4,3,5)     (1,4)(2,3)   (1,4,5)(2,3)   (1,4)(2,3,5) </span></span>
-<span><span class="co">#&gt; 0.000332372465 0.000004380190 0.000617950077 0.000008026443 0.000003237871 </span></span>
-<span><span class="co">#&gt;     (1,4)(2,5)      (1,4,2,5)          (1,5)     (1,5)(3,4)     (1,5)(2,3) </span></span>
-<span><span class="co">#&gt; 0.000321959573 0.000349379426 0.000427488844 0.000851132597 0.014277611629 </span></span>
-<span><span class="co">#&gt;   (1,5)(2,3,4)     (1,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.000020613306 0.000744658234</span></span></code></pre></div>
+<span><span class="co">#&gt;            ()         (4,5)         (3,4)       (3,4,5)         (3,5) </span></span>
+<span><span class="co">#&gt; 0.01061282927 0.06171956464 0.04211999314 0.20223220920 0.04567419862 </span></span>
+<span><span class="co">#&gt;         (2,3)    (2,3)(4,5)       (2,3,4)     (2,3,4,5)     (2,3,5,4) </span></span>
+<span><span class="co">#&gt; 0.00581023111 0.01783654869 0.01551801497 0.05682939187 0.07903711778 </span></span>
+<span><span class="co">#&gt;       (2,3,5)         (2,4)       (2,4,5)    (2,4)(3,5)     (2,4,3,5) </span></span>
+<span><span class="co">#&gt; 0.04483174508 0.00632844959 0.09831655373 0.01384671335 0.05703725463 </span></span>
+<span><span class="co">#&gt;         (2,5)    (2,5)(3,4)         (1,2)    (1,2)(4,5)    (1,2)(3,4) </span></span>
+<span><span class="co">#&gt; 0.01796890911 0.01890647384 0.00445029902 0.01010029703 0.01112908332 </span></span>
+<span><span class="co">#&gt;  (1,2)(3,4,5)    (1,2)(3,5)       (1,2,3)  (1,2,3)(4,5)     (1,2,3,4) </span></span>
+<span><span class="co">#&gt; 0.05643114895 0.01048091275 0.00125289503 0.00577963435 0.00081399784 </span></span>
+<span><span class="co">#&gt;   (1,2,3,4,5)   (1,2,3,5,4)     (1,2,3,5)     (1,2,4,3)   (1,2,4,5,3) </span></span>
+<span><span class="co">#&gt; 0.00425749682 0.00735807992 0.00240359629 0.00028403009 0.00341026916 </span></span>
+<span><span class="co">#&gt;       (1,2,4)     (1,2,4,5)  (1,2,4)(3,5)   (1,2,4,3,5)   (1,2,5,4,3) </span></span>
+<span><span class="co">#&gt; 0.00233411313 0.00522571301 0.00758134816 0.00367149151 0.00257878934 </span></span>
+<span><span class="co">#&gt;     (1,2,5,3)     (1,2,5,4)       (1,2,5)   (1,2,5,3,4)  (1,2,5)(3,4) </span></span>
+<span><span class="co">#&gt; 0.00081794919 0.00530911969 0.00575507966 0.00370416241 0.01455544007 </span></span>
+<span><span class="co">#&gt;         (1,3)    (1,3)(4,5)       (1,3,4)     (1,3,4,5)     (1,3,5,4) </span></span>
+<span><span class="co">#&gt; 0.00021825685 0.00061927155 0.00016548479 0.00005041919 0.00005399096 </span></span>
+<span><span class="co">#&gt;       (1,3,5)    (1,3)(2,4)  (1,3)(2,4,5)     (1,3,2,4)  (1,3,5)(2,4) </span></span>
+<span><span class="co">#&gt; 0.00024122684 0.00003053547 0.00438962100 0.00049700802 0.00023070395 </span></span>
+<span><span class="co">#&gt;    (1,3)(2,5)     (1,3,2,5)  (1,3,4)(2,5)         (1,4)       (1,4,5) </span></span>
+<span><span class="co">#&gt; 0.00011037285 0.00159335260 0.00052851925 0.00055295545 0.00042223214 </span></span>
+<span><span class="co">#&gt;    (1,4)(3,5)     (1,4,3,5)    (1,4)(2,3)  (1,4,5)(2,3)  (1,4)(2,3,5) </span></span>
+<span><span class="co">#&gt; 0.00089431399 0.00005700363 0.00022150996 0.00020077919 0.00934379767 </span></span>
+<span><span class="co">#&gt;    (1,4)(2,5)     (1,4,2,5)         (1,5)    (1,5)(3,4)    (1,5)(2,3) </span></span>
+<span><span class="co">#&gt; 0.00119644677 0.00672864070 0.00082845248 0.00135409444 0.00047108119 </span></span>
+<span><span class="co">#&gt;  (1,5)(2,3,4)    (1,5)(2,4) </span></span>
+<span><span class="co">#&gt; 0.00413882960 0.00054995409</span></span></code></pre></div>
 <p>We see that assumption <span class="math inline">\((3,4,5)\)</span>
-is the most likely with <span class="math inline">\(19.9\%\)</span>
-posterior probability. However, the assumption <span class="math inline">\((3,5)\)</span> is also reasonable, with a
-posterior probability of <span class="math inline">\(19.6\%\)</span>. So
-it is up to us to decide which one to choose.</p>
-<p>Remember that with the assumption <span class="math inline">\((3,5)\)</span>, the <code>n0</code> will be 4,
+is the most likely with <span class="math inline">\(19.7\%\)</span>
+posterior probability. All other permutations are way less likely.</p>
+<p>Remember that for the assumptions with transpositions (like <span class="math inline">\((3,5)\)</span>), the <code>n0</code> will be 4,
 which would be insufficient for us to estimate covariance correctly. The
 assumption <span class="math inline">\((3,4,5)\)</span> will be just
 right:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">S_projected</span></span>
-<span><span class="co">#&gt;            [,1]       [,2]       [,3]      [,4]      [,5]</span></span>
-<span><span class="co">#&gt; [1,] 17.5271465 12.3563637 -0.9478352 2.3204390 2.3204390</span></span>
-<span><span class="co">#&gt; [2,] 12.3563637  8.7673141 -0.7032989 1.5890268 1.5890268</span></span>
-<span><span class="co">#&gt; [3,] -0.9478352 -0.7032989  0.6670038 0.1938152 0.1938152</span></span>
-<span><span class="co">#&gt; [4,]  2.3204390  1.5890268  0.1938152 0.5373861 0.4384255</span></span>
-<span><span class="co">#&gt; [5,]  2.3204390  1.5890268  0.1938152 0.4384255 0.5373861</span></span>
+<span><span class="co">#&gt;          [,1]       [,2]       [,3]       [,4]       [,5]</span></span>
+<span><span class="co">#&gt; [1,] 9.486870  4.2433055  1.5435370  1.5435370  1.5435370</span></span>
+<span><span class="co">#&gt; [2,] 4.243306  4.1408570 -0.3208554 -0.3208554 -0.3208554</span></span>
+<span><span class="co">#&gt; [3,] 1.543537 -0.3208554  0.8454335  0.7183971  0.7183971</span></span>
+<span><span class="co">#&gt; [4,] 1.543537 -0.3208554  0.7183971  0.8454335  0.7183971</span></span>
+<span><span class="co">#&gt; [5,] 1.543537 -0.3208554  0.7183971  0.7183971  0.8454335</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">S_projected</span><span class="op">)</span><span class="op">$</span><span class="va">values</span> <span class="op">&gt;</span> <span class="fl">0.00000001</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5</span></span></code></pre></div>
 <p>Now, the estimated covariance matrix is of full rank (5).</p>
 </div>
 <div class="section level2">
