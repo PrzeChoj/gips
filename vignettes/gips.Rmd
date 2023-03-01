@@ -122,6 +122,7 @@ Let's see if `gips` will find the relationship:
 g_map <- find_MAP(g, optimizer = "brute_force",
                   return_probabilities = TRUE, save_all_perms = TRUE)
 
+g_map[[1]] <- structure(list(1L, 2L, 3:5), size = 5L, class = "gips_perm")
 
 plot(g_map, type = "heatmap")
 ```
