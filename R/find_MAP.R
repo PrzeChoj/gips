@@ -52,6 +52,7 @@
 #'     space of a given size. This algorithm will definitely find
 #'     the actual Maximum A Posteriori Estimation but is
 #'     very computationally expensive for bigger spaces.
+#'     It is only recommended for `p <= 8`.
 #'
 #' @param g Object of a `gips` class
 #' @param max_iter Number of iterations for an algorithm to perform.

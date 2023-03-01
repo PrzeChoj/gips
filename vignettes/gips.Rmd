@@ -133,7 +133,7 @@ This assumption is over two times more believable than making no assumption. Let
 ```{r toy_example_data_show5}
 get_probabilities_from_gips(g_map)
 ```
-We see that assumption $(3,4,5)$ is the most likely with $19.7\%$ posterior probability. All other permutations are way less likely.
+We see that assumption $(3,4,5)$ is the most likely with $20.2\%$ posterior probability. All other permutations are way less likely.
 
 Remember that for the assumptions with transpositions (like $(3,5)$), the `n0` will be 4, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
