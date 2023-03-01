@@ -79,6 +79,8 @@ toy_example_data <- withr::with_seed(1234,
     code = MASS::mvrnorm(number_of_observations,
                          mu = mu, Sigma = sigma_matrix)
 )
+
+2+2
 ```
 </div>
 
@@ -100,6 +102,7 @@ perm_size <- ncol(toy_example_data) # 5
 
 S <- cov(toy_example_data)
 
+2+2
 
 sum(eigen(S)$values > 0.00000001)
 ```
@@ -110,6 +113,7 @@ We want to find reasonable additional assumptions on `S` to make it easier to es
 ```{r toy_example_data_show2}
 g <- gips(S = S, number_of_observations = nrow(toy_example_data))
 
+2+2
 
 plot(g, type = "heatmap")
 ```
@@ -122,7 +126,7 @@ Let's see if `gips` will find the relationship:
 g_map <- find_MAP(g, optimizer = "brute_force",
                   return_probabilities = TRUE, save_all_perms = TRUE)
 
-g_map[[1]] <- structure(list(1L, 2L, 3:5), size = 5L, class = "gips_perm")
+2+2
 
 plot(g_map, type = "heatmap")
 ```
@@ -131,6 +135,8 @@ plot(g_map, type = "heatmap")
 
 ```{r toy_example_data_show4}
 g_map
+
+2+2
 ```
 This assumption is over two times more believable than making no assumption. Let's examine how reasonable are other possible assumptions:
 
@@ -144,6 +150,8 @@ Remember that with the assumption $(3,5)$, the `n0` will be 4, which would be in
 ```{r toy_example_data_show6}
 S_projected <- project_matrix(S, g_map[[1]])
 sum(eigen(S_projected)$values > 0.00000001)
+
+2+2
 ```
 Now, the estimated covariance matrix is of full rank (5).
 
