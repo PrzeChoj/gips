@@ -67,15 +67,15 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 <div id="spoiler1" style="display:none">
 ```{r toy_example_data_making, include = TRUE}
 perm_size <- 5
-mu <- runif(5, -10, 10) # Assume we don't know the mean
-sigma_matrix <- matrix(c(8,   3,   1.9, 1.9, 1.9,
-                         3,   2.5, 0.3, 0.3, 0.3,
-                         1.9, 0.3, 1,   0.8, 0.8,
-                         1.9, 0.3, 0.8, 1,   0.8,
-                         1.9, 0.3, 0.8, 0.8, 1), ncol=5)
+mu <- withr::with_seed(1234, runif(5, -10, 10)) # Assume we don't know the mean
+sigma_matrix <- matrix(c(7.5, 5,   0.5, 0.5, 0.5,
+                         5,   4.5, 0.3, 0.3, 0.3,
+                         0.5, 0.3, 1,   0.8, 0.8,
+                         0.5, 0.3, 0.8, 1,   0.8,
+                         0.5, 0.3, 0.8, 0.8, 1), ncol=5)
 # sigma_matrix is a matrix invariant under permutation (3,4,5)
 number_of_observations <- 4
-toy_example_data <- withr::with_seed(2022,
+toy_example_data <- withr::with_seed(1234,
     code = MASS::mvrnorm(number_of_observations,
                          mu = mu, Sigma = sigma_matrix)
 )
@@ -91,7 +91,10 @@ toy_example_data <- withr::with_seed(2022,
 
 ```{r toy_example_data_show1}
 library(gips)
-
+RNGkind()
+  
+mu 
+  
 toy_example_data
 
 dim(toy_example_data)
@@ -133,9 +136,9 @@ This assumption is over two times more believable than making no assumption. Let
 ```{r toy_example_data_show5}
 get_probabilities_from_gips(g_map)
 ```
-We see that assumption $(3,4,5)$ is the most likely with $19.7\%$ posterior probability. All other permutations are way less likely.
+We see that assumption $(3,4,5)$ is the most likely with $19.9\%$ posterior probability. However, the assumption $(3,5)$ is also reasonable, with a posterior probability of $19.6\%$. So it is up to us to decide which one to choose.
 
-Remember that for the assumptions with transpositions (like $(3,5)$), the `n0` will be 4, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
+Remember that with the assumption $(3,5)$, the `n0` will be 4, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6}
 S_projected <- project_matrix(S, g_map[[1]])
