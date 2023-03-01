@@ -75,7 +75,7 @@ sigma_matrix <- matrix(c(7.5, 5,   0.5, 0.5, 0.5,
                          0.5, 0.3, 0.8, 0.8, 1), ncol=5)
 # sigma_matrix is a matrix invariant under permutation (3,4,5)
 number_of_observations <- 4
-toy_example_data <- withr::with_seed(2022,
+toy_example_data <- withr::with_seed(1,
     code = MASS::mvrnorm(number_of_observations,
                          mu = mu, Sigma = sigma_matrix)
 )
