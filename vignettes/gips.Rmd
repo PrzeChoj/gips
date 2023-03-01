@@ -16,6 +16,8 @@ knitr::opts_chunk[["set"]](
 )
 
 old_options <- options(scipen=999) # turn off scientific notation
+
+set.seed(2022)
 ```
 
 
@@ -64,8 +66,6 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 
 <div id="spoiler1" style="display:none">
 ```{r toy_example_data_making, include = TRUE}
-set.seed(2022)
-
 perm_size <- 5
 mu <- runif(5, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(c(7.5, 5,   0.5, 0.5, 0.5,
@@ -100,6 +100,7 @@ perm_size <- ncol(toy_example_data) # 5
 
 S <- cov(toy_example_data)
 
+
 sum(eigen(S)$values > 0.00000001)
 ```
 Note that the rank of the `S` matrix is 3, despite the `number_of_observations` being 4. This is because `cov()` estimated the mean on every column to compute `S`.
@@ -108,6 +109,7 @@ We want to find reasonable additional assumptions on `S` to make it easier to es
 
 ```{r toy_example_data_show2}
 g <- gips(S = S, number_of_observations = nrow(toy_example_data))
+
 
 plot(g, type = "heatmap")
 ```
@@ -119,6 +121,7 @@ Let's see if `gips` will find the relationship:
 ```{r toy_example_data_show3}
 g_map <- find_MAP(g, optimizer = "brute_force",
                   return_probabilities = TRUE, save_all_perms = TRUE)
+
 
 plot(g_map, type = "heatmap")
 ```
