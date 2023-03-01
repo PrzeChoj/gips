@@ -35,13 +35,21 @@ This a posteriori probability function is described more in-depth in the **Bayes
 
 # Available optimizers
 
-The space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=19$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple optimizers to choose from:
+The space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=10$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple (3) optimizers to choose from:
 
 * `"Metropolis_Hastings"`, `"MH"`
 * `"hill_climbing"`, `"HC"`
 * `"brute_force"`, `"BF"`, `"full"`
 
-# Metropolis Hastings
+In general, we recommend the Brute Force for $p\le 8$. For bigger $p>9$, we recommend Metropolis-Hastings.
+
+### Note on computation time
+
+The `max_iter` parameter functions differently in Metropolis-Hastings and hill climbing.
+
+For Metropolis-Hastings, it computes a posteriori of `max_iter` permutations, whereas for hill climbing, it computes ${p\choose 2} \cdot$ `max_iter` of them. In the case of the Brute Force optimizer, it computes all $p!$ of $f(\sigma)$ values.
+
+## Metropolis Hastings
 
 This optimizer is implementation of the *Second approach* from [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
 
@@ -97,18 +105,18 @@ suppressMessages( # message from ggplot2
     ggplot2::scale_x_continuous(breaks = c(1,10,20,30,40,50,60,70)) +
     ggplot2::scale_y_reverse(breaks = c(1,10,20,30,40,50,60,70))
 )
-g_map <- find_MAP(g, max_iter = 500, optimizer = "Metropolis_Hastings")
+g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 g_map
 ```
 
 Only after ten iterations the found permutation is unimaginably more likely than the original, `()` permutation.
 
 ```{r Metropolis_Hastings_3}
-plot(g_map, type = "both", logarithmic_x = TRUE)
+plot(g_map, type = "best", logarithmic_x = TRUE)
 ```
 
 
-# Hill climbing
+## Hill climbing
 
 It uses the Hill climbing algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
 
@@ -175,10 +183,6 @@ hill_climb <- function(g, max_iter) {
   Show/hide
 </button>
 
-### Notes
-
-The `max_iter` parameter works differently for this optimizer and Metropolis-Hastings. The Metropolis-Hastings will compute a posteriori of `max_iter` permutations. The Brute Force optimizer, ${p\choose 2} \cdot$ `max_iter`.
-
 ### Example
 
 <div id="spoiler3" style="display:none">
@@ -210,18 +214,18 @@ g <- gips(S, number_of_observations)
 plot(g, type = "heatmap")
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
-plot(g_map, type = "both")
+plot(g_map, type = "best")
 ```
 
 The above warning is expected.
 
-# Brute Force
+## Brute Force
 
 It searches through the whole space at once.
 
 This is the only optimizer that will certainly find the actual MAP Estimator. 
 
-This is **only recommended** for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long.
+This is **only recommended** for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long. On our machines, for $p = 9$ the calculations takes around 5 hours. For $p = 10$ we expect around 40 hours of computations.
 
 ### Example
 
@@ -266,13 +270,52 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
 
+
+# Continuation of the optimization
+
+When `max_iter` is reached during Metropolis-Hastings or hill climbing, the optimization stops and returns the result. Users are expected to plot the result and determine if it has converged. If necessary, users can continue the optimization, as shown below.
+
+<div id="spoiler5" style="display:none">
+```{r continuation_1}
+perm_size <- 70
+mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
+number_of_observations <- 50
+Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler5') .style.display=='none')
+              {document.getElementById('spoiler5') .style.display=''}
+            else{document.getElementById('spoiler5') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
+Let's say we have the data `Z` from the unknown process:
+
+```{r continuation_2}
+dim(Z)
+number_of_observations <- nrow(Z) # 50
+perm_size <- ncol(Z) # 70
+S <- cov(Z) # Assume we have to estimate the mean
+
+g <- gips(S, number_of_observations)
+
+g_map <- find_MAP(g, max_iter = 50, optimizer = "Metropolis_Hastings")
+plot(g_map, type = "best")
+g_map2 <- find_MAP(g_map, max_iter = 150, optimizer = "continue")
+plot(g_map2, type = "best")
+```
+
+
 # Additional parameters
 
-The `find_MAP()` function also has two additional parameters, namely `show_progress_bar` and `save_all_perms`. Both can be set to `TRUE` or `FALSE`.
+The `find_MAP()` function has two additional parameters: `show_progress_bar` and `save_all_perms`, which can be set to `TRUE` or `FALSE`.
 
-The `show_progress_bar = TRUE` means `gips` will print the "=" characters on the console as the optimization run. Keep in mind that when one sets the `return_probabilities = TRUE`, there will be a second progress bar indicating calculating the probabilities after optimization.
+When `show_progress_bar = TRUE`, `gips` will print "=" characters on the console during optimization. Keep in mind that when user sets the `return_probabilities = TRUE`, a second progress bar will indicate the calculation of the probabilities after optimization.
 
-The `save_all_perms = TRUE` means that `gips` will save all visited permutations in the outputted object. This will significantly increase the RAM needed for this object (for example, for $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, while with `save_all_perms = FALSE`, the 2 MB was enough). However, this is necessary for `return_probabilities = TRUE` or more complex path analysis.
+The `save_all_perms = TRUE` will save all visited permutations in the outputted object, but this significantly increases the required RAM. For instance, with $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, whereas `save_all_perms = FALSE` only required 2 MB. However, `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE` or more complex path analysis.
 
 
 # Discussion
