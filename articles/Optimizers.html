@@ -117,9 +117,9 @@ paragraphs, we will refer to this a posteriori probability function as
 </h2>
 <p>The space of permutations is enormous - for the permutation of size
 <span class="math inline">\(p\)</span>, the space of all permutations is
-of size <span class="math inline">\(p!\)</span> (<span class="math inline">\(p\)</span> factorial). Even for <span class="math inline">\(p=19\)</span>, this space is practically
+of size <span class="math inline">\(p!\)</span> (<span class="math inline">\(p\)</span> factorial). Even for <span class="math inline">\(p=10\)</span>, this space is practically
 impossible to browse. This is why <code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements
-multiple optimizers to choose from:</p>
+multiple (3) optimizers to choose from:</p>
 <ul>
 <li>
 <code>"Metropolis_Hastings"</code>, <code>"MH"</code>
@@ -132,10 +132,22 @@ multiple optimizers to choose from:</p>
 <code>"full"</code>
 </li>
 </ul>
+<p>In general, we recommend the Brute Force for <span class="math inline">\(p\le 8\)</span>. For bigger <span class="math inline">\(p&gt;9\)</span>, we recommend
+Metropolis-Hastings.</p>
+<div class="section level4">
+<h4 id="note-on-computation-time">Note on computation time<a class="anchor" aria-label="anchor" href="#note-on-computation-time"></a>
+</h4>
+<p>The <code>max_iter</code> parameter functions differently in
+Metropolis-Hastings and hill climbing.</p>
+<p>For Metropolis-Hastings, it computes a posteriori of
+<code>max_iter</code> permutations, whereas for hill climbing, it
+computes <span class="math inline">\({p\choose 2} \cdot\)</span>
+<code>max_iter</code> of them. In the case of the Brute Force optimizer,
+it computes all <span class="math inline">\(p!\)</span> of <span class="math inline">\(f(\sigma)\)</span> values.</p>
 </div>
-<div class="section level2">
-<h2 id="metropolis-hastings">Metropolis Hastings<a class="anchor" aria-label="anchor" href="#metropolis-hastings"></a>
-</h2>
+<div class="section level3">
+<h3 id="metropolis-hastings">Metropolis Hastings<a class="anchor" aria-label="anchor" href="#metropolis-hastings"></a>
+</h3>
 <p>This optimizer is implementation of the <em>Second approach</em> from
 <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec 4.1.2]</a>.</p>
 <p>This uses the Metropolis-Hastings algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="external-link">see
@@ -222,22 +234,22 @@ process:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_2-1.png" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">500</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,20,36,23,33,38,21,43,62,45,56,18,69,17,35,15,14,52,48,3,57,63,44,55,2,59,37,41,51,58,19,6,34,46,28,70,29,5,31,61,24,7,40,47,60,9,13,8,68,30,65,50,12,42,26,25,49,39,16,53,54,4,22,32,64,10,27,66,67,11)</span></span>
-<span><span class="co">#&gt;  - was found after 500 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 3.455e+2687 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt; The permutation (1,44,43,27,33,55,63,31,64,66,36,19,42,3,6,24,61,46,67,68,35,57,28,37,10,30,14,40,48,9,4,45,56,5,62,53,49,17,7,11,12,38,65,59,69,26,15,50,54,22,51,2,70,32,18,21,47,16,34,20,41,29,39,60,23,52,13,8,25)</span></span>
+<span><span class="co">#&gt;  - was found after 150 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 2.703e+2670 times more likely than the starting, () permutation.</span></span></code></pre></div>
 <p>Only after ten iterations the found permutation is unimaginably more
 likely than the original, <code>()</code> permutation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" width="700"></p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="hill-climbing">Hill climbing<a class="anchor" aria-label="anchor" href="#hill-climbing"></a>
-</h2>
+<div class="section level3">
+<h3 id="hill-climbing">Hill climbing<a class="anchor" aria-label="anchor" href="#hill-climbing"></a>
+</h3>
 <p>It uses the Hill climbing algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Hill_climbing" class="external-link">see
 Wikipedia</a>.</p>
 <p>It is performing the local optimization iteratively.</p>
@@ -307,15 +319,6 @@ Show/hide
 </button>
 </div>
 <div class="section level4">
-<h4 id="notes-1">Notes<a class="anchor" aria-label="anchor" href="#notes-1"></a>
-</h4>
-<p>The <code>max_iter</code> parameter works differently for this
-optimizer and Metropolis-Hastings. The Metropolis-Hastings will compute
-a posteriori of <code>max_iter</code> permutations. The Brute Force
-optimizer, <span class="math inline">\({p\choose 2} \cdot\)</span>
-<code>max_iter</code>.</p>
-</div>
-<div class="section level4">
 <h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h4>
 <div id="spoiler3" style="display:none">
@@ -351,22 +354,25 @@ Show/hide data preparation
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (3,25)(17,22)</span></span>
+<span><span class="co">#&gt; The permutation (5,9)(8,20)</span></span>
 <span><span class="co">#&gt;  - was found after 601 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 5.126e+34 times more likely than the starting, () permutation.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 5.485e+28 times more likely than the starting, () permutation.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warning is expected.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
-</h2>
+<div class="section level3">
+<h3 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
+</h3>
 <p>It searches through the whole space at once.</p>
 <p>This is the only optimizer that will certainly find the actual MAP
 Estimator.</p>
 <p>This is <strong>only recommended</strong> for small spaces (<span class="math inline">\(p \le 8\)</span>). It can also browse bigger
-spaces, but the required time is probably too long.</p>
+spaces, but the required time is probably too long. On our machines, for
+<span class="math inline">\(p = 9\)</span> the calculations takes around
+5 hours. For <span class="math inline">\(p = 10\)</span> we expect
+around 40 hours of computations.</p>
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h4>
@@ -406,32 +412,72 @@ Show/hide data preparation
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,6,5,4,3,2)</span></span>
+<span><span class="co">#&gt; The permutation (1,2,3,4,5,6)</span></span>
 <span><span class="co">#&gt;  - was found after 720 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 78615.877 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 65666.859 times more likely than the starting, () permutation.</span></span></code></pre></div>
 </div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="continuation-of-the-optimization">Continuation of the optimization<a class="anchor" aria-label="anchor" href="#continuation-of-the-optimization"></a>
+</h2>
+<p>When <code>max_iter</code> is reached during Metropolis-Hastings or
+hill climbing, the optimization stops and returns the result. Users are
+expected to plot the result and determine if it has converged. If
+necessary, users can continue the optimization, as shown below.</p>
+<div id="spoiler5" style="display:none">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler5') .style.display=='none')
+              {document.getElementById('spoiler5') .style.display=''}
+            else{document.getElementById('spoiler5') .style.display='none'}">
+Show/hide data preparation
+</button>
+<p>Let’s say we have the data <code>Z</code> from the unknown
+process:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 50 70</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">50</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ==============================================================================</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/continuation_2-1.png" width="700"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ===============================================================================</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/continuation_2-2.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
 </h2>
-<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function also has two additional
-parameters, namely <code>show_progress_bar</code> and
-<code>save_all_perms</code>. Both can be set to <code>TRUE</code> or
-<code>FALSE</code>.</p>
-<p>The <code>show_progress_bar = TRUE</code> means <code>gips</code>
-will print the “=” characters on the console as the optimization run.
-Keep in mind that when one sets the
-<code>return_probabilities = TRUE</code>, there will be a second
-progress bar indicating calculating the probabilities after
-optimization.</p>
-<p>The <code>save_all_perms = TRUE</code> means that <code>gips</code>
-will save all visited permutations in the outputted object. This will
-significantly increase the RAM needed for this object (for example, for
-<span class="math inline">\(p=150\)</span> and
-<code>max_perm = 150000</code>, we needed 400 MB to store it, while with
-<code>save_all_perms = FALSE</code>, the 2 MB was enough). However, this
-is necessary for <code>return_probabilities = TRUE</code> or more
-complex path analysis.</p>
+<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function has two additional parameters:
+<code>show_progress_bar</code> and <code>save_all_perms</code>, which
+can be set to <code>TRUE</code> or <code>FALSE</code>.</p>
+<p>When <code>show_progress_bar = TRUE</code>, <code>gips</code> will
+print “=” characters on the console during optimization. Keep in mind
+that when user sets the <code>return_probabilities = TRUE</code>, a
+second progress bar will indicate the calculation of the probabilities
+after optimization.</p>
+<p>The <code>save_all_perms = TRUE</code> will save all visited
+permutations in the outputted object, but this significantly increases
+the required RAM. For instance, with <span class="math inline">\(p=150\)</span> and <code>max_perm = 150000</code>,
+we needed 400 MB to store it, whereas
+<code>save_all_perms = FALSE</code> only required 2 MB. However,
+<code>save_all_perms = TRUE</code> is necessary for
+<code>return_probabilities = TRUE</code> or more complex path
+analysis.</p>
 </div>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
