@@ -30,6 +30,7 @@ argmax
 cardinality
 cdot
 circ
+cov
 data's
 data’s
 diag
@@ -52,12 +53,16 @@ mathfrak
 mathrm
 mbox
 mvrnorm
+ncol
+nrow
 operatorname
 optimizers
 pkgdown
 posteriori
 posteriories
 programme
+rnorm
+runif
 th
 underflows
 unoptimized

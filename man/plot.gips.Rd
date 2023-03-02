@@ -22,19 +22,19 @@
 \arguments{
 \item{x}{Object of a \code{gips} class.}
 
-\item{type}{A single character. One of \code{c("heatmap", "block_heatmap", "all", "best", "both")}.
+\item{type}{A single character. One of \code{c("heatmap", "all", "best", "both", "block_heatmap")}.
 \itemize{
 \item "heatmap" - Plots a heatmap of the \code{S} matrix
 inside the \code{gips} object projected
 on the permutation in the \code{gips} object.
+\item "all" - Plots the line of a posteriori for all visited states.
+\item "best" - Plots the line of the biggest a posteriori found over time.
+\item "both" - Plots both lines from "all" and "best".
 \item "block_heatmap" - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 For more information see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
-\item "all" - Plots the line of a posteriori for all visited states.
-\item "best" - Plots the line of the biggest a posteriori found over time.
-\item "both" - Plots both lines from "all" and "best".
 }
 
 The default value is \code{NA}, which will be changed to "heatmap" for
