@@ -1016,18 +1016,18 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' The plot depends on the `type` argument.
 #'
 #' @param x Object of a `gips` class.
-#' @param type A single character. One of `c("heatmap", "block_heatmap", "all", "best", "both")`.
+#' @param type A single character. One of `c("heatmap", "all", "best", "both", "block_heatmap")`.
 #'   * "heatmap" - Plots a heatmap of the `S` matrix
 #'       inside the `gips` object projected
 #'       on the permutation in the `gips` object.
+#'   * "all" - Plots the line of a posteriori for all visited states.
+#'   * "best" - Plots the line of the biggest a posteriori found over time.
+#'   * "both" - Plots both lines from "all" and "best".
 #'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
-#'   * "all" - Plots the line of a posteriori for all visited states.
-#'   * "best" - Plots the line of the biggest a posteriori found over time.
-#'   * "both" - Plots both lines from "all" and "best".
 #'
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.

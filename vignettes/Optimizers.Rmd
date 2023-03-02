@@ -41,13 +41,17 @@ The space of permutations is enormous - for the permutation of size $p$, the spa
 * `"hill_climbing"`, `"HC"`
 * `"brute_force"`, `"BF"`, `"full"`
 
-In general, we recommend the Brute Force for $p\le 8$. For bigger $p>9$, we recommend Metropolis-Hastings.
+In general, we recommend the Brute Force for $p\le 8$.
+
+For bigger $p>9$, we recommend Metropolis-Hastings.
 
 ### Note on computation time
 
 The `max_iter` parameter functions differently in Metropolis-Hastings and hill climbing.
 
-For Metropolis-Hastings, it computes a posteriori of `max_iter` permutations, whereas for hill climbing, it computes ${p\choose 2} \cdot$ `max_iter` of them. In the case of the Brute Force optimizer, it computes all $p!$ of $f(\sigma)$ values.
+For Metropolis-Hastings, it computes a posteriori of `max_iter` permutations, whereas for hill climbing, it computes ${p\choose 2} \cdot$ `max_iter` of them.
+
+In the case of the Brute Force optimizer, it computes all $p!$ of $f(\sigma)$ values.
 
 ## Metropolis Hastings
 
@@ -69,6 +73,8 @@ The final value is the best $\sigma$ that was ever computed.
 This algorithm was tested in multiple settings and turned out to be an outstanding optimizer. Especially given it does not need any hyperparameters tuned.
 
 The only parameter it depends on is `max_iter`, which determines the number of steps described above. One should choose this number rationally. When decided too small, there is a missed opportunity to find potentially a much better permutation. When decided too big, there is a lost time and computational power that does not lead to growth. Our recommendation is to plot the convergence plot with a logarithmic OX scale: `plot(g_map, type = "both", logarithmic_x = TRUE)`. Then decide if the line has flattened already. Keep in mind that the OY scale is also logarithmic. For example, a small change on the OY scale could mean $10000$ **times** the change in A Posteriori.
+
+If one decides to continue the optimization, see the **Continuation of the optimization** section below.
 
 This algorithm has been analyzed extensively by statisticians. Thanks to the ergodic theorem, the frequency of visits of a given state converges almost surely to the probability of that state. This is the approach explained in the [[1, Sec.4.1.2]](https://arxiv.org/abs/2004.03503) and shown in [[1, Sec. 5.2]](https://arxiv.org/abs/2004.03503). One can obtain estimates of posterior probabilities by setting `return_probabilities = TRUE`.
 
@@ -112,7 +118,7 @@ g_map
 Only after ten iterations the found permutation is unimaginably more likely than the original, `()` permutation.
 
 ```{r Metropolis_Hastings_3}
-plot(g_map, type = "best", logarithmic_x = TRUE)
+plot(g_map, type = "both", logarithmic_x = TRUE)
 ```
 
 
@@ -180,7 +186,7 @@ hill_climb <- function(g, max_iter) {
    onclick="if(document.getElementById('spoiler2') .style.display=='none')
               {document.getElementById('spoiler2') .style.display=''}
             else{document.getElementById('spoiler2') .style.display='none'}">
-  Show/hide
+  Show/hide pseudocode
 </button>
 
 ### Example
@@ -214,7 +220,7 @@ g <- gips(S, number_of_observations)
 plot(g, type = "heatmap")
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
-plot(g_map, type = "best")
+plot(g_map, type = "both")
 ```
 
 The above warning is expected.
@@ -277,11 +283,18 @@ When `max_iter` is reached during Metropolis-Hastings or hill climbing, the opti
 
 <div id="spoiler5" style="display:none">
 ```{r continuation_1}
+# the same code as for generating example for Metripolis-Hastings above
+
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 50
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+
+dim(Z)
+number_of_observations <- nrow(Z) # 50
+perm_size <- ncol(Z) # 70
+S <- cov(Z) # Assume we have to estimate the mean
 ```
 </div>
 
@@ -292,20 +305,13 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
   Show/hide data preparation
 </button>
 
-Let's say we have the data `Z` from the unknown process:
-
 ```{r continuation_2}
-dim(Z)
-number_of_observations <- nrow(Z) # 50
-perm_size <- ncol(Z) # 70
-S <- cov(Z) # Assume we have to estimate the mean
-
 g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 50, optimizer = "Metropolis_Hastings")
-plot(g_map, type = "best")
+plot(g_map, type = "both")
 g_map2 <- find_MAP(g_map, max_iter = 150, optimizer = "continue")
-plot(g_map2, type = "best")
+plot(g_map2, type = "both")
 ```
 
 
