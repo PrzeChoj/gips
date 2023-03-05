@@ -1,6 +1,5 @@
 ---
 title: "Theory"
-author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Theory}
@@ -14,8 +13,6 @@ knitr::opts_chunk[["set"]](
   comment = "#>",
   cache = FALSE
 )
-
-set.seed(2022)
 ```
 
 # Theory the `gips` is based on
@@ -138,7 +135,7 @@ Let `S` be any symmetric square matrix:
 ```{r def3_0, echo=FALSE}
 p <- 6
 n <- 10
-withr::with_seed(1234,
+withr::with_seed(2022,
   code = Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
 )
 Z[,1] <- 2*Z[,1]
@@ -255,9 +252,10 @@ sigma_matrix <- matrix(
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 
 # Generate example data from a model:
-withr::with_seed(1234,{
-  Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
-})
+Z <- withr::with_seed(2022,
+  code = MASS::mvrnorm(number_of_observations,
+                       mu = mu, Sigma = sigma_matrix)
+)
 # End of prepare model
 ```
 </div>

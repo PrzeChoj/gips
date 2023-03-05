@@ -160,7 +160,9 @@ sigma_matrix <- matrix(
 
 
 # Generate example data from a model:
-Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+)
 # End of prepare model
 ```
 
@@ -238,7 +240,7 @@ covariance matrix with huge accuracy only with a small amount of data
 and additional reasonable assumptions.
 
 Note that the rank of the `S` matrix was 4, while the rank of the
-`S_projected` matrix was 6.
+`S_projected` matrix was 6 (full rank).
 
 # Further reading
 
