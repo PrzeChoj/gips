@@ -83,8 +83,6 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Optimizers</h1>
-                        <h4 data-toc-skip class="author">Adam Chojecki,
-Paweł Morgen, Bartosz Kołodziejek</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/HEAD/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
@@ -211,9 +209,11 @@ obtain estimates of posterior probabilities by setting
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler1') .style.display=='none')
               {document.getElementById('spoiler1') .style.display=''}
@@ -240,9 +240,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,44,43,27,33,55,63,31,64,66,36,19,42,3,6,24,61,46,67,68,35,57,28,37,10,30,14,40,48,9,4,45,56,5,62,53,49,17,7,11,12,38,65,59,69,26,15,50,54,22,51,2,70,32,18,21,47,16,34,20,41,29,39,60,23,52,13,8,25)</span></span>
+<span><span class="co">#&gt; The permutation (1,12,30,10,23,6,29,67,24,56,66,3,32,54,36,50,8,11,68,37,49,64,63,27,15,35,34,65,53,13,62,39,46,28,48,69,59,43,42,26,4,45,20,60,31,41,18,14,38,5,7,22,57,9,70,51,33,44,25,19,47,40,21,16,17,58,61,2,52)</span></span>
 <span><span class="co">#&gt;  - was found after 150 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 2.703e+2670 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 8.625e+2688 times more likely than the starting, () permutation.</span></span></code></pre></div>
 <p>Only after ten iterations the found permutation is unimaginably more
 likely than the original, <code>()</code> permutation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -330,7 +330,9 @@ Show/hide pseudocode
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler3') .style.display=='none')
               {document.getElementById('spoiler3') .style.display=''}
@@ -357,9 +359,9 @@ Show/hide data preparation
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (5,9)(8,20)</span></span>
+<span><span class="co">#&gt; The permutation (5,17)(13,24)</span></span>
 <span><span class="co">#&gt;  - was found after 601 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 5.485e+28 times more likely than the starting, () permutation.</span></span>
+<span><span class="co">#&gt;  - is 3.879e+31 times more likely than the starting, () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warning is expected.</p>
@@ -395,7 +397,9 @@ around 40 hours of computations.</p>
 <span>  nrow <span class="op">=</span> <span class="va">perm_size</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate, is invariant under permutation (1,2,3,4,5,6)</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">13</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler4') .style.display=='none')
               {document.getElementById('spoiler4') .style.display=''}
@@ -417,7 +421,7 @@ Show/hide data preparation
 <span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6)</span></span>
 <span><span class="co">#&gt;  - was found after 720 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 65666.859 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 43706.314 times more likely than the starting, () permutation.</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -436,7 +440,9 @@ necessary, users can continue the optimization, as shown below.</p>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 50 70</span></span>
@@ -456,11 +462,16 @@ Show/hide data preparation
 <span><span class="co">#&gt; ==============================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/continuation_2-1.png" width="700"></p>
+<p>The algorithm was still significantly improving the permutation. It
+is reasonable to continue it:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">100</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/continuation_2-2.png" width="700"></p>
+<p><img src="Optimizers_files/figure-html/continuation_3-1.png" width="700"></p>
+<p>The improvement has slowed down significantly. It is fair to stop the
+algorithm here. Keep in mind the y scale is logarithmic. The visually
+“small” improvement between 100 and 150 iterations was huge, <span class="math inline">\(10^52\)</span> times the posteriori.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>

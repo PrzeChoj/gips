@@ -59,14 +59,14 @@
 <div class="section level4">
 <h4 id="bugfixes-1-0-1-9050">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-0-1-9050"></a></h4>
 <ul><li>Sometimes <code>post_probabilities</code> underflows to 0. This is appropriately validated now.</li>
-<li>Typos in Vignettes</li>
-<li>Proper testing of examples</li>
-<li>When <code>NaN</code>s occur in <code>find_MAP</code>, they will throw an error (used to show a warning).</li>
 <li>
-<code>NaN</code>s should not occur for <code>D_matrix &lt;- diag(ncol(S)) * D_coef</code> when <code>1000 &lt; D_coef &lt; 1e300</code>.</li>
+<code>NaN</code>s should not occur in <code>find_MAP</code> for <code>D_matrix &lt;- diag(ncol(S)) * D_coef</code> when <code>1000 &lt; D_coef &lt; 1e300</code>.</li>
+<li>When <code>NaN</code>s do occur in <code>find_MAP</code>, they will throw an error (used to show a warning).</li>
 <li>
-<code>Inf</code> properly handled in <code><a href="../reference/print.gips.html">print.gips()</a></code>
+<code>Inf</code> better handled in <code><a href="../reference/print.gips.html">print.gips()</a></code>
 </li>
+<li>Small Vignettes improvements</li>
+<li>Proper testing of examples</li>
 </ul></div>
 </div>
     <div class="section level2">
