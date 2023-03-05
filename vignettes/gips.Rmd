@@ -1,6 +1,5 @@
 ---
 title: "gips"
-author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{gips}
@@ -16,8 +15,6 @@ knitr::opts_chunk[["set"]](
 )
 
 old_options <- options(scipen=999) # turn off scientific notation
-
-set.seed(2022)
 ```
 
 
@@ -67,14 +64,14 @@ This package provides a way to find a *reasonable* permutation to be used as a c
 <div id="spoiler1" style="display:none">
 ```{r toy_example_data_making, include = TRUE}
 perm_size <- 5
-mu <- runif(5, -10, 10) # Assume we don't know the mean
+number_of_observations <- 4
+mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(c(8,   3,   1.9, 1.9, 1.9,
                          3,   2.5, 0.3, 0.3, 0.3,
                          1.9, 0.3, 1,   0.8, 0.8,
                          1.9, 0.3, 0.8, 1,   0.8,
-                         1.9, 0.3, 0.8, 0.8, 1), ncol=5)
+                         1.9, 0.3, 0.8, 0.8, 1), ncol = 5)
 # sigma_matrix is a matrix invariant under permutation (3,4,5)
-number_of_observations <- 4
 toy_example_data <- withr::with_seed(2022,
     code = MASS::mvrnorm(number_of_observations,
                          mu = mu, Sigma = sigma_matrix)
@@ -128,14 +125,14 @@ plot(g_map, type = "heatmap")
 ```{r toy_example_data_show4}
 g_map
 ```
-This assumption is over two times more believable than making no assumption. Let's examine how reasonable are other possible assumptions:
+This assumption is nineteen times more believable than making no assumption. Let's examine how reasonable are other possible assumptions:
 
 ```{r toy_example_data_show5}
 get_probabilities_from_gips(g_map)
 ```
 We see that assumption $(3,4,5)$ is the most likely with $20.2\%$ posterior probability. All other permutations are way less likely.
 
-Remember that for the assumptions with transpositions (like $(3,5)$), the `n0` will be 4, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
+Remember that for the `n0` could still be to big for your data. In this example the assumptions with transpositions (like $(3,5)$) will have the `n0` $= 4$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6}
 S_projected <- project_matrix(S, g_map[[1]])
@@ -167,7 +164,7 @@ my_add_text <- function(gg_plot_object){
 ```{r change_D_matrix_example1}
 library(gips)
 
-Z <-DAAG::oddbooks[,c(1,2,3)]
+Z <- DAAG::oddbooks[,c(1,2,3)]
 
 number_of_observations <- nrow(Z) # 12
 p <- ncol(Z) # 3
@@ -190,7 +187,8 @@ get_probabilities_from_gips(g_map)
 We see the search was too restrictive and did not find the permutation. We will weaken the restrictions by changing the `D_matrix` parameter.
 
 ```{r change_D_matrix_example3}
-g <- gips(S, number_of_observations, D_matrix=0.05*diag(p))
+D_coef <- 0.05
+g <- gips(S, number_of_observations, D_matrix = D_coef*diag(p))
 g_map <- find_MAP(g, optimizer = "brute_force",
                   return_probabilities = TRUE, save_all_perms = TRUE)
 
@@ -199,7 +197,7 @@ get_probabilities_from_gips(g_map)
 ```
 `find_MAP` found the symmetry represented by permutation (2,3). The result depends on two input parameters, `delta` and `D_matrix`. By default they are set to `3` and `diag(p)`, respectively.
 
-The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `C * diag(p)`).
+The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `D_coef * diag(p)`, where `D_coef` $\in \mathbb{R}^+$).
 
 
 # Further reading

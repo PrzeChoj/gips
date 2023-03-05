@@ -12,8 +12,6 @@ knitr::opts_chunk[["set"]](
   out.width = "100%",
   cache = FALSE
 )
-
-set.seed(2022)
 ```
 
 # `gips` <a href="https://przechoj.github.io/gips/"><img src="man/figures/logo.svg" align="right" height="139" /></a>
@@ -144,7 +142,9 @@ sigma_matrix <- matrix(
 
 
 # Generate example data from a model:
-Z <- MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+)
 # End of prepare model
 ```
 

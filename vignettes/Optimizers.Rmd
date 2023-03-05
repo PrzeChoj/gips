@@ -1,6 +1,5 @@
 ---
 title: "Optimizers"
-author: "Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Optimizers}
@@ -15,7 +14,6 @@ knitr::opts_chunk[["set"]](
   cache = FALSE
 )
 
-set.seed(2022)
 old_options <- options(scipen=999) # turn off scientific notation
 ```
 
@@ -84,9 +82,11 @@ This algorithm has been analyzed extensively by statisticians. Thanks to the erg
 ```{r Metropolis_Hastings_1}
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
-sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
+sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow = perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 50
-Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+)
 ```
 </div>
 
@@ -197,7 +197,9 @@ perm_size <- 25
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 20
-Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+)
 ```
 </div>
 
@@ -251,7 +253,9 @@ sigma_matrix <- matrix(
   nrow = perm_size, byrow = TRUE
 ) # the real covariance matrix, that we want to estimate, is invariant under permutation (1,2,3,4,5,6)
 number_of_observations <- 13
-Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+)
 ```
 </div>
 
@@ -289,7 +293,9 @@ perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(x){t(x) %*% x})(matrix(rnorm(perm_size*perm_size), nrow=perm_size)) # the real covariance matrix, that we want to estimate
 number_of_observations <- 50
-Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+Z <- withr::with_seed(2022,
+    code = MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
+)
 
 dim(Z)
 number_of_observations <- nrow(Z) # 50
@@ -310,9 +316,16 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 50, optimizer = "Metropolis_Hastings")
 plot(g_map, type = "both")
-g_map2 <- find_MAP(g_map, max_iter = 150, optimizer = "continue")
+```
+
+The algorithm was still significantly improving the permutation. It is reasonable to continue it:
+
+```{r continuation_3}
+g_map2 <- find_MAP(g_map, max_iter = 100, optimizer = "continue")
 plot(g_map2, type = "both")
 ```
+
+The improvement has slowed down significantly. It is fair to stop the algorithm here. Keep in mind the y scale is logarithmic. The visually "small" improvement between 100 and 150 iterations was huge, $10^52$ times the posteriori.
 
 
 # Additional parameters
