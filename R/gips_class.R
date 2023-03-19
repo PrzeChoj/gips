@@ -967,12 +967,12 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
       )
     )
   }
-
+  
   cat(
     paste0(printing_text,
     collapse = ifelse(oneline, "; ", "\n - ")
     ),
-    ".",
+    ".\n",
     sep = "", ...
   )
 }
@@ -981,15 +981,22 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
 #' Convert the log difference to the appropriate string.
 #' If bigger than 10 millions, use the scientific notation
 #' 
+#' @param digits Number of digits after comma
+#' 
 #' @examples
-#' convert_log_diff_to_str(1009.5, 3) == "3.162e+1009"
+#' convert_log_diff_to_str(1009.5, 3) == "2.632e+438"
 #' convert_log_diff_to_str(16.1, 3) == "9820670.922"
-#' convert_log_diff_to_str(16.2, 3) == "1.585e+16"
+#' convert_log_diff_to_str(16.2, 3) == "1.085e+7"
+#' convert_log_diff_to_str(-7.677, 3) == "4.634e-4"
 #' 
 #' @noRd
 convert_log_diff_to_str <- function(log_diff, digits){
-  if(is.infinite(log_diff))
-    return("Inf")
+  if(is.infinite(log_diff)){
+    return(ifelse(log_diff > 0, "Inf", "-Inf"))
+  }
+  if(log_diff == 0){
+    return("1")
+  }
   
   times_more_likely <- round(
     exp(log_diff), digits = digits
@@ -997,11 +1004,12 @@ convert_log_diff_to_str <- function(log_diff, digits){
   
   log10_diff <- log_diff * log10(exp(1))
   
-  ifelse(times_more_likely < 10000000,
+  ifelse(0 < times_more_likely && times_more_likely < 10000000,
     as.character(times_more_likely),
     paste0(
       round(10^(log10_diff - floor(log10_diff)), digits = digits),
-      "e+",
+      "e",
+      ifelse(log_diff > 0, "+", ""), # If log_diff < 0, then floor(log10_diff) will have "-" in front
       floor(log10_diff)
     )
   )
@@ -1677,6 +1685,8 @@ print.summary.gips <- function(x, ...) {
       )
     }
   }
+  
+  cat("\n")
 
   invisible(NULL)
 }

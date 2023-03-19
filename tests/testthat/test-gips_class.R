@@ -987,8 +987,20 @@ test_that("print.gips() works", {
     "1.085e+7"
   )
   expect_identical(
+    convert_log_diff_to_str(-7.677, 3),
+    "4.634e-4"
+  )
+  expect_identical(
     convert_log_diff_to_str(Inf, 3),
     "Inf"
+  )
+  expect_identical(
+    convert_log_diff_to_str(-Inf, 3),
+    "-Inf"
+  )
+  expect_identical(
+    convert_log_diff_to_str(0, 3),
+    "1"
   )
   
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
