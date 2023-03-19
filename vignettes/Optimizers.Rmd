@@ -325,7 +325,7 @@ g_map2 <- find_MAP(g_map, max_iter = 100, optimizer = "continue")
 plot(g_map2, type = "both")
 ```
 
-The improvement has slowed down significantly. It is fair to stop the algorithm here. Keep in mind the y scale is logarithmic. The visually "small" improvement between 100 and 150 iterations was huge, $10^52$ times the posteriori.
+The improvement has slowed down significantly. It is fair to stop the algorithm here. Keep in mind the y scale is logarithmic. The visually "small" improvement between 100 and 150 iterations was huge, $10^{52}$ times the posteriori.
 
 
 # Additional parameters
