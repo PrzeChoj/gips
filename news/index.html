@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9050</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9051</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,9 +55,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1.9050" id="gips-1019050">gips 1.0.1.9050<a class="anchor" aria-label="anchor" href="#gips-1019050"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.1.9051" id="gips-1019051">gips 1.0.1.9051<a class="anchor" aria-label="anchor" href="#gips-1019051"></a></h2>
 <div class="section level4">
-<h4 id="bugfixes-1-0-1-9050">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-0-1-9050"></a></h4>
+<h4 id="bugfixes-1-0-1-9051">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-0-1-9051"></a></h4>
 <ul><li>Sometimes <code>post_probabilities</code> underflows to 0. This is appropriately validated now.</li>
 <li>
 <code>NaN</code>s should not occur in <code>find_MAP</code> for <code>D_matrix &lt;- diag(ncol(S)) * D_coef</code> when <code>1000 &lt; D_coef &lt; 1e300</code>.</li>
@@ -65,6 +65,8 @@
 <li>
 <code>Inf</code> better handled in <code><a href="../reference/print.gips.html">print.gips()</a></code>
 </li>
+<li>
+<code>print.*()</code> will print ‘’ in the end</li>
 <li>Small Vignettes improvements</li>
 <li>Proper testing of examples</li>
 </ul></div>

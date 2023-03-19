@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9050</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9051</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -240,9 +240,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,12,30,10,23,6,29,67,24,56,66,3,32,54,36,50,8,11,68,37,49,64,63,27,15,35,34,65,53,13,62,39,46,28,48,69,59,43,42,26,4,45,20,60,31,41,18,14,38,5,7,22,57,9,70,51,33,44,25,19,47,40,21,16,17,58,61,2,52)</span></span>
+<span><span class="co">#&gt; The permutation (1,65,3,70,22,39,17,37,66,10,47,21,64,16,27,29,23,45,62,32,57,26,58,4,59,44,9,50,43,36,15,11,20,38,34,30,33,6,14,7,41,13,25,31,35,69,28,18,46,19,52,56,48,53,54,42,2,8,68,55,49,60,51,63,12,5,24,67,61)</span></span>
 <span><span class="co">#&gt;  - was found after 150 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 8.625e+2688 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 2.722e+2681 times more likely than the starting, () permutation.</span></span></code></pre></div>
 <p>Only after ten iterations the found permutation is unimaginably more
 likely than the original, <code>()</code> permutation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -359,9 +359,9 @@ Show/hide data preparation
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (5,17)(13,24)</span></span>
+<span><span class="co">#&gt; The permutation (2,18,25)</span></span>
 <span><span class="co">#&gt;  - was found after 601 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 3.879e+31 times more likely than the starting, () permutation.</span></span>
+<span><span class="co">#&gt;  - is 6.238e+25 times more likely than the starting, () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warning is expected.</p>
@@ -471,7 +471,7 @@ is reasonable to continue it:</p>
 <p><img src="Optimizers_files/figure-html/continuation_3-1.png" width="700"></p>
 <p>The improvement has slowed down significantly. It is fair to stop the
 algorithm here. Keep in mind the y scale is logarithmic. The visually
-“small” improvement between 100 and 150 iterations was huge, <span class="math inline">\(10^52\)</span> times the posteriori.</p>
+“small” improvement between 100 and 150 iterations was huge, <span class="math inline">\(10^{52}\)</span> times the posteriori.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
