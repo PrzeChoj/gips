@@ -28,12 +28,12 @@ observations.
     as an exploratory tool for searching the space of permutation
     symmetries of the Gaussian vector. Useful in the Exploratory Data
     Analysis (EDA).
-2.  Covariance estimation. The MLE for the covariance matrix is known to
-    exist if and only if the number of variables is less or equal to the
-    number of observations. Additional knowledge of symmetries
-    significantly weakens this requirement. Moreover, the reduction of
-    model dimension brings the advantage in terms of precision of
-    covariance estimation.
+2.  Covariance estimation. The Maximum Likelihood Estimator (MLE) for
+    the covariance matrix is known to exist if and only if the number of
+    variables is less or equal to the number of observations. Additional
+    knowledge of symmetries significantly weakens this requirement.
+    Moreover, the reduction of model dimension brings the advantage in
+    terms of precision of covariance estimation.
 
 ## Installation
 
