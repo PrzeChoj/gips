@@ -60,8 +60,8 @@
 <h4 id="bugfixes-1-0-1-9051">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-0-1-9051"></a></h4>
 <ul><li>Sometimes <code>post_probabilities</code> underflows to 0. This is appropriately validated now.</li>
 <li>
-<code>NaN</code>s should not occur in <code>find_MAP</code> for <code>D_matrix &lt;- diag(ncol(S)) * D_coef</code> when <code>1000 &lt; D_coef &lt; 1e300</code>.</li>
-<li>When <code>NaN</code>s do occur in <code>find_MAP</code>, they will throw an error (used to show a warning).</li>
+<code>NaN</code>s should not occur in <code><a href="../reference/find_MAP.html">find_MAP()</a></code> for <code>D_matrix &lt;- diag(ncol(S)) * D_coef</code> when <code>1000 &lt; D_coef &lt; 1e300</code>.</li>
+<li>When <code>NaN</code>s do occur in <code><a href="../reference/find_MAP.html">find_MAP()</a></code>, they will throw an error (used to show a warning).</li>
 <li>
 <code>Inf</code> better handled in <code><a href="../reference/print.gips.html">print.gips()</a></code>
 </li>
