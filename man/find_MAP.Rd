@@ -80,7 +80,7 @@ its \code{max_iter} without converging.
 \code{number_of_observations} (for more information on what it means,
 see \strong{\eqn{C\sigma} and \code{n0}} section
 in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 }
 \section{Possible algorithms to use as optimizers}{
@@ -88,7 +88,7 @@ in \code{vignette("Theory", package = "gips")} or in its
 
 For a more in-depth explanations, see
 \code{vignette("Optimizers", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}).
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 
 For every algorithm, there are some aliases available.
 \itemize{
@@ -180,11 +180,11 @@ with \code{find_MAP(save_all_perms = TRUE)}, it will be of
 considerable size in RAM. \code{forget_perms} can make such an object
 lighter in memory by forgetting the permutations that it was in.
 \item \code{vignette("Optimizers", package = "gips")} or its
-\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}) -
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page} -
 A place to learn more about
 the available optimizers.
 \item \code{vignette("Theory", package = "gips")} or its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}) -
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
 A place to learn more about
 the math behind the \code{gips} package.
 }
