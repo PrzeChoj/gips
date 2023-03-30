@@ -376,8 +376,9 @@ Z^{(i)}\cdot {Z^{(i)}}^\top\)</span></p>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
-<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (<span class="math inline">\(p\ge9\)</span>). It is more reasonable to estimate
-the MAP in such a big space than to calculate it precisely.</p>
+<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments <span class="math inline">\(p\ge 9\)</span> is too big). In such a big space,
+it is more reasonable to estimate the MAP than to calculate it
+precisely.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
 it. To see the discussion on it and other options available in
 <code>gips</code>, see
@@ -443,10 +444,10 @@ covariance matrix:</p>
 <span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/example2_readme3-1.png" width="700"></p>
 <p>We see the posterior probability <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,(30)]</a> has the biggest
-value for the permutation <span class="math inline">\((1,2,3,4,5,6)\)</span>. It was over 150 times
+value for the permutation <span class="math inline">\((1,2,3,4,5,6)\)</span>. It was over 500 times
 bigger than for the trivial <span class="math inline">\(\text{id} =
 (1)(2)\ldots(p)\)</span> permutation. We interpret that under the
-assumptions (centered Gaussian), it is over 150 times more reasonable to
+assumptions (centered Gaussian), it is over 500 times more reasonable to
 assume the data <code>Z</code> was drawn from model <span class="math inline">\(\mathrm{N}_p(0,\text{S_projected})\)</span> than
 from model <span class="math inline">\(\mathrm{N}_p(0,\text{S})\)</span>.</p>
 </div>
