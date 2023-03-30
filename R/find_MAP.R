@@ -13,13 +13,13 @@
 #'   `number_of_observations` (for more information on what it means,
 #'   see **\eqn{C\sigma} and `n0`** section
 #'   in `vignette("Theory", package = "gips")` or in its
-#'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
+#'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
 #' For a more in-depth explanations, see
 #'   `vignette("Optimizers", package = "gips")` or in its
-#'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)).
+#'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'   
 #' For every algorithm, there are some aliases available.
 #'
@@ -116,11 +116,11 @@
 #'     considerable size in RAM. `forget_perms` can make such an object
 #'     lighter in memory by forgetting the permutations that it was in.
 #' * `vignette("Optimizers", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) - 
 #'     A place to learn more about
 #'     the available optimizers.
 #' * `vignette("Theory", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
