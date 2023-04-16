@@ -77,7 +77,9 @@ round(block_decomposition, 5)
 gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
-The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503), Theorem 1. Blank entries are off-block entries and equal to 0. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503), Theorem 1. Blank entries are off-block entries and equal to 0. Notice that, for example, the [2,3] is not blank regardless of being 0. This is because it is a part of the block-diagonal form but happens to have a value of 0.
+
+The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
 ```{r th1_5}
@@ -126,7 +128,7 @@ So it has some identical elements.
 
 Note that for $\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
 
-So no additional assumptions are made; thus the standard covariance estimator is the best we can do.
+So, no additional assumptions are made; thus the standard covariance estimator is the best we can do.
 
 
 ### Example

@@ -115,7 +115,7 @@ g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 g_map
 ```
 
-Only after ten iterations the found permutation is unimaginably more likely than the original, `()` permutation.
+After just hundred and fifty iterations, the found permutation is unimaginably more likely than the original, `()` permutation.
 
 ```{r Metropolis_Hastings_3}
 plot(g_map, type = "both", logarithmic_x = TRUE)
