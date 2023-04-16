@@ -1,3 +1,10 @@
+# gips 1.1.0.9000
+
+### New functions - work in progress
+
+* `BIC.gips()`
+* `AIC.gips()`
+
 # gips 1.0.1.9051
 
 ### Bugfixes:

@@ -1496,14 +1496,10 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
   permutation_log_posteriori <- log_posteriori_of_gips(object)
-
-  structure_constants <- get_structure_constants(object[[1]])
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-  edited_number_of_observations <- attr(object, "number_of_observations")
-  if (attr(object, "was_mean_estimated")) { # correction for estimating the mean
-    n0 <- n0 + 1
-    edited_number_of_observations <- edited_number_of_observations - 1
-  }
+  
+  tmp <- get_n0_from_gips(object)
+  n0 <- tmp[1]
+  edited_number_of_observations <- tmp[2]
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
@@ -1689,6 +1685,24 @@ print.summary.gips <- function(x, ...) {
   cat("\n")
 
   invisible(NULL)
+}
+
+#' Internal
+#' @return a vector of length 2 with n0 and edited_number_of_observations
+#' @noRd
+get_n0_from_gips <- function(g){
+  # validate_gips(g) # TODO(Make sure all uses of `get_n0_from_gips()` are on already validated g)
+  
+  structure_constants <- get_structure_constants(g[[1]])
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  
+  edited_number_of_observations <- attr(g, "number_of_observations")
+  if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
+    n0 <- n0 + 1
+    edited_number_of_observations <- edited_number_of_observations - 1
+  }
+  
+  c(n0, edited_number_of_observations)
 }
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
