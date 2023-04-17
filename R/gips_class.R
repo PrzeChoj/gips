@@ -1753,7 +1753,7 @@ get_probabilities_from_gips <- function(g) {
 #'
 #' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
 #'
-#' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB.
+#' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB of RAM.
 #'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(save_all_perms = TRUE)`.
