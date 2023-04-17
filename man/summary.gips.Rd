@@ -10,7 +10,7 @@
 \method{print}{summary.gips}(x, ...)
 }
 \arguments{
-\item{object}{An object of class "gips"; is usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 

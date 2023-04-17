@@ -1378,7 +1378,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'
 #' `summary` method for class "gips".
 #'
-#' @param object An object of class "gips"; is usually a result of a [find_MAP()].
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @return The function `summary.gips` computes and returns a list of summary
@@ -1497,7 +1497,7 @@ summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
   permutation_log_posteriori <- log_posteriori_of_gips(object)
   
-  tmp <- get_n0_from_gips(object)
+  tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
 
@@ -1690,8 +1690,8 @@ print.summary.gips <- function(x, ...) {
 #' Internal
 #' @return a vector of length 2 with n0 and edited_number_of_observations
 #' @noRd
-get_n0_from_gips <- function(g){
-  # validate_gips(g) # TODO(Make sure all uses of `get_n0_from_gips()` are on already validated g)
+get_n0_and_edited_number_of_observations_from_gips <- function(g){
+  # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
   
   structure_constants <- get_structure_constants(g[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
@@ -1703,6 +1703,134 @@ get_n0_from_gips <- function(g){
   }
   
   c(n0, edited_number_of_observations)
+}
+
+#' Extract Log-Likelihood for gips class
+#' 
+#' Calculates Log-Likelihood of the sample given the model.
+#' 
+#' This will always be the biggest for perm = "()" (provided that p <= n)
+#' 
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param ... Further arguments passed to or from other methods.
+#' @param tol A tolerance for `det(projected_cov)`.
+#'     If the det is smaller than `tol`, the `NULL` is returned.
+#' 
+#' @section Calculation details:
+#' Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}
+#' Assume the mean was not estimated.
+#' 
+#' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (\text{PDF of multivariate normal distribution with mean 0 and cov matrix `projected\_cov` at point } Z_k)}
+#' 
+#' \eqn{ln(L(`projected\_cov`)) = -1/2 * n * ( p * (1 + ln(2\pi)) + ln(det(`projected\_cov`)) )}
+#' 
+#' @export
+#' 
+#' @seealso
+#' * [find_MAP()] - Usually, the `logLik.gips()`
+#'     is called on the output of `find_MAP()`.
+#' * [AIC.gips()] - Often, one is more interested in
+#'     an Information Criterion AIC or BIC.
+#' * [project_matrix()] - The function that can project
+#'     the known matrix of the found permutations space.
+#'     Mentioned in **Calculation details** section above
+#' 
+#' @examples 
+#' S <- matrix(c(5.15,2.05,3.10,1.99,
+#'               2.05,5.09,2.03,3.07,
+#'               3.10,2.03,5.21,1.97,
+#'               1.99,3.07,1.97,5.13), nrow = 4)
+#' g <- gips(S, 5)
+#' logLik(g) # -41.84805
+#' 
+#' g_map <- find_MAP(g, optimizer = "brute_force")
+#' logLik(g_map) # -42.1625 # this will always be smaller than `logLik(g)`
+#' 
+#' g_n_too_small <- gips(S, 4)
+#' logLik(g_n_too_small) # NULL # the likelihood does not exists; see the TODO section above
+logLik.gips <- function(object, ..., tol = .Machine$double.eps){
+  validate_gips(object)
+  
+  original_cov <- attributes(object)[["S"]]
+  projected_cov <- project_matrix(original_cov, object[[1]])
+  p <- ncol(original_cov)
+  n <- attr(object, "number_of_observations")
+  
+  tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
+  n0 <- tmp[1]
+  edited_number_of_observations <- tmp[2]
+  
+  if(n < n0){ # Likelihood is not defined in that setting
+    return(NULL)
+  }
+  
+  log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)$modulus
+  attributes(log_det_projected_cov) <- NULL
+  if(log_det_projected_cov < log(tol)){
+    rlang::warn(c("The projected matrix is computationally singular.",
+                  "x" = "The likelihood for singular matrixes does not exists",
+                  "i" = paste0("Reciprocal condition number = ", rcond(projected_cov))
+    ))
+    
+    return(NA)
+  }
+  
+  log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
+  
+  log_L_S <- -n*(p*log_2pi_plus_1 + log_det_projected_cov)/2
+  
+  n_parameters <- sum(get_structure_constants(object[[1]])$dim_omega)
+  
+  attr(log_L_S, "df") <- n_parameters
+  attr(log_L_S, "nobs") <- edited_number_of_observations
+  
+  log_L_S
+}
+
+#' Akaike's An Information Criterion for gips class
+#' 
+#' @method AIC gips
+#' 
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param ... Further arguments passed to or from other methods.
+#' 
+#' @export
+#' @examples 
+#' S <- matrix(c(5.15,2.05,3.10,1.99,
+#'               2.05,5.09,2.03,3.07,
+#'               3.10,2.03,5.21,1.97,
+#'               1.99,3.07,1.97,5.13), nrow = 4)
+#' g <- gips(S, 14)
+#' AIC(g) # 254
+#' 
+#' g_map <- find_MAP(g, optimizer = "brute_force")
+#' AIC(g_map) # 240 < 254, so this is better
+AIC.gips <- function(object, ..., k = 2){
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  
+  if(is.null(log_likelihood_S)){
+    return(NULL)
+  }
+  
+  -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
+}
+
+#' @method BIC gips
+#' @describeIn AIC.gips
+#' 
+#' @export
+#' @examples 
+#' ================================================================================
+#' BIC(g) # 261
+#' BIC(g_map) # 242 < 261, so this is better
+BIC.gips <- function(object, ...){
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  
+  if(is.null(log_likelihood_S)){
+    return(NULL)
+  }
+  
+  -2 * as.numeric(log_likelihood_S) + log(attr(log_likelihood_S, "nobs")) * attr(log_likelihood_S, "df")
 }
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
