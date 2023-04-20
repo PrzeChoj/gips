@@ -1738,6 +1738,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' \eqn{ln(L(`projected\_cov`)) = - 0.5 * (n-1) * p * ln(2\pi) - 0.5 * (n-1) * ln(det(`projected\_cov`)) - 0.5 * (n-1) * p}
 #' 
+#' @importFrom stats logLik
+#' 
 #' @export
 #' 
 #' @seealso
