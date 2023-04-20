@@ -1,9 +1,10 @@
 # gips 1.1.0.9000
 
-### New functions - work in progress
+### New functions
 
 * `BIC.gips()`
 * `AIC.gips()`
+* `logLik.gips()`
 
 # gips 1.0.1.9051
 
