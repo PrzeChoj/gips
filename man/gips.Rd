@@ -102,6 +102,9 @@ function to do it. See examples below.
 \item \code{\link[=summary.gips]{summary.gips()}}
 \item \code{\link[=plot.gips]{plot.gips()}}
 \item \code{\link[=print.gips]{print.gips()}}
+\item \code{\link[=logLik.gips]{logLik.gips()}}
+\item \code{\link[=AIC.gips]{AIC.gips()}}
+\item \code{\link[=BIC.gips]{BIC.gips()}}
 }
 }
 

@@ -12,14 +12,17 @@
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{...}{Further arguments will be ignored}
+
+\item{k}{numeric, the \emph{penalty} per parameter to be used; the
+    default \code{k = 2} is the classical AIC.}
 }
 \description{
 Akaike's An Information Criterion for gips class
 }
 \section{Functions}{
 \itemize{
-\item \code{BIC(gips)}: 
+\item \code{BIC(gips)}: Schwarz's Bayesian Information Criterion
 
 }}
 \examples{
@@ -28,11 +31,11 @@ S <- matrix(c(5.15,2.05,3.10,1.99,
               3.10,2.03,5.21,1.97,
               1.99,3.07,1.97,5.13), nrow = 4)
 g <- gips(S, 14)
-AIC(g) # 254
+AIC(g) # 238
 
 g_map <- find_MAP(g, optimizer = "brute_force")
-AIC(g_map) # 240 < 254, so this is better
-================================================================================
-BIC(g) # 261
-BIC(g_map) # 242 < 261, so this is better
+AIC(g_map) # 224 < 238, so g_map is better than g in AIC
+# ================================================================================
+BIC(g) # 244
+BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 }

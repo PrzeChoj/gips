@@ -36,6 +36,9 @@
 #' * [summary.gips()]
 #' * [plot.gips()]
 #' * [print.gips()]
+#' * [logLik.gips()]
+#' * [AIC.gips()]
+#' * [BIC.gips()]
 #'
 #' @section Hyperparameters:
 #' In the Bayesian model, the prior distribution for
@@ -1709,28 +1712,39 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' Calculates Log-Likelihood of the sample given the model.
 #' 
-#' This will always be the biggest for perm = "()" (provided that p <= n)
+#' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
+#' 
+#' If the found permutation will still require more parameters than `n`,
+#'     the Likelihood does not exist, and the function returns `NULL`.
+#' 
+#' If the `projected_cov` (output of [project_matrix()])
+#'     is close to singular, the `NA` is returned.
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #' @param tol A tolerance for `det(projected_cov)`.
-#'     If the det is smaller than `tol`, the `NULL` is returned.
+#'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
 #' @section Calculation details:
-#' Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}
-#' Assume the mean was not estimated.
-#' 
 #' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (\text{PDF of multivariate normal distribution with mean 0 and cov matrix `projected\_cov` at point } Z_k)}
 #' 
-#' \eqn{ln(L(`projected\_cov`)) = -1/2 * n * ( p * (1 + ln(2\pi)) + ln(det(`projected\_cov`)) )}
+#' Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
+#' 
+#' Assume the mean was not estimated:
+#' 
+#' \eqn{ln(L(`projected\_cov`)) = - 0.5 * n * p * ln(2\pi) - 0.5 * n * ln(det(`projected\_cov`)) - 0.5 * n * p}
+#' 
+#' Assume the mean was estimated:
+#' 
+#' \eqn{ln(L(`projected\_cov`)) = - 0.5 * (n-1) * p * ln(2\pi) - 0.5 * (n-1) * ln(det(`projected\_cov`)) - 0.5 * (n-1) * p}
 #' 
 #' @export
 #' 
 #' @seealso
 #' * [find_MAP()] - Usually, the `logLik.gips()`
 #'     is called on the output of `find_MAP()`.
-#' * [AIC.gips()] - Often, one is more interested in
-#'     an Information Criterion AIC or BIC.
+#' * [AIC.gips()], [BIC.gips()] - Often, one is more
+#'     interested in an Information Criterion AIC or BIC.
 #' * [project_matrix()] - The function that can project
 #'     the known matrix of the found permutations space.
 #'     Mentioned in **Calculation details** section above
@@ -1747,7 +1761,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' logLik(g_map) # -42.1625 # this will always be smaller than `logLik(g)`
 #' 
 #' g_n_too_small <- gips(S, 4)
-#' logLik(g_n_too_small) # NULL # the likelihood does not exists; see the TODO section above
+#' logLik(g_n_too_small) # NULL # the likelihood does not exists
 logLik.gips <- function(object, ..., tol = .Machine$double.eps){
   validate_gips(object)
   
@@ -1766,7 +1780,7 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
   
   log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)$modulus
   attributes(log_det_projected_cov) <- NULL
-  if(log_det_projected_cov < log(tol)){
+  if(log_det_projected_cov < log(tol)){ # Do not consider sign, because `validate_gips()` checks `is.positive.semi.definite.matrix()`
     rlang::warn(c("The projected matrix is computationally singular.",
                   "x" = "The likelihood for singular matrixes does not exists",
                   "i" = paste0("Reciprocal condition number = ", rcond(projected_cov))
@@ -1777,12 +1791,12 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
   
   log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
   
-  log_L_S <- -n*(p*log_2pi_plus_1 + log_det_projected_cov)/2
+  log_L_S <- -edited_number_of_observations*(p*log_2pi_plus_1 + log_det_projected_cov)/2
   
   n_parameters <- sum(get_structure_constants(object[[1]])$dim_omega)
   
   attr(log_L_S, "df") <- n_parameters
-  attr(log_L_S, "nobs") <- edited_number_of_observations
+  attr(log_L_S, "nobs") <- n # not edited_number_of_observations
   
   log_L_S
 }
@@ -1792,7 +1806,10 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
 #' @method AIC gips
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
-#' @param ... Further arguments passed to or from other methods.
+#' @param ... Further arguments will be ignored
+#' @inheritParams stats::AIC
+#' 
+#' @importFrom stats AIC
 #' 
 #' @export
 #' @examples 
@@ -1801,10 +1818,10 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
 #'               3.10,2.03,5.21,1.97,
 #'               1.99,3.07,1.97,5.13), nrow = 4)
 #' g <- gips(S, 14)
-#' AIC(g) # 254
+#' AIC(g) # 238
 #' 
 #' g_map <- find_MAP(g, optimizer = "brute_force")
-#' AIC(g_map) # 240 < 254, so this is better
+#' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
 AIC.gips <- function(object, ..., k = 2){
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
   
@@ -1816,13 +1833,15 @@ AIC.gips <- function(object, ..., k = 2){
 }
 
 #' @method BIC gips
-#' @describeIn AIC.gips
+#' @describeIn AIC.gips Schwarz's Bayesian Information Criterion
+#' 
+#' @importFrom stats BIC
 #' 
 #' @export
 #' @examples 
-#' ================================================================================
-#' BIC(g) # 261
-#' BIC(g_map) # 242 < 261, so this is better
+#' # ================================================================================
+#' BIC(g) # 244
+#' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 BIC.gips <- function(object, ...){
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
   
@@ -1830,7 +1849,8 @@ BIC.gips <- function(object, ...){
     return(NULL)
   }
   
-  -2 * as.numeric(log_likelihood_S) + log(attr(log_likelihood_S, "nobs")) * attr(log_likelihood_S, "df")
+  k <- log(attr(log_likelihood_S, "nobs")) # this line is the only difference from `AIC.gips()`
+  -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
 }
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`

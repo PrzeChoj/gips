@@ -12,22 +12,33 @@
 \item{...}{Further arguments passed to or from other methods.}
 
 \item{tol}{A tolerance for \code{det(projected_cov)}.
-If the det is smaller than \code{tol}, the \code{NULL} is returned.}
+If the det is smaller than \code{tol}, the \code{NA} is returned.}
 }
 \description{
 Calculates Log-Likelihood of the sample given the model.
 }
 \details{
-This will always be the biggest for perm = "()" (provided that p <= n)
+This will always be the biggest for \code{perm = "()"} (provided that \code{p <= n}).
+
+If the found permutation will still require more parameters than \code{n},
+the Likelihood does not exist, and the function returns \code{NULL}.
+
+If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
+is close to singular, the \code{NA} is returned.
 }
 \section{Calculation details}{
 
-Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}
-Assume the mean was not estimated.
-
 \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (\text{PDF of multivariate normal distribution with mean 0 and cov matrix `projected\_cov` at point } Z_k)}
 
-\eqn{ln(L(`projected\_cov`)) = -1/2 * n * ( p * (1 + ln(2\pi)) + ln(det(`projected\_cov`)) )}
+Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
+
+Assume the mean was not estimated:
+
+\eqn{ln(L(`projected\_cov`)) = - 0.5 * n * p * ln(2\pi) - 0.5 * n * ln(det(`projected\_cov`)) - 0.5 * n * p}
+
+Assume the mean was estimated:
+
+\eqn{ln(L(`projected\_cov`)) = - 0.5 * (n-1) * p * ln(2\pi) - 0.5 * (n-1) * ln(det(`projected\_cov`)) - 0.5 * (n-1) * p}
 }
 
 \examples{
@@ -42,14 +53,14 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 logLik(g_map) # -42.1625 # this will always be smaller than `logLik(g)`
 
 g_n_too_small <- gips(S, 4)
-logLik(g_n_too_small) # NULL # the likelihood does not exists; see the TODO section above
+logLik(g_n_too_small) # NULL # the likelihood does not exists
 }
 \seealso{
 \itemize{
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{logLik.gips()}
 is called on the output of \code{find_MAP()}.
-\item \code{\link[=AIC.gips]{AIC.gips()}} - Often, one is more interested in
-an Information Criterion AIC or BIC.
+\item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Often, one is more
+interested in an Information Criterion AIC or BIC.
 \item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
 the known matrix of the found permutations space.
 Mentioned in \strong{Calculation details} section above
