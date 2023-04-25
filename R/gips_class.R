@@ -1710,12 +1710,12 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 
 #' Extract Log-Likelihood for gips class
 #' 
-#' Calculates Log-Likelihood of the sample given the model.
+#' Calculates Log-Likelihood of the sample based on the `gips` object.
 #' 
 #' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
 #' 
 #' If the found permutation will still require more parameters than `n`,
-#'     the Likelihood does not exist, and the function returns `NULL`.
+#'     the Likelihood does not exist, thus the function returns `NULL`.
 #' 
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
@@ -1726,7 +1726,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
 #' @section Calculation details:
-#' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (\text{PDF of multivariate normal distribution with mean 0 and cov matrix `projected\_cov` at point } Z_k)}
+#' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix `projected_cov` at point \eqn{Z_k)}
 #' 
 #' Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
 #' 
@@ -1743,6 +1743,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' @export
 #' 
 #' @seealso
+#' * [logLik()] - Generic function this [logLik.gips()] extends.
 #' * [find_MAP()] - Usually, the `logLik.gips()`
 #'     is called on the output of `find_MAP()`.
 #' * [AIC.gips()], [BIC.gips()] - Often, one is more
@@ -1752,19 +1753,20 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     Mentioned in **Calculation details** section above
 #' 
 #' @examples 
-#' S <- matrix(c(5.15,2.05,3.10,1.99,
-#'               2.05,5.09,2.03,3.07,
-#'               3.10,2.03,5.21,1.97,
-#'               1.99,3.07,1.97,5.13), nrow = 4)
+#' S <- matrix(c(5.15,2.05,3.60,1.99,
+#'               2.05,5.09,2.03,3.57,
+#'               3.60,2.03,5.21,1.97,
+#'               1.99,3.57,1.97,5.13), nrow = 4)
 #' g <- gips(S, 5)
-#' logLik(g) # -41.84805
+#' logLik(g) # -32.67048
+#' # For perm = "", which is default, there is p + choose(p, 2) degrees of freedom
 #' 
 #' g_map <- find_MAP(g, optimizer = "brute_force")
-#' logLik(g_map) # -42.1625 # this will always be smaller than `logLik(g)`
+#' logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 #' 
 #' g_n_too_small <- gips(S, 4)
 #' logLik(g_n_too_small) # NULL # the likelihood does not exists
-logLik.gips <- function(object, ..., tol = .Machine$double.eps){
+logLik.gips <- function(object, ..., tol = .Machine[["double.eps"]]){
   validate_gips(object)
   
   original_cov <- attributes(object)[["S"]]
@@ -1780,7 +1782,7 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
     return(NULL)
   }
   
-  log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)$modulus
+  log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)[["modulus"]]
   attributes(log_det_projected_cov) <- NULL
   if(log_det_projected_cov < log(tol)){ # Do not consider sign, because `validate_gips()` checks `is.positive.semi.definite.matrix()`
     rlang::warn(c("The projected matrix is computationally singular.",
@@ -1795,10 +1797,10 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
   
   log_L_S <- -edited_number_of_observations*(p*log_2pi_plus_1 + log_det_projected_cov)/2
   
-  n_parameters <- sum(get_structure_constants(object[[1]])$dim_omega)
+  n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
   
   attr(log_L_S, "df") <- n_parameters
-  attr(log_L_S, "nobs") <- n # not edited_number_of_observations
+  attr(log_L_S, "nobs") <- n # The AIC and BIC will use n, not edited_number_of_observations
   
   log_L_S
 }
@@ -1812,6 +1814,14 @@ logLik.gips <- function(object, ..., tol = .Machine$double.eps){
 #' @inheritParams stats::AIC
 #' 
 #' @importFrom stats AIC
+#' 
+#' @seealso
+#' * [AIC()], [BIC()] - Generic functions
+#'     this [AIC.gips()] and [BIC.gips()] extend.
+#' * [find_MAP()] - Usually, the `AIC.gips()` and `BIC.gips()`
+#'     are called on the output of `find_MAP()`.
+#' * [logLik.gips()] - Calculates the log likelihood for
+#'     the `gips` object. Important part of the Information Criteria.
 #' 
 #' @export
 #' @examples 

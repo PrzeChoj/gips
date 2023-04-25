@@ -4,7 +4,7 @@
 \alias{logLik.gips}
 \title{Extract Log-Likelihood for gips class}
 \usage{
-\method{logLik}{gips}(object, ..., tol = .Machine$double.eps)
+\method{logLik}{gips}(object, ..., tol = .Machine[["double.eps"]])
 }
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
@@ -15,20 +15,20 @@
 If the det is smaller than \code{tol}, the \code{NA} is returned.}
 }
 \description{
-Calculates Log-Likelihood of the sample given the model.
+Calculates Log-Likelihood of the sample based on the \code{gips} object.
 }
 \details{
 This will always be the biggest for \code{perm = "()"} (provided that \code{p <= n}).
 
 If the found permutation will still require more parameters than \code{n},
-the Likelihood does not exist, and the function returns \code{NULL}.
+the Likelihood does not exist, thus the function returns \code{NULL}.
 
 If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
 is close to singular, the \code{NA} is returned.
 }
 \section{Calculation details}{
 
-\eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (\text{PDF of multivariate normal distribution with mean 0 and cov matrix `projected\_cov` at point } Z_k)}
+\eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix \code{projected_cov} at point \eqn{Z_k)}
 
 Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
 
@@ -42,21 +42,23 @@ Assume the mean was estimated:
 }
 
 \examples{
-S <- matrix(c(5.15,2.05,3.10,1.99,
-              2.05,5.09,2.03,3.07,
-              3.10,2.03,5.21,1.97,
-              1.99,3.07,1.97,5.13), nrow = 4)
+S <- matrix(c(5.15,2.05,3.60,1.99,
+              2.05,5.09,2.03,3.57,
+              3.60,2.03,5.21,1.97,
+              1.99,3.57,1.97,5.13), nrow = 4)
 g <- gips(S, 5)
-logLik(g) # -41.84805
+logLik(g) # -32.67048
+# For perm = "", which is default, there is p + choose(p, 2) degrees of freedom
 
 g_map <- find_MAP(g, optimizer = "brute_force")
-logLik(g_map) # -42.1625 # this will always be smaller than `logLik(g)`
+logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 
 g_n_too_small <- gips(S, 4)
 logLik(g_n_too_small) # NULL # the likelihood does not exists
 }
 \seealso{
 \itemize{
+\item \code{\link[=logLik]{logLik()}} - Generic function this \code{\link[=logLik.gips]{logLik.gips()}} extends.
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{logLik.gips()}
 is called on the output of \code{find_MAP()}.
 \item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Often, one is more

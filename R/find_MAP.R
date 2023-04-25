@@ -105,7 +105,9 @@
 #'     The `gips` object is used as the `g` parameter.
 #' * [plot.gips()] - Practical plotting function for
 #'     visualizing the optimization process.
-#' * [summary.gips()] - The function that summarizes the output of optimization.
+#' * [summary.gips()] - Summarize the output of optimization.
+#' * [AIC.gips()], [BIC.gips()] - Get the Information Criterion
+#'     of the found model.
 #' * [get_probabilities_from_gips()] - When
 #'     `find_MAP(return_probabilities = TRUE)` was called,
 #'     then those probabilities can be extracted with this function.
