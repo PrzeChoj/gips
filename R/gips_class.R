@@ -1766,7 +1766,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' g_n_too_small <- gips(S, 4)
 #' logLik(g_n_too_small) # NULL # the likelihood does not exists
-logLik.gips <- function(object, ..., tol = .Machine[["double.eps"]]){
+logLik.gips <- function(object, ..., tol = 1e-07){
   validate_gips(object)
   
   original_cov <- attributes(object)[["S"]]
@@ -1841,6 +1841,10 @@ AIC.gips <- function(object, ..., k = 2){
     return(NULL)
   }
   
+  if(is.na(log_likelihood_S)){
+    return(NA)
+  }
+  
   -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
 }
 
@@ -1859,6 +1863,10 @@ BIC.gips <- function(object, ...){
   
   if(is.null(log_likelihood_S)){
     return(NULL)
+  }
+  
+  if(is.na(log_likelihood_S)){
+    return(NA)
   }
   
   k <- log(attr(log_likelihood_S, "nobs")) # this line is the only difference from `AIC.gips()`

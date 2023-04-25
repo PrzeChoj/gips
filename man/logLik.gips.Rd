@@ -4,7 +4,7 @@
 \alias{logLik.gips}
 \title{Extract Log-Likelihood for gips class}
 \usage{
-\method{logLik}{gips}(object, ..., tol = .Machine[["double.eps"]])
+\method{logLik}{gips}(object, ..., tol = 1e-07)
 }
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
