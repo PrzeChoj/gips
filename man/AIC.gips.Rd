@@ -20,6 +20,13 @@
 \description{
 Akaike's An Information Criterion for gips class
 }
+\details{
+If the found permutation will still require more parameters than \code{n},
+the Likelihood does not exist, thus the function returns \code{NULL}.
+
+If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
+is close to singular, the \code{NA} is returned.
+}
 \section{Functions}{
 \itemize{
 \item \code{BIC(gips)}: Schwarz's Bayesian Information Criterion
@@ -42,7 +49,7 @@ BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 \seealso{
 \itemize{
 \item \code{\link[=AIC]{AIC()}}, \code{\link[=BIC]{BIC()}} - Generic functions
-this \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} extend.
+this \code{AIC.gips()} and \code{BIC.gips()} extend.
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{AIC.gips()} and \code{BIC.gips()}
 are called on the output of \code{find_MAP()}.
 \item \code{\link[=logLik.gips]{logLik.gips()}} - Calculates the log likelihood for

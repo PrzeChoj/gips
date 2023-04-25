@@ -1807,6 +1807,13 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 
 #' Akaike's An Information Criterion for gips class
 #' 
+#' @details 
+#' If the found permutation will still require more parameters than `n`,
+#'     the Likelihood does not exist, thus the function returns `NULL`.
+#' 
+#' If the `projected_cov` (output of [project_matrix()])
+#'     is close to singular, the `NA` is returned.
+#' 
 #' @method AIC gips
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
@@ -1817,7 +1824,7 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' 
 #' @seealso
 #' * [AIC()], [BIC()] - Generic functions
-#'     this [AIC.gips()] and [BIC.gips()] extend.
+#'     this `AIC.gips()` and `BIC.gips()` extend.
 #' * [find_MAP()] - Usually, the `AIC.gips()` and `BIC.gips()`
 #'     are called on the output of `find_MAP()`.
 #' * [logLik.gips()] - Calculates the log likelihood for
