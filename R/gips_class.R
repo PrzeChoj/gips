@@ -1411,6 +1411,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   10. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
 #' * For optimized `gips` object:
 #'   1. `optimized` - `TRUE`
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1440,23 +1441,24 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   12. `optimization_algorithm_used` - all used optimization algorithms
+#'   12. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   13. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
-#'   13. `did_converge` - a boolean, did the last used algorithm converge
-#'   14. `number_of_log_posteriori_calls` - how many times was
+#'   14. `did_converge` - a boolean, did the last used algorithm converge
+#'   15. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   15. `whole_optimization_time` - how long was the optimization process;
+#'   16. `whole_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
-#'   16. `log_posteriori_calls_after_best` - how many times was
+#'   17. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result;
 #'       if this value is small, consider running [find_MAP()]
 #'       one more time with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`
-#'   17. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'   18. `acceptance_rate` - only interesting for `optimizer = "MH"`;
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
@@ -1464,10 +1466,12 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' @seealso
 #' * [find_MAP()] - Usually, the `summary.gips()`
 #'     is called on the output of `find_MAP()`.
-#' * [log_posteriori_of_gips()] - The function that
-#'     calculates the likelihood of a permutation.
-#' * [project_matrix()] - The function that can project
-#'     the known matrix of the found permutations space.
+#' * [log_posteriori_of_gips()] - Calculate
+#'     the likelihood of a permutation.
+#' * [AIC.gips()], [BIC.gips()] - Calculate
+#'     Akaike's or Bayesian Information Criterion
+#' * [project_matrix()] - Project the known
+#'     matrix of the found permutations space.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -1510,7 +1514,7 @@ summary.gips <- function(object, ...) {
       number_of_observations = edited_number_of_observations,
       delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
     )
-
+    
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
@@ -1522,7 +1526,9 @@ summary.gips <- function(object, ...) {
       number_of_observations = attr(object, "number_of_observations"),
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
-      D_matrix = attr(object, "D_matrix")
+      D_matrix = attr(object, "D_matrix"),
+      AIC = suppressWarnings(AIC.gips(object)), # warning for NA
+      BIC = suppressWarnings(BIC.gips(object))  # warning for NA
     )
   } else {
     optimization_info <- attr(object, "optimization_info")
@@ -1557,6 +1563,8 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
+      AIC = suppressWarnings(AIC.gips(object)), # warning for NA
+      BIC = suppressWarnings(BIC.gips(object)), # warning for NA
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
@@ -1634,6 +1642,8 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "not ", ""
   ), "exist.",
+  "\n\nBIC:\n ", x[["BIC"]],
+  "\n\nAIC:\n ", x[["AIC"]],
   sep = ""
   )
 
