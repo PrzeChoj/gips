@@ -320,6 +320,15 @@ The interpretation is as follows: the smaller the criterion, the better the mode
 
 Those can be calculated by `AIC.gips()` and `BIC.gips()`.
 
+### Estimated mean
+When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then:
+
+$$\log L_{estimated\ mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{(n-1)\cdot p}{2}\log (2\pi) - \frac{(n-1)}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2$$
+
+And definitions of AIC and BIC stay the same:
+
+$$AIC = 2 \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
 
 ### Example
 

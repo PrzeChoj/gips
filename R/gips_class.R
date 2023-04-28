@@ -1735,7 +1735,6 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' @param tol A tolerance for `det(projected_cov)`.
 #'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
-#' 
 #' @section Existence of likelihood:
 #' We only consider the non-degenerate multivariate normal model.
 #' In the `gips` context, such a model exists only when
@@ -1754,17 +1753,10 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #' 
 #' @section Calculation details:
-#' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix `projected_cov` at point \eqn{Z_k)}
-#' 
-#' Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
-#' 
-#' Assume the mean was not estimated:
-#' 
-#' \eqn{ln(L(`projected\_cov`)) = - 0.5 * n * p * ln(2\pi) - 0.5 * n * ln(det(`projected\_cov`)) - 0.5 * n * p}
-#' 
-#' Assume the mean was estimated:
-#' 
-#' \eqn{ln(L(`projected\_cov`)) = - 0.5 * (n-1) * p * ln(2\pi) - 0.5 * (n-1) * ln(det(`projected\_cov`)) - 0.5 * (n-1) * p}
+#' For more details and used formulas, see
+#' the **Information Criterion - AIC and BIC** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #' 
 #' @importFrom stats logLik
 #' 
@@ -1779,8 +1771,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' * [summary.gips()] - One can get `n0` by calling `summary(g)$n0`.
 #'     To see why one may be interested in `n0`,
 #'     see the **Existence of likelihood** section above.
-#' * [project_matrix()] - The function that can project
-#'     the known matrix of the found permutations space.
+#' * [project_matrix()] - Project the known matrix
+#'     onto the found permutations space.
 #'     Mentioned in **Calculation details** section above
 #' 
 #' @examples 
@@ -1850,6 +1842,12 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' 
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
+#' 
+#' @section Calculation details:
+#' For more details and used formulas, see
+#' the **Information Criterion - AIC and BIC** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #' 
 #' @method AIC gips
 #' 

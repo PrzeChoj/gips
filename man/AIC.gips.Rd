@@ -32,6 +32,14 @@ is close to singular, the \code{NA} is returned.
 \item \code{BIC(gips)}: Schwarz's Bayesian Information Criterion
 
 }}
+\section{Calculation details}{
+
+For more details and used formulas, see
+the \strong{Information Criterion - AIC and BIC} section in
+\code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
+}
+
 \examples{
 S <- matrix(c(5.15,2.05,3.10,1.99,
               2.05,5.09,2.03,3.07,

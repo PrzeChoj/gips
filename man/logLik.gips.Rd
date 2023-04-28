@@ -47,17 +47,10 @@ For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 
 \section{Calculation details}{
 
-\eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix \code{projected_cov} at point \eqn{Z_k)}
-
-Let \eqn{`projected\_cov` = \pi_{\Gamma}(S)}.
-
-Assume the mean was not estimated:
-
-\eqn{ln(L(`projected\_cov`)) = - 0.5 * n * p * ln(2\pi) - 0.5 * n * ln(det(`projected\_cov`)) - 0.5 * n * p}
-
-Assume the mean was estimated:
-
-\eqn{ln(L(`projected\_cov`)) = - 0.5 * (n-1) * p * ln(2\pi) - 0.5 * (n-1) * ln(det(`projected\_cov`)) - 0.5 * (n-1) * p}
+For more details and used formulas, see
+the \strong{Information Criterion - AIC and BIC} section in
+\code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 
 \examples{
@@ -86,7 +79,7 @@ interested in an Information Criterion AIC or BIC.
 To see why one may be interested in \code{n0},
 see the \strong{Existence of likelihood} section above.
 \item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
-the known matrix of the found permutations space.
+the known matrix onto the found permutations space.
 Mentioned in \strong{Calculation details} section above
 }
 }
