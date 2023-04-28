@@ -3,8 +3,9 @@
 #' Create permutation objects to be passed to
 #' other functions of the `gips` package.
 #'
-#' @param x An object created with a `permutations` package or any object
-#'     that can be processed with the [permutations::permutation()] function.
+#' @param x A single object that can be interpreted by
+#'     the [permutations::permutation()] function.
+#'     For example, the character of a form `"(1,2)(4,5)"`. See examples.
 #' @param size An integer. Size of a permutation
 #'     (AKA cardinality of a set, on which permutation is defined; see examples).
 #'
@@ -16,24 +17,35 @@
 #'     a `gips_perm` class after the safety checks.
 #'
 #' @seealso
+#' * [project_matrix()] - `gips_perm` is the `perm` parameter in `project_matrix()`.
 #' * [permutations::permutation()] - The constructor for the `x` parameter.
 #' * [gips()] - The constructor for the `gips` class uses
 #'     the `gips_perm` object as the base object.
 #'
 #' @examples
-#' gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
-#' gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-#' # note the necessity of `size` parameter
-#' gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
-#' gperm <- gips_perm("(1,2)(5,4)", 7)
+#' # All 7 following lines give the same output:
+#' gperm <- gips_perm("(12)(45)", 5)
+#' gperm <- gips_perm("(1,2)(4,5)", 5)
+#' gperm <- gips_perm(as.matrix(c(2,1,3,5,4)), 5)
+#' gperm <- gips_perm(t(as.matrix(c(2,1,3,5,4))), 5) # both way for a matrix works
+#' gperm <- gips_perm(list(list(c(2,1),c(4,5))), 5)
+#' gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
+#' gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 #' gperm
+#' 
+#' # note the necessity of `size` parameter:
+#' gperm <- gips_perm("(12)(45)", 5)
+#' gperm <- gips_perm("(12)(45)", 7) # this one is a different permutation
 #'
-#' try(gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3))
-#' # Error, `size` equals 3 while the maximum element is 5.
+#' try(gperm <- gips_perm("(12)(45)", 4))
+#' # Error, `size` was set to 4, while the permutation has the element 5.
 #'
 #' @export
 gips_perm <- function(x, size) {
   if (!inherits(x, "permutation")) {
+    if (is.matrix(x) && dim(x)[1] != 1){
+      x <- t(x) # matrix x has to be a row, not a column
+    }
     if (is.matrix(x) || is.character(x) || is.list(x)) {
       x <- permutations::permutation(x)
     } else {
@@ -63,7 +75,7 @@ gips_perm <- function(x, size) {
   }
   x <- permutations::as.cycle(x)
 
-  if (length(unclass(x)) > 1) {
+  if (length(unclass(x)) > 1) { # this could be checked prior to `permutations::permutation()`, but I think this will almost never be a problem
     rlang::warn(c("Passing multiple permutations to `gips_perm()` is not supported. Taking only the first one.",
       "i" = paste0("You provided ", length(unclass(x)), " permutations.")
     ))

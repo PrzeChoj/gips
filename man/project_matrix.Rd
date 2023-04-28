@@ -12,7 +12,9 @@ The covariance estimator.
 (See the same parameter in \code{\link[=gips]{gips()}} function).}
 
 \item{perm}{A permutation. Generator of a permutation group.
-Either of a \code{gips_perm} or a \code{permutations::cycle} class.}
+When \code{g} is the \code{gips} object, \code{g[[1]]} can be used as \code{perm}.
+Either of a \code{gips_perm} class or anything that can be used
+as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.}
 
 \item{precomputed_equal_indices}{This parameter is for internal use only.}
 }
@@ -58,18 +60,17 @@ section in \code{vignette("Theory", package = "gips")} or in its
 }
 \examples{
 p <- 6
-gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), p) # permutation (1,4)(2,3)(5)(6)
-
+my_perm <- "(14)(23)" # permutation (1,4)(2,3)(5)(6)
 number_of_observations <- 10
 X <- matrix(rnorm(p * number_of_observations), number_of_observations, p)
 S <- cov(X)
-projected_S <- project_matrix(S, perm = gperm)
+projected_S <- project_matrix(S, perm = my_perm)
 projected_S
 # The value in [1,1] is the same as in [4,4]; also, [2,2] and [3,3];
   # also [1,2] and [4,3]; also, [1,5] and [4,5]; and so on
 
 # Plot the projected matrix:
-g <- gips(S, number_of_observations, perm = gperm)
+g <- gips(S, number_of_observations, perm = my_perm)
 plot(g, type = "heatmap")
 
 # Find the MAP Estimator

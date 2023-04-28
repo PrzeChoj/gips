@@ -13,8 +13,9 @@ new_gips_perm(rearranged_cycles, size)
 validate_gips_perm(g)
 }
 \arguments{
-\item{x}{An object created with a \code{permutations} package or any object
-that can be processed with the \code{\link[permutations:permutation]{permutations::permutation()}} function.}
+\item{x}{A single object that can be interpreted by
+the \code{\link[permutations:permutation]{permutations::permutation()}} function.
+For example, the character of a form \code{"(1,2)(4,5)"}. See examples.}
 
 \item{size}{An integer. Size of a permutation
 (AKA cardinality of a set, on which permutation is defined; see examples).}
@@ -56,19 +57,27 @@ other functions of the \code{gips} package.
 }
 
 \examples{
-gperm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
-gperm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-# note the necessity of `size` parameter
-gperm <- gips_perm(permutations::as.cycle("(5,4)"), 7)
-gperm <- gips_perm("(1,2)(5,4)", 7)
+# All 7 following lines give the same output:
+gperm <- gips_perm("(12)(45)", 5)
+gperm <- gips_perm("(1,2)(4,5)", 5)
+gperm <- gips_perm(as.matrix(c(2,1,3,5,4)), 5)
+gperm <- gips_perm(t(as.matrix(c(2,1,3,5,4))), 5) # both way for a matrix works
+gperm <- gips_perm(list(list(c(2,1),c(4,5))), 5)
+gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
+gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 gperm
 
-try(gperm <- gips_perm(permutations::as.cycle("(5,4)"), 3))
-# Error, `size` equals 3 while the maximum element is 5.
+# note the necessity of `size` parameter:
+gperm <- gips_perm("(12)(45)", 5)
+gperm <- gips_perm("(12)(45)", 7) # this one is a different permutation
+
+try(gperm <- gips_perm("(12)(45)", 4))
+# Error, `size` was set to 4, while the permutation has the element 5.
 
 }
 \seealso{
 \itemize{
+\item \code{\link[=project_matrix]{project_matrix()}} - \code{gips_perm} is the \code{perm} parameter in \code{project_matrix()}.
 \item \code{\link[permutations:permutation]{permutations::permutation()}} - The constructor for the \code{x} parameter.
 \item \code{\link[=gips]{gips()}} - The constructor for the \code{gips} class uses
 the \code{gips_perm} object as the base object.
