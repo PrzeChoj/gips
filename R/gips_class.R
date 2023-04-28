@@ -1760,6 +1760,14 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' @importFrom stats logLik
 #' 
+#' @returns Log-Likelihood of the sample.
+#' 
+#' When one does not exists, returns `NA`.
+#' When it cannot be reasonably approximated, returns `NULL`.
+#'     
+#' In both failure situations, shows a warning.
+#' More information can be found in **Existence of likelihood** section below.
+#' 
 #' @export
 #' 
 #' @seealso
@@ -1855,6 +1863,14 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' @param ... Further arguments will be ignored
 #' @inheritParams stats::AIC
 #' 
+#' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
+#' 
+#' When normal model does not exists, returns `NA`.
+#' When normal model cannot be reasonably approximated, returns `NULL`.
+#'     
+#' In both failure situations, shows a warning.
+#' More information can be found in **Existence of likelihood** section of [logLik.gips()].
+#' 
 #' @importFrom stats AIC
 #' 
 #' @seealso
@@ -1894,6 +1910,8 @@ AIC.gips <- function(object, ..., k = 2){
 #' @describeIn AIC.gips Schwarz's Bayesian Information Criterion
 #' 
 #' @importFrom stats BIC
+#' 
+#' @returns `BIC.gips()` returns calculated Schwarz's Bayesian Information Criterion
 #' 
 #' @export
 #' @examples 

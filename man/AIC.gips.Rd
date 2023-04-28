@@ -17,6 +17,17 @@
 \item{k}{numeric, the \emph{penalty} per parameter to be used; the
     default \code{k = 2} is the classical AIC.}
 }
+\value{
+\code{AIC.gips()} returns calculated Akaike's An Information Criterion
+
+When normal model does not exists, returns \code{NA}.
+When normal model cannot be reasonably approximated, returns \code{NULL}.
+
+In both failure situations, shows a warning.
+More information can be found in \strong{Existence of likelihood} section of \code{\link[=logLik.gips]{logLik.gips()}}.
+
+\code{BIC.gips()} returns calculated Schwarz's Bayesian Information Criterion
+}
 \description{
 Akaike's An Information Criterion for gips class
 }

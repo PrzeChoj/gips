@@ -14,6 +14,15 @@
 \item{tol}{A tolerance for \code{det(projected_cov)}.
 If the det is smaller than \code{tol}, the \code{NA} is returned.}
 }
+\value{
+Log-Likelihood of the sample.
+
+When one does not exists, returns \code{NA}.
+When it cannot be reasonably approximated, returns \code{NULL}.
+
+In both failure situations, shows a warning.
+More information can be found in \strong{Existence of likelihood} section below.
+}
 \description{
 Calculates Log-Likelihood of the sample based on the \code{gips} object.
 }
@@ -78,8 +87,8 @@ interested in an Information Criterion AIC or BIC.
 \item \code{\link[=summary.gips]{summary.gips()}} - One can get \code{n0} by calling \code{summary(g)$n0}.
 To see why one may be interested in \code{n0},
 see the \strong{Existence of likelihood} section above.
-\item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
-the known matrix onto the found permutations space.
+\item \code{\link[=project_matrix]{project_matrix()}} - Project the known matrix
+onto the found permutations space.
 Mentioned in \strong{Calculation details} section above
 }
 }
