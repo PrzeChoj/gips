@@ -48,6 +48,24 @@ test_that("gips_perm works for identity", {
   )
 })
 
+test_that("gips_perm gives the same output for different type of input", {
+  gperm1 <- gips_perm("(12)(45)", 5)
+  gperm2 <- gips_perm("(1,2)(4,5)", 5)
+  gperm3 <- gips_perm(as.matrix(c(2,1,3,5,4)), 5)
+  gperm4 <- gips_perm(t(as.matrix(c(2,1,3,5,4))), 5) # both way works
+  gperm5 <- gips_perm(list(list(c(2,1),c(4,5))), 5)
+  gperm6 <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
+  gperm7 <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
+  
+  # expect_equal and not expect_identical, because those are int / double:
+  expect_equal(gperm1, gperm2)
+  expect_equal(gperm1, gperm3)
+  expect_equal(gperm1, gperm4)
+  expect_equal(gperm1, gperm5)
+  expect_equal(gperm1, gperm6)
+  expect_equal(gperm1, gperm7)
+})
+
 test_that("constructor works for empty permutations", {
   expect_equal(
     new_gips_perm(list(), 0),
