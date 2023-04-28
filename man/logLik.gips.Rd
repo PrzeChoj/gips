@@ -26,6 +26,25 @@ the Likelihood does not exist, thus the function returns \code{NULL}.
 If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
 is close to singular, the \code{NA} is returned.
 }
+\section{Existence of likelihood}{
+
+We only consider the non-degenerate multivariate normal model.
+In the \code{gips} context, such a model exists only when
+the number of observations is bigger than \code{n0}. To get \code{n0} for
+the \code{gips} object \code{g}, call \code{summary(g)$n0}.
+
+In case \code{n < n0}, the model does not exist, so the likelihood does not exist.
+In such a case, the \code{logLik.gips()} will return \code{NULL} and show a warning.
+
+When \code{n >= n0}, but the estimated covariance matrix is very close to
+singular, the likelihood cannot be reasonably estimated.
+In such a case, the \code{logLik.gips()} will return \code{NA} and show a warning.
+
+For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
+\code{vignette("Theory", package = "gips")} or its
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
+}
+
 \section{Calculation details}{
 
 \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix \code{projected_cov} at point \eqn{Z_k)}
@@ -63,6 +82,9 @@ logLik(g_n_too_small) # NULL # the likelihood does not exists
 is called on the output of \code{find_MAP()}.
 \item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Often, one is more
 interested in an Information Criterion AIC or BIC.
+\item \code{\link[=summary.gips]{summary.gips()}} - One can get \code{n0} by calling \code{summary(g)$n0}.
+To see why one may be interested in \code{n0},
+see the \strong{Existence of likelihood} section above.
 \item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
 the known matrix of the found permutations space.
 Mentioned in \strong{Calculation details} section above

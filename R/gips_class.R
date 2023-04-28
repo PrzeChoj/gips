@@ -1527,8 +1527,8 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
-      AIC = suppressWarnings(AIC.gips(object)), # warning for NA
-      BIC = suppressWarnings(BIC.gips(object))  # warning for NA
+      AIC = suppressWarnings(AIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))), # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists")))  # warning for NA and NULL
     )
   } else {
     optimization_info <- attr(object, "optimization_info")
@@ -1563,8 +1563,8 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
-      AIC = suppressWarnings(AIC.gips(object)), # warning for NA
-      BIC = suppressWarnings(BIC.gips(object)), # warning for NA
+      AIC = suppressWarnings(AIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
@@ -1735,6 +1735,24 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' @param tol A tolerance for `det(projected_cov)`.
 #'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
+#' 
+#' @section Existence of likelihood:
+#' We only consider the non-degenerate multivariate normal model.
+#' In the `gips` context, such a model exists only when
+#' the number of observations is bigger than `n0`. To get `n0` for
+#' the `gips` object `g`, call `summary(g)$n0`.
+#' 
+#' In case `n < n0`, the model does not exist, so the likelihood does not exist.
+#' In such a case, the `logLik.gips()` will return `NULL` and show a warning.
+#' 
+#' When `n >= n0`, but the estimated covariance matrix is very close to
+#' singular, the likelihood cannot be reasonably estimated.
+#' In such a case, the `logLik.gips()` will return `NA` and show a warning.
+#' 
+#' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#' 
 #' @section Calculation details:
 #' \eqn{L(`projected\_cov`) = \Pi_{k\in\{1,...,n\}} (}PDF of multivariate normal distribution with mean 0 and cov matrix `projected_cov` at point \eqn{Z_k)}
 #' 
@@ -1758,6 +1776,9 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     is called on the output of `find_MAP()`.
 #' * [AIC.gips()], [BIC.gips()] - Often, one is more
 #'     interested in an Information Criterion AIC or BIC.
+#' * [summary.gips()] - One can get `n0` by calling `summary(g)$n0`.
+#'     To see why one may be interested in `n0`,
+#'     see the **Existence of likelihood** section above.
 #' * [project_matrix()] - The function that can project
 #'     the known matrix of the found permutations space.
 #'     Mentioned in **Calculation details** section above
@@ -1789,6 +1810,12 @@ logLik.gips <- function(object, ..., tol = 1e-07){
   edited_number_of_observations <- tmp[2]
   
   if(n < n0){ # Likelihood is not defined in that setting
+    rlang::warn(c("The likelihood is not defined for this `gips`.",
+                  "x" = paste0("The n = ", n,
+                               " is smaller than the minimum required n0 = ", n0,
+                               ". For more information see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).")
+    ), class = "likelihood_does_not_exists")
+    
     return(NULL)
   }
   
@@ -1796,9 +1823,9 @@ logLik.gips <- function(object, ..., tol = 1e-07){
   attributes(log_det_projected_cov) <- NULL
   if(log_det_projected_cov < log(tol)){ # Do not consider sign, because `validate_gips()` checks `is.positive.semi.definite.matrix()`
     rlang::warn(c("The projected matrix is computationally singular.",
-                  "x" = "The likelihood for singular matrixes does not exists",
-                  "i" = paste0("Reciprocal condition number = ", rcond(projected_cov))
-    ))
+                  "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
+                  "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
+    ), class = "singular_matrix")
     
     return(NA)
   }

@@ -1325,14 +1325,26 @@ test_that("logLik.gips() works", {
   
   # 3. NUll:
   U <- t(Z) %*% Z
-  expect_equal(logLik(gips(U/n, 2, perm = perm)), NULL)
+  expect_warning(
+    expect_equal(
+      logLik(gips(U / n, 2, perm = perm)), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
   
   # 4. NA:
-  g <- gips(U/n - diag(0.24722297, 4), n)
+  g <- gips(U / n - diag(0.24722297, 4), n)
   expected_logLik <- structure(7.75800256909416, df = 10, nobs = 5L)
-  expect_no_warning(expect_equal(logLik(g), expected_logLik))
-  g <- gips(U/n - diag(0.247222978442621, 4), n)
-  expect_warning(expect_equal(logLik(g), NA))
+  expect_no_warning(
+    expect_equal(
+      logLik(g), expected_logLik
+    )
+  )
+  g <- gips(U / n - diag(0.247222978442621, 4), n)
+  expect_warning(
+    expect_equal(logLik(g), NA),
+    class = "singular_matrix"
+  )
 })
 
 test_that("AIC.gips() works", {
@@ -1354,12 +1366,22 @@ test_that("AIC.gips() works", {
   # NUll
   S <- t(Z) %*% Z / n
   g <- gips(S, 2)
-  expect_equal(AIC(g), NULL)
-  expect_equal(BIC(g), NULL)
+  expect_warning(
+    expect_equal(
+      AIC(g), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
+  expect_warning(
+    expect_equal(
+      BIC(g), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
   
   # NA
   eigen(S - diag(0.24722297844262, 4))
   g <- gips(S - diag(0.24722297844262, 4), n)
-  expect_warning(expect_equal(AIC(g), NA))
-  expect_warning(expect_equal(BIC(g), NA))
+  expect_warning(expect_equal(AIC(g), NA), class = "singular_matrix")
+  expect_warning(expect_equal(BIC(g), NA), class = "singular_matrix")
 })
