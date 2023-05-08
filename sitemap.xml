@@ -28,6 +28,9 @@
     <loc>https://przechoj.github.io/gips/news/index.html</loc>
   </url>
   <url>
+    <loc>https://przechoj.github.io/gips/reference/AIC.gips.html</loc>
+  </url>
+  <url>
     <loc>https://przechoj.github.io/gips/reference/as.character.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>https://przechoj.github.io/gips/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://przechoj.github.io/gips/reference/logLik.gips.html</loc>
   </url>
   <url>
     <loc>https://przechoj.github.io/gips/reference/log_posteriori_of_gips.html</loc>

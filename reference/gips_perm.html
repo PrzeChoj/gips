@@ -12,7 +12,7 @@ other functions of the gips package."><meta property="og:image" content="https:/
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9051</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,9 @@ other functions of the <code>gips</code> package.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>An object created with a <code>permutations</code> package or any object
-that can be processed with the <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> function.</p></dd>
+<dd><p>A single object that can be interpreted by
+the <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> function.
+For example, the character of a form <code>"(1,2)(4,5)"</code>. See examples.</p></dd>
 
 
 <dt>size</dt>
@@ -125,7 +126,8 @@ it produces an error.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">
-<ul><li><p><code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> - The constructor for the <code>x</code> parameter.</p></li>
+<ul><li><p><code><a href="project_matrix.html">project_matrix()</a></code> - <code>gips_perm</code> is the <code>perm</code> parameter in <code><a href="project_matrix.html">project_matrix()</a></code>.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> - The constructor for the <code>x</code> parameter.</p></li>
 <li><p><code><a href="gips.html">gips()</a></code> - The constructor for the <code>gips</code> class uses
 the <code>gips_perm</code> object as the base object.</p></li>
 </ul></div>
@@ -133,20 +135,27 @@ the <code>gips_perm</code> object as the base object.</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.word</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(5,4)"</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># note the necessity of `size` parameter</span></span></span>
-<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(5,4)"</span><span class="op">)</span>, <span class="fl">7</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(1,2)(5,4)"</span>, <span class="fl">7</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># All 7 following lines give the same output:</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(12)(45)"</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(1,2)(4,5)"</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># both way for a matrix works</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.word</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(1,2)(4,5)"</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gperm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] (12)(45)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(5,4)"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># note the necessity of `size` parameter:</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(12)(45)"</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(12)(45)"</span>, <span class="fl">7</span><span class="op">)</span> <span class="co"># this one is a different permutation</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">gperm</span> <span class="op">&lt;-</span> <span class="fu">gips_perm</span><span class="op">(</span><span class="st">"(12)(45)"</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in wrong_argument_abort(i = "`size` attribute must be greater or equal to largest integer in elements of `x`.",  : </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   There was a problem identified with provided argument</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> `size` attribute must be greater or equal to largest integer in elements of `x`.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> `size` equals 3 while the maximum element is 5</span>
-<span class="r-in"><span><span class="co"># Error, `size` equals 3 while the maximum element is 5.</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> `size` equals 4 while the maximum element is 5</span>
+<span class="r-in"><span><span class="co"># Error, `size` was set to 4, while the permutation has the element 5.</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

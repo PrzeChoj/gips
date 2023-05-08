@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9051</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,8 +114,8 @@ models invariant by the action of a subgroup of the symmetric group
 <h2 id="basic-definitions">Basic definitions<a class="anchor" aria-label="anchor" href="#basic-definitions"></a>
 </h2>
 <p>Let <span class="math inline">\(V=\{1,\ldots,p\}\)</span> be a finite
-index set, and for every <span class="math inline">\(i\in V\)</span>,
-<span class="math inline">\(Z^{(i)}=(Z_1^{(i)},\ldots,
+index set, and for every <span class="math inline">\(i\in \{1, \dots,
+n\}\)</span>, <span class="math inline">\(Z^{(i)}=(Z_1^{(i)},\ldots,
 Z_p^{(i)})^\top\)</span> be a multivariate random variable following a
 centered Gaussian model <span class="math inline">\(\mathrm{N}_p(0,\Sigma)\)</span>, and let <span class="math inline">\(Z^{(1)},\ldots, Z^{(n)}\)</span> be an i.i.d.
 (independent and identically distributed) sample from this distribution.
@@ -180,9 +180,11 @@ within cyclic subgroups only.</p>
 <span><span class="co">#&gt; [6,]  0.0  0.0  0.0  0.0  0.0  0.2</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_4-1.png" width="700"></p>
 <p>The transformed matrix is in the block-diagonal form of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>, Theorem 1. Blank
-entries are off-block entries and equal to 0. The result was rounded to
-the 5th place after the decimal to hide the inaccuracies of floating
-point arithmetic.</p>
+entries are off-block entries and equal to 0. Notice that, for example,
+the [2,3] is not blank regardless of being 0. This is because it is a
+part of the block-diagonal form but happens to have a value of 0.</p>
+<p>The result was rounded to the 5th place after the decimal to hide the
+inaccuracies of floating point arithmetic.</p>
 <p>Let’s see the other example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
@@ -234,7 +236,7 @@ all }\sigma\in\Gamma\]</span></p>
 </h4>
 <p>Note that for <span class="math inline">\(\Gamma = \{\text{id}\} =
 \{(1)(2)\dots(p)\}\)</span> we have <span class="math inline">\(\pi_{\{\text{id}\}}(S) = S\)</span>.</p>
-<p>So no additional assumptions are made; thus the standard covariance
+<p>So, no additional assumptions are made; thus the standard covariance
 estimator is the best we can do.</p>
 </div>
 <div class="section level4">
@@ -376,7 +378,7 @@ Z^{(i)}\cdot {Z^{(i)}}^\top\)</span></p>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
-<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments <span class="math inline">\(p\ge 9\)</span> is too big). In such a big space,
+<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments, <span class="math inline">\(p\ge 9\)</span> is too big). In such a big space,
 it is more reasonable to estimate the MAP than to calculate it
 precisely.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
@@ -450,6 +452,116 @@ bigger than for the trivial <span class="math inline">\(\text{id} =
 assumptions (centered Gaussian), it is over 500 times more reasonable to
 assume the data <code>Z</code> was drawn from model <span class="math inline">\(\mathrm{N}_p(0,\text{S_projected})\)</span> than
 from model <span class="math inline">\(\mathrm{N}_p(0,\text{S})\)</span>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="information-criterion---aic-and-bic">Information Criterion - AIC and BIC<a class="anchor" aria-label="anchor" href="#information-criterion---aic-and-bic"></a>
+</h2>
+<p>One may be interested in Akaike’s An Information Criterion (AIC) or
+Schwarz’s Bayesian Information Criterion (BIC) of the found model. Those
+are defined as follows:</p>
+<p><span class="math display">\[\log L\left(\hat{K};
+Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log
+(2\pi) - \frac{1}{2}\log\left( \det\left( \hat{K}\right)\right) -
+\frac12 {Z^{(i)}}^\top \hat{K}^{-1} Z^{(i)}\right)= \]</span></p>
+<p><span class="math display">\[- \frac{np}{2}\log (2\pi) -
+\frac{n}{2}\log\left( \det\left( \hat{K}\right)\right) -
+\frac{n}2\mathrm{tr}(\hat{K}^{-1} S),\]</span> where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot
+{Z^{(i)}}^\top\)</span>.</p>
+<p>Further, for every <span class="math inline">\(c\)</span> we have
+<span class="math inline">\(\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) =
+p\)</span>, so:</p>
+<p><span class="math display">\[\log L\left(\pi_{c}(S);
+Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) -
+\frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) -
+\frac{np}2\]</span></p>
+<p>Which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
+<p>Then AIC and BIC are defined by:</p>
+<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log L(\hat
+K)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim M)
+-2 \log L(\hat K)\]</span></p>
+<p>The interpretation is as follows: the smaller the criterion, the
+better the model.</p>
+<p>Those can be calculated by <code><a href="../reference/AIC.gips.html">AIC.gips()</a></code> and
+<code><a href="../reference/AIC.gips.html">BIC.gips()</a></code>.</p>
+<div class="section level4">
+<h4 id="estimated-mean">Estimated mean<a class="anchor" aria-label="anchor" href="#estimated-mean"></a>
+</h4>
+<p>When the mean was estimated, we have <span class="math inline">\(S =
+\frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} -
+\bar{Z})}^\top\)</span>, where <span class="math inline">\(\bar{Z} =
+\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>. Then:</p>
+<p><span class="math display">\[\log L_{estimated\
+mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = -
+\frac{(n-1)\cdot p}{2}\log (2\pi) - \frac{(n-1)}{2}\log\left( \det\left(
+\pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2\]</span></p>
+<p>And definitions of AIC and BIC stay the same:</p>
+<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log
+L_{estimated\ mean}(\hat K)\]</span> <span class="math display">\[BIC =
+(\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)\]</span></p>
+</div>
+<div class="section level4">
+<h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
+</h4>
+<p>Consider example similar to one in <strong>Bayesian model
+selection</strong> section:</p>
+<div id="spoiler4" style="display:none">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Prepare model, multivariate normal distribution</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>,</span>
+<span>    <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>,</span>
+<span>    <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>,</span>
+<span>    <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>,</span>
+<span>    <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>,</span>
+<span>    <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span> <span class="co"># sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)</span></span>
+<span></span>
+<span><span class="co"># Generate example data from a model:</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
+<span>                       mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># End of prepare model</span></span></code></pre></div>
+</div>
+<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler4') .style.display=='none')
+              {document.getElementById('spoiler4') .style.display=''}
+            else{document.getElementById('spoiler4') .style.display='none'}">
+Show/hide data preparation
+</button>
+<p>Let’s say we have this data, <code>Z</code>. It has <span class="math inline">\(7\)</span> observations, and its dimension is
+<span class="math inline">\(p=6\)</span>. Let’s assume <code>Z</code>
+was drawn from the normal distribution with the mean <span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate the
+covariance matrix:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 7 6</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 7</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 6</span></span>
+<span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">Z</span><span class="op">)</span> <span class="op">/</span> <span class="va">number_of_observations</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 64.19906</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># this is smaller, so this is better</span></span>
+<span><span class="co">#&gt; [1] 62.99751</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 63.06318</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># this is smaller, so this is better</span></span>
+<span><span class="co">#&gt; [1] 62.78115</span></span></code></pre></div>
+<p>We will consider <code>g_map</code> better model both in terms of the
+AIC and the BIC.</p>
 </div>
 </div>
 <div class="section level2">
