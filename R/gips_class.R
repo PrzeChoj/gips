@@ -1058,7 +1058,10 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' @param ... Additional arguments passed to [stats::heatmap()]
 #'     or other various elements of the plot.
 #'
-#' @returns Returns an invisible `NULL`.
+#' @returns When `type` is one of `"all"`, `"best"` or `"both"`,
+#'     returns an invisible `NULL`.
+#'     When `type` is one of `"heatmap"` or `"block_heatmap"`,
+#'     returns an object of class `ggplot`.
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
