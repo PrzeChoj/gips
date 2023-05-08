@@ -36,6 +36,9 @@
 #' * [summary.gips()]
 #' * [plot.gips()]
 #' * [print.gips()]
+#' * [logLik.gips()]
+#' * [AIC.gips()]
+#' * [BIC.gips()]
 #'
 #' @section Hyperparameters:
 #' In the Bayesian model, the prior distribution for
@@ -1055,7 +1058,10 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' @param ... Additional arguments passed to [stats::heatmap()]
 #'     or other various elements of the plot.
 #'
-#' @returns Returns an invisible `NULL`.
+#' @returns When `type` is one of `"all"`, `"best"` or `"both"`,
+#'     returns an invisible `NULL`.
+#'     When `type` is one of `"heatmap"` or `"block_heatmap"`,
+#'     returns an object of class `ggplot`.
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
@@ -1378,7 +1384,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'
 #' `summary` method for class "gips".
 #'
-#' @param object An object of class "gips"; is usually a result of a [find_MAP()].
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @return The function `summary.gips` computes and returns a list of summary
@@ -1408,6 +1414,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
+#'   10. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
 #' * For optimized `gips` object:
 #'   1. `optimized` - `TRUE`
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1437,23 +1444,24 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   12. `optimization_algorithm_used` - all used optimization algorithms
+#'   12. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   13. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
-#'   13. `did_converge` - a boolean, did the last used algorithm converge
-#'   14. `number_of_log_posteriori_calls` - how many times was
+#'   14. `did_converge` - a boolean, did the last used algorithm converge
+#'   15. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   15. `whole_optimization_time` - how long was the optimization process;
+#'   16. `whole_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
-#'   16. `log_posteriori_calls_after_best` - how many times was
+#'   17. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result;
 #'       if this value is small, consider running [find_MAP()]
 #'       one more time with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`
-#'   17. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'   18. `acceptance_rate` - only interesting for `optimizer = "MH"`;
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
@@ -1461,10 +1469,12 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' @seealso
 #' * [find_MAP()] - Usually, the `summary.gips()`
 #'     is called on the output of `find_MAP()`.
-#' * [log_posteriori_of_gips()] - The function that
-#'     calculates the likelihood of a permutation.
-#' * [project_matrix()] - The function that can project
-#'     the known matrix of the found permutations space.
+#' * [log_posteriori_of_gips()] - Calculate
+#'     the likelihood of a permutation.
+#' * [AIC.gips()], [BIC.gips()] - Calculate
+#'     Akaike's or Bayesian Information Criterion
+#' * [project_matrix()] - Project the known
+#'     matrix of the found permutations space.
 #'
 #' @examples
 #' require("MASS") # for mvrnorm()
@@ -1496,14 +1506,10 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
   permutation_log_posteriori <- log_posteriori_of_gips(object)
-
-  structure_constants <- get_structure_constants(object[[1]])
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-  edited_number_of_observations <- attr(object, "number_of_observations")
-  if (attr(object, "was_mean_estimated")) { # correction for estimating the mean
-    n0 <- n0 + 1
-    edited_number_of_observations <- edited_number_of_observations - 1
-  }
+  
+  tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
+  n0 <- tmp[1]
+  edited_number_of_observations <- tmp[2]
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
@@ -1511,7 +1517,7 @@ summary.gips <- function(object, ...) {
       number_of_observations = edited_number_of_observations,
       delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
     )
-
+    
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
@@ -1523,7 +1529,9 @@ summary.gips <- function(object, ...) {
       number_of_observations = attr(object, "number_of_observations"),
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
-      D_matrix = attr(object, "D_matrix")
+      D_matrix = attr(object, "D_matrix"),
+      AIC = suppressWarnings(AIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))), # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists")))  # warning for NA and NULL
     )
   } else {
     optimization_info <- attr(object, "optimization_info")
@@ -1558,6 +1566,8 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
+      AIC = suppressWarnings(AIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
       number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
@@ -1635,6 +1645,8 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "not ", ""
   ), "exist.",
+  "\n\nBIC:\n ", x[["BIC"]],
+  "\n\nAIC:\n ", x[["AIC"]],
   sep = ""
   )
 
@@ -1689,6 +1701,239 @@ print.summary.gips <- function(x, ...) {
   cat("\n")
 
   invisible(NULL)
+}
+
+#' Internal
+#' @return a vector of length 2 with n0 and edited_number_of_observations
+#' @noRd
+get_n0_and_edited_number_of_observations_from_gips <- function(g){
+  # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
+  
+  structure_constants <- get_structure_constants(g[[1]])
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  
+  edited_number_of_observations <- attr(g, "number_of_observations")
+  if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
+    n0 <- n0 + 1
+    edited_number_of_observations <- edited_number_of_observations - 1
+  }
+  
+  c(n0, edited_number_of_observations)
+}
+
+#' Extract Log-Likelihood for gips class
+#' 
+#' Calculates Log-Likelihood of the sample based on the `gips` object.
+#' 
+#' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
+#' 
+#' If the found permutation will still require more parameters than `n`,
+#'     the Likelihood does not exist, thus the function returns `NULL`.
+#' 
+#' If the `projected_cov` (output of [project_matrix()])
+#'     is close to singular, the `NA` is returned.
+#' 
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param ... Further arguments passed to or from other methods.
+#' @param tol A tolerance for `det(projected_cov)`.
+#'     If the det is smaller than `tol`, the `NA` is returned.
+#' 
+#' @section Existence of likelihood:
+#' We only consider the non-degenerate multivariate normal model.
+#' In the `gips` context, such a model exists only when
+#' the number of observations is bigger than `n0`. To get `n0` for
+#' the `gips` object `g`, call `summary(g)$n0`.
+#' 
+#' In case `n < n0`, the model does not exist, so the likelihood does not exist.
+#' In such a case, the `logLik.gips()` will return `NULL` and show a warning.
+#' 
+#' When `n >= n0`, but the estimated covariance matrix is very close to
+#' singular, the likelihood cannot be reasonably estimated.
+#' In such a case, the `logLik.gips()` will return `NA` and show a warning.
+#' 
+#' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#' 
+#' @section Calculation details:
+#' For more details and used formulas, see
+#' the **Information Criterion - AIC and BIC** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#' 
+#' @importFrom stats logLik
+#' 
+#' @returns Log-Likelihood of the sample.
+#' 
+#' When one does not exists, returns `NA`.
+#' When it cannot be reasonably approximated, returns `NULL`.
+#'     
+#' In both failure situations, shows a warning.
+#' More information can be found in **Existence of likelihood** section below.
+#' 
+#' @export
+#' 
+#' @seealso
+#' * [logLik()] - Generic function this [logLik.gips()] extends.
+#' * [find_MAP()] - Usually, the `logLik.gips()`
+#'     is called on the output of `find_MAP()`.
+#' * [AIC.gips()], [BIC.gips()] - Often, one is more
+#'     interested in an Information Criterion AIC or BIC.
+#' * [summary.gips()] - One can get `n0` by calling `summary(g)$n0`.
+#'     To see why one may be interested in `n0`,
+#'     see the **Existence of likelihood** section above.
+#' * [project_matrix()] - Project the known matrix
+#'     onto the found permutations space.
+#'     Mentioned in **Calculation details** section above
+#' 
+#' @examples 
+#' S <- matrix(c(5.15,2.05,3.60,1.99,
+#'               2.05,5.09,2.03,3.57,
+#'               3.60,2.03,5.21,1.97,
+#'               1.99,3.57,1.97,5.13), nrow = 4)
+#' g <- gips(S, 5)
+#' logLik(g) # -32.67048
+#' # For perm = "", which is default, there is p + choose(p, 2) degrees of freedom
+#' 
+#' g_map <- find_MAP(g, optimizer = "brute_force")
+#' logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
+#' 
+#' g_n_too_small <- gips(S, 4)
+#' logLik(g_n_too_small) # NULL # the likelihood does not exists
+logLik.gips <- function(object, ..., tol = 1e-07){
+  validate_gips(object)
+  
+  original_cov <- attributes(object)[["S"]]
+  projected_cov <- project_matrix(original_cov, object[[1]])
+  p <- ncol(original_cov)
+  n <- attr(object, "number_of_observations")
+  
+  tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
+  n0 <- tmp[1]
+  edited_number_of_observations <- tmp[2]
+  
+  if(n < n0){ # Likelihood is not defined in that setting
+    rlang::warn(c("The likelihood is not defined for this `gips`.",
+                  "x" = paste0("The n = ", n,
+                               " is smaller than the minimum required n0 = ", n0,
+                               ". For more information see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).")
+    ), class = "likelihood_does_not_exists")
+    
+    return(NULL)
+  }
+  
+  log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)[["modulus"]]
+  attributes(log_det_projected_cov) <- NULL
+  if(log_det_projected_cov < log(tol)){ # Do not consider sign, because `validate_gips()` checks `is.positive.semi.definite.matrix()`
+    rlang::warn(c("The projected matrix is computationally singular.",
+                  "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
+                  "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
+    ), class = "singular_matrix")
+    
+    return(NA)
+  }
+  
+  log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
+  
+  log_L_S <- -edited_number_of_observations*(p*log_2pi_plus_1 + log_det_projected_cov)/2
+  
+  n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
+  
+  attr(log_L_S, "df") <- n_parameters
+  attr(log_L_S, "nobs") <- n # The AIC and BIC will use n, not edited_number_of_observations
+  
+  log_L_S
+}
+
+#' Akaike's An Information Criterion for gips class
+#' 
+#' @details 
+#' If the found permutation will still require more parameters than `n`,
+#'     the Likelihood does not exist, thus the function returns `NULL`.
+#' 
+#' If the `projected_cov` (output of [project_matrix()])
+#'     is close to singular, the `NA` is returned.
+#' 
+#' @section Calculation details:
+#' For more details and used formulas, see
+#' the **Information Criterion - AIC and BIC** section in
+#' `vignette("Theory", package = "gips")` or its
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#' 
+#' @method AIC gips
+#' 
+#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param ... Further arguments will be ignored
+#' @inheritParams stats::AIC
+#' 
+#' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
+#' 
+#' When normal model does not exists, returns `NA`.
+#' When normal model cannot be reasonably approximated, returns `NULL`.
+#'     
+#' In both failure situations, shows a warning.
+#' More information can be found in **Existence of likelihood** section of [logLik.gips()].
+#' 
+#' @importFrom stats AIC
+#' 
+#' @seealso
+#' * [AIC()], [BIC()] - Generic functions
+#'     this `AIC.gips()` and `BIC.gips()` extend.
+#' * [find_MAP()] - Usually, the `AIC.gips()` and `BIC.gips()`
+#'     are called on the output of `find_MAP()`.
+#' * [logLik.gips()] - Calculates the log likelihood for
+#'     the `gips` object. Important part of the Information Criteria.
+#' 
+#' @export
+#' @examples 
+#' S <- matrix(c(5.15,2.05,3.10,1.99,
+#'               2.05,5.09,2.03,3.07,
+#'               3.10,2.03,5.21,1.97,
+#'               1.99,3.07,1.97,5.13), nrow = 4)
+#' g <- gips(S, 14)
+#' AIC(g) # 238
+#' 
+#' g_map <- find_MAP(g, optimizer = "brute_force")
+#' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
+AIC.gips <- function(object, ..., k = 2){
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  
+  if(is.null(log_likelihood_S)){
+    return(NULL)
+  }
+  
+  if(is.na(log_likelihood_S)){
+    return(NA)
+  }
+  
+  -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
+}
+
+#' @method BIC gips
+#' @describeIn AIC.gips Schwarz's Bayesian Information Criterion
+#' 
+#' @importFrom stats BIC
+#' 
+#' @returns `BIC.gips()` returns calculated Schwarz's Bayesian Information Criterion
+#' 
+#' @export
+#' @examples 
+#' # ================================================================================
+#' BIC(g) # 244
+#' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
+BIC.gips <- function(object, ...){
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  
+  if(is.null(log_likelihood_S)){
+    return(NULL)
+  }
+  
+  if(is.na(log_likelihood_S)){
+    return(NA)
+  }
+  
+  k <- log(attr(log_likelihood_S, "nobs")) # this line is the only difference from `AIC.gips()`
+  -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
 }
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
@@ -1753,7 +1998,7 @@ get_probabilities_from_gips <- function(g) {
 #'
 #' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
 #'
-#' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB.
+#' For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB of RAM.
 #'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(save_all_perms = TRUE)`.

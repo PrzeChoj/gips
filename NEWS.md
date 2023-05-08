@@ -1,4 +1,10 @@
-# gips 1.0.1.9051
+# gips 1.1.0.9000
+
+### New functions
+
+* `BIC.gips()`
+* `AIC.gips()`
+* `logLik.gips()`
 
 ### Bugfixes:
 
@@ -7,7 +13,7 @@
 * When `NaN`s do occur in `find_MAP()`, they will throw an error (used to show a warning).
 * `Inf` better handled in `print.gips()`
 * `print.*()` will print `\n` in the end
-* Small Vignettes improvements
+* Small Vignettes and documentation improvements
 * Proper testing of examples
 
 

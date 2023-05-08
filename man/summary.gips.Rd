@@ -10,7 +10,7 @@
 \method{print}{summary.gips}(x, ...)
 }
 \arguments{
-\item{object}{An object of class "gips"; is usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
@@ -48,6 +48,7 @@ used to calculate the posteriori value
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
 }
 \item For optimized \code{gips} object:
 \enumerate{
@@ -81,6 +82,7 @@ used to calculate the posteriori value
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
 do an "HC")
@@ -150,9 +152,11 @@ print(summary(g))
 \itemize{
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{summary.gips()}
 is called on the output of \code{find_MAP()}.
-\item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that
-calculates the likelihood of a permutation.
-\item \code{\link[=project_matrix]{project_matrix()}} - The function that can project
-the known matrix of the found permutations space.
+\item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - Calculate
+the likelihood of a permutation.
+\item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Calculate
+Akaike's or Bayesian Information Criterion
+\item \code{\link[=project_matrix]{project_matrix()}} - Project the known
+matrix of the found permutations space.
 }
 }

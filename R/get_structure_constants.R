@@ -29,6 +29,16 @@
 #' perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 #' get_structure_constants(perm)
 get_structure_constants <- function(perm) {
+  if (!(inherits(perm, "gips_perm"))) {
+    wrong_argument_abort(
+      i = "`perm` must be of a `gips_perm` class.",
+      x = paste0(
+        "You provided `perm` with `class(perm) == (",
+        paste(class(perm), collapse = ", "), ")`."
+      )
+    )
+  }
+  
   perm_size <- attr(perm, "size")
   l <- get_cycle_representatives_and_lengths(perm)
   representatives <- l[["representatives"]]

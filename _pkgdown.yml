@@ -7,20 +7,27 @@ reference:
     Functions for the main `gips` purpose: Finding
     the permutation, under which a matrix is (approximately) 
     invariant under, and estimating the covariance matrix.
-  contents: 
+  contents:
   - gips
   - find_MAP
   - project_matrix
-- title: "Helper functions"
-  desc: "Functions for pleasant work in `gips`."
+- title: "Analysis functions"
+  desc: >
+    Functions for analysis of `gips` optimization
+    process or its results.
   contents:
   - plot.gips
   - print.gips
   - summary.gips
+  - compare_posteriories_of_perms
+  - BIC.gips
+  - logLik.gips
+- title: "Helper functions"
+  desc: "Functions for pleasant work in `gips`."
+  contents:
   - gips_perm
   - print.gips_perm
   - as.character.gips_perm
-  - compare_posteriories_of_perms
   - forget_perms
   - get_probabilities_from_gips
 - title: "Internal functions"

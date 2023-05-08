@@ -55,3 +55,16 @@ test_that("calculate_d works for odd perm_order", {
 test_that("calculate_d works for identity", {
   expect_equal(calculate_d(1), 1)
 })
+
+test_that("get_structure_constants checks for proper argument", {
+  expect_silent(get_structure_constants(gips_perm("(1,2,3)", 3)))
+  
+  expect_error(get_structure_constants(3),
+               "You provided `perm` with `class\\(perm\\) == \\(numeric\\)`")
+  
+  expect_error(get_structure_constants(permutations::as.cycle("(1,2,3)")),
+               "You provided `perm` with `class\\(perm\\) == \\(permutation, cycle\\)`")
+  
+  expect_error(get_structure_constants(gips(matrix_invariant_by_example_perm, 5)),
+               "You provided `perm` with `class\\(perm\\) == \\(gips\\)`")
+})

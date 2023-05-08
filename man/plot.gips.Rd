@@ -65,7 +65,10 @@ the whole optimization process is shown.}
 or other various elements of the plot.}
 }
 \value{
-Returns an invisible \code{NULL}.
+When \code{type} is one of \code{"all"}, \code{"best"} or \code{"both"},
+returns an invisible \code{NULL}.
+When \code{type} is one of \code{"heatmap"} or \code{"block_heatmap"},
+returns an object of class \code{ggplot}.
 }
 \description{
 Plot the heatmap of the MAP covariance matrix estimator

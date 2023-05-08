@@ -169,7 +169,9 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 The \code{gips} object is used as the \code{g} parameter.
 \item \code{\link[=plot.gips]{plot.gips()}} - Practical plotting function for
 visualizing the optimization process.
-\item \code{\link[=summary.gips]{summary.gips()}} - The function that summarizes the output of optimization.
+\item \code{\link[=summary.gips]{summary.gips()}} - Summarize the output of optimization.
+\item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Get the Information Criterion
+of the found model.
 \item \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}} - When
 \code{find_MAP(return_probabilities = TRUE)} was called,
 then those probabilities can be extracted with this function.

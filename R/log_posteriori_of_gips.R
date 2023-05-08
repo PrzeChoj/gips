@@ -232,12 +232,12 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
-#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'     1.05, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.05, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.05, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.05, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.05, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.05
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -287,6 +287,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
       my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
     }
     cat(my_print_text)
+    cat("\n")
 
     return(invisible(out))
   }
@@ -378,6 +379,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
       my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
     }
     cat(my_print_text)
+    cat("\n")
 
     return(invisible(out))
   }

@@ -1109,14 +1109,24 @@ test_that("summary.gips() works", {
       0, 0, 0, 1, 0, 0,
       0, 0, 0, 0, 1, 0,
       0, 0, 0, 0, 0, 1
-    ), .Dim = c(6L, 6L))
+    ), .Dim = c(6L, 6L)),
+    AIC = AIC(g1),
+    BIC = BIC(g1)
   ), class = "summary.gips")
 
-  expect_identical(summary(g1), my_sum)
+  expect_identical(summary(g1), my_sum) # all in my_sum is calculated by the same functions the summary should use
 
   expect_output(
     print(summary(g1)),
     "Number of observations is bigger than n0 for this permutaion,\nso "
+  )
+  
+  expect_output(
+    print(summary(g1)), "AIC"
+  )
+  
+  expect_output(
+    print(summary(g1)), "BIC"
   )
 
   g2 <- find_MAP(g1, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE)
@@ -1267,4 +1277,111 @@ test_that("forget_perms works properly", {
     g_map_no_perms_again <- forget_perms(g_map_no_perms),
     "Provided \\`g\\` is an optimized \\`gips\\` object that already has forgotten all permutations\\."
   )
+})
+
+test_that("logLik.gips() works", {
+  # logLik calculated by hand:
+  Z <- matrix(c(-1,2,-3,4,
+                1,-1,1,1,
+                -1,2,2,3,
+                2,-3,2,-3,
+                3,-2,2,-3), nrow=5, byrow=TRUE)
+  
+  p <- ncol(Z) # 4
+  n <- nrow(Z) # 5
+  
+  
+  # 1. Mean is (0,0,0,0)
+  U <- t(Z) %*% Z
+  perm <- gips_perm("(12)(34)", 4)
+  S <- project_matrix(U, perm)/n
+  
+  # logLik from definition:
+  loglikelihoods <- mvtnorm::dmvnorm(Z, rep(0, 4), S,
+                                     log = TRUE)
+  logLik_definition <- sum(loglikelihoods)
+  
+  expect_equal(logLik_definition, -35.2883973048347)
+  
+  attr(logLik_definition, 'df') <- 6 # 10 - 2 - 2 parameters
+  attr(logLik_definition, 'nobs') <- n
+  
+  # logLik.gips:
+  expect_equal(logLik(gips(U/n, n, perm = perm, was_mean_estimated = FALSE)),
+               logLik_definition)
+  
+  
+  # 2. mean was estimated
+  U <- cov(Z) * (n-1)
+  perm <- gips_perm("(12)(34)", 4)
+  S <- project_matrix(U, perm)/(n-1)
+  
+  logLik_expected <- structure(-28.8015774226105, df = 6, nobs = 5L)
+  
+  # logLik.gips:
+  expect_equal(logLik(gips(U/(n-1), n, perm = perm, was_mean_estimated = TRUE)),
+               logLik_expected)
+  
+  
+  # 3. NUll:
+  U <- t(Z) %*% Z
+  expect_warning(
+    expect_equal(
+      logLik(gips(U / n, 2, perm = perm)), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
+  
+  # 4. NA:
+  g <- gips(U / n - diag(0.24722297, 4), n)
+  expected_logLik <- structure(7.75800256909416, df = 10, nobs = 5L)
+  expect_no_warning(
+    expect_equal(
+      logLik(g), expected_logLik
+    )
+  )
+  g <- gips(U / n - diag(0.247222978442621, 4), n)
+  expect_warning(
+    expect_equal(logLik(g), NA),
+    class = "singular_matrix"
+  )
+})
+
+test_that("AIC.gips() works", {
+  Z <- matrix(c(-1,2,-3,4,
+                1,-1,1,1,
+                -1,2,2,3,
+                2,-3,2,-3,
+                3,-2,2,-3), nrow=5, byrow=TRUE)
+  
+  p <- ncol(Z) # 4
+  n <- nrow(Z) # 5
+  
+  g <- gips(t(Z) %*% Z / n, n, perm = "(12)(34)", was_mean_estimated = FALSE)
+  
+  expect_equal(AIC(g), 82.5767946096694)
+  expect_equal(BIC(g), 80.233422084274)
+  
+  
+  # NUll
+  S <- t(Z) %*% Z / n
+  g <- gips(S, 2)
+  expect_warning(
+    expect_equal(
+      AIC(g), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
+  expect_warning(
+    expect_equal(
+      BIC(g), NULL
+    ),
+    class = "likelihood_does_not_exists"
+  )
+  
+  # NA
+  eigen(S - diag(0.24722297844262, 4))
+  g <- gips(S - diag(0.24722297844262, 4), n)
+  expect_warning(expect_equal(AIC(g), NA), class = "singular_matrix")
+  expect_warning(expect_equal(BIC(g), NA), class = "singular_matrix")
 })

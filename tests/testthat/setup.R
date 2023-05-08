@@ -1,4 +1,5 @@
 require("MASS") # for mvrnorm()
+require("mvtnorm") # for dmvnorm()
 
 example_perm <- to_perm(c(2, 3, 1, 5, 4, 6))
 example_perm2 <- to_perm(c(2, 3, 4, 5, 1))

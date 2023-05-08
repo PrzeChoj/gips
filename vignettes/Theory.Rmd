@@ -30,7 +30,7 @@ As mentioned in the abstract, the outline of the paper is to "derive the distrib
 
 # Basic definitions
 
-Let $V=\{1,\ldots,p\}$ be a finite index set, and for every $i\in V$, $Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$, and let $Z^{(1)},\ldots, Z^{(n)}$ be an i.i.d. (independent and identically distributed) sample from this distribution. Name the whole sample $Z = (Z^{(1)},\ldots, Z^{(n)})$.
+Let $V=\{1,\ldots,p\}$ be a finite index set, and for every $i\in \{1, \dots, n\}$, $Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$, and let $Z^{(1)},\ldots, Z^{(n)}$ be an i.i.d. (independent and identically distributed) sample from this distribution. Name the whole sample $Z = (Z^{(1)},\ldots, Z^{(n)})$.
 
 Let $\mathfrak{S}_p$ denote the symmetric group
 on $V$, that is, the set of all permutations on $\{1,\ldots,p\}$ with function composition as the group operation. Let $\Gamma$ be an arbitrary subgroup of $\mathfrak{S}_p$. The model $\mathrm{N}_p(0,\Sigma)$ is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
@@ -77,7 +77,9 @@ round(block_decomposition, 5)
 gips:::pretty_plot_block_matrix(S, g_perm, title = "block_decomposition matrix")
 ```
 
-The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503), Theorem 1. Blank entries are off-block entries and equal to 0. The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
+The transformed matrix is in the block-diagonal form of [[1]](https://arxiv.org/abs/2004.03503), Theorem 1. Blank entries are off-block entries and equal to 0. Notice that, for example, the [2,3] is not blank regardless of being 0. This is because it is a part of the block-diagonal form but happens to have a value of 0.
+
+The result was rounded to the 5th place after the decimal to hide the inaccuracies of floating point arithmetic.
 
 Let's see the other example:
 ```{r th1_5}
@@ -126,7 +128,7 @@ So it has some identical elements.
 
 Note that for $\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
 
-So no additional assumptions are made; thus the standard covariance estimator is the best we can do.
+So, no additional assumptions are made; thus the standard covariance estimator is the best we can do.
 
 
 ### Example
@@ -227,7 +229,7 @@ In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
 
 ### Finding the MAP Estimator
 
-The space of all permutations is enormous for bigger $p$ (in our experiments $p\ge 9$ is too big). In such a big space, it is more reasonable to estimate the MAP than to calculate it precisely.
+The space of all permutations is enormous for bigger $p$ (in our experiments, $p\ge 9$ is too big). In such a big space, it is more reasonable to estimate the MAP than to calculate it precisely.
 
 Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
@@ -292,6 +294,103 @@ gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
 We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503) has the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 500 times bigger than for the trivial $\text{id} = (1)(2)\ldots(p)$ permutation. We interpret that under the assumptions (centered Gaussian), it is over 500 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+
+
+# Information Criterion - AIC and BIC
+
+One may be interested in Akaike's An Information Criterion (AIC) or Schwarz's Bayesian Information Criterion (BIC) of the found model. Those are defined as follows:
+
+$$\log L\left(\hat{K}; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \hat{K}\right)\right) - \frac12 {Z^{(i)}}^\top \hat{K}^{-1} Z^{(i)}\right)= $$
+
+$$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \hat{K}\right)\right) - \frac{n}2\mathrm{tr}(\hat{K}^{-1} S),$$
+where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$.
+
+Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
+
+$$\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2$$
+
+Which can be calculated by `logLik.gips()`.
+
+Then AIC and BIC are defined by:
+
+$$AIC = 2 \cdot (\dim M) -2 \log L(\hat K)$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L(\hat K)$$
+
+The interpretation is as follows: the smaller the criterion, the better the model.
+
+Those can be calculated by `AIC.gips()` and `BIC.gips()`.
+
+### Estimated mean
+When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then:
+
+$$\log L_{estimated\ mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{(n-1)\cdot p}{2}\log (2\pi) - \frac{(n-1)}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2$$
+
+And definitions of AIC and BIC stay the same:
+
+$$AIC = 2 \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
+
+### Example
+
+Consider example similar to one in **Bayesian model selection** section:
+
+<div id="spoiler4" style="display:none">
+```{r example3_1}
+# Prepare model, multivariate normal distribution
+p <- 6
+number_of_observations <- 7
+mu <- numeric(p)
+sigma_matrix <- matrix(
+  data = c(
+    1.05, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.05, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.05, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.05, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.05, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.05
+  ),
+  nrow = p, byrow = TRUE
+) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
+
+# Generate example data from a model:
+Z <- withr::with_seed(2022,
+  code = MASS::mvrnorm(number_of_observations,
+                       mu = mu, Sigma = sigma_matrix)
+)
+# End of prepare model
+```
+</div>
+
+<button title="Click to show the data preparation" type="button"
+   onclick="if(document.getElementById('spoiler4') .style.display=='none')
+              {document.getElementById('spoiler4') .style.display=''}
+            else{document.getElementById('spoiler4') .style.display='none'}">
+  Show/hide data preparation
+</button>
+
+Let's say we have this data, `Z`. It has $7$ observations, and its dimension is $p=6$.
+Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
+
+```{r, example3_2}
+dim(Z)
+number_of_observations <- nrow(Z) # 7
+p <- ncol(Z) # 6
+
+S <- (t(Z) %*% Z) / number_of_observations
+
+g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
+g_map <- find_MAP(g, optimizer = "brute_force")
+```
+
+```{r, example3_3}
+AIC(g)
+AIC(g_map) # this is smaller, so this is better
+
+BIC(g)
+BIC(g_map) # this is smaller, so this is better
+```
+
+We will consider `g_map` better model both in terms of the AIC and the BIC.
 
 
 # References
