@@ -108,8 +108,8 @@ is close to singular, the <code>NA</code> is returned.</p>
 
 <p>We only consider the non-degenerate multivariate normal model.
 In the <code>gips</code> context, such a model exists only when
-the number of observations is bigger than <code>n0</code>. To get <code>n0</code> for
-the <code>gips</code> object <code>g</code>, call <code>summary(g)$n0</code>.</p>
+the number of observations is bigger or equal to <code>n0</code>. To get <code>n0</code>
+for the <code>gips</code> object <code>g</code>, call <code>summary(g)$n0</code>.</p>
 <p>In case <code>n &lt; n0</code>, the model does not exist, so the likelihood does not exist.
 In such a case, the <code>logLik.gips()</code> will return <code>NULL</code> and show a warning.</p>
 <p>When <code>n &gt;= n0</code>, but the estimated covariance matrix is very close to
