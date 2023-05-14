@@ -1741,8 +1741,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' @section Existence of likelihood:
 #' We only consider the non-degenerate multivariate normal model.
 #' In the `gips` context, such a model exists only when
-#' the number of observations is bigger than `n0`. To get `n0` for
-#' the `gips` object `g`, call `summary(g)$n0`.
+#' the number of observations is bigger or equal to `n0`. To get `n0`
+#' for the `gips` object `g`, call `summary(g)$n0`.
 #' 
 #' In case `n < n0`, the model does not exist, so the likelihood does not exist.
 #' In such a case, the `logLik.gips()` will return `NULL` and show a warning.
