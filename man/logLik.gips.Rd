@@ -39,8 +39,8 @@ is close to singular, the \code{NA} is returned.
 
 We only consider the non-degenerate multivariate normal model.
 In the \code{gips} context, such a model exists only when
-the number of observations is bigger than \code{n0}. To get \code{n0} for
-the \code{gips} object \code{g}, call \code{summary(g)$n0}.
+the number of observations is bigger or equal to \code{n0}. To get \code{n0}
+for the \code{gips} object \code{g}, call \code{summary(g)$n0}.
 
 In case \code{n < n0}, the model does not exist, so the likelihood does not exist.
 In such a case, the \code{logLik.gips()} will return \code{NULL} and show a warning.
