@@ -6,6 +6,10 @@
 * `AIC.gips()`
 * `logLik.gips()`
 
+### Update to function
+
+* `summary.gips` calculates `BIC`, `AIC` and `n_parameters` (number of free parameters in the covariance matrix).
+
 ### Bugfixes:
 
 * Sometimes `post_probabilities` underflows to 0. This is appropriately validated now.
