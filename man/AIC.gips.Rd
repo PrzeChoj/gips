@@ -20,8 +20,8 @@
 \value{
 \code{AIC.gips()} returns calculated Akaike's An Information Criterion
 
-When normal model does not exists, returns \code{NA}.
-When normal model cannot be reasonably approximated, returns \code{NULL}.
+When normal model does not exists, returns \code{NULL}.
+When normal model cannot be reasonably approximated, returns \code{NA}.
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood} section of \code{\link[=logLik.gips]{logLik.gips()}}.

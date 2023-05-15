@@ -1765,8 +1765,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' @returns Log-Likelihood of the sample.
 #' 
-#' When one does not exists, returns `NA`.
-#' When it cannot be reasonably approximated, returns `NULL`.
+#' When one does not exists, returns `NULL`.
+#' When it cannot be reasonably approximated, returns `NA`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section below.
@@ -1868,8 +1868,8 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' 
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #' 
-#' When normal model does not exists, returns `NA`.
-#' When normal model cannot be reasonably approximated, returns `NULL`.
+#' When normal model does not exists, returns `NULL`.
+#' When normal model cannot be reasonably approximated, returns `NA`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section of [logLik.gips()].

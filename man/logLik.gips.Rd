@@ -17,8 +17,8 @@ If the det is smaller than \code{tol}, the \code{NA} is returned.}
 \value{
 Log-Likelihood of the sample.
 
-When one does not exists, returns \code{NA}.
-When it cannot be reasonably approximated, returns \code{NULL}.
+When one does not exists, returns \code{NULL}.
+When it cannot be reasonably approximated, returns \code{NA}.
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood} section below.
