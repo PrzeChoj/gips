@@ -1110,6 +1110,7 @@ test_that("summary.gips() works", {
       0, 0, 0, 0, 1, 0,
       0, 0, 0, 0, 0, 1
     ), .Dim = c(6L, 6L)),
+    n_parameters = 7,
     AIC = AIC(g1),
     BIC = BIC(g1)
   ), class = "summary.gips")
@@ -1119,6 +1120,10 @@ test_that("summary.gips() works", {
   expect_output(
     print(summary(g1)),
     "Number of observations is bigger than n0 for this permutaion,\nso "
+  )
+  
+  expect_output(
+    print(summary(g1)), "free parameters"
   )
   
   expect_output(

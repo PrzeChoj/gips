@@ -1414,7 +1414,8 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   10. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   10 .`n_parameters` - number of free parameters in the covariance matrix
+#'   11. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
 #' * For optimized `gips` object:
 #'   1. `optimized` - `TRUE`
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1444,24 +1445,25 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   12. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
-#'   13. `optimization_algorithm_used` - all used optimization algorithms
+#'   12. `n_parameters` - number of free parameters in the covariance matrix
+#'   13. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   14. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
-#'   14. `did_converge` - a boolean, did the last used algorithm converge
-#'   15. `number_of_log_posteriori_calls` - how many times was
+#'   15. `did_converge` - a boolean, did the last used algorithm converge
+#'   16. `number_of_log_posteriori_calls` - how many times was
 #'       the [log_posteriori_of_gips()] function called during
 #'       the optimization
-#'   16. `whole_optimization_time` - how long was the optimization process;
+#'   17. `whole_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple)
-#'   17. `log_posteriori_calls_after_best` - how many times was
+#'   18. `log_posteriori_calls_after_best` - how many times was
 #'       the [log_posteriori_of_gips()] function called after
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result;
 #'       if this value is small, consider running [find_MAP()]
 #'       one more time with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`
-#'   18. `acceptance_rate` - only interesting for `optimizer = "MH"`;
+#'   19. `acceptance_rate` - only interesting for `optimizer = "MH"`;
 #'       how often was the algorithm accepting the change of permutation
 #'       in an iteration
 #' @export
@@ -1510,6 +1512,8 @@ summary.gips <- function(object, ...) {
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
+  
+  n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
@@ -1530,6 +1534,7 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
+      n_parameters = n_parameters,
       AIC = suppressWarnings(AIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))), # warning for NA and NULL
       BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists")))  # warning for NA and NULL
     )
@@ -1566,6 +1571,7 @@ summary.gips <- function(object, ...) {
       was_mean_estimated = attr(object, "was_mean_estimated"),
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
+      n_parameters = n_parameters,
       AIC = suppressWarnings(AIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
@@ -1645,6 +1651,7 @@ print.summary.gips <- function(x, ...) {
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "not ", ""
   ), "exist.",
+  "\n\nNumber of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
   "\n\nBIC:\n ", x[["BIC"]],
   "\n\nAIC:\n ", x[["AIC"]],
   sep = ""
@@ -1765,8 +1772,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' @returns Log-Likelihood of the sample.
 #' 
-#' When one does not exists, returns `NA`.
-#' When it cannot be reasonably approximated, returns `NULL`.
+#' When one does not exists, returns `NULL`.
+#' When it cannot be reasonably approximated, returns `NA`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section below.
@@ -1868,8 +1875,8 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' 
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #' 
-#' When normal model does not exists, returns `NA`.
-#' When normal model cannot be reasonably approximated, returns `NULL`.
+#' When normal model does not exists, returns `NULL`.
+#' When normal model cannot be reasonably approximated, returns `NA`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section of [logLik.gips()].
