@@ -110,7 +110,8 @@ used to calculate the posteriori value</p></li>
 <li><p><code>FALSE</code> means the <code>S</code> parameter was calculated with
 <code>S = t(X) %*% X / number_of_observations</code></p></li>
 </ul></li>
-<li><p><code>delta</code>, <code>D_matrix</code> - the parameters of the Bayesian method</p></li>
+<li><p><code>delta</code>, <code>D_matrix</code> - the parameters of the Bayesian method
+10 .<code>n_parameters</code> - number of free parameters in the covariance matrix</p></li>
 <li><p><code>AIC</code>, <code>BIC</code> - output of <code><a href="AIC.gips.html">AIC.gips()</a></code> and <code><a href="AIC.gips.html">BIC.gips()</a></code> functions</p></li>
 </ol></li>
 <li><p>For optimized <code>gips</code> object:</p><ol><li><p><code>optimized</code> - <code>TRUE</code></p></li>
@@ -141,6 +142,7 @@ used to calculate the posteriori value</p></li>
 <code>S = t(X) %*% X / number_of_observations</code></p></li>
 </ul></li>
 <li><p><code>delta</code>, <code>D_matrix</code> - the parameters of the Bayesian method</p></li>
+<li><p><code>n_parameters</code> - number of free parameters in the covariance matrix</p></li>
 <li><p><code>AIC</code>, <code>BIC</code> - output of <code><a href="AIC.gips.html">AIC.gips()</a></code> and <code><a href="AIC.gips.html">BIC.gips()</a></code> functions</p></li>
 <li><p><code>optimization_algorithm_used</code> - all used optimization algorithms
 in order (one could start optimization with "MH", and then
@@ -216,13 +218,13 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $found_permutation_log_posteriori</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -8.835444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -7.147754</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $start_permutation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $start_permutation_log_posteriori</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -8.835444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -7.147754</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $times_more_likely_than_start</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
@@ -235,12 +237,12 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $S_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.8229375 0.4450851 0.3859458 0.1205820 0.4984345 0.5575737</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.4450851 0.5098441 0.3675434 0.2617136 0.1969545 0.3392553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.3859458 0.3675434 0.5222922 0.2657410 0.2841434 0.1293946</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.1205820 0.2617136 0.2657410 0.5564648 0.4153332 0.4113058</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.4984345 0.1969545 0.2841434 0.4153332 0.7168131 0.6296242</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.5575737 0.3392553 0.1293946 0.4113058 0.6296242 0.8394849</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.3538804 0.9620223 0.7165937 0.4504975 0.8423556 1.0877841</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.9620223 1.1134170 1.1845150 0.7464383 0.5950436 0.5239455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.7165937 1.1845150 1.4999519 0.9881248 0.5202034 0.2047666</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.4504975 0.7464383 0.9881248 0.7991121 0.5031713 0.2614848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.8423556 0.5950436 0.5202034 0.5031713 0.7504832 0.8253234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.0877841 0.5239455 0.2047666 0.2614848 0.8253234 1.1445023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $number_of_observations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 13</span>
@@ -260,6 +262,9 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,]    0    0    0    0    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,]    0    0    0    0    0    1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_parameters</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $AIC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -276,7 +281,7 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.01943374 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.03142595 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9</span>
@@ -290,13 +295,13 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The optimized `gips` object.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,4)(2,5)(3,6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -2.010756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -7.147754</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 920.289</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -306,10 +311,13 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There is 12 degrees of freedom left.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> n0:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations is bigger than n0 for this permutaion,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of free parameters in the covariance matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  NA</span>
@@ -322,13 +330,13 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  hill_climbing did converge</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of log_posteriori calls:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  61</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1081624 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.0482111 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15</span>
 <span class="r-in"><span><span class="co"># ================================================================================</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">10</span><span class="op">)</span></span></span>
@@ -356,6 +364,9 @@ matrix of the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations is bigger than n0 for this permutaion,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of free parameters in the covariance matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  63.02608</span>
