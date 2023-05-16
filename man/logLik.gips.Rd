@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{...}{Further arguments will be ignored.}
 
 \item{tol}{A tolerance for \code{det(projected_cov)}.
 If the det is smaller than \code{tol}, the \code{NA} is returned.}
@@ -48,6 +48,7 @@ In such a case, the \code{logLik.gips()} will return \code{NULL} and show a warn
 When \code{n >= n0}, but the estimated covariance matrix is very close to
 singular, the likelihood cannot be reasonably estimated.
 In such a case, the \code{logLik.gips()} will return \code{NA} and show a warning.
+The closeness is defined by the \code{tol} parameter.
 
 For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 \code{vignette("Theory", package = "gips")} or its

@@ -1741,7 +1741,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     is close to singular, the `NA` is returned.
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
-#' @param ... Further arguments passed to or from other methods.
+#' @param ... Further arguments will be ignored.
 #' @param tol A tolerance for `det(projected_cov)`.
 #'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
@@ -1757,6 +1757,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' When `n >= n0`, but the estimated covariance matrix is very close to
 #' singular, the likelihood cannot be reasonably estimated.
 #' In such a case, the `logLik.gips()` will return `NA` and show a warning.
+#' The closeness is defined by the `tol` parameter.
 #' 
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
@@ -1870,13 +1871,15 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' @method AIC gips
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
-#' @param ... Further arguments will be ignored
+#' @param ... One can pass the `tol` argument for [logLik.gips()].
+#'     Further arguments will be ignored.
 #' @inheritParams stats::AIC
 #' 
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #' 
 #' When normal model does not exists, returns `NULL`.
-#' When normal model cannot be reasonably approximated, returns `NA`.
+#' When normal model cannot be reasonably approximated, returns `NA`
+#'     (see the `tol` parameter in [logLik.gips()]).
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section of [logLik.gips()].
@@ -1903,7 +1906,7 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
 AIC.gips <- function(object, ..., k = 2){
-  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  log_likelihood_S <- logLik.gips(object, ...) # in here we will validate object is of class gips
   
   if(is.null(log_likelihood_S)){
     return(NULL)
@@ -1929,7 +1932,7 @@ AIC.gips <- function(object, ..., k = 2){
 #' BIC(g) # 244
 #' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 BIC.gips <- function(object, ...){
-  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
+  log_likelihood_S <- logLik.gips(object, ...) # in here we will validate object is of class gips
   
   if(is.null(log_likelihood_S)){
     return(NULL)

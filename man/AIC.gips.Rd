@@ -12,7 +12,8 @@
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
-\item{...}{Further arguments will be ignored}
+\item{...}{One can pass the \code{tol} argument for \code{\link[=logLik.gips]{logLik.gips()}}.
+Further arguments will be ignored.}
 
 \item{k}{numeric, the \emph{penalty} per parameter to be used; the
     default \code{k = 2} is the classical AIC.}
@@ -21,7 +22,8 @@
 \code{AIC.gips()} returns calculated Akaike's An Information Criterion
 
 When normal model does not exists, returns \code{NULL}.
-When normal model cannot be reasonably approximated, returns \code{NA}.
+When normal model cannot be reasonably approximated, returns \code{NA}
+(see the \code{tol} parameter in \code{\link[=logLik.gips]{logLik.gips()}}).
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood} section of \code{\link[=logLik.gips]{logLik.gips()}}.
