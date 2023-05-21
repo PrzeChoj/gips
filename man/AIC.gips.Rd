@@ -12,8 +12,7 @@
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
-\item{...}{One can pass the \code{tol} argument for \code{\link[=logLik.gips]{logLik.gips()}}.
-Further arguments will be ignored.}
+\item{...}{Further arguments will be ignored.}
 
 \item{k}{numeric, the \emph{penalty} per parameter to be used; the
     default \code{k = 2} is the classical AIC.}
@@ -26,7 +25,8 @@ When normal model cannot be reasonably approximated (matrix is singular),
 returns \code{Inf}.
 
 In both failure situations, shows a warning.
-More information can be found in \strong{Existence of likelihood} section of \code{\link[=logLik.gips]{logLik.gips()}}.
+More information can be found in \strong{Existence of likelihood}
+section of \code{\link[=logLik.gips]{logLik.gips()}}.
 
 \code{BIC.gips()} returns calculated Schwarz's Bayesian Information Criterion
 }

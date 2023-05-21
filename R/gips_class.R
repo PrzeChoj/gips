@@ -1868,8 +1868,7 @@ logLik.gips <- function(object, ...){
 #' @method AIC gips
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
-#' @param ... One can pass the `tol` argument for [logLik.gips()].
-#'     Further arguments will be ignored.
+#' @param ... Further arguments will be ignored.
 #' @inheritParams stats::AIC
 #' 
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
@@ -1879,7 +1878,8 @@ logLik.gips <- function(object, ...){
 #'     returns `Inf`.
 #'     
 #' In both failure situations, shows a warning.
-#' More information can be found in **Existence of likelihood** section of [logLik.gips()].
+#' More information can be found in **Existence of likelihood**
+#' section of [logLik.gips()].
 #' 
 #' @importFrom stats AIC
 #' 
@@ -1903,7 +1903,7 @@ logLik.gips <- function(object, ...){
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
 AIC.gips <- function(object, ..., k = 2){
-  log_likelihood_S <- logLik.gips(object, ...) # in here we will validate object is of class gips
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
   
   if(is.null(log_likelihood_S)){
     return(NULL)
@@ -1929,7 +1929,7 @@ AIC.gips <- function(object, ..., k = 2){
 #' BIC(g) # 244
 #' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 BIC.gips <- function(object, ...){
-  log_likelihood_S <- logLik.gips(object, ...) # in here we will validate object is of class gips
+  log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
   
   if(is.null(log_likelihood_S)){
     return(NULL)
