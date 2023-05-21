@@ -167,11 +167,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;           [,1]      [,2]       [,3]      [,4]     [,5]</span></span>
-<span><span class="co">#&gt; [1,]  1.777792 -1.865866 -0.2888402 -6.639205 4.231175</span></span>
-<span><span class="co">#&gt; [2,] -4.219128 -6.682872  0.1879387 -6.657296 4.025511</span></span>
-<span><span class="co">#&gt; [3,] -3.183415 -4.735767 -0.8788364 -8.267318 3.661581</span></span>
-<span><span class="co">#&gt; [4,] -5.122652 -3.476768 -1.7243440 -9.046980 2.780400</span></span>
+<span><span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span></span>
+<span><span class="co">#&gt; [1,] -2.926243 -4.159174 -3.938105 -5.176721 -5.101927</span></span>
+<span><span class="co">#&gt; [2,] -8.923163 -8.976181 -3.829856 -5.456289 -4.677584</span></span>
+<span><span class="co">#&gt; [3,] -7.887450 -7.029076 -4.179496 -6.557494 -6.267467</span></span>
+<span><span class="co">#&gt; [4,] -9.826687 -5.770077 -5.073674 -7.371687 -7.065446</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -219,33 +219,33 @@ assumptions:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            ()         (4,5)         (3,4)       (3,4,5)         (3,5) </span></span>
-<span><span class="co">#&gt; 0.01020026297 0.04202785057 0.04329634843 0.19437057372 0.05766471854 </span></span>
+<span><span class="co">#&gt; 0.01061282927 0.06171956464 0.04211999314 0.20223220920 0.04567419862 </span></span>
 <span><span class="co">#&gt;         (2,3)    (2,3)(4,5)       (2,3,4)     (2,3,4,5)     (2,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.00688837275 0.00941299231 0.10939068692 0.05997502664 0.05632735311 </span></span>
+<span><span class="co">#&gt; 0.00581023111 0.01783654869 0.01551801497 0.05682939187 0.07903711778 </span></span>
 <span><span class="co">#&gt;       (2,3,5)         (2,4)       (2,4,5)    (2,4)(3,5)     (2,4,3,5) </span></span>
-<span><span class="co">#&gt; 0.01690766133 0.01791226854 0.03320169611 0.05080997459 0.06508290817 </span></span>
+<span><span class="co">#&gt; 0.04483174508 0.00632844959 0.09831655373 0.01384671335 0.05703725463 </span></span>
 <span><span class="co">#&gt;         (2,5)    (2,5)(3,4)         (1,2)    (1,2)(4,5)    (1,2)(3,4) </span></span>
-<span><span class="co">#&gt; 0.00484877434 0.00772947942 0.00427729677 0.01041554609 0.01061327379 </span></span>
+<span><span class="co">#&gt; 0.01796890911 0.01890647384 0.00445029902 0.01010029703 0.01112908332 </span></span>
 <span><span class="co">#&gt;  (1,2)(3,4,5)    (1,2)(3,5)       (1,2,3)  (1,2,3)(4,5)     (1,2,3,4) </span></span>
-<span><span class="co">#&gt; 0.05423742756 0.00946452342 0.00177420561 0.00480180013 0.00951704076 </span></span>
+<span><span class="co">#&gt; 0.05643114895 0.01048091275 0.00125289503 0.00577963435 0.00081399784 </span></span>
 <span><span class="co">#&gt;   (1,2,3,4,5)   (1,2,3,5,4)     (1,2,3,5)     (1,2,4,3)   (1,2,4,5,3) </span></span>
-<span><span class="co">#&gt; 0.00312987976 0.00400328060 0.00037801146 0.00360419086 0.00255051418 </span></span>
+<span><span class="co">#&gt; 0.00425749682 0.00735807992 0.00240359629 0.00028403009 0.00341026916 </span></span>
 <span><span class="co">#&gt;       (1,2,4)     (1,2,4,5)  (1,2,4)(3,5)   (1,2,4,3,5)   (1,2,5,4,3) </span></span>
-<span><span class="co">#&gt; 0.00712466828 0.00074114062 0.02887122147 0.00337308053 0.00351929348 </span></span>
+<span><span class="co">#&gt; 0.00233411313 0.00522571301 0.00758134816 0.00367149151 0.00257878934 </span></span>
 <span><span class="co">#&gt;     (1,2,5,3)     (1,2,5,4)       (1,2,5)   (1,2,5,3,4)  (1,2,5)(3,4) </span></span>
-<span><span class="co">#&gt; 0.00047460582 0.00224822235 0.00120092585 0.00812066874 0.00400435159 </span></span>
+<span><span class="co">#&gt; 0.00081794919 0.00530911969 0.00575507966 0.00370416241 0.01455544007 </span></span>
 <span><span class="co">#&gt;         (1,3)    (1,3)(4,5)       (1,3,4)     (1,3,4,5)     (1,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.00031501545 0.00041115851 0.00036876776 0.00004845945 0.00004873652 </span></span>
+<span><span class="co">#&gt; 0.00021825685 0.00061927155 0.00016548479 0.00005041919 0.00005399096 </span></span>
 <span><span class="co">#&gt;       (1,3,5)    (1,3)(2,4)  (1,3)(2,4,5)     (1,3,2,4)  (1,3,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.00011230786 0.00046770144 0.00450718929 0.00688583190 0.00035608326 </span></span>
+<span><span class="co">#&gt; 0.00024122684 0.00003053547 0.00438962100 0.00049700802 0.00023070395 </span></span>
 <span><span class="co">#&gt;    (1,3)(2,5)     (1,3,2,5)  (1,3,4)(2,5)         (1,4)       (1,4,5) </span></span>
-<span><span class="co">#&gt; 0.00009249800 0.00054577004 0.00015520181 0.00120119497 0.00036585692 </span></span>
+<span><span class="co">#&gt; 0.00011037285 0.00159335260 0.00052851925 0.00055295545 0.00042223214 </span></span>
 <span><span class="co">#&gt;    (1,4)(3,5)     (1,4,3,5)    (1,4)(2,3)  (1,4,5)(2,3)  (1,4)(2,3,5) </span></span>
-<span><span class="co">#&gt; 0.00335428231 0.00006326803 0.00163974966 0.00039079452 0.00625599338 </span></span>
+<span><span class="co">#&gt; 0.00089431399 0.00005700363 0.00022150996 0.00020077919 0.00934379767 </span></span>
 <span><span class="co">#&gt;    (1,4)(2,5)     (1,4,2,5)         (1,5)    (1,5)(3,4)    (1,5)(2,3) </span></span>
-<span><span class="co">#&gt; 0.00044077486 0.00128101281 0.00023660865 0.00063165904 0.00006669827 </span></span>
+<span><span class="co">#&gt; 0.00119644677 0.00672864070 0.00082845248 0.00135409444 0.00047108119 </span></span>
 <span><span class="co">#&gt;  (1,5)(2,3,4)    (1,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.00517631271 0.00008895438</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.00413882960 0.00054995409</span></span></code></pre></div>
 <p>We see that assumption <span class="math inline">\((3,4,5)\)</span>
 is the most likely with <span class="math inline">\(20.2\%\)</span>
 posterior probability. All other permutations are way less likely.</p>
