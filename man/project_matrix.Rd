@@ -67,15 +67,15 @@ S <- cov(X)
 projected_S <- project_matrix(S, perm = my_perm)
 projected_S
 # The value in [1,1] is the same as in [4,4]; also, [2,2] and [3,3];
-  # also [1,2] and [4,3]; also, [1,5] and [4,5]; and so on
+  # also [1,2] and [3,4]; also, [1,5] and [4,5]; and so on
 
 # Plot the projected matrix:
 g <- gips(S, number_of_observations, perm = my_perm)
 plot(g, type = "heatmap")
 
-# Find the MAP Estimator
+# Find the MAP Estimator of covariance
 g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
-S_MAP <- project_matrix(S, perm = g_MAP[[1]])
+S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP[[1]])
 S_MAP
 plot(g_MAP, type = "heatmap")
 }
