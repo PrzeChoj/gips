@@ -1742,8 +1742,6 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' @param object An object of class "gips"; usually a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
-#' @param tol A tolerance for `det(projected_cov)`.
-#'     If the det is smaller than `tol`, the `NA` is returned.
 #' 
 #' @section Existence of likelihood:
 #' We only consider the non-degenerate multivariate normal model.
@@ -1755,9 +1753,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' In such a case, the `logLik.gips()` will return `NULL` and show a warning.
 #' 
 #' When `n >= n0`, but the estimated covariance matrix is very close to
-#' singular, the likelihood cannot be reasonably estimated.
-#' In such a case, the `logLik.gips()` will return `NA` and show a warning.
-#' The closeness is defined by the `tol` parameter.
+#' singular, the calculated likelihood can overflow to `-Inf`.
+#' In such a case, the `logLik.gips()` will return `-Inf` and show a warning.
 #' 
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
@@ -1774,7 +1771,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' @returns Log-Likelihood of the sample.
 #' 
 #' When one does not exists, returns `NULL`.
-#' When it cannot be reasonably approximated, returns `NA`.
+#' When it overflows, returns `-Inf`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section below.
@@ -1808,7 +1805,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' g_n_too_small <- gips(S, 4)
 #' logLik(g_n_too_small) # NULL # the likelihood does not exists
-logLik.gips <- function(object, ..., tol = 1e-07){
+logLik.gips <- function(object, ...){
   validate_gips(object)
   
   original_cov <- attributes(object)[["S"]]
@@ -1832,13 +1829,13 @@ logLik.gips <- function(object, ..., tol = 1e-07){
   
   log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)[["modulus"]]
   attributes(log_det_projected_cov) <- NULL
-  if(log_det_projected_cov < log(tol)){ # Do not consider sign, because `validate_gips()` checks `is.positive.semi.definite.matrix()`
+  if(is.infinite(log_det_projected_cov)){
     rlang::warn(c("The projected matrix is computationally singular.",
                   "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
                   "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
     ), class = "singular_matrix")
     
-    return(NA)
+    return(-Inf)
   }
   
   log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
@@ -1878,8 +1875,8 @@ logLik.gips <- function(object, ..., tol = 1e-07){
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #' 
 #' When normal model does not exists, returns `NULL`.
-#' When normal model cannot be reasonably approximated, returns `NA`
-#'     (see the `tol` parameter in [logLik.gips()]).
+#' When normal model cannot be reasonably approximated (matrix is singular),
+#'     returns `Inf`.
 #'     
 #' In both failure situations, shows a warning.
 #' More information can be found in **Existence of likelihood** section of [logLik.gips()].
@@ -1912,8 +1909,8 @@ AIC.gips <- function(object, ..., k = 2){
     return(NULL)
   }
   
-  if(is.na(log_likelihood_S)){
-    return(NA)
+  if(is.infinite(log_likelihood_S)){
+    return(Inf)
   }
   
   -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
@@ -1938,8 +1935,8 @@ BIC.gips <- function(object, ...){
     return(NULL)
   }
   
-  if(is.na(log_likelihood_S)){
-    return(NA)
+  if(is.infinite(log_likelihood_S)){
+    return(Inf)
   }
   
   k <- log(attr(log_likelihood_S, "nobs")) # this line is the only difference from `AIC.gips()`

@@ -4,21 +4,18 @@
 \alias{logLik.gips}
 \title{Extract Log-Likelihood for gips class}
 \usage{
-\method{logLik}{gips}(object, ..., tol = 1e-07)
+\method{logLik}{gips}(object, ...)
 }
 \arguments{
 \item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
-
-\item{tol}{A tolerance for \code{det(projected_cov)}.
-If the det is smaller than \code{tol}, the \code{NA} is returned.}
 }
 \value{
 Log-Likelihood of the sample.
 
 When one does not exists, returns \code{NULL}.
-When it cannot be reasonably approximated, returns \code{NA}.
+When it overflows, returns \code{-Inf}.
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood} section below.
@@ -46,9 +43,8 @@ In case \code{n < n0}, the model does not exist, so the likelihood does not exis
 In such a case, the \code{logLik.gips()} will return \code{NULL} and show a warning.
 
 When \code{n >= n0}, but the estimated covariance matrix is very close to
-singular, the likelihood cannot be reasonably estimated.
-In such a case, the \code{logLik.gips()} will return \code{NA} and show a warning.
-The closeness is defined by the \code{tol} parameter.
+singular, the calculated likelihood can overflow to \code{-Inf}.
+In such a case, the \code{logLik.gips()} will return \code{-Inf} and show a warning.
 
 For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 \code{vignette("Theory", package = "gips")} or its
