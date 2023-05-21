@@ -1414,8 +1414,8 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   9. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   10 .`n_parameters` - number of free parameters in the covariance matrix
-#'   11. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   10. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   11. `n_parameters` - number of free parameters in the covariance matrix
 #' * For optimized `gips` object:
 #'   1. `optimized` - `TRUE`
 #'   2. `found_permutation` - the permutation this `gips` represents;
@@ -1445,8 +1445,8 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`
 #'   11. `delta`, `D_matrix` - the parameters of the Bayesian method
-#'   12. `n_parameters` - number of free parameters in the covariance matrix
-#'   13. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   12. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions
+#'   13. `n_parameters` - number of free parameters in the covariance matrix
 #'   14. `optimization_algorithm_used` - all used optimization algorithms
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC")
@@ -1619,11 +1619,11 @@ print.summary.gips <- function(x, ...) {
   "\n\nTimes more likely than ",
   ifelse(x[["optimized"]],
     paste0(
-      "starting permutation:\n",
+      "starting permutation:\n ",
       convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
     ),
     paste0(
-      "identity permutation:\n",
+      "identity permutation:\n ",
       convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
     )
   ),

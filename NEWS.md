@@ -8,7 +8,7 @@
 
 ### Update to function
 
-* `summary.gips()` calculates `BIC`, `AIC` and `n_parameters` (number of free parameters in the covariance matrix).
+* `summary.gips()` calculates `AIC`, `BIC` and `n_parameters` (number of free parameters in the covariance matrix).
 
 ### Bugfixes:
 
