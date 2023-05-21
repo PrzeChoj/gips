@@ -1296,7 +1296,8 @@ test_that("logLik.gips() works", {
   n <- nrow(Z) # 5
   
   
-  # 1. Mean is (0,0,0,0)
+  # ==================
+  # Mean is (0,0,0,0)
   U <- t(Z) %*% Z
   perm <- gips_perm("(12)(34)", 4)
   S <- project_matrix(U, perm)/n
@@ -1316,7 +1317,8 @@ test_that("logLik.gips() works", {
                logLik_definition)
   
   
-  # 2. mean was estimated
+  # ==================
+  # mean was estimated
   U <- cov(Z) * (n-1)
   perm <- gips_perm("(12)(34)", 4)
   S <- project_matrix(U, perm)/(n-1)
@@ -1328,7 +1330,8 @@ test_that("logLik.gips() works", {
                logLik_expected)
   
   
-  # 3. NUll:
+  # ==================
+  # NUll:
   U <- t(Z) %*% Z
   expect_warning(
     expect_equal(
@@ -1337,14 +1340,16 @@ test_that("logLik.gips() works", {
     class = "likelihood_does_not_exists"
   )
   
-  # 4. -Inf:
+  # ==================
+  # -Inf:
   g <- gips(diag(0, 4), n)
   expect_warning(
     expect_equal(logLik(g), -Inf),
     class = "singular_matrix"
   )
   
-  # 5. Not -Inf:
+  # ==================
+  # Not -Inf:
   p <- 150
   g <- gips(diag(1e-310, p), p*2)
   expect_no_warning(logLik(g))
@@ -1365,7 +1370,7 @@ test_that("AIC.gips() works", {
   expect_equal(AIC(g), 82.5767946096694)
   expect_equal(BIC(g), 80.233422084274)
   
-  
+  # ==================
   # NUll
   S <- t(Z) %*% Z / n
   g <- gips(S, 2)
@@ -1382,8 +1387,16 @@ test_that("AIC.gips() works", {
     class = "likelihood_does_not_exists"
   )
   
+  # ==================
   # Inf
   g <- gips(diag(0, 4), n)
   expect_warning(expect_equal(AIC(g), Inf), class = "singular_matrix")
   expect_warning(expect_equal(BIC(g), Inf), class = "singular_matrix")
+  
+  # ==================
+  # Not -Inf:
+  p <- 150
+  g <- gips(diag(1e-310, p), p*2)
+  expect_no_warning(AIC(g))
+  expect_no_warning(BIC(g))
 })
