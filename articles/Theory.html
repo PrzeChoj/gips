@@ -339,12 +339,13 @@ the biggest value of the posterior probability <span class="math inline">\(\math
 on the set of all cyclic subgroups of <span class="math inline">\(\mathfrak{S}_p\)</span>.</li>
 <li>
 <span class="math inline">\(K\)</span> given <span class="math inline">\(\Gamma\)</span> follows the Diaconis-Ylvisaker
-conjugate prior distribution with parameters <span class="math inline">\(\delta\)</span> (real number, <span class="math inline">\(\delta &gt; 2\)</span>) and <span class="math inline">\(D\)</span> (symmetric, positive definite square
+conjugate prior distribution with parameters <span class="math inline">\(\delta\)</span> (real number, <span class="math inline">\(\delta &gt; 1\)</span>) and <span class="math inline">\(D\)</span> (symmetric, positive definite square
 matrix of the same size as <code>S</code>), see <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>, Sec. 3.4.</li>
 </ol>
-<p>Footnote: Actually in some cases smaller (but still positive) values
-for <span class="math inline">\(\delta\)</span> parameter are
-theoretically correct. Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
+<p>Footnote: Actually, for <span class="math inline">\(\Gamma =
+\{id\}\)</span>, <span class="math inline">\(\delta &gt; 0\)</span>
+parameter are theoretically correct. In <code>gips</code> we want this
+to be defined for all cyclic groups <span class="math inline">\(\Gamma\)</span>, so we restrict <span class="math inline">\(\delta &gt; 1\)</span>. Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
 </div>
 <div class="section level4">
 <h4 id="gips-technical-details">
@@ -354,9 +355,9 @@ theoretically correct. Refer to the <a href="https://arxiv.org/abs/2004.03503" c
 named <code>delta</code>, and <span class="math inline">\(D\)</span> is
 named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>diag(p)</code>, respectively.
 However, it is worth running the procedure for several parameters
-<code>D_matrix</code> of form <span class="math inline">\(C\cdot
-diag(p)\)</span> for positive constant <span class="math inline">\(C\)</span>. Large <span class="math inline">\(C\)</span> (compared to the data) favors small
-groups.</p>
+<code>D_matrix</code> of form <span class="math inline">\(d\cdot
+diag(p)\)</span> for positive constant <span class="math inline">\(d\)</span>. Large <span class="math inline">\(d\)</span> (compared to the data) favors small
+structures.</p>
 <p>One can calculate the logarithm of formula (30) with function
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p>
 </div>

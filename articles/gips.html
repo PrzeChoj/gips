@@ -167,11 +167,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;            [,1]     [,2]      [,3]      [,4]       [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -6.720747 8.560522 -1.723573 -1.695641 -0.7969862</span></span>
-<span><span class="co">#&gt; [2,] -12.717667 3.743516 -1.615323 -1.975209 -0.3726433</span></span>
-<span><span class="co">#&gt; [3,] -11.681954 5.690620 -1.964964 -3.076413 -1.9625259</span></span>
-<span><span class="co">#&gt; [4,] -13.621191 6.949620 -2.859141 -3.890607 -2.7605052</span></span>
+<span><span class="co">#&gt;           [,1]     [,2]      [,3]       [,4]     [,5]</span></span>
+<span><span class="co">#&gt; [1,] -2.198318 7.313169 10.236478  1.9131489 5.260403</span></span>
+<span><span class="co">#&gt; [2,] -8.195237 2.496163 10.713256  1.8950581 5.054738</span></span>
+<span><span class="co">#&gt; [3,] -7.159524 4.443268  9.646481  0.2850358 4.690809</span></span>
+<span><span class="co">#&gt; [4,] -9.098761 5.702267  8.800974 -0.4946262 3.809628</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -218,34 +218,34 @@ assumption. Let’s examine how reasonable are other possible
 assumptions:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            ()         (4,5)         (3,4)       (3,4,5)         (3,5) </span></span>
-<span><span class="co">#&gt; 0.01061282927 0.06171956464 0.04211999314 0.20223220920 0.04567419862 </span></span>
-<span><span class="co">#&gt;         (2,3)    (2,3)(4,5)       (2,3,4)     (2,3,4,5)     (2,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.00581023111 0.01783654869 0.01551801497 0.05682939187 0.07903711778 </span></span>
-<span><span class="co">#&gt;       (2,3,5)         (2,4)       (2,4,5)    (2,4)(3,5)     (2,4,3,5) </span></span>
-<span><span class="co">#&gt; 0.04483174508 0.00632844959 0.09831655373 0.01384671335 0.05703725463 </span></span>
-<span><span class="co">#&gt;         (2,5)    (2,5)(3,4)         (1,2)    (1,2)(4,5)    (1,2)(3,4) </span></span>
-<span><span class="co">#&gt; 0.01796890911 0.01890647384 0.00445029902 0.01010029703 0.01112908332 </span></span>
-<span><span class="co">#&gt;  (1,2)(3,4,5)    (1,2)(3,5)       (1,2,3)  (1,2,3)(4,5)     (1,2,3,4) </span></span>
-<span><span class="co">#&gt; 0.05643114895 0.01048091275 0.00125289503 0.00577963435 0.00081399784 </span></span>
-<span><span class="co">#&gt;   (1,2,3,4,5)   (1,2,3,5,4)     (1,2,3,5)     (1,2,4,3)   (1,2,4,5,3) </span></span>
-<span><span class="co">#&gt; 0.00425749682 0.00735807992 0.00240359629 0.00028403009 0.00341026916 </span></span>
-<span><span class="co">#&gt;       (1,2,4)     (1,2,4,5)  (1,2,4)(3,5)   (1,2,4,3,5)   (1,2,5,4,3) </span></span>
-<span><span class="co">#&gt; 0.00233411313 0.00522571301 0.00758134816 0.00367149151 0.00257878934 </span></span>
-<span><span class="co">#&gt;     (1,2,5,3)     (1,2,5,4)       (1,2,5)   (1,2,5,3,4)  (1,2,5)(3,4) </span></span>
-<span><span class="co">#&gt; 0.00081794919 0.00530911969 0.00575507966 0.00370416241 0.01455544007 </span></span>
-<span><span class="co">#&gt;         (1,3)    (1,3)(4,5)       (1,3,4)     (1,3,4,5)     (1,3,5,4) </span></span>
-<span><span class="co">#&gt; 0.00021825685 0.00061927155 0.00016548479 0.00005041919 0.00005399096 </span></span>
-<span><span class="co">#&gt;       (1,3,5)    (1,3)(2,4)  (1,3)(2,4,5)     (1,3,2,4)  (1,3,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.00024122684 0.00003053547 0.00438962100 0.00049700802 0.00023070395 </span></span>
-<span><span class="co">#&gt;    (1,3)(2,5)     (1,3,2,5)  (1,3,4)(2,5)         (1,4)       (1,4,5) </span></span>
-<span><span class="co">#&gt; 0.00011037285 0.00159335260 0.00052851925 0.00055295545 0.00042223214 </span></span>
-<span><span class="co">#&gt;    (1,4)(3,5)     (1,4,3,5)    (1,4)(2,3)  (1,4,5)(2,3)  (1,4)(2,3,5) </span></span>
-<span><span class="co">#&gt; 0.00089431399 0.00005700363 0.00022150996 0.00020077919 0.00934379767 </span></span>
-<span><span class="co">#&gt;    (1,4)(2,5)     (1,4,2,5)         (1,5)    (1,5)(3,4)    (1,5)(2,3) </span></span>
-<span><span class="co">#&gt; 0.00119644677 0.00672864070 0.00082845248 0.00135409444 0.00047108119 </span></span>
-<span><span class="co">#&gt;  (1,5)(2,3,4)    (1,5)(2,4) </span></span>
-<span><span class="co">#&gt; 0.00413882960 0.00054995409</span></span></code></pre></div>
+<span><span class="co">#&gt;       (3,4,5)       (2,3,4)     (2,4,3,5)     (2,3,4,5)         (3,5) </span></span>
+<span><span class="co">#&gt; 0.19437057372 0.10939068692 0.06508290817 0.05997502664 0.05766471854 </span></span>
+<span><span class="co">#&gt;     (2,3,5,4)  (1,2)(3,4,5)    (2,4)(3,5)         (3,4)         (4,5) </span></span>
+<span><span class="co">#&gt; 0.05632735311 0.05423742756 0.05080997459 0.04329634843 0.04202785057 </span></span>
+<span><span class="co">#&gt;       (2,4,5)  (1,2,4)(3,5)         (2,4)       (2,3,5)    (1,2)(3,4) </span></span>
+<span><span class="co">#&gt; 0.03320169611 0.02887122147 0.01791226854 0.01690766133 0.01061327379 </span></span>
+<span><span class="co">#&gt;    (1,2)(4,5)            ()     (1,2,3,4)    (1,2)(3,5)    (2,3)(4,5) </span></span>
+<span><span class="co">#&gt; 0.01041554609 0.01020026297 0.00951704076 0.00946452342 0.00941299231 </span></span>
+<span><span class="co">#&gt;   (1,2,5,3,4)    (2,5)(3,4)       (1,2,4)         (2,3)     (1,3,2,4) </span></span>
+<span><span class="co">#&gt; 0.00812066874 0.00772947942 0.00712466828 0.00688837275 0.00688583190 </span></span>
+<span><span class="co">#&gt;  (1,4)(2,3,5)  (1,5)(2,3,4)         (2,5)  (1,2,3)(4,5)  (1,3)(2,4,5) </span></span>
+<span><span class="co">#&gt; 0.00625599338 0.00517631271 0.00484877434 0.00480180013 0.00450718929 </span></span>
+<span><span class="co">#&gt;         (1,2)  (1,2,5)(3,4)   (1,2,3,5,4)     (1,2,4,3)   (1,2,5,4,3) </span></span>
+<span><span class="co">#&gt; 0.00427729677 0.00400435159 0.00400328060 0.00360419086 0.00351929348 </span></span>
+<span><span class="co">#&gt;   (1,2,4,3,5)    (1,4)(3,5)   (1,2,3,4,5)   (1,2,4,5,3)     (1,2,5,4) </span></span>
+<span><span class="co">#&gt; 0.00337308053 0.00335428231 0.00312987976 0.00255051418 0.00224822235 </span></span>
+<span><span class="co">#&gt;       (1,2,3)    (1,4)(2,3)     (1,4,2,5)         (1,4)       (1,2,5) </span></span>
+<span><span class="co">#&gt; 0.00177420561 0.00163974966 0.00128101281 0.00120119497 0.00120092585 </span></span>
+<span><span class="co">#&gt;     (1,2,4,5)    (1,5)(3,4)     (1,3,2,5)     (1,2,5,3)    (1,3)(2,4) </span></span>
+<span><span class="co">#&gt; 0.00074114062 0.00063165904 0.00054577004 0.00047460582 0.00046770144 </span></span>
+<span><span class="co">#&gt;    (1,4)(2,5)    (1,3)(4,5)  (1,4,5)(2,3)     (1,2,3,5)       (1,3,4) </span></span>
+<span><span class="co">#&gt; 0.00044077486 0.00041115851 0.00039079452 0.00037801146 0.00036876776 </span></span>
+<span><span class="co">#&gt;       (1,4,5)  (1,3,5)(2,4)         (1,3)         (1,5)  (1,3,4)(2,5) </span></span>
+<span><span class="co">#&gt; 0.00036585692 0.00035608326 0.00031501545 0.00023660865 0.00015520181 </span></span>
+<span><span class="co">#&gt;       (1,3,5)    (1,3)(2,5)    (1,5)(2,4)    (1,5)(2,3)     (1,4,3,5) </span></span>
+<span><span class="co">#&gt; 0.00011230786 0.00009249800 0.00008895438 0.00006669827 0.00006326803 </span></span>
+<span><span class="co">#&gt;     (1,3,5,4)     (1,3,4,5) </span></span>
+<span><span class="co">#&gt; 0.00004873652 0.00004845945</span></span></code></pre></div>
 <p>We see that assumption <span class="math inline">\((3,4,5)\)</span>
 is the most likely with <span class="math inline">\(20.2\%\)</span>
 posterior probability. All other permutations are way less likely.</p>
@@ -273,26 +273,33 @@ for us to estimate covariance correctly. The assumption <span class="math inline
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 12</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>We suspect books are printed with <span class="math inline">\(sqrt{2}\)</span> aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A series paper
+size</a>. Therefore, we can use this expert knowledge in the analysis
+and unify the data for height and width:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Z</span><span class="op">$</span><span class="va">height</span> <span class="op">&lt;-</span> <span class="va">Z</span><span class="op">$</span><span class="va">height</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>Now, let’s plot the data:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 12</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 3</span></span>
 <span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="va">S</span></span>
 <span><span class="co">#&gt;             thick    height   breadth</span></span>
-<span><span class="co">#&gt; thick    72.69697 -40.33485 -31.74242</span></span>
-<span><span class="co">#&gt; height  -40.33485  25.36992  20.58576</span></span>
-<span><span class="co">#&gt; breadth -31.74242  20.58576  17.18424</span></span>
+<span><span class="co">#&gt; thick    72.69697 -28.52104 -31.74242</span></span>
+<span><span class="co">#&gt; height  -28.52104  12.68496  14.55633</span></span>
+<span><span class="co">#&gt; breadth -31.74242  14.55633  17.18424</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="co"># the default D_matrix</span></span>
-<span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="gips_files/figure-html/change_D_matrix_example1-1.png" width="700"></p>
+<span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Standard, MLE estimator of a covariance matrix"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gips_files/figure-html/change_D_matrix_example1_2-1.png" width="700"></p>
 <p>We can see similarities between columns 2 and 3, representing the
 book’s height and breadth. In particular, the covariance between [1,2]
 is very similar to [1,3], and the variance of [2] is similar to the
 variance of [3]. Those are not surprising, given the interpretation of
-the data.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+the data (after the rescalling of height that we did).</p>
+<p>Let’s see what the <code>gips</code> will tell about this data:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
 <span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
@@ -303,16 +310,16 @@ the data.</p>
 <span><span class="co">#&gt;  - was found after 6 log_posteriori calculations</span></span>
 <span><span class="co">#&gt;  - is 1 times more likely than the starting, () permutation.</span></span>
 <span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   ()                (2,3)                (1,2) </span></span>
-<span><span class="co">#&gt; 0.917699644399123216 0.082300333638115772 0.000000000064309861 </span></span>
-<span><span class="co">#&gt;              (1,2,3)                (1,3) </span></span>
-<span><span class="co">#&gt; 0.000000021892918704 0.000000000005532453</span></span></code></pre></div>
+<span><span class="co">#&gt;                  ()               (2,3)             (1,2,3)               (1,3) </span></span>
+<span><span class="co">#&gt; 0.68266498062075265 0.31733501720532475 0.00000000216167368 0.00000000001053803 </span></span>
+<span><span class="co">#&gt;               (1,2) </span></span>
+<span><span class="co">#&gt; 0.00000000000171083</span></span></code></pre></div>
 <p>We see the search was too restrictive and did not find the
 permutation. We will weaken the restrictions by changing the
 <code>D_matrix</code> parameter.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">D_coef</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix <span class="op">=</span> <span class="va">D_coef</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># smaller than 1, so gips will look for bigger structure</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix <span class="op">=</span> <span class="va">d</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
 <span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
@@ -321,19 +328,22 @@ permutation. We will weaken the restrictions by changing the
 <span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (2,3)</span></span>
 <span><span class="co">#&gt;  - was found after 6 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 3.58 times more likely than the starting, () permutation.</span></span>
+<span><span class="co">#&gt;  - is 3.143 times more likely than the starting, () permutation.</span></span>
 <span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                  ()               (2,3)               (1,2)             (1,2,3) </span></span>
-<span><span class="co">#&gt; 0.21834865211409399 0.78161461578574387 0.00000000027813589 0.00003673179839076 </span></span>
-<span><span class="co">#&gt;               (1,3) </span></span>
-<span><span class="co">#&gt; 0.00000000002363545</span></span></code></pre></div>
+<span><span class="co">#&gt;                (2,3)                   ()              (1,2,3) </span></span>
+<span><span class="co">#&gt; 0.758618835154542648 0.241381031705867832 0.000000133131624193 </span></span>
+<span><span class="co">#&gt;                (1,3)                (1,2) </span></span>
+<span><span class="co">#&gt; 0.000000000006876633 0.000000000001088682</span></span></code></pre></div>
 <p><code>find_MAP</code> found the symmetry represented by permutation
 (2,3). The result depends on two input parameters, <code>delta</code>
 and <code>D_matrix</code>. By default they are set to <code>3</code> and
 <code>diag(p)</code>, respectively.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gips_files/figure-html/change_D_matrix_example4-1.png" width="700"></p>
 <p>The method is not scale-invariant and therefore we recommend to run
 gips for different values of <code>D_matrix</code> (typically, of the
-form <code>D_coef * diag(p)</code>, where <code>D_coef</code> <span class="math inline">\(\in \mathbb{R}^+\)</span>).</p>
+form <code>d * diag(p)</code>, where <code>d</code> <span class="math inline">\(\in \mathbb{R}^+\)</span>).</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>

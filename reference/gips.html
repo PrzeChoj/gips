@@ -115,7 +115,7 @@ that <code>S</code> is based on.</p></dd>
 
 <dt>delta</dt>
 <dd><p>A number, hyper-parameter of a Bayesian model.
-Has to be bigger than 2.
+Has to be strictly bigger than 1.
 See <strong>Hyperparameters</strong> section bellow.</p></dd>
 
 
@@ -137,7 +137,9 @@ a <code>(t(Z) %*% Z) / number_of_observations</code> calculation.</p></li>
 <dt>perm</dt>
 <dd><p>An optional permutation to be the base for the <code>gips</code> object.
 Can be of a <code>gips_perm</code> or a <code>permutation</code> class, or anything
-the function <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> can handle.</p></dd>
+the function <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::permutation()</a></code> can handle.
+Can also be of a <code>gips</code> class, but
+will be interpreted as the underlying <code>gips_perm</code>.</p></dd>
 
 
 <dt>list_of_gips_perm</dt>
@@ -191,6 +193,10 @@ it produces an error.</p>
     <h2 id="hyperparameters">Hyperparameters<a class="anchor" aria-label="anchor" href="#hyperparameters"></a></h2>
     
 
+<p>We encourage to try <code>D = d * I</code>, where <code>I</code> is an identity matrix of a size
+<code>p x p</code>, and <code>d &gt; 0</code> for some different <code>d</code>.
+When <code>d</code> is small (e.g. <code>d=0.1</code>), bigger structures will be found.
+When <code>d</code> is big (e.g. <code>d=100</code>), smaller structures will be found.</p>
 <p>In the Bayesian model, the prior distribution for
 the covariance matrix is a generalized case of
 <a href="https://en.wikipedia.org/wiki/Wishart_distribution" class="external-link">Wishart distribution</a>.</p>
@@ -241,7 +247,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-in"><span><span class="va">g_map</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - was found after 120 log_posteriori calculations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 552.299 times more likely than the starting, () permutation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 17.463 times more likely than the starting, () permutation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The optimized `gips` object.</span>
@@ -250,10 +256,10 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -4.750957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -0.5187185</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  552.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17.463</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -272,10 +278,10 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  103.1695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97.55352</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  101.4746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95.85867</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
@@ -285,7 +291,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2246442 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.3737447 secs</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
