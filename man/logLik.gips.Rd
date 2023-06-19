@@ -7,7 +7,7 @@
 \method{logLik}{gips}(object, ...)
 }
 \arguments{
-\item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
 }

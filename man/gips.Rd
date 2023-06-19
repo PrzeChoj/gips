@@ -61,7 +61,9 @@ a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
 
 \item{perm}{An optional permutation to be the base for the \code{gips} object.
 Can be of a \code{gips_perm} or a \code{permutation} class, or anything
-the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.}
+the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{list_of_gips_perm}{A list with a single element of
 a \code{gips_perm} class. The base object for the \code{gips} object.}

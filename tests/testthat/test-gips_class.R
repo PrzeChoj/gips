@@ -38,6 +38,14 @@ test_that("Setting custom permutation in gips constructor works", {
   expect_identical(custom_perm1, g1[[1]])
 
   expect_identical(gips_perm(custom_perm2, ncol(S)), g2[[1]])
+  
+  # gips as the `perm` parameter
+  g3 <- gips(
+    S, number_of_observations,
+    was_mean_estimated = FALSE, perm = g2
+  )
+  
+  expect_equal(g2, g3)
 })
 
 test_that("new_gips works or throws an erron on wrong arguments", {

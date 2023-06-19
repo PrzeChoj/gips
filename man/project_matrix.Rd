@@ -14,7 +14,9 @@ The covariance estimator.
 \item{perm}{A permutation to be projected on.
 An object of a \code{gips} class,
 a \code{gips_perm} class, or anything that can be used
-as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.}
+as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{precomputed_equal_indices}{This parameter is for internal use only.}
 }

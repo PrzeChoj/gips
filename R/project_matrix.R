@@ -41,6 +41,8 @@
 #'     An object of a `gips` class,
 #'     a `gips_perm` class, or anything that can be used
 #'     as the `x` argument in [`gips_perm()`] function.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #' @param precomputed_equal_indices This parameter is for internal use only.
 #'
 #' @returns Returns the matrix `S` projected on the space of symmetrical matrices invariant

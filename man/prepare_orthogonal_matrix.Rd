@@ -7,7 +7,9 @@
 prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
-\item{perm}{An object of a \code{gips_perm} or a \code{permutations::cycle} class.}
+\item{perm}{An object of a \code{gips_perm} or a \code{permutations::cycle} class.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{perm_size}{Size of a permutation.
 Required if \code{perm} is of a \code{permutations::cycle} class.}

@@ -134,3 +134,12 @@ test_that("arrange_v_object works for example", {
     example_orth_matrix
   )
 })
+
+test_that("gips object can be passed as perm", {
+  gperm <- gips_perm("(1,2,3)(4,5)", 5)
+  expect_silent(U_Gamma1 <- prepare_orthogonal_matrix(gperm))
+  g <- gips(diag(5), 14, perm = gperm)
+  expect_silent(U_Gamma2 <- prepare_orthogonal_matrix(g))
+  expect_equal(U_Gamma1, U_Gamma2)
+  
+})

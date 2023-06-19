@@ -64,7 +64,11 @@ test_that("get_structure_constants checks for proper argument", {
   
   expect_error(get_structure_constants(permutations::as.cycle("(1,2,3)")),
                "You provided `perm` with `class\\(perm\\) == \\(permutation, cycle\\)`")
-  
-  expect_error(get_structure_constants(gips(matrix_invariant_by_example_perm, 5)),
-               "You provided `perm` with `class\\(perm\\) == \\(gips\\)`")
+})
+
+test_that("get_structure_constants can get a gips as perm", {
+  perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
+  expect_silent(constants1 <- get_structure_constants(perm))
+  expect_silent(constants2 <- get_structure_constants(gips(diag(5), 5, perm = perm)))
+  expect_equal(constants1, constants2)
 })

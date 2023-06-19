@@ -31,6 +31,8 @@
 #' @param perm An optional permutation to be the base for the `gips` object.
 #'     Can be of a `gips_perm` or a `permutation` class, or anything
 #'     the function [permutations::permutation()] can handle.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #'
 #' @section Methods for a `gips` class:
 #' * [summary.gips()]
@@ -102,6 +104,10 @@
 #' }
 gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
                  was_mean_estimated = TRUE, perm = "") {
+  if (inherits(perm, "gips")) {
+    validate_gips(perm)
+    perm <- perm[[1]]
+  }
   if (!inherits(perm, c("gips_perm", "permutation"))) {
     perm <- permutations::permutation(perm)
   }
@@ -1745,7 +1751,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
 #' 
-#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param object An object of class `gips`; usually a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' 
 #' @section Existence of likelihood:
@@ -1872,7 +1878,7 @@ logLik.gips <- function(object, ...){
 #' 
 #' @method AIC gips
 #' 
-#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param object An object of class `gips`; usually a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' @inheritParams stats::AIC
 #' 
