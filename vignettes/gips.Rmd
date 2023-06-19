@@ -187,8 +187,8 @@ get_probabilities_from_gips(g_map)
 We see the search was too restrictive and did not find the permutation. We will weaken the restrictions by changing the `D_matrix` parameter.
 
 ```{r change_D_matrix_example3}
-D_coef <- 0.05
-g <- gips(S, number_of_observations, D_matrix = D_coef*diag(p))
+d <- 0.05
+g <- gips(S, number_of_observations, D_matrix = d*diag(p))
 g_map <- find_MAP(g, optimizer = "brute_force",
                   return_probabilities = TRUE, save_all_perms = TRUE)
 
@@ -197,7 +197,7 @@ get_probabilities_from_gips(g_map)
 ```
 `find_MAP` found the symmetry represented by permutation (2,3). The result depends on two input parameters, `delta` and `D_matrix`. By default they are set to `3` and `diag(p)`, respectively.
 
-The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `D_coef * diag(p)`, where `D_coef` $\in \mathbb{R}^+$).
+The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `d * diag(p)`, where `d` $\in \mathbb{R}^+$).
 
 
 # Further reading

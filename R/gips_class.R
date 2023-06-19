@@ -17,7 +17,7 @@
 #' @param number_of_observations A number of data points
 #'     that `S` is based on.
 #' @param delta A number, hyper-parameter of a Bayesian model.
-#'     Has to be bigger than 2.
+#'     Has to be strictly bigger than 1.
 #'     See **Hyperparameters** section bellow.
 #' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
@@ -41,10 +41,15 @@
 #' * [BIC.gips()]
 #'
 #' @section Hyperparameters:
+#' We encourage to try `D = d * I`, where `I` is an identity matrix of a size
+#' `p x p`, and `d > 0` for some different `d`.
+#' When `d` is small (e.g. `d=0.1`), bigger structures will be found.
+#' When `d` is big (e.g. `d=100`), smaller structures will be found.
+#' 
 #' In the Bayesian model, the prior distribution for
 #' the covariance matrix is a generalized case of
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
-#'
+#' 
 #' For brief introduction, see **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
@@ -743,9 +748,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "`delta` must not be `NULL`.",
       "x" = "Your provided `delta` is a `NULL`."
     )
-  } else if (delta <= 2) {
+  } else if (delta <= 1) { # See documentation of internal `G_function` in `calculate_gamma_function.R`
     abort_text <- c(abort_text,
-      "i" = "`delta` must be strictly bigger than 2.",
+      "i" = "`delta` must be strictly bigger than 1.",
       "x" = paste0("You provided `delta == ", delta, "`.")
     )
   }

@@ -2,25 +2,25 @@
 
 ### New functions
 
-* `BIC.gips()`
-* `AIC.gips()`
-* `logLik.gips()`
+-   `BIC.gips()`
+-   `AIC.gips()`
+-   `logLik.gips()`
 
 ### Update to function
 
-* `summary.gips()` calculates `BIC`, `AIC` and `n_parameters` (number of free parameters in the covariance matrix).
+-   `summary.gips()` calculates `BIC`, `AIC` and `n_parameters` (number of free parameters in the covariance matrix).
 
 ### Bugfixes:
 
-* Sometimes `post_probabilities` underflows to 0. This is appropriately validated now.
-* `NaN`s should not occur in `find_MAP()` for `D_matrix <- diag(ncol(S)) * D_coef` when `1000 < D_coef < 1e300`.
-* When `NaN`s do occur in `find_MAP()`, they will throw an error (used to show a warning).
-* `Inf` better handled in `print.gips()`
-* `print.*()` will print `\n` in the end
-* Small Vignettes and documentation improvements
-* Proper testing of examples
-
+-   Sometimes `post_probabilities` underflows to 0. This is appropriately validated now.
+-   `NaN`s should not occur in `find_MAP()` for `D_matrix <- diag(ncol(S)) * d` when `1000 < d < 1e300`.
+-   When `NaN`s do occur in `find_MAP()`, they will throw an error (used to show a warning).
+-   `Inf` better handled in `print.gips()`
+-   `print.*()` will print `\n` in the end
+-   Small Vignettes and documentation improvements
+-   Proper testing of examples
+-   `delta` parameter has to be bigger than `1`. We used to check it as bigger than `2`.
 
 # gips 1.0.0
 
-* This is the first release of gips.
+-   This is the first release of gips.

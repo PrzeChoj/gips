@@ -203,13 +203,13 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 The considered prior distribution of $\Gamma$ and $K=\Sigma^{-1}$:
 
 1. $\Gamma$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
-2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 2$) and $D$ (symmetric, positive definite square matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503), Sec. 3.4.
+2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 1$) and $D$ (symmetric, positive definite square matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503), Sec. 3.4.
 
-Footnote: Actually in some cases smaller (but still positive) values for $\delta$ parameter are theoretically correct. Refer to the [[1]](https://arxiv.org/abs/2004.03503).
+Footnote: Actually, for $\Gamma = \{id\}$, $\delta > 0$ parameter are theoretically correct. In `gips` we want this to be defined for all cyclic groups $\Gamma$, so we restrict $\delta > 1$. Refer to the [[1]](https://arxiv.org/abs/2004.03503).
 
 ### `gips` technical details
 
-In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(p)`, respectively. However, it is worth running the procedure for several parameters `D_matrix` of form $C\cdot diag(p)$ for positive constant $C$. Large $C$ (compared to the data) favors small groups.
+In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(p)`, respectively. However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Large $d$ (compared to the data) favors small structures.
 
 One can calculate the logarithm of formula (30) with function `log_posteriori_of_gips()`.
 
