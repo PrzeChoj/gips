@@ -68,7 +68,7 @@
 <code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code> and <code>n_parameters</code> (number of free parameters in the covariance matrix).</li>
 <li>
 <code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> has a new parameter <code>sorted</code>.</li>
-<li>Everywhere a <code>gips_perm</code> object was expected, now the <code>gips</code> object can be passed and interpreted as a <code>gips_perm</code>. Those are:
+<li>Everywhere a permutation was expected, now the <code>gips</code> object can be passed and interpreted as permutation. Those are:
 <ul><li>
 <code>perm</code> in <code><a href="../reference/gips.html">gips()</a></code>, <code><a href="../reference/project_matrix.html">project_matrix()</a></code>, <code><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix()</a></code>, <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code>, <code><a href="../reference/calculate_gamma_function.html">calculate_gamma_function()</a></code>;</li>
 <li>
@@ -91,7 +91,7 @@
 <li>Small Vignettes and documentation improvements</li>
 <li>Proper testing of examples</li>
 <li>
-<code>delta</code> parameter has to be bigger than <code>1</code>. We used to check it as bigger than <code>2</code>.</li>
+<code>delta</code> parameter of <code><a href="../reference/gips.html">gips()</a></code> has to be bigger than <code>1</code>. We used to restrict it as bigger than <code>2</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
