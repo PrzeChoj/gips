@@ -17,7 +17,7 @@
 #' @param number_of_observations A number of data points
 #'     that `S` is based on.
 #' @param delta A number, hyper-parameter of a Bayesian model.
-#'     Has to be bigger than 2.
+#'     Has to be strictly bigger than 1.
 #'     See **Hyperparameters** section bellow.
 #' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
@@ -31,6 +31,8 @@
 #' @param perm An optional permutation to be the base for the `gips` object.
 #'     Can be of a `gips_perm` or a `permutation` class, or anything
 #'     the function [permutations::permutation()] can handle.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #'
 #' @section Methods for a `gips` class:
 #' * [summary.gips()]
@@ -41,10 +43,15 @@
 #' * [BIC.gips()]
 #'
 #' @section Hyperparameters:
+#' We encourage to try `D = d * I`, where `I` is an identity matrix of a size
+#' `p x p`, and `d > 0` for some different `d`.
+#' When `d` is small (e.g. `d=0.1`), bigger structures will be found.
+#' When `d` is big (e.g. `d=100`), smaller structures will be found.
+#' 
 #' In the Bayesian model, the prior distribution for
 #' the covariance matrix is a generalized case of
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
-#'
+#' 
 #' For brief introduction, see **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
@@ -97,6 +104,10 @@
 #' }
 gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
                  was_mean_estimated = TRUE, perm = "") {
+  if (inherits(perm, "gips")) {
+    validate_gips(perm)
+    perm <- perm[[1]]
+  }
   if (!inherits(perm, c("gips_perm", "permutation"))) {
     perm <- permutations::permutation(perm)
   }
@@ -743,9 +754,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "`delta` must not be `NULL`.",
       "x" = "Your provided `delta` is a `NULL`."
     )
-  } else if (delta <= 2) {
+  } else if (delta <= 1) { # See documentation of internal `G_function` in `calculate_gamma_function.R`
     abort_text <- c(abort_text,
-      "i" = "`delta` must be strictly bigger than 2.",
+      "i" = "`delta` must be strictly bigger than 1.",
       "x" = paste0("You provided `delta == ", delta, "`.")
     )
   }
@@ -1740,7 +1751,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
 #' 
-#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param object An object of class `gips`; usually a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' 
 #' @section Existence of likelihood:
@@ -1867,7 +1878,7 @@ logLik.gips <- function(object, ...){
 #' 
 #' @method AIC gips
 #' 
-#' @param object An object of class "gips"; usually a result of a [find_MAP()].
+#' @param object An object of class `gips`; usually a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' @inheritParams stats::AIC
 #' 
@@ -1951,6 +1962,8 @@ BIC.gips <- function(object, ...){
 #'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(return_probabilities = TRUE)`.
+#' @param sorted Logical; for `TRUE` (default) the output
+#'     will be sorted according to the probability.
 #'
 #' @returns Returns a numeric vector, calculated values of probabilities.
 #' Names contains permutations this probability represent.
@@ -1975,7 +1988,7 @@ BIC.gips <- function(object, ...){
 #' )
 #'
 #' get_probabilities_from_gips(g_map)
-get_probabilities_from_gips <- function(g) {
+get_probabilities_from_gips <- function(g, sorted = TRUE) {
   validate_gips(g)
 
   if (is.null(attr(g, "optimization_info"))) {
@@ -1997,7 +2010,13 @@ get_probabilities_from_gips <- function(g) {
     ))
   }
 
-  attr(g, "optimization_info")[["post_probabilities"]]
+  out <- attr(g, "optimization_info")[["post_probabilities"]]
+  
+  if (sorted){
+    out <- sort(out, decreasing = TRUE)
+  }
+  
+  out
 }
 
 

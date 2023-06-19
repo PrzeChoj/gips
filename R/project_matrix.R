@@ -37,10 +37,12 @@
 #' @param S A square matrix to be projected.
 #'     The covariance estimator.
 #'     (See the same parameter in [gips()] function).
-#' @param perm A permutation. Generator of a permutation group.
-#'     When `g` is the `gips` object, `g[[1]]` can be used as `perm`.
-#'     Either of a `gips_perm` class or anything that can be used
+#' @param perm A permutation to be projected on.
+#'     An object of a `gips` class,
+#'     a `gips_perm` class, or anything that can be used
 #'     as the `x` argument in [`gips_perm()`] function.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #' @param precomputed_equal_indices This parameter is for internal use only.
 #'
 #' @returns Returns the matrix `S` projected on the space of symmetrical matrices invariant
@@ -86,7 +88,7 @@
 #'
 #' # Find the MAP Estimator of covariance
 #' g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
-#' S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP[[1]])
+#' S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP)
 #' S_MAP
 #' plot(g_MAP, type = "heatmap")
 project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {

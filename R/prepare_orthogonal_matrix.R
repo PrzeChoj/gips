@@ -16,6 +16,8 @@
 #' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @param perm An object of a `gips_perm` or a `permutations::cycle` class.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #' @param perm_size Size of a permutation.
 #'     Required if `perm` is of a `permutations::cycle` class.
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
@@ -51,6 +53,10 @@
 #' round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]
 #' @export
 prepare_orthogonal_matrix <- function(perm, perm_size = NULL, basis = NULL) {
+  if (inherits(perm, "gips")) {
+    validate_gips(perm)
+    perm <- perm[[1]]
+  }
   if (!inherits(perm, "gips_perm")) {
     perm <- gips_perm(perm, perm_size)
   }

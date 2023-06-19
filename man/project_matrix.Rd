@@ -11,10 +11,12 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 The covariance estimator.
 (See the same parameter in \code{\link[=gips]{gips()}} function).}
 
-\item{perm}{A permutation. Generator of a permutation group.
-When \code{g} is the \code{gips} object, \code{g[[1]]} can be used as \code{perm}.
-Either of a \code{gips_perm} class or anything that can be used
-as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.}
+\item{perm}{A permutation to be projected on.
+An object of a \code{gips} class,
+a \code{gips_perm} class, or anything that can be used
+as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{precomputed_equal_indices}{This parameter is for internal use only.}
 }
@@ -75,7 +77,7 @@ plot(g, type = "heatmap")
 
 # Find the MAP Estimator of covariance
 g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
-S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP[[1]])
+S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP)
 S_MAP
 plot(g_MAP, type = "heatmap")
 }

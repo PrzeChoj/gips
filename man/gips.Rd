@@ -43,7 +43,7 @@ parameter \code{was_mean_estimated = FALSE};
 that \code{S} is based on.}
 
 \item{delta}{A number, hyper-parameter of a Bayesian model.
-Has to be bigger than 2.
+Has to be strictly bigger than 1.
 See \strong{Hyperparameters} section bellow.}
 
 \item{D_matrix}{A symmetric, positive-definite matrix of the same size as \code{S}.
@@ -61,7 +61,9 @@ a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
 
 \item{perm}{An optional permutation to be the base for the \code{gips} object.
 Can be of a \code{gips_perm} or a \code{permutation} class, or anything
-the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.}
+the function \code{\link[permutations:permutation]{permutations::permutation()}} can handle.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{list_of_gips_perm}{A list with a single element of
 a \code{gips_perm} class. The base object for the \code{gips} object.}
@@ -109,6 +111,11 @@ function to do it. See examples below.
 }
 
 \section{Hyperparameters}{
+
+We encourage to try \code{D = d * I}, where \code{I} is an identity matrix of a size
+\verb{p x p}, and \code{d > 0} for some different \code{d}.
+When \code{d} is small (e.g. \code{d=0.1}), bigger structures will be found.
+When \code{d} is big (e.g. \code{d=100}), smaller structures will be found.
 
 In the Bayesian model, the prior distribution for
 the covariance matrix is a generalized case of

@@ -15,7 +15,9 @@ validate_gips_perm(g)
 \arguments{
 \item{x}{A single object that can be interpreted by
 the \code{\link[permutations:permutation]{permutations::permutation()}} function.
-For example, the character of a form \code{"(1,2)(4,5)"}. See examples.}
+For example, the character of a form \code{"(1,2)(4,5)"}. See examples.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 
 \item{size}{An integer. Size of a permutation
 (AKA cardinality of a set, on which permutation is defined; see examples).}

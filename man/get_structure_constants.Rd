@@ -7,7 +7,9 @@
 get_structure_constants(perm)
 }
 \arguments{
-\item{perm}{An object of a \code{gips_perm} class.}
+\item{perm}{An object of a \code{gips_perm} class.
+Can also be of a \code{gips} class, but
+will be interpreted as the underlying \code{gips_perm}.}
 }
 \value{
 Returns a list of 5 items:

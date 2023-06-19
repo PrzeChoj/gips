@@ -190,6 +190,16 @@ Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
+We can see the standard estimator of the covariance matrix,
+$\hat{\Sigma} = \sum_{i=1}^n \left( Z^{(i)}\left({Z^{(i)}}^\top\right)\right)$.
+It is not MLE (again, because MLE does not exists):
+
+``` r
+plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
+```
+
+<img src="man/figures/README-example_mean_known3_1-1.png" width="100%" />
+
 Find the Maximum A Posteriori Estimator for the permutation. Space is
 small ($6! = 720$), so it is reasonable to browse the whole of it:
 
@@ -230,7 +240,7 @@ S_projected
 #> [6,] 1.0985729 0.6960213 0.4960295 0.6960213 1.0985729 1.3747718
 
 # Plot the found matrix:
-plot(g_map, type = "heatmap")
+plot(g_map, type = "heatmap") + ggplot2::ggtitle("Covariance estimated with `gips`")
 ```
 
 <img src="man/figures/README-example_mean_known6-1.png" width="100%" />

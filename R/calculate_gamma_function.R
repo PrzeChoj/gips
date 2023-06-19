@@ -111,7 +111,9 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 
 #' G_function for `log_posteriori_of_gips()`
 #'
-#' @param delta Parameter of a method.
+#' @param delta Parameter of a method. Default is `3`.
+#'     When `structure_constants` are from a id permutation, `delta <= 0` iff `G_function() = +Inf`.
+#'     When `structure_constants` are from a permutation that is not id, `delta <= 1` iff `G_function() = +Inf`.
 #' @param structure_constants Constants from `get_structure_constants` function.
 #'
 #' @returns Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
@@ -120,8 +122,8 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 #' @examples
 #' perm_size <- 6
 #' perm <- permutations::as.cycle(permutations::as.word(c(2, 3, 1, 5, 4, 6)))
-#' gips_perm <- gips_perm(perm, perm_size)
-#' structure_constants <- get_structure_constants(gips_perm)
+#' my_gips_perm <- gips_perm(perm, perm_size)
+#' structure_constants <- get_structure_constants(my_gips_perm)
 #' gips:::G_function(structure_constants, 3)
 #'
 #' @noRd

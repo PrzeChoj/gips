@@ -38,6 +38,14 @@ test_that("Setting custom permutation in gips constructor works", {
   expect_identical(custom_perm1, g1[[1]])
 
   expect_identical(gips_perm(custom_perm2, ncol(S)), g2[[1]])
+  
+  # gips as the `perm` parameter
+  g3 <- gips(
+    S, number_of_observations,
+    was_mean_estimated = FALSE, perm = g2
+  )
+  
+  expect_equal(g2, g3)
 })
 
 test_that("new_gips works or throws an erron on wrong arguments", {
@@ -749,15 +757,20 @@ test_that("check_correctness_of_arguments properly validates arguments", {
     permutations::permutation("(1,3)(2,4)(5,6)"),
     NULL, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_silent(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    1.9, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+    1.1, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
-    2, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+    0.9, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+  ))
+  expect_error(check_correctness_of_arguments(
+    S, number_of_observations, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    1, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
   expect_error(check_correctness_of_arguments(
     S, number_of_observations, 30,
@@ -826,7 +839,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
   expect_error(check_correctness_of_arguments(
     S, number_of_observations + 0.1, 1,
     "(1,3)(2,4)(5,6)",
-    2, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE", "FALSE"
+    1, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE", "FALSE"
   ), "8 problems identified with provided arguments")
 
   # old tests:
@@ -894,7 +907,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
   ))
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
-    start_perm = example_perm, delta = 2, D_matrix = NULL,
+    start_perm = example_perm, delta = 1, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
@@ -966,7 +979,7 @@ test_that("check_correctness_of_arguments properly validates arguments", {
   # A number of problems at the same time. Not all are printed:
   expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
     number_of_observations = -1, max_iter = 1,
-    start_perm = example_perm, delta = 2, D_matrix = 7,
+    start_perm = example_perm, delta = 1, D_matrix = 7,
     was_mean_estimated = NA, return_probabilities = "FALSE",
     save_all_perms = 7, show_progress_bar = NULL
   ), "\\.\\.\\. and 3 more problems")
@@ -1259,6 +1272,13 @@ test_that("get_probabilities_from_gips works", {
     "on the `gips` object that does not have saved probabilities."
   )
   expect_null(out)
+  
+  # sorted
+  probs <- get_probabilities_from_gips(g_map)
+  expect_equal(order(probs, decreasing = TRUE), c(1,2))
+  
+  probs <- get_probabilities_from_gips(g_map, sorted = FALSE)
+  expect_equal(order(probs, decreasing = TRUE), c(2,1))
 })
 
 test_that("forget_perms works properly", {

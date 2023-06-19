@@ -7,6 +7,8 @@
 #' to calculate the constants.
 #'
 #' @param perm An object of a `gips_perm` class.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #'
 #' @returns Returns a list of 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from
@@ -29,6 +31,10 @@
 #' perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 #' get_structure_constants(perm)
 get_structure_constants <- function(perm) {
+  if (inherits(perm, "gips")) {
+    validate_gips(perm)
+    perm <- perm[[1]]
+  }
   if (!(inherits(perm, "gips_perm"))) {
     wrong_argument_abort(
       i = "`perm` must be of a `gips_perm` class.",

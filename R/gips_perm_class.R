@@ -6,6 +6,8 @@
 #' @param x A single object that can be interpreted by
 #'     the [permutations::permutation()] function.
 #'     For example, the character of a form `"(1,2)(4,5)"`. See examples.
+#'     Can also be of a `gips` class, but
+#'     will be interpreted as the underlying `gips_perm`.
 #' @param size An integer. Size of a permutation
 #'     (AKA cardinality of a set, on which permutation is defined; see examples).
 #'
@@ -42,6 +44,14 @@
 #'
 #' @export
 gips_perm <- function(x, size) {
+  if (inherits(x, "gips")) {
+    validate_gips(x)
+    if (attr(x[[1]], "size") != size){
+      rlang::abort(c("x" = paste0("You provided a `gips` object as the `x` parameter of `gips_perm()`, which in general is OK, but You also provided size = ",
+                                  size, ", which is different from attr(x[[1]], 'size') = ", attr(x[[1]], "size"))))
+    }
+    return(x[[1]])
+  }
   if (!inherits(x, "permutation")) {
     if (is.matrix(x) && dim(x)[1] != 1){
       x <- t(x) # matrix x has to be a row, not a column

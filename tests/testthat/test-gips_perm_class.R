@@ -56,6 +56,7 @@ test_that("gips_perm gives the same output for different type of input", {
   gperm5 <- gips_perm(list(list(c(2,1),c(4,5))), 5)
   gperm6 <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
   gperm7 <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
+  gperm8 <- gips_perm(gips(diag(5), 14, perm = "(12)(45)"), 5) # gips class
   
   # expect_equal and not expect_identical, because those are int / double:
   expect_equal(gperm1, gperm2)
@@ -64,6 +65,12 @@ test_that("gips_perm gives the same output for different type of input", {
   expect_equal(gperm1, gperm5)
   expect_equal(gperm1, gperm6)
   expect_equal(gperm1, gperm7)
+  expect_equal(gperm1, gperm8)
+})
+
+test_that("gips_perm shows an error for wrong input", {
+  g <- gips(diag(5), 14, perm = "(12)(45)")
+  expect_error(gips_perm(g, 4), regexp = ", which in general is OK, but You also provided size = 4, which is different from attr")
 })
 
 test_that("constructor works for empty permutations", {

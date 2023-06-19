@@ -41,6 +41,23 @@ test_that("project_matrix gives errors", {
   expect_error(project_matrix(matrix(rnorm(25), ncol = 5), gips_example_perm))
 })
 
+test_that("project_matrix can get gips as per", {
+  p <- 6
+  my_perm <- "(14)(23)"
+  number_of_observations <- 10
+  X <- matrix(rnorm(p * number_of_observations), number_of_observations, p)
+  S <- cov(X)
+  projected_S <- project_matrix(S, perm = my_perm)
+  
+  g <- gips(S, number_of_observations, perm = my_perm)
+  g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
+  
+  S_MAP1 <- project_matrix(attr(g, "S"), perm = g_MAP[[1]]) # gips_perm class
+  S_MAP2 <- project_matrix(attr(g, "S"), perm = g_MAP)      # gips class
+  
+  expect_equal(S_MAP1, S_MAP2)
+})
+
 test_that("get_equal_indices_by_perm works for example_perm", {
   values <- unique(as.integer(matrix_invariant_by_example_perm))
   expected_equal_indices_by_example_perm <- lapply(values, function(v) {
