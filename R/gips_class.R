@@ -1956,6 +1956,8 @@ BIC.gips <- function(object, ...){
 #'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(return_probabilities = TRUE)`.
+#' @param sorted Logical; for `TRUE` (default) the output
+#'     will be sorted according to the probability.
 #'
 #' @returns Returns a numeric vector, calculated values of probabilities.
 #' Names contains permutations this probability represent.
@@ -1980,7 +1982,7 @@ BIC.gips <- function(object, ...){
 #' )
 #'
 #' get_probabilities_from_gips(g_map)
-get_probabilities_from_gips <- function(g) {
+get_probabilities_from_gips <- function(g, sorted = TRUE) {
   validate_gips(g)
 
   if (is.null(attr(g, "optimization_info"))) {
@@ -2002,7 +2004,13 @@ get_probabilities_from_gips <- function(g) {
     ))
   }
 
-  attr(g, "optimization_info")[["post_probabilities"]]
+  out <- attr(g, "optimization_info")[["post_probabilities"]]
+  
+  if (sorted){
+    out <- sort(out, decreasing = TRUE)
+  }
+  
+  out
 }
 
 

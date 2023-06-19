@@ -9,6 +9,7 @@
 ### Update to function
 
 -   `summary.gips()` calculates `BIC`, `AIC` and `n_parameters` (number of free parameters in the covariance matrix).
+-   `get_probabilities_from_gips()` has a new parameter `sorted`.
 
 ### Bugfixes:
 

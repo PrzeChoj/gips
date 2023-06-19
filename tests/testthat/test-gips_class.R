@@ -1264,6 +1264,13 @@ test_that("get_probabilities_from_gips works", {
     "on the `gips` object that does not have saved probabilities."
   )
   expect_null(out)
+  
+  # sorted
+  probs <- get_probabilities_from_gips(g_map)
+  expect_equal(order(probs, decreasing = TRUE), c(1,2))
+  
+  probs <- get_probabilities_from_gips(g_map, sorted = FALSE)
+  expect_equal(order(probs, decreasing = TRUE), c(2,1))
 })
 
 test_that("forget_perms works properly", {

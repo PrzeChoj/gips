@@ -4,11 +4,14 @@
 \alias{get_probabilities_from_gips}
 \title{Extract probabilities for \code{gips} object optimized with \code{return_probabilities = TRUE}}
 \usage{
-get_probabilities_from_gips(g)
+get_probabilities_from_gips(g, sorted = TRUE)
 }
 \arguments{
 \item{g}{An object of class "gips";
 a result of a \code{find_MAP(return_probabilities = TRUE)}.}
+
+\item{sorted}{Logical; for \code{TRUE} (default) the output
+will be sorted according to the probability.}
 }
 \value{
 Returns a numeric vector, calculated values of probabilities.
