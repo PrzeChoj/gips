@@ -48,8 +48,8 @@ used to calculate the posteriori value
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
-10 .\code{n_parameters} - number of free parameters in the covariance matrix
 \item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
+\item \code{n_parameters} - number of free parameters in the covariance matrix
 }
 \item For optimized \code{gips} object:
 \enumerate{
@@ -83,8 +83,8 @@ used to calculate the posteriori value
 \code{S = t(X) \%*\% X / number_of_observations}
 }
 \item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
-\item \code{n_parameters} - number of free parameters in the covariance matrix
 \item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
+\item \code{n_parameters} - number of free parameters in the covariance matrix
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
 do an "HC")
