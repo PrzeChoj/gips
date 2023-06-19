@@ -170,6 +170,8 @@ Suppose we do not know the true covariance matrix $\Sigma$ and we want
 to estimate it. We cannot use the standard MLE because it does not
 exists ($4 < 6$, $n < p$).
 
+<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
+
 We will assume it was generated from the normal distribution with the
 mean $0$.
 
@@ -191,8 +193,8 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
 We can see the standard estimator of the covariance matrix,
-$\hat{\Sigma} = \sum_{i=1}^n \left( Z^{(i)}\left({Z^{(i)}}^\top\right)\right)$.
-It is not MLE (again, because MLE does not exists):
+$\hat{\Sigma} = (1/n) \cdot \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$.
+It is not MLE (again, because MLE does not exists for $n < p$):
 
 ``` r
 plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
