@@ -10,6 +10,7 @@
 
 -   `summary.gips()` calculates `AIC`, `BIC` and `n_parameters` (number of free parameters in the covariance matrix).
 -   `get_probabilities_from_gips()` has a new parameter `sorted`.
+-   `compare_posteriories_of_perms()` and `compare_log_posteriories_of_perms()` has a new parameter `digits`.
 -   Everywhere a permutation was expected, now the `gips` object can be passed and interpreted as permutation. Those are:
     -   `perm` in `gips()`, `project_matrix()`, `prepare_orthogonal_matrix()`, `get_structure_constants()`, `calculate_gamma_function()`;
     -   `perm1` and `perm2` in `compare_posteriories_of_perms()`, `compare_log_posteriories_of_perms()`;
