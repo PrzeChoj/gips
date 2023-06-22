@@ -167,7 +167,7 @@ library(gips)
 Z <- DAAG::oddbooks[,c(1,2,3)]
 ```
 
-We suspect books are printed with $sqrt{2}$ aspect ratio as in popular [A series paper size](https://en.wikipedia.org/wiki/Paper_size#A_series). Therefore, we can use this expert knowledge in the analysis and unify the data for height and width:
+We suspect books from this dataset were printed with $\sqrt{2}$ aspect ratio as in popular [A series paper size](https://en.wikipedia.org/wiki/Paper_size#A_series). Therefore, we can use this expert knowledge in the analysis and unify the data for height and width:
 
 ```{r change_D_matrix_example1_1}
 Z$height <- Z$height / sqrt(2)

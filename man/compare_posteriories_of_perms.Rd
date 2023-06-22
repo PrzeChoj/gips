@@ -13,7 +13,8 @@ compare_posteriories_of_perms(
   delta = 3,
   D_matrix = NULL,
   was_mean_estimated = TRUE,
-  print_output = TRUE
+  print_output = TRUE,
+  digits = 3
 )
 
 compare_log_posteriories_of_perms(
@@ -24,7 +25,8 @@ compare_log_posteriories_of_perms(
   delta = 3,
   D_matrix = NULL,
   was_mean_estimated = TRUE,
-  print_output = TRUE
+  print_output = TRUE,
+  digits = 3
 )
 }
 \arguments{
@@ -43,6 +45,10 @@ they overwritten with those from \code{gips} object.}
 When TRUE, the computed value will be printed with
 additional text and returned invisibly. When FALSE,
 the computed value will be returned visibly.}
+
+\item{digits}{Integer. Only used when \code{print_output == TRUE}.
+Number of digits after comma to print.
+Can be negative, can be \code{+Inf}. It is passed to \code{base::round()}.}
 }
 \value{
 \code{compare_posteriories_of_perms} returns the value of

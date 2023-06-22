@@ -213,6 +213,9 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'     When TRUE, the computed value will be printed with
 #'     additional text and returned invisibly. When FALSE,
 #'     the computed value will be returned visibly.
+#' @param digits Integer. Only used when `print_output == TRUE`.
+#'     Number of digits after comma to print.
+#'     Can be negative, can be `+Inf`. It is passed to `base::round()`.
 #'
 #' @returns `compare_posteriories_of_perms` returns the value of
 #'     how many times the `perm1` is more likely than `perm2`.
@@ -254,7 +257,8 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                           number_of_observations = NULL,
                                           delta = 3, D_matrix = NULL,
                                           was_mean_estimated = TRUE,
-                                          print_output = TRUE) {
+                                          print_output = TRUE,
+                                          digits = 3) {
   compare_log <- compare_log_posteriories_of_perms(
     perm1, perm2,
     S = S,
@@ -279,7 +283,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     }
 
     my_print_text <- paste0(
-      "The permutation ", as.character.gips_perm(perm1), " is ", out,
+      "The permutation ", as.character.gips_perm(perm1), " is ", convert_log_diff_to_str(compare_log, digits),
       " times more likely than the ", as.character.gips_perm(perm2),
       " permutation."
     )
@@ -307,7 +311,8 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                               number_of_observations = NULL,
                                               delta = 3, D_matrix = NULL,
                                               was_mean_estimated = TRUE,
-                                              print_output = TRUE) {
+                                              print_output = TRUE,
+                                              digits = 3) {
   if (inherits(perm1, "gips")) {
     validate_gips(perm1)
 
@@ -371,7 +376,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 
   if (print_output) {
     my_print_text <- paste0(
-      "The permutation ", as.character.gips_perm(perm1), " is exp(", out,
+      "The permutation ", as.character.gips_perm(perm1), " is exp(", round(out, digits),
       ") times more likely than the ", as.character.gips_perm(perm2),
       " permutation."
     )
