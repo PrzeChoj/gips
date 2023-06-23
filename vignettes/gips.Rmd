@@ -213,7 +213,7 @@ get_probabilities_from_gips(g_map)
 my_add_text(plot(g_map, type = "heatmap"))
 ```
 
-The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` (typically, of the form `d * diag(p)`, where `d` $\in \mathbb{R}^+$).
+The method is not scale-invariant and therefore we recommend to run gips for different values of `D_matrix` of the form `D_matrix = d * diag(p)`, where `d` $\in \mathbb{R}^+$).
 
 
 # Further reading

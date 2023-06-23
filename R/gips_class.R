@@ -1993,7 +1993,7 @@ get_probabilities_from_gips <- function(g, sorted = TRUE) {
 
   if (is.null(attr(g, "optimization_info"))) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips() function`.",
+      "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
       "x" = "You did not optimized `g`.",
       "i" = "Did You used the wrong `g` as an argument for this function?",
       "i" = "Did You forget to optimize `g`?"

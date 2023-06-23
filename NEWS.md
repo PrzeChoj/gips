@@ -6,7 +6,7 @@
 -   `AIC.gips()`
 -   `logLik.gips()`
 
-### Update to function
+### Update to functions
 
 -   `summary.gips()` calculates `AIC`, `BIC` and `n_parameters` (number of free parameters in the covariance matrix).
 -   `get_probabilities_from_gips()` has a new parameter `sorted`.
