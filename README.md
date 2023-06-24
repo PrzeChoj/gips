@@ -48,8 +48,8 @@ From [GitHub](https://github.com/PrzeChoj/gips):
 
 ``` r
 # Install the development version from GitHub:
-# install.packages("devtools")
-devtools::install_github("PrzeChoj/gips")
+# install.packages("remotes")
+remotes::install_github("PrzeChoj/gips")
 ```
 
 ## Examples

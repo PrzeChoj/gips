@@ -260,7 +260,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                           print_output = TRUE,
                                           digits = 3) {
   compare_log <- compare_log_posteriories_of_perms(
-    perm1, perm2,
+    perm1, perm2, # if they are objects of `gips` class, they will be validated here
     S = S,
     number_of_observations = number_of_observations,
     delta = delta, D_matrix = D_matrix,
@@ -269,34 +269,30 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   )
 
   out <- exp(compare_log)
-
-  if (print_output) {
-    if (inherits(perm1, "gips")) {
-      validate_gips(perm1)
-
-      perm1 <- perm1[[1]]
-    }
-    if (inherits(perm2, "gips")) {
-      validate_gips(perm2)
-
-      perm2 <- perm2[[1]]
-    }
-
-    my_print_text <- paste0(
-      "The permutation ", as.character.gips_perm(perm1), " is ", convert_log_diff_to_str(compare_log, digits),
-      " times more likely than the ", as.character.gips_perm(perm2),
-      " permutation."
-    )
-    if (out < 1) {
-      my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
-    }
-    cat(my_print_text)
-    cat("\n")
-
-    return(invisible(out))
+  
+  if (!print_output) {
+    return(out)
   }
 
-  out
+  if (inherits(perm1, "gips")) {
+    perm1 <- perm1[[1]]
+  }
+  if (inherits(perm2, "gips")) {
+    perm2 <- perm2[[1]]
+  }
+
+  my_print_text <- paste0(
+    "The permutation ", as.character.gips_perm(perm1), " is ", convert_log_diff_to_str(compare_log, digits),
+    " times more likely than the ", as.character.gips_perm(perm2),
+    " permutation."
+  )
+  if (out < 1) {
+    my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
+  }
+  cat(my_print_text)
+  cat("\n")
+
+  invisible(out)
 }
 
 #' @describeIn compare_posteriories_of_perms More stable,
@@ -361,8 +357,6 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   validate_gips_perm(perm1)
   validate_gips_perm(perm2)
 
-
-
   log_post1 <- log_posteriori_of_perm(
     perm1, S, edited_number_of_observations,
     delta, D_matrix
@@ -373,21 +367,21 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   )
 
   out <- log_post1 - log_post2
-
-  if (print_output) {
-    my_print_text <- paste0(
-      "The permutation ", as.character.gips_perm(perm1), " is exp(", round(out, digits),
-      ") times more likely than the ", as.character.gips_perm(perm2),
-      " permutation."
-    )
-    if (out < 0) {
-      my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
-    }
-    cat(my_print_text)
-    cat("\n")
-
-    return(invisible(out))
+  
+  if (!print_output) {
+    return(out)
   }
 
-  out
+  my_print_text <- paste0(
+    "The permutation ", as.character.gips_perm(perm1), " is exp(", round(out, digits),
+    ") times more likely than the ", as.character.gips_perm(perm2),
+    " permutation."
+  )
+  if (out < 0) {
+    my_print_text <- paste0(my_print_text, "\nThat means, the second permutation is more likely.")
+  }
+  cat(my_print_text)
+  cat("\n")
+
+  invisible(out)
 }
