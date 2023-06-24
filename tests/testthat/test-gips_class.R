@@ -1163,7 +1163,12 @@ test_that("summary.gips() works", {
     print(summary(g3)),
     "Optimization algorithms:"
   )
-
+  
+  # Optimized with BF; those 3 are computed differently for optimized with BF:
+  g4 <- find_MAP(gips(S[1:4, 1:4], number_of_observations), optimizer = "BF", show_progress_bar = FALSE)
+  expect_true(is.null(summary(g4)[["when_was_best"]]))
+  expect_true(is.null(summary(g4)[["log_posteriori_calls_after_best"]]))
+  expect_s3_class(summary(g4)[["start_permutation"]], "gips_perm")
 
   # proper log_posteriori_calls_after_best:
   # g_fake started in (1,2,3) and then comed to (1,3,2), which had bigger log_posteriori value, but only a little bigger

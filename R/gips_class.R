@@ -623,7 +623,7 @@ validate_gips <- function(g) {
         rlang::inform(paste0(
           "You found a small bug in gips package. We calculated there was ",
           (length(abort_text) - additional_info) / 2,
-          " problems, but it is not a whole number. Please inform us about that bug by opening the ISSUE on https://github.com/PrzeChoj/gips/issues"
+          " problems, but it is not a whole number. Please inform us about that bug by opening an ISSUE on https://github.com/PrzeChoj/gips/issues"
         ))
       }
       abort_text <- c(
@@ -642,7 +642,7 @@ validate_gips <- function(g) {
 
       abort_text <- c(abort_text,
         "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
-        ">" = "If You think You've found a bug in a package, please open the ISSUE on https://github.com/PrzeChoj/gips/issues"
+        ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
       )
 
       rlang::abort(abort_text)
@@ -754,7 +754,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "`delta` must not be `NULL`.",
       "x" = "Your provided `delta` is a `NULL`."
     )
-  } else if (delta <= 1) { # See documentation of internal `G_function` in `calculate_gamma_function.R`
+  } else if (delta <= 1) { # See documentation of internal function `G_function()` in `calculate_gamma_function.R`
     abort_text <- c(abort_text,
       "i" = "`delta` must be strictly bigger than 1.",
       "x" = paste0("You provided `delta == ", delta, "`.")
@@ -856,10 +856,14 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     if (length(abort_text) > 11) {
       abort_text <- c(
         abort_text[1:11],
-        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems"),
-        ">" = "If You think You've found a bug in a package, please open the ISSUE on https://github.com/PrzeChoj/gips/issues"
+        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
       )
     }
+    
+    abort_text <- c(
+      abort_text,
+      ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
+    )
 
     rlang::abort(abort_text)
   }
@@ -869,8 +873,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
       "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
       "i" = "Did You want to set `save_all_perms = TRUE`?",
-      "i" = paste0(
-        "Did You want to set `return_probabilities = FALSE`? Remember that this can be costly",
+      "i" = "Did You want to set `return_probabilities = FALSE`?",
+      "!" = paste0(
+        "Remember that setting `return_probabilities == TRUE` can be computationally costly",
         ifelse(show_progress_bar, " and second prograss bar will be shown.", ".")
       )
     ))
@@ -1184,7 +1189,7 @@ plot.gips <- function(x, type = NA,
     if (type == "block_heatmap") {
       my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
     } else {
-      my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
+      my_projected_matrix <- project_matrix(attr(x, "S"), x[[1]])
     }
 
     if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
@@ -1198,7 +1203,7 @@ plot.gips <- function(x, type = NA,
       }
 
       # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
-      col_id <- covariance_value <- row_id <- NULL
+      col_id <- covariance <- row_id <- NULL
 
       # Life would be easier with pipes (%>%)
       my_transformed_matrix <- tibble::rownames_to_column(
@@ -1208,7 +1213,7 @@ plot.gips <- function(x, type = NA,
       my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
         -c(row_id),
         names_to = "col_id",
-        values_to = "covariance_value"
+        values_to = "covariance"
       )
       my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
         col_id = as.numeric(col_id)
@@ -1218,7 +1223,7 @@ plot.gips <- function(x, type = NA,
       )
       g_plot <- ggplot2::ggplot(
         my_transformed_matrix,
-        ggplot2::aes(x = col_id, y = row_id, fill = covariance_value)
+        ggplot2::aes(x = col_id, y = row_id, fill = covariance)
       ) +
         ggplot2::geom_raster() +
         ggplot2::scale_fill_viridis_c(na.value = "white") +
@@ -1374,8 +1379,8 @@ plot.gips <- function(x, type = NA,
 #' @noRd
 get_diagonalized_matrix_for_heatmap <- function(g) {
   perm <- g[[1]]
-  projected_matrix <- gips::project_matrix(attr(g, "S"), perm)
-  diagonalising_matrix <- gips::prepare_orthogonal_matrix(perm)
+  projected_matrix <- project_matrix(attr(g, "S"), perm)
+  diagonalising_matrix <- prepare_orthogonal_matrix(perm)
   full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
   block_ends <- get_block_ends(get_structure_constants(perm))
   block_starts <- c(1, block_ends[-length(block_ends)] + 1)
@@ -1993,7 +1998,7 @@ get_probabilities_from_gips <- function(g, sorted = TRUE) {
 
   if (is.null(attr(g, "optimization_info"))) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips() function`.",
+      "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
       "x" = "You did not optimized `g`.",
       "i" = "Did You used the wrong `g` as an argument for this function?",
       "i" = "Did You forget to optimize `g`?"
