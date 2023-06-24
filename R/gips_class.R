@@ -1189,7 +1189,7 @@ plot.gips <- function(x, type = NA,
     if (type == "block_heatmap") {
       my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
     } else {
-      my_projected_matrix <- gips::project_matrix(attr(x, "S"), x[[1]])
+      my_projected_matrix <- project_matrix(attr(x, "S"), x[[1]])
     }
 
     if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
@@ -1379,8 +1379,8 @@ plot.gips <- function(x, type = NA,
 #' @noRd
 get_diagonalized_matrix_for_heatmap <- function(g) {
   perm <- g[[1]]
-  projected_matrix <- gips::project_matrix(attr(g, "S"), perm)
-  diagonalising_matrix <- gips::prepare_orthogonal_matrix(perm)
+  projected_matrix <- project_matrix(attr(g, "S"), perm)
+  diagonalising_matrix <- prepare_orthogonal_matrix(perm)
   full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
   block_ends <- get_block_ends(get_structure_constants(perm))
   block_starts <- c(1, block_ends[-length(block_ends)] + 1)
