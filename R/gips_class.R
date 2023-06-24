@@ -623,7 +623,7 @@ validate_gips <- function(g) {
         rlang::inform(paste0(
           "You found a small bug in gips package. We calculated there was ",
           (length(abort_text) - additional_info) / 2,
-          " problems, but it is not a whole number. Please inform us about that bug by opening the ISSUE on https://github.com/PrzeChoj/gips/issues"
+          " problems, but it is not a whole number. Please inform us about that bug by opening an ISSUE on https://github.com/PrzeChoj/gips/issues"
         ))
       }
       abort_text <- c(
@@ -642,7 +642,7 @@ validate_gips <- function(g) {
 
       abort_text <- c(abort_text,
         "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
-        ">" = "If You think You've found a bug in a package, please open the ISSUE on https://github.com/PrzeChoj/gips/issues"
+        ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
       )
 
       rlang::abort(abort_text)
@@ -754,7 +754,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "`delta` must not be `NULL`.",
       "x" = "Your provided `delta` is a `NULL`."
     )
-  } else if (delta <= 1) { # See documentation of internal `G_function` in `calculate_gamma_function.R`
+  } else if (delta <= 1) { # See documentation of internal function `G_function()` in `calculate_gamma_function.R`
     abort_text <- c(abort_text,
       "i" = "`delta` must be strictly bigger than 1.",
       "x" = paste0("You provided `delta == ", delta, "`.")
@@ -856,10 +856,14 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     if (length(abort_text) > 11) {
       abort_text <- c(
         abort_text[1:11],
-        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems"),
-        ">" = "If You think You've found a bug in a package, please open the ISSUE on https://github.com/PrzeChoj/gips/issues"
+        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
       )
     }
+    
+    abort_text <- c(
+      abort_text,
+      ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
+    )
 
     rlang::abort(abort_text)
   }
@@ -869,8 +873,9 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
       "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
       "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
       "i" = "Did You want to set `save_all_perms = TRUE`?",
-      "i" = paste0(
-        "Did You want to set `return_probabilities = FALSE`? Remember that this can be costly",
+      "i" = "Did You want to set `return_probabilities = FALSE`?",
+      "!" = paste0(
+        "Remember that setting `return_probabilities == TRUE` can be computationally costly",
         ifelse(show_progress_bar, " and second prograss bar will be shown.", ".")
       )
     ))

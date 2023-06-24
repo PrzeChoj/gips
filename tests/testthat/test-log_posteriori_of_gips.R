@@ -218,4 +218,8 @@ test_that("compare_posteriories_of_perms properly calculates", {
   expect_output(compare_log_posteriories_of_perms(g2, g, print_output = TRUE,
                                               digits = -1),
                 regexp = "is exp\\(10\\) times") # round on the lest of decimal
+  
+  # mean was not estimated
+  g4 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", was_mean_estimated = FALSE)
+  expect_equal(compare_posteriories_of_perms("(1243)", g4, print_output = FALSE), 1)
 })
