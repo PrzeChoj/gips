@@ -1203,7 +1203,7 @@ plot.gips <- function(x, type = NA,
       }
 
       # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
-      col_id <- covariance_value <- row_id <- NULL
+      col_id <- covariance <- row_id <- NULL
 
       # Life would be easier with pipes (%>%)
       my_transformed_matrix <- tibble::rownames_to_column(
@@ -1213,7 +1213,7 @@ plot.gips <- function(x, type = NA,
       my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
         -c(row_id),
         names_to = "col_id",
-        values_to = "covariance_value"
+        values_to = "covariance"
       )
       my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
         col_id = as.numeric(col_id)
@@ -1223,7 +1223,7 @@ plot.gips <- function(x, type = NA,
       )
       g_plot <- ggplot2::ggplot(
         my_transformed_matrix,
-        ggplot2::aes(x = col_id, y = row_id, fill = covariance_value)
+        ggplot2::aes(x = col_id, y = row_id, fill = covariance)
       ) +
         ggplot2::geom_raster() +
         ggplot2::scale_fill_viridis_c(na.value = "white") +
