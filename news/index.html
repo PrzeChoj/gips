@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,12 +63,14 @@
 <li><code><a href="../reference/logLik.gips.html">logLik.gips()</a></code></li>
 </ul></div>
 <div class="section level4">
-<h4 id="update-to-function-1-1-0-9000">Update to function<a class="anchor" aria-label="anchor" href="#update-to-function-1-1-0-9000"></a></h4>
+<h4 id="update-to-functions-1-1-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-1-0-9000"></a></h4>
 <ul><li>
-<code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code> and <code>n_parameters</code> (number of free parameters in the covariance matrix).</li>
+<code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code>, and <code>n_parameters</code> (number of free parameters in the covariance matrix).</li>
 <li>
 <code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> has a new parameter <code>sorted</code>.</li>
-<li>Everywhere a permutation was expected, now the <code>gips</code> object can be passed and interpreted as permutation. Those are:
+<li>
+<code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> have a new parameter <code>digits</code>.</li>
+<li>Everywhere a permutation was expected, the <code>gips</code> object can now be passed and interpreted as a permutation. Those are:
 <ul><li>
 <code>perm</code> in <code><a href="../reference/gips.html">gips()</a></code>, <code><a href="../reference/project_matrix.html">project_matrix()</a></code>, <code><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix()</a></code>, <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code>, <code><a href="../reference/calculate_gamma_function.html">calculate_gamma_function()</a></code>;</li>
 <li>
@@ -79,7 +81,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bugfixes-1-1-0-9000">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-1-0-9000"></a></h4>
-<ul><li>Sometimes <code>post_probabilities</code> underflows to 0. This is appropriately validated now.</li>
+<ul><li>Sometimes, <code>post_probabilities</code> underflows to 0. This is appropriately validated now.</li>
 <li>
 <code>NaN</code>s should not occur in <code><a href="../reference/find_MAP.html">find_MAP()</a></code> for <code>D_matrix &lt;- diag(ncol(S)) * d</code> when <code>1000 &lt; d &lt; 1e300</code>.</li>
 <li>When <code>NaN</code>s do occur in <code><a href="../reference/find_MAP.html">find_MAP()</a></code>, they will throw an error (used to show a warning).</li>
