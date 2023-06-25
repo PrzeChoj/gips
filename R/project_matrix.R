@@ -36,7 +36,9 @@
 #'
 #' @param S A square matrix to be projected.
 #'     The covariance estimator.
-#'     (See the same parameter in [gips()] function).
+#'     (See the `S` parameter in [gips()] function).
+#'     When it is not positive semi definite,
+#'     shows a warning of a class `not_positive_semi_definite_matrix`.
 #' @param perm A permutation to be projected on.
 #'     An object of a `gips` class,
 #'     a `gips_perm` class, or anything that can be used
@@ -111,6 +113,15 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
       )
     ))
   }
+  if (!is.positive.semi.definite.matrix(S)){
+    rlang::warn(c(
+      "i" = "`project_matrix()` is designed for positive semi-definite matrices",
+      "x" = "You provided `S` that is not positive semi-definite matrix",
+      "*" = "`gips` can still project this matrix on the provided permutation",
+      "i" = "Did You provided the wrong `S` matrix?"
+      ), class = "not_positive_semi_definite_matrix")
+  }
+  
   if (is.null(precomputed_equal_indices)) {
     perm_size <- ncol(S)
     if (!inherits(perm, "gips_perm")) {
@@ -136,6 +147,10 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   means <- rep(mean_values, sapply(equal_indices_by_perm, length))
   projected_matrix <- matrix(nrow = nrow(S), ncol = ncol(S))
   projected_matrix[unlist(equal_indices_by_perm)] <- means
+  
+  colnames(projected_matrix) <- colnames(S)
+  rownames(projected_matrix) <- rownames(S)
+  
   projected_matrix
 }
 

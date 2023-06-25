@@ -159,22 +159,16 @@ test_that("Properly validate the gips class with no optimization or after a sing
   
   
   
-  # All NaN's
-  g_small <- gips(
+  # NaNs or Infs in D_matrix
+  expect_error(gips(
     S[1:4, 1:4], number_of_observations,
-    was_mean_estimated = FALSE
-  )
-  D_coef <- 1e350 # gips can process 1e300 here, but 1e350 is too big
-  attr(g_small,"D_matrix") <- attr(g1,"D_matrix")[1:4,1:4] * D_coef
+    was_mean_estimated = FALSE, D_matrix = diag(4) * 1e350
+  ))
+  expect_error(gips(
+    S[1:4, 1:4], number_of_observations,
+    was_mean_estimated = FALSE, D_matrix = diag(Inf, 4) 
+  ))
   
-  for (optimizer_name in c("BF", "MH", "HC")) {
-    expect_warning(expect_error(g_err <- find_MAP(
-      g_small, max_iter = 2, show_progress_bar = FALSE,
-      optimizer = optimizer_name, return_probabilities = FALSE
-    ), "value of NaN occured"), "The NaN value of a posteriori was produced")
-  }
-  
-
   # Other tests
   g_err <- g2
   class(g_err[[1]]) <- "test"

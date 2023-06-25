@@ -786,6 +786,16 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
         ncol(D_matrix), " and ", nrow(D_matrix), "."
       )
     )
+  } else if (any(is.nan(D_matrix))) {
+    abort_text <- c(abort_text,
+       "i" = "`D_matrix` must not contain any `NaN`s.",
+       "x" = "You provided `D_matrix` with `NaN`s!"
+    )
+  } else if (any(is.infinite(D_matrix))) {
+    abort_text <- c(abort_text,
+       "i" = "`D_matrix` must not contain any infinite values.",
+       "x" = "You provided `D_matrix` with infinite values!"
+    )
   }
   if (!is.logical(was_mean_estimated)) {
     abort_text <- c(abort_text,
