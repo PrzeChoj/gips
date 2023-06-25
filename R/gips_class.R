@@ -1228,10 +1228,15 @@ plot.gips <- function(x, type = NA,
       if (is.null(rownames(my_projected_matrix))) {
         rownames(my_projected_matrix) <- paste0(seq(1, p))
       }
+      
+      my_rownames <- rownames(my_projected_matrix)
+      my_colnames <- colnames(my_projected_matrix)
+      rownames(my_projected_matrix) <- as.character(1:p)
+      colnames(my_projected_matrix) <- as.character(1:p)
 
       # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
       col_id <- covariance <- row_id <- NULL
-
+      
       # Life would be easier with pipes (%>%)
       my_transformed_matrix <- tibble::rownames_to_column(
         as.data.frame(my_projected_matrix),
@@ -1254,8 +1259,8 @@ plot.gips <- function(x, type = NA,
       ) +
         ggplot2::geom_raster() +
         ggplot2::scale_fill_viridis_c(na.value = "white") +
-        ggplot2::scale_x_continuous(breaks = 1:p) +
-        ggplot2::scale_y_reverse(breaks = 1:p) +
+        ggplot2::scale_x_continuous(breaks = 1:p, labels = my_rownames) +
+        ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
         ggplot2::theme_bw() +
         ggplot2::labs(
           title = paste0("Covariance matrix projected on permutation ", x[[1]]),
