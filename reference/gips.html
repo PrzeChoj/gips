@@ -245,21 +245,21 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,5,4,3,2):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,2,3,4,5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - was found after 120 posteriori calculations;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 2389.518 times more likely than the starting, () permutation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 73935.751 times more likely than the starting, () permutation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The optimized `gips` object.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,5,4,3,2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -14.38738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -13.71258</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2389.518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73935.751</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -278,10 +278,10 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  127.9297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  129.854</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  126.2348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  128.1591</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
@@ -291,7 +291,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2666194 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2166574 secs</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

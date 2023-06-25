@@ -165,20 +165,7 @@ and unify the data for height and width:</p>
 <span><span class="co">#&gt; breadth -31.7   14.6    17.2</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="co"># the default D_matrix</span></span>
 <span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Standard, MLE estimator of a covariance matrix"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::mutate()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `col_id = as.numeric(col_id)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> NAs introduced by coercion</span></span>
-<span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::mutate()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `row_id = as.numeric(row_id)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> NAs introduced by coercion</span></span>
-<span><span class="co">#&gt; Warning: Removed 9 rows containing missing values (`geom_raster()`).</span></span>
-<span><span class="co">#&gt; Warning: Position guide is perpendicular to the intended axis</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you mean to specify a different guide `position`?</span></span>
-<span><span class="co">#&gt; Position guide is perpendicular to the intended axis</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you mean to specify a different guide `position`?</span></span></code></pre></div>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Standard, MLE estimator of a covariance matrix"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/change_D_matrix_example1_2-1.png" width="700"></p>
 <p>We can see similarities between columns 2 and 3, representing the
 book’s height and breadth. In particular, the covariance between [1,2]
@@ -226,20 +213,7 @@ permutation. We will weaken the restrictions by changing the
 and <code>D_matrix</code>. By default they are set to <code>3</code> and
 <code>diag(p)</code>, respectively.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::mutate()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `col_id = as.numeric(col_id)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> NAs introduced by coercion</span></span>
-<span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::mutate()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `row_id = as.numeric(row_id)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> NAs introduced by coercion</span></span>
-<span><span class="co">#&gt; Warning: Removed 9 rows containing missing values (`geom_raster()`).</span></span>
-<span><span class="co">#&gt; Warning: Position guide is perpendicular to the intended axis</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you mean to specify a different guide `position`?</span></span>
-<span><span class="co">#&gt; Position guide is perpendicular to the intended axis</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you mean to specify a different guide `position`?</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/change_D_matrix_example4-1.png" width="700"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -279,11 +253,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;            [,1]      [,2]     [,3]       [,4]      [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -4.380536 -2.854794 2.749315 -0.9646702 -3.768311</span></span>
-<span><span class="co">#&gt; [2,] -10.377456 -7.671800 2.857565 -1.2442384 -3.343968</span></span>
-<span><span class="co">#&gt; [3,]  -9.341743 -5.724695 2.507924 -2.3454427 -4.933851</span></span>
-<span><span class="co">#&gt; [4,] -11.280980 -4.465696 1.613747 -3.1596365 -5.731830</span></span>
+<span><span class="co">#&gt;             [,1]      [,2]      [,3]     [,4]     [,5]</span></span>
+<span><span class="co">#&gt; [1,]  6.86737227 -2.010434 -5.144846 6.383869 4.851806</span></span>
+<span><span class="co">#&gt; [2,]  0.87045249 -6.827440 -5.036597 6.104301 5.276148</span></span>
+<span><span class="co">#&gt; [3,]  1.90616533 -4.880335 -5.386237 5.003097 3.686266</span></span>
+<span><span class="co">#&gt; [4,] -0.03307145 -3.621336 -6.280414 4.188903 2.888287</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
