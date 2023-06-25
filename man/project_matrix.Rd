@@ -9,7 +9,9 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 \arguments{
 \item{S}{A square matrix to be projected.
 The covariance estimator.
-(See the same parameter in \code{\link[=gips]{gips()}} function).}
+(See the \code{S} parameter in \code{\link[=gips]{gips()}} function).
+When it is not positive semi definite,
+shows a warning of a class \code{not_positive_semi_definite_matrix}.}
 
 \item{perm}{A permutation to be projected on.
 An object of a \code{gips} class,

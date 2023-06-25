@@ -103,7 +103,7 @@ my_add_text(plot(g, type = "heatmap")) +
   ggplot2::ggtitle("Standard, MLE estimator of a covariance matrix")
 ```
 
-We can see similarities between columns 2 and 3, representing the book’s height and breadth. In particular, the covariance between [1,2] is very similar to [1,3], and the variance of [2] is similar to the variance of [3]. Those are not surprising, given the interpretation of the data (after the rescalling of height that we did).
+We can see similarities between columns 2 and 3, representing the book’s height and breadth. In particular, the covariance between [1,2] is very similar to [1,3], and the variance of [2] is similar to the variance of [3]. Those are not surprising, given the interpretation of the data (after the rescaling of height that we did).
 
 Let's see what the `gips` will tell about this data:
 

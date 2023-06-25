@@ -159,22 +159,16 @@ test_that("Properly validate the gips class with no optimization or after a sing
   
   
   
-  # All NaN's
-  g_small <- gips(
+  # NaNs or Infs in D_matrix
+  expect_error(gips(
     S[1:4, 1:4], number_of_observations,
-    was_mean_estimated = FALSE
-  )
-  D_coef <- 1e350 # gips can process 1e300 here, but 1e350 is too big
-  attr(g_small,"D_matrix") <- attr(g1,"D_matrix")[1:4,1:4] * D_coef
+    was_mean_estimated = FALSE, D_matrix = diag(4) * 1e350
+  ))
+  expect_error(gips(
+    S[1:4, 1:4], number_of_observations,
+    was_mean_estimated = FALSE, D_matrix = diag(Inf, 4) 
+  ))
   
-  for (optimizer_name in c("BF", "MH", "HC")) {
-    expect_warning(expect_error(g_err <- find_MAP(
-      g_small, max_iter = 2, show_progress_bar = FALSE,
-      optimizer = optimizer_name, return_probabilities = FALSE
-    ), "value of NaN occured"), "The NaN value of a posteriori was produced")
-  }
-  
-
   # Other tests
   g_err <- g2
   class(g_err[[1]]) <- "test"
@@ -1021,21 +1015,21 @@ test_that("print.gips() works", {
 
   expect_output(
     print(g),
-    "The permutation \\(\\)\n - is 1 times more likely than the id, \\(\\) permutation"
+    "The permutation \\(\\):\n - is 1 times more likely than the \\(\\) permutation"
   )
   expect_output(
     print(g, log_value = TRUE),
-    "The permutation \\(\\)\n - is 1 times more likely than the id, \\(\\) permutation\n - has log posteriori"
+    "The permutation \\(\\):\n - is 1 times more likely than the \\(\\) permutation;\n - has log posteriori"
   )
   expect_output(
     print(g_map),
-    "\n - was found after 10 log_posteriori calculations\n - is"
+    "\n - was found after 10 posteriori calculations;\n - is"
   )
 
   # oneline:
   expect_output(
     print(g, oneline = TRUE),
-    "The permutation \\(\\); is 1 times more likely"
+    "The permutation \\(\\): is 1 times more likely"
   )
   expect_output(
     print(g, oneline = TRUE, log_value = TRUE),
@@ -1043,7 +1037,7 @@ test_that("print.gips() works", {
   )
   expect_output(
     print(g_map, oneline = TRUE),
-    "; was found after 10 log_posteriori calculations; is"
+    ": was found after 10 posteriori calculations; is"
   )
 })
 
@@ -1054,12 +1048,15 @@ test_that("plot.gips() works or abords for wrong arguments", {
   )
 
   expect_error(plot.gips(custom_perm1))
-
   expect_error(plot(g1, type = "both"))
+  expect_error(plot(g1, type = c("du", "pa")))
   expect_message(
     plot(g1),
     "`type = NA` was automatically changed to `type = 'heatmap'`"
   )
+  expect_silent(my_ggplot1 <- plot(g1, type = "heatmap"))
+  expect_silent(my_ggplot2 <- plot(g1, type = "MLE"))
+  expect_true(all.equal(my_ggplot1, my_ggplot2)) # cannot use expect_equal(), because it checks for equal enviroments, but in R all enviroments are different even if have the same elements in itself
 
   g1_found <- find_MAP(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
   expect_message(

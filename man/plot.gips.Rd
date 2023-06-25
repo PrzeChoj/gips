@@ -22,15 +22,17 @@
 \arguments{
 \item{x}{Object of a \code{gips} class.}
 
-\item{type}{A single character. One of \code{c("heatmap", "all", "best", "both", "block_heatmap")}.
+\item{type}{A character vector of length 1. One of
+\code{c("heatmap", "MLE", "all", "best", "both", "block_heatmap")}.
 \itemize{
-\item "heatmap" - Plots a heatmap of the \code{S} matrix
-inside the \code{gips} object projected
-on the permutation in the \code{gips} object.
-\item "all" - Plots the line of a posteriori for all visited states.
-\item "best" - Plots the line of the biggest a posteriori found over time.
-\item "both" - Plots both lines from "all" and "best".
-\item "block_heatmap" - Plots a heatmap of diagonally block representation of \code{S}.
+\item \code{"heatmap"}, \code{"MLE"} - Plots a heatmap of the Maximum Likelihood
+Estimator of the covariance matrix given the permutation.
+That is, the \code{S} matrix inside the \code{gips} object
+projected on the permutation in the \code{gips} object.
+\item \code{"all"} - Plots the line of a posteriori for all visited states.
+\item \code{"best"} - Plots the line of the biggest a posteriori found over time.
+\item \code{"both"} - Plots both lines from "all" and "best".
+\item \code{"block_heatmap"} - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 For more information see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
@@ -40,7 +42,8 @@ section in \code{vignette("Theory", package = "gips")} or in its
 The default value is \code{NA}, which will be changed to "heatmap" for
 non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
-All other arguments are ignored for the \code{type = "heatmap"}.}
+All other arguments are ignored for
+the \code{type = "heatmap"} or \code{type = "MLE"}.}
 
 \item{logarithmic_y, logarithmic_x}{A boolean.
 Sets the axis of the plot in logarithmic scale.}
@@ -67,7 +70,7 @@ or other various elements of the plot.}
 \value{
 When \code{type} is one of \code{"all"}, \code{"best"} or \code{"both"},
 returns an invisible \code{NULL}.
-When \code{type} is one of \code{"heatmap"} or \code{"block_heatmap"},
+When \code{type} is one of \code{"heatmap"}, \code{"MLE"} or \code{"block_heatmap"},
 returns an object of class \code{ggplot}.
 }
 \description{
