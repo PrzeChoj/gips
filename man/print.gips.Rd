@@ -43,8 +43,8 @@ Printing function for a \code{gips} class.
 }
 \examples{
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
-g <- gips(S, 10)
-print(g, digits = 4)
+g <- gips(S, 10, perm = "(12)")
+print(g, digits = 4, oneline = TRUE)
 }
 \seealso{
 \itemize{
