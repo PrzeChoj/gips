@@ -14,7 +14,7 @@ The plot depends on the type argument."><meta property="og:image" content="https
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,13 +91,15 @@ The plot depends on the <code>type</code> argument.</p>
 
 
 <dt>type</dt>
-<dd><p>A single character. One of <code>c("heatmap", "all", "best", "both", "block_heatmap")</code>.</p><ul><li><p>"heatmap" - Plots a heatmap of the <code>S</code> matrix
-inside the <code>gips</code> object projected
-on the permutation in the <code>gips</code> object.</p></li>
-<li><p>"all" - Plots the line of a posteriori for all visited states.</p></li>
-<li><p>"best" - Plots the line of the biggest a posteriori found over time.</p></li>
-<li><p>"both" - Plots both lines from "all" and "best".</p></li>
-<li><p>"block_heatmap" - Plots a heatmap of diagonally block representation of <code>S</code>.
+<dd><p>A character vector of length 1. One of
+<code>c("heatmap", "MLE", "all", "best", "both", "block_heatmap")</code>.</p><ul><li><p><code>"heatmap"</code>, <code>"MLE"</code> - Plots a heatmap of the Maximum Likelihood
+Estimator of the covariance matrix given the permutation.
+That is, the <code>S</code> matrix inside the <code>gips</code> object
+projected on the permutation in the <code>gips</code> object.</p></li>
+<li><p><code>"all"</code> - Plots the line of a posteriori for all visited states.</p></li>
+<li><p><code>"best"</code> - Plots the line of the biggest a posteriori found over time.</p></li>
+<li><p><code>"both"</code> - Plots both lines from "all" and "best".</p></li>
+<li><p><code>"block_heatmap"</code> - Plots a heatmap of diagonally block representation of <code>S</code>.
 Non-block entries (equal to 0) are white for better clarity.
 For more information see <strong>Block Decomposition - [1], Theorem 1</strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
@@ -105,7 +107,8 @@ section in <code><a href="../articles/Theory.html">vignette("Theory", package = 
 </ul><p>The default value is <code>NA</code>, which will be changed to "heatmap" for
 non-optimized <code>gips</code> objects and to "both" for optimized ones.
 Using the default produces a warning.
-All other arguments are ignored for the <code>type = "heatmap"</code>.</p></dd>
+All other arguments are ignored for
+the <code>type = "heatmap"</code> or <code>type = "MLE"</code>.</p></dd>
 
 
 <dt>logarithmic_y, logarithmic_x</dt>
@@ -154,7 +157,7 @@ or other various elements of the plot.</p></dd>
 
 <p>When <code>type</code> is one of <code>"all"</code>, <code>"best"</code> or <code>"both"</code>,
 returns an invisible <code>NULL</code>.
-When <code>type</code> is one of <code>"heatmap"</code> or <code>"block_heatmap"</code>,
+When <code>type</code> is one of <code>"heatmap"</code>, <code>"MLE"</code> or <code>"block_heatmap"</code>,
 returns an object of class <code>ggplot</code>.</p>
     </div>
     <div class="section level2">
