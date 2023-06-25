@@ -1053,14 +1053,16 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' The plot depends on the `type` argument.
 #'
 #' @param x Object of a `gips` class.
-#' @param type A single character. One of `c("heatmap", "all", "best", "both", "block_heatmap")`.
-#'   * "heatmap" - Plots a heatmap of the `S` matrix
-#'       inside the `gips` object projected
-#'       on the permutation in the `gips` object.
-#'   * "all" - Plots the line of a posteriori for all visited states.
-#'   * "best" - Plots the line of the biggest a posteriori found over time.
-#'   * "both" - Plots both lines from "all" and "best".
-#'   * "block_heatmap" - Plots a heatmap of diagonally block representation of `S`.
+#' @param type A character vector of length 1. One of
+#'     `c("heatmap", "MLE", "all", "best", "both", "block_heatmap")`.
+#'   * `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
+#'       Estimator of the covariance matrix given the permutation.
+#'       That is, the `S` matrix inside the `gips` object
+#'       projected on the permutation in the `gips` object.
+#'   * `"all"` - Plots the line of a posteriori for all visited states.
+#'   * `"best"` - Plots the line of the biggest a posteriori found over time.
+#'   * `"both"` - Plots both lines from "all" and "best".
+#'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
@@ -1069,7 +1071,8 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
-#'     All other arguments are ignored for the `type = "heatmap"`.
+#'     All other arguments are ignored for
+#'     the `type = "heatmap"` or `type = "MLE"`.
 #' @param logarithmic_y,logarithmic_x A boolean.
 #'     Sets the axis of the plot in logarithmic scale.
 #' @param color Vector of colors to be used to plot lines.
@@ -1086,7 +1089,7 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #'
 #' @returns When `type` is one of `"all"`, `"best"` or `"both"`,
 #'     returns an invisible `NULL`.
-#'     When `type` is one of `"heatmap"` or `"block_heatmap"`,
+#'     When `type` is one of `"heatmap"`, `"MLE"` or `"block_heatmap"`,
 #'     returns an object of class `ggplot`.
 #'
 #' @seealso
@@ -1149,7 +1152,13 @@ plot.gips <- function(x, type = NA,
   }
 
   validate_gips(x)
-
+  
+  if (length(type) != 1){
+    rlang::abort(c("There was a problem identified with provided arguments:",
+      "i" = "`type` must be an character vector of length 1.",
+      "x" = paste0("You provided `type` with length ", length(type), " which is wrong!")
+    ))
+  }
   if (is.na(type)) {
     type <- ifelse(is.null(attr(x, "optimization_info")),
       "heatmap",
@@ -1163,10 +1172,14 @@ plot.gips <- function(x, type = NA,
       )
     ))
   }
+  
+  if (type == "MLE"){
+    type <- "heatmap"
+  }
 
   if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both"))) {
     rlang::abort(c("There was a problem identified with provided arguments:",
-      "i" = "`type` must be one of: c('heatmap', 'all', 'best', 'both').",
+      "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both').",
       "x" = paste0("You provided `type == ", type, "`."),
       "i" = "Did You misspell the 'type' argument?"
     ))
@@ -1177,7 +1190,7 @@ plot.gips <- function(x, type = NA,
     rlang::abort(
       c(
         "There was a problem identified with provided arguments:",
-        "i" = "For non-optimized `gips` objects only the `type = 'heatmap' or 'block_heatmap'` can be used.",
+        "i" = "For non-optimized `gips` objects only the `type = 'heatmap', 'MLE' or 'block_heatmap'` can be used.",
         "x" = paste0(
           "You did not optimized `x` and provided `type = '",
           type, "'`."
@@ -1194,7 +1207,7 @@ plot.gips <- function(x, type = NA,
   # plotting:
   if (type == "heatmap" || type == "block_heatmap") {
     rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
-      reason = "to use `plot.gips(type = 'heatmap')`; without those packages, the `stats::heatmap()` will be used"
+      reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`; without those packages, the `stats::heatmap()` will be used"
     )
     if (type == "block_heatmap") {
       my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)

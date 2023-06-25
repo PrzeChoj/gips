@@ -29,6 +29,7 @@
 -   `project_matrix()` will show a warning when the non-positive-semi-definite matrix is passed as an `S` argument.
 -   `project_matrix()` will preserve colnames and rownames of a matrix.
 -   `D_matrix` will be checked for containing any `NaN` or `Inf` values.
+-   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`.
 
 
 # gips 1.0.0

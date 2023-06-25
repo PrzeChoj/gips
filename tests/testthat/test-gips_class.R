@@ -1048,12 +1048,15 @@ test_that("plot.gips() works or abords for wrong arguments", {
   )
 
   expect_error(plot.gips(custom_perm1))
-
   expect_error(plot(g1, type = "both"))
+  expect_error(plot(g1, type = c("du", "pa")))
   expect_message(
     plot(g1),
     "`type = NA` was automatically changed to `type = 'heatmap'`"
   )
+  expect_silent(my_ggplot1 <- plot(g1, type = "heatmap"))
+  expect_silent(my_ggplot2 <- plot(g1, type = "MLE"))
+  expect_true(all.equal(my_ggplot1, my_ggplot2)) # cannot use expect_equal(), because it checks for equal enviroments, but in R all enviroments are different even if have the same elements in itself
 
   g1_found <- find_MAP(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
   expect_message(
