@@ -8,6 +8,7 @@
 
 ### Update to functions
 
+-   `gips()` has a new default `D_matrix = mean(diag(S)) * I`;
 -   `summary.gips()` calculates `AIC`, `BIC`, and `n_parameters` (number of free parameters in the covariance matrix);
 -   `get_probabilities_from_gips()` has a new parameter `sorted`;
 -   `compare_posteriories_of_perms()` and `compare_log_posteriories_of_perms()` have a new parameter `digits`;
@@ -28,10 +29,11 @@
 -   Small Vignettes and documentation improvements;
 -   Proper testing of examples;
 -   `delta` parameter of `gips()` has to be bigger than `1`. We used to restrict it as bigger than `2`;
--   `project_matrix()` will show a warning when the non-positive-semi-definite matrix is passed as an `S` argument;
--   `project_matrix()` will preserve colnames and rownames of a matrix;
--   `D_matrix` will be checked for containing any `NaN` or `Inf` values;
--   Absurdly long structure constants vectors may overflow an `integer`; will use `double`.
+-   `project_matrix()` shows a warning when the non-positive-semi-definite matrix is passed as an `S` argument;
+-   `project_matrix()` preserves `colnames()` and `rownames()` of a matrix;
+-   `D_matrix` are checked for containing any `NaN` or `Inf` values;
+-   Absurdly long structure constants vectors may overflow an `integer`; now we use `double`;
+-   `compare_log_posteriories_of_perms()` and `compare_posteriories_of_perms()` show an error when given two incomparable `gips` object (with different parameters).
 
 
 # gips 1.0.0

@@ -139,8 +139,8 @@ test_that("compare_posteriories_of_perms properly calculates", {
   gips_example_perm2 <- gips_perm(example_perm2, 6)
   gips_id <- gips_perm("()", 6)
 
-  g <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm)
-  g2 <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm2)
+  g <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm, D_matrix = diag(1, 6))
+  g2 <- gips(matrix_invariant_by_example_perm, 14, perm = gips_example_perm2, D_matrix = diag(1, 6))
 
   expect_equal(
     compare_log_posteriories_of_perms(g, example_perm, print_output = FALSE),
@@ -187,7 +187,7 @@ test_that("compare_posteriories_of_perms properly calculates", {
   expect_output(compare_posteriories_of_perms(g2, "(34)"))
   expect_output(compare_posteriories_of_perms("(34)", g2))
   
-  g3 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)")
+  g3 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", D_matrix = diag(1, 6))
   expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE),
                 regexp = "is 1\\.693 times") # 3 numbers after decimal
   expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE,
@@ -222,4 +222,28 @@ test_that("compare_posteriories_of_perms properly calculates", {
   # mean was not estimated
   g4 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", was_mean_estimated = FALSE)
   expect_equal(compare_posteriories_of_perms("(1243)", g4, print_output = FALSE), 1)
+})
+
+test_that("compare_posteriories_of_perms refuse to compare different parameters", {
+  g1 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", D_matrix = diag(4, 6), delta = 3)
+  g2 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1243)", D_matrix = diag(1, 6), delta = 3)
+  g3 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1256)", D_matrix = diag(1, 6), delta = 10)
+  
+  expect_error(compare_posteriories_of_perms(g1, g2), class = "different_parameters")
+  expect_error(compare_posteriories_of_perms(g1, g3), class = "different_parameters")
+  expect_error(compare_posteriories_of_perms(g2, g3), class = "different_parameters")
+  
+  g4 <- gips(matrix_invariant_by_example_perm[1:5, 1:5], 14, perm = "(1235)", D_matrix = diag(1, 5), delta = 10)
+  expect_error(compare_posteriories_of_perms(g2, g4), class = "different_parameters")
+  
+  matrix_invariant_by_example_perm2 <- matrix_invariant_by_example_perm
+  matrix_invariant_by_example_perm2[1, 1] <- 70
+  g5 <- gips(matrix_invariant_by_example_perm2, 14, perm = "(1235)", D_matrix = diag(1, 6), delta = 10)
+  expect_error(compare_posteriories_of_perms(g4, g5), class = "different_parameters")
+  
+  g6 <- gips(matrix_invariant_by_example_perm2, 140, perm = "(1235)", D_matrix = diag(1, 6), delta = 10)
+  expect_error(compare_posteriories_of_perms(g5, g6), class = "different_parameters")
+  
+  g7 <- gips(matrix_invariant_by_example_perm2, 140, perm = "(1235)", D_matrix = diag(1, 6), delta = 10, was_mean_estimated = FALSE)
+  expect_error(compare_posteriories_of_perms(g6, g7), class = "different_parameters")
 })

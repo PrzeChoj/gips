@@ -48,8 +48,8 @@ See \strong{Hyperparameters} section bellow.}
 
 \item{D_matrix}{A symmetric, positive-definite matrix of the same size as \code{S}.
 Hyper-parameter of a Bayesian model.
-When \code{NULL}, the identity matrix is taken.
-See \strong{Hyperparameters} section bellow.}
+When \code{NULL}, the (hopefully) reasonable one is derived from the data.
+For more details, see \strong{Hyperparameters} section bellow.}
 
 \item{was_mean_estimated}{A boolean.
 \itemize{
@@ -112,10 +112,16 @@ function to do it. See examples below.
 
 \section{Hyperparameters}{
 
-We encourage to try \code{D = d * I}, where \code{I} is an identity matrix of a size
+We encourage to try \code{D_matrix = d * I}, where \code{I} is an identity matrix of a size
 \verb{p x p}, and \code{d > 0} for some different \code{d}.
 When \code{d} is small (e.g. \code{d=0.1}), bigger structures will be found.
 When \code{d} is big (e.g. \code{d=100}), smaller structures will be found.
+
+Taking \code{D_matrix = d * I} is equivalent to setting \code{S <- S / d}.
+
+The default for \code{D_matrix} is \code{D_matrix = d * I}, where
+\code{d = mean(diag(S))}, which is equivalent to modifying \code{S}
+so that the mean value on the diagonal is 1.
 
 In the Bayesian model, the prior distribution for
 the covariance matrix is a generalized case of
