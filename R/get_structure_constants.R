@@ -48,13 +48,13 @@ get_structure_constants <- function(perm) {
   perm_size <- attr(perm, "size")
   l <- get_cycle_representatives_and_lengths(perm)
   representatives <- l[["representatives"]]
-  cycle_lenghts <- l[["cycle_lengths"]]
-  perm_order <- ifelse(length(cycle_lenghts) >= 2,
-    numbers::mLCM(cycle_lenghts),
-    cycle_lenghts
+  cycle_lengths <- l[["cycle_lengths"]]
+  perm_order <- ifelse(length(cycle_lengths) >= 2,
+    numbers::mLCM(cycle_lengths),
+    cycle_lengths
   )
 
-  r <- calculate_r(cycle_lenghts, perm_order)
+  r <- calculate_r(cycle_lengths, perm_order)
   d <- calculate_d(perm_order)
 
   L <- sum(r > 0)
@@ -107,8 +107,8 @@ calculate_r <- function(cycle_lengths, perm_order) {
   # AKA a*p_c %% N == 0
 
   # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
-  multiples <- perm_order / cycle_lengths
-
+  multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
+  
   # Now we have to adjust for 2 cases:
   # 1) some alphas are too large
   # 2) some alphas are so small, that we can include their multiples
