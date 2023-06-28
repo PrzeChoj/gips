@@ -14,7 +14,7 @@ with larger statistical confidence."><meta property="og:image" content="https://
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,20 +163,13 @@ will be the MAP estimator of the covariance matrix.</p></li>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">projected_S</span> <span class="op">&lt;-</span> <span class="fu">project_matrix</span><span class="op">(</span><span class="va">S</span>, perm <span class="op">=</span> <span class="va">my_perm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">projected_S</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               [,1]        [,2]        [,3]          [,4]        [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  8.004653e-01  0.02069546 -0.40186103 -1.313686e-01  0.07124183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  2.069546e-02  0.82992816  0.28066489 -4.018610e-01 -0.02954386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -4.018610e-01  0.28066489  0.82992816  2.069546e-02 -0.02954386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -1.313686e-01 -0.40186103  0.02069546  8.004653e-01  0.07124183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  7.124183e-02 -0.02954386 -0.02954386  7.124183e-02  1.23513294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]  9.629631e-05 -0.02619530 -0.02619530  9.629631e-05 -0.07238215</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  9.629631e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -2.619530e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -2.619530e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  9.629631e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -7.238215e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]  7.097031e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2]        [,3]        [,4]        [,5]       [,6]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.53188969  0.01815014 -0.09457501  0.21150010 -0.09186483 -0.1215311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.01815014  0.57150603 -0.08802995 -0.09457501 -0.14777834 -0.0751937</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.09457501 -0.08802995  0.57150603  0.01815014 -0.14777834 -0.0751937</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.21150010 -0.09457501  0.01815014  0.53188969 -0.09186483 -0.1215311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -0.09186483 -0.14777834 -0.14777834 -0.09186483  0.64240830  0.1935294</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] -0.12153105 -0.07519370 -0.07519370 -0.12153105  0.19352942  0.6096011</span>
 <span class="r-in"><span><span class="co"># The value in [1,1] is the same as in [4,4]; also, [2,2] and [3,3];</span></span></span>
 <span class="r-in"><span>  <span class="co"># also [1,2] and [3,4]; also, [1,5] and [4,5]; and so on</span></span></span>
 <span class="r-in"><span></span></span>
@@ -189,20 +182,13 @@ will be the MAP estimator of the covariance matrix.</p></li>
 <span class="r-in"><span><span class="va">g_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">10</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">S_MAP</span> <span class="op">&lt;-</span> <span class="fu">project_matrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"S"</span><span class="op">)</span>, perm <span class="op">=</span> <span class="va">g_MAP</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">S_MAP</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]         [,2]         [,3]         [,4]        [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.794098020 -0.042109512 -0.042109512 -0.090937062 0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.042109512  0.794098020 -0.090937062 -0.042109512 0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.042109512 -0.090937062  0.794098020 -0.090937062 0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.090937062 -0.042109512 -0.090937062  0.794098020 0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  0.002202759  0.002202759  0.002202759  0.002202759 1.235132943</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] -0.090937062 -0.090937062 -0.042109512 -0.042109512 0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.090937062</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.090937062</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.042109512</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.042109512</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  0.002202759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]  0.794098020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2]        [,3]        [,4]        [,5]        [,6]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.57646680 -0.00595021 -0.06206340 -0.00595021 -0.06206340 -0.10016812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.00595021  0.57646680 -0.00595021 -0.06206340 -0.10016812 -0.06206340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.06206340 -0.00595021  0.57646680 -0.10016812 -0.06206340 -0.00595021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.00595021 -0.06206340 -0.10016812  0.57646680 -0.00595021 -0.06206340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -0.06206340 -0.10016812 -0.06206340 -0.00595021  0.57646680 -0.00595021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] -0.10016812 -0.06206340 -0.00595021 -0.06206340 -0.00595021  0.57646680</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_MAP</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="project_matrix-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
