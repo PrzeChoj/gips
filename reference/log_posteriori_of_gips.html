@@ -18,7 +18,7 @@ the Maximum A Posteriori (MAP) Estimator."><meta property="og:image" content="ht
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,12 +125,12 @@ A place to learn more about the math behind the <code>gips</code> package.</p></
 <span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S1</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S1</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -136.6, this is the MAP Estimator</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -135.3433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -134.1615</span>
 <span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -140.4</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -139.0036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -138.1695</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">)</span> <span class="co"># 41.3</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 38.87122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 55.03601</span>
 <span class="r-in"><span><span class="co"># g1 is over 40 times more likely than g2.</span></span></span>
 <span class="r-in"><span><span class="co"># This is the expected outcome because S[1,1] significantly differs from S[2,2].</span></span></span>
 <span class="r-in"><span></span></span>
@@ -140,12 +140,12 @@ A place to learn more about the math behind the <code>gips</code> package.</p></
 <span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S2</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S2</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -99.5</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -98.54173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -98.40984</span>
 <span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -96.9, this is the MAP Estimator</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -96.00429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -95.92039</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span><span class="op">)</span> <span class="co"># 12.7</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.64729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.0546</span>
 <span class="r-in"><span><span class="co"># g2 is over 12 times more likely than g1.</span></span></span>
 <span class="r-in"><span><span class="co"># This is the expected outcome because S[1,1] is very close to S[2,2].</span></span></span>
 </code></pre></div>

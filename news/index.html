@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,8 @@
 <div class="section level4">
 <h4 id="update-to-functions-1-1-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-1-0-9000"></a></h4>
 <ul><li>
+<code><a href="../reference/gips.html">gips()</a></code> has a new default <code>D_matrix = mean(diag(S)) * I</code>;</li>
+<li>
 <code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code>, and <code>n_parameters</code> (number of free parameters in the covariance matrix);</li>
 <li>
 <code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> has a new parameter <code>sorted</code>;</li>
@@ -97,12 +99,14 @@
 <li>
 <code>delta</code> parameter of <code><a href="../reference/gips.html">gips()</a></code> has to be bigger than <code>1</code>. We used to restrict it as bigger than <code>2</code>;</li>
 <li>
-<code><a href="../reference/project_matrix.html">project_matrix()</a></code> will show a warning when the non-positive-semi-definite matrix is passed as an <code>S</code> argument;</li>
+<code><a href="../reference/project_matrix.html">project_matrix()</a></code> shows a warning when the non-positive-semi-definite matrix is passed as an <code>S</code> argument;</li>
 <li>
-<code><a href="../reference/project_matrix.html">project_matrix()</a></code> will preserve colnames and rownames of a matrix;</li>
+<code><a href="../reference/project_matrix.html">project_matrix()</a></code> preserves <code><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames()</a></code> and <code><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames()</a></code> of a matrix;</li>
 <li>
-<code>D_matrix</code> will be checked for containing any <code>NaN</code> or <code>Inf</code> values;</li>
-<li>Absurdly long structure constants vectors may overflow an <code>integer</code>; will use <code>double</code>.</li>
+<code>D_matrix</code> are checked for containing any <code>NaN</code> or <code>Inf</code> values;</li>
+<li>Absurdly long structure constants vectors may overflow an <code>integer</code>; now we use <code>double</code>;</li>
+<li>
+<code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> show an error when given two incomparable <code>gips</code> object (with different parameters).</li>
 </ul></div>
 </div>
     <div class="section level2">
