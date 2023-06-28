@@ -120,6 +120,23 @@ calculate_r <- function(cycle_lengths, perm_order) {
 
   alpha_count <- table(alphas)
   r <- rep(0, M + 1)
+  tryCatch({
+    r[as.integer(names(alpha_count)) + 1] <- as.integer(alpha_count)
+  }, error = function(cond) {
+    message(paste0("cycle_lengths: ", paste0(cycle_lengths, collapse = ", "),
+                   "\nperm_order: ", paste0(perm_order, collapse = ", ")))
+    print("alpha_count")
+    print(alpha_count)
+    print("names(alpha_count)")
+    print(names(alpha_count))
+    print("as.integer(names(alpha_count))")
+    print(as.integer(names(alpha_count)))
+    print("as.integer(alpha_count)")
+    print(as.integer(alpha_count))
+    
+    message("\n\nHere's the original error message:")
+    message(cond)
+  })
   r[as.integer(names(alpha_count)) + 1] <- as.integer(alpha_count)
   r
 }
