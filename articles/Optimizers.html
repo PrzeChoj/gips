@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -240,9 +240,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,9,38,32,35,34,50,37,13,68,56,46,40,47,29,14,28,63,69,25,44,17,66,30,65,67,21,48,6,20,49,11,70,31,62,16,54,51,23,64,57,61,5,53,52,26,39,10,60,12,15,59,24,2,45,4,7,42,33,36,22,18,43,27,8,41,55,3,19,58):</span></span>
+<span><span class="co">#&gt; The permutation (1,53,15,65,46,34,61,48,49,47,14,38,3,43,56,12,23,13,66,6,8,17,60,4,58,59,42,33,26,36,30,21,67,11,44,18,9,16,70,27,41,24,37,55,63,62,29,45,19,54,51,52,5,40,25,64,7,20,50,35,39,32,31,2,22,10,28,57,69,68):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.374e+2682 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 3.741e+2704 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After just hundred and fifty iterations, the found permutation is
 unimaginably more likely than the original, <code>()</code>
 permutation.</p>
@@ -360,9 +360,9 @@ Show/hide data preparation
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (2,18)(9,24):</span></span>
+<span><span class="co">#&gt; The permutation (5,6)(10,16):</span></span>
 <span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.727e+25 times more likely than the starting, () permutation.</span></span>
+<span><span class="co">#&gt;  - is 1.829e+29 times more likely than the () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warning is expected.</p>
@@ -422,7 +422,7 @@ Show/hide data preparation
 <span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (1,6,5,4,3,2):</span></span>
 <span><span class="co">#&gt;  - was found after 720 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 43706.314 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 43706.314 times more likely than the () permutation.</span></span></code></pre></div>
 </div>
 </div>
 </div>
