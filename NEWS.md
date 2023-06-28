@@ -15,6 +15,7 @@
     -   `perm` in `gips()`, `project_matrix()`, `prepare_orthogonal_matrix()`, `get_structure_constants()`, `calculate_gamma_function()`;
     -   `perm1` and `perm2` in `compare_posteriories_of_perms()`, `compare_log_posteriories_of_perms()`;
     -   `x` in `gips_perm()`.
+-   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`.
 
 ### Bugfixes:
 
@@ -30,8 +31,6 @@
 -   `project_matrix()` will show a warning when the non-positive-semi-definite matrix is passed as an `S` argument;
 -   `project_matrix()` will preserve colnames and rownames of a matrix;
 -   `D_matrix` will be checked for containing any `NaN` or `Inf` values;
--   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`.
-
 
 # gips 1.0.0
 

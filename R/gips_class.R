@@ -981,7 +981,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     if (compare_to_original) {
       printing_text <- c(printing_text, paste0(
         "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_start, digits),
-        " times more likely than the starting, ",
+        " times more likely than the ",
         as.character(start_perm), " permutation"
       ))
     }
