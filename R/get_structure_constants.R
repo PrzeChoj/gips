@@ -120,7 +120,7 @@ calculate_r <- function(cycle_lengths, perm_order) {
 
   alpha_count <- table(alphas)
   r <- rep(0, M + 1)
-  r[as.integer(names(alpha_count)) + 1] <- as.integer(alpha_count)
+  r[as.double(names(alpha_count)) + 1] <- as.double(alpha_count)
   r
 }
 
