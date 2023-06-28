@@ -21,8 +21,8 @@
 #'     See **Hyperparameters** section bellow.
 #' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
-#'     When `NULL`, the identity matrix is taken.
-#'     See **Hyperparameters** section bellow.
+#'     When `NULL`, the (hopefully) reasonable one is derived from the data.
+#'     For more details, see **Hyperparameters** section bellow.
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
@@ -43,10 +43,16 @@
 #' * [BIC.gips()]
 #'
 #' @section Hyperparameters:
-#' We encourage to try `D = d * I`, where `I` is an identity matrix of a size
+#' We encourage to try `D_matrix = d * I`, where `I` is an identity matrix of a size
 #' `p x p`, and `d > 0` for some different `d`.
 #' When `d` is small (e.g. `d=0.1`), bigger structures will be found.
 #' When `d` is big (e.g. `d=100`), smaller structures will be found.
+#' 
+#' Taking `D_matrix = d * I` is equivalent to setting `S <- S / d`.
+#' 
+#' The default for `D_matrix` is `D_matrix = d * I`, where
+#' `d = mean(diag(S))`, which is equivalent to modifying `S`
+#' so that the mean value on the diagonal is 1.
 #' 
 #' In the Bayesian model, the prior distribution for
 #' the covariance matrix is a generalized case of
@@ -127,7 +133,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 
 
   if (is.null(D_matrix)) {
-    D_matrix <- diag(nrow = ncol(S))
+    D_matrix <- diag(x = mean(diag(S)), nrow = ncol(S))
   }
 
   validate_gips(new_gips(

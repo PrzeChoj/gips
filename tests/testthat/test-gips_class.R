@@ -1101,7 +1101,8 @@ test_that("get_diagonalized_matrix_for_heatmap works", {
 test_that("summary.gips() works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
-    was_mean_estimated = FALSE, perm = custom_perm1
+    was_mean_estimated = FALSE, perm = custom_perm1,
+    D_matrix = diag(1, 6)
   )
 
   start_permutation_log_posteriori <- log_posteriori_of_gips(g1)

@@ -206,7 +206,9 @@ test_that("find_MAP will remember the right number of observations and was_mean_
 })
 
 test_that("find_map with calculate exact probabilities will return probability", {
-  g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4], number_of_observations = 13)
+  g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4],
+            number_of_observations = 13,
+            D_matrix = diag(1, 4))
   g_map <- find_MAP(g,
     max_iter = 10, show_progress_bar = FALSE,
     optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE

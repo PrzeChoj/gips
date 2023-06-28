@@ -309,9 +309,49 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                               was_mean_estimated = TRUE,
                                               print_output = TRUE,
                                               digits = 3) {
-  if (inherits(perm1, "gips")) {
+  perm1_is_gips <- inherits(perm1, "gips")
+  perm2_is_gips <- inherits(perm2, "gips")
+  
+  if (perm1_is_gips) {
     validate_gips(perm1)
-
+  }
+  if (perm2_is_gips) {
+    validate_gips(perm2)
+  }
+  
+  if (perm1_is_gips && perm2_is_gips) {
+    # Check the same parameters
+    if (dim(attr(perm1, "S"))[1] != dim(attr(perm2, "S"))[1]) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (any(abs((attr(perm1, "S") - attr(perm2, "S"))) > 0.00000001)) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (attr(perm1, "number_of_observations") != attr(perm2, "number_of_observations")) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `number_of_observations`! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (attr(perm1, "delta") != attr(perm2, "delta")) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `delta`! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (dim(attr(perm1, "D_matrix"))[1] != dim(attr(perm2, "D_matrix"))[1]) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (any(abs((attr(perm1, "D_matrix") - attr(perm2, "D_matrix"))) > 0.00000001)) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+    if (attr(perm1, "was_mean_estimated") != attr(perm2, "was_mean_estimated")) {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `was_mean_estimated`! They cannot be compared!"),
+                   class = "different_parameters")
+    }
+  }
+  
+  if (perm1_is_gips) {
     S <- attr(perm1, "S")
     number_of_observations <- attr(perm1, "number_of_observations")
     delta <- attr(perm1, "delta")
@@ -319,10 +359,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     was_mean_estimated <- attr(perm1, "was_mean_estimated")
 
     perm1 <- perm1[[1]]
-  }
-  if (inherits(perm2, "gips")) {
-    validate_gips(perm2)
-
+  } else if (perm2_is_gips) {
     S <- attr(perm2, "S")
     number_of_observations <- attr(perm2, "number_of_observations")
     delta <- attr(perm2, "delta")
