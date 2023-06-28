@@ -32,6 +32,7 @@
 -   `project_matrix()` will preserve colnames and rownames of a matrix;
 -   `D_matrix` will be checked for containing any `NaN` or `Inf` values;
 
+
 # gips 1.0.0
 
 -   This is the first release of gips.
