@@ -1138,7 +1138,7 @@ test_that("summary.gips() works", {
 
   expect_output(
     print(summary(g1)),
-    "Number of observations is bigger than n0 for this permutaion,\nso "
+    "The number of observations is bigger than n0 for this permutation,\nso "
   )
   
   expect_output(
