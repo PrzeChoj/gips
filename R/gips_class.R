@@ -1681,19 +1681,19 @@ print.summary.gips <- function(x, ...) {
       convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
     )
   ),
-  "\n\nNumber of observations:\n ", x[["number_of_observations"]],
+  "\n\nThe number of observations:\n ", x[["number_of_observations"]],
   "\n\n", ifelse(x[["was_mean_estimated"]],
     paste0(
-      "The mean in `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere is ",
+      "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
       x[["number_of_observations"]] - 1, " degrees of freedom left."
     ),
     paste0(
-      "The mean in `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
+      "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
       x[["number_of_observations"]], ")."
     )
   ),
   "\n\nn0:\n ", x[["n0"]],
-  "\n\nNumber of observations is ",
+  "\n\nThe number of observations is ",
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "smaller",
     ifelse(x[["n0"]] == x[["number_of_observations"]],
@@ -1701,11 +1701,11 @@ print.summary.gips <- function(x, ...) {
       "bigger"
     )
   ),
-  " than n0 for this permutaion,\nso the gips model based on the found permutation does ",
+  " than n0 for this permutation,\nso the gips model based on the found permutation does ",
   ifelse(x[["n0"]] > x[["number_of_observations"]],
     "not ", ""
   ), "exist.",
-  "\n\nNumber of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
+  "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
   "\n\nBIC:\n ", x[["BIC"]],
   "\n\nAIC:\n ", x[["AIC"]],
   sep = ""
@@ -1741,7 +1741,7 @@ print.summary.gips <- function(x, ...) {
       )
     }
 
-    cat("\n\nNumber of log_posteriori calls:\n ",
+    cat("\n\nThe number of log_posteriori calls:\n ",
       x[["number_of_log_posteriori_calls"]],
       "\n\nOptimization time:\n ", unclass(x[["whole_optimization_time"]]),
       " ", attr(x[["whole_optimization_time"]], "units"),
