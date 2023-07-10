@@ -52,7 +52,7 @@
 #'     space of a given size. This algorithm will definitely find
 #'     the actual Maximum A Posteriori Estimation but is
 #'     very computationally expensive for bigger spaces.
-#'     It is only recommended for `p <= 8`.
+#'     It is only recommended for `p <= 9`.
 #'
 #' @param g Object of a `gips` class
 #' @param max_iter Number of iterations for an algorithm to perform.
@@ -691,6 +691,17 @@ brute_force_optimizer <- function(S,
       "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
     ))
   }
+  
+  if (perm_size > 9) { # I don't know how to test this without running the optimization...
+    rlang::abort(c("Optimizer 'brute_force' will take very long time to browse such a big permutional space.",
+      "x" = paste0(
+        "You provided a space with size ", perm_size,
+        "! (factorial), which has ", prod(1:perm_size),
+        " elements."
+      ),
+      "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
+    ))
+  }
 
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = prod(1:perm_size), initial = 1)
@@ -721,6 +732,12 @@ brute_force_optimizer <- function(S,
   # main loop
   all_perms_list <- permutations::allperms(perm_size)
   all_perms_list <- permutations::as.cycle(all_perms_list)
+  if ((3 <= perm_size) && (perm_size <= 9)) {
+    # Only the generators are interesting for us:
+    # perm_group_generators are calculated only for up to perm_size = 9
+    # See ISSUE#21 for more information
+    all_perms_list <- all_perms_list[perm_group_generators_list[[perm_size - 2]]]
+  }
   log_posteriori_values <- sapply(1:length(all_perms_list), function(i) {
     if (show_progress_bar) {
       utils::setTxtProgressBar(progressBar, i)
@@ -754,7 +771,7 @@ brute_force_optimizer <- function(S,
     "start_perm" = permutations::id,
     "last_perm" = NULL,
     "last_perm_log_posteriori" = NULL,
-    "iterations_performed" = prod(1:perm_size),
+    "iterations_performed" = OEIS_A051625[perm_size],
     "optimization_algorithm_used" = "brute_force",
     "post_probabilities" = probabilities,
     "did_converge" = TRUE,

@@ -15,8 +15,9 @@
 -   Everywhere a permutation was expected, the `gips` object can now be passed and interpreted as a permutation. Those are:
     -   `perm` in `gips()`, `project_matrix()`, `prepare_orthogonal_matrix()`, `get_structure_constants()`, `calculate_gamma_function()`;
     -   `perm1` and `perm2` in `compare_posteriories_of_perms()`, `compare_log_posteriories_of_perms()`;
-    -   `x` in `gips_perm()`.
--   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`.
+    -   `x` in `gips_perm()`;
+-   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`;
+-   `find_MAP(optimizer = "BF")` is 3 times faster.
 
 ### Bugfixes:
 
@@ -34,7 +35,6 @@
 -   `D_matrix` are checked for containing any `NaN` or `Inf` values;
 -   Absurdly long structure constants vectors may overflow an `integer`; now we use `double`;
 -   `compare_log_posteriories_of_perms()` and `compare_posteriories_of_perms()` show an error when given two incomparable `gips` object (with different parameters).
-
 
 # gips 1.0.0
 

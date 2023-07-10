@@ -103,17 +103,20 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = 20 * length(perms), initial = 1)
   }
-
+  
   for (i in 1:19) {
     perms_size <- i
-    if (prod(1:perms_size) == length(perms)) {
+    if (OEIS_A051625[i] == length(perms) || OEIS_A000142[i] == length(perms)) {
       break
     }
   }
-  if (perms_size == 19) {
-    rlang::abort("Too big of a perms size!")
+  
+  if (perms_size == 19){
+    rlang::abort("There is sth wrong with this sequence of permutations!",
+      "i" = "The length of permutation vector hase to be an element of OEIS sequence A051625 or A000142",
+      "x" = paste0("You have the length of permutation vector = ", length(perms)))
   }
-
+  
   group_representatives <- character(0)
   for (i in 1:length(perms)) {
     if (show_progress_bar) {

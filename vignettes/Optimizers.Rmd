@@ -233,7 +233,7 @@ It searches through the whole space at once.
 
 This is the only optimizer that will certainly find the actual MAP Estimator. 
 
-This is **only recommended** for small spaces ($p \le 8$). It can also browse bigger spaces, but the required time is probably too long. On our machines, for $p = 9$ the calculations takes around 5 hours. For $p = 10$ we expect around 40 hours of computations.
+This is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. On our machines, for $p = 9$ the calculations takes around 5 hours. For $p = 10$ we expect around 40 hours of computations.
 
 ### Example
 

@@ -119,7 +119,7 @@ the \strong{Brute Force} algorithm that checks the whole permutation
 space of a given size. This algorithm will definitely find
 the actual Maximum A Posteriori Estimation but is
 very computationally expensive for bigger spaces.
-It is only recommended for \code{p <= 8}.
+It is only recommended for \code{p <= 9}.
 }
 }
 
