@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9101</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -353,10 +353,11 @@ to be defined for all cyclic groups <span class="math inline">\(\Gamma\)</span>,
 </h4>
 <p>In <code>gips</code>, <span class="math inline">\(\delta\)</span> is
 named <code>delta</code>, and <span class="math inline">\(D\)</span> is
-named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>diag(p)</code>, respectively.
-However, it is worth running the procedure for several parameters
-<code>D_matrix</code> of form <span class="math inline">\(d\cdot
-diag(p)\)</span> for positive constant <span class="math inline">\(d\)</span>. Large <span class="math inline">\(d\)</span> (compared to the data) favors small
+named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>d * diag(p)</code>,
+respectively, where <code>d</code> is TODO(). However, it is worth
+running the procedure for several parameters <code>D_matrix</code> of
+form <span class="math inline">\(d\cdot diag(p)\)</span> for positive
+constant <span class="math inline">\(d\)</span>. Large <span class="math inline">\(d\)</span> (compared to the data) favors small
 structures.</p>
 <p>One can calculate the logarithm of formula (30) with function
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p>
@@ -379,7 +380,7 @@ Z^{(i)}\cdot {Z^{(i)}}^\top\)</span></p>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
-<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments, <span class="math inline">\(p\ge 9\)</span> is too big). In such a big space,
+<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments, <span class="math inline">\(p\ge 10\)</span> is too big). In such a big space,
 it is more reasonable to estimate the MAP than to calculate it
 precisely.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
@@ -438,10 +439,10 @@ covariance matrix:</p>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="co">#&gt; ========================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 720 posteriori calculations;</span></span>
+<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 133.158 times more likely than the () permutation.</span></span>
 <span></span>
 <span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -550,7 +551,7 @@ covariance matrix:</p>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span></code></pre></div>
+<span><span class="co">#&gt; ========================================</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 64.19906</span></span>
