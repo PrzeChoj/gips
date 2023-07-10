@@ -704,7 +704,7 @@ brute_force_optimizer <- function(S,
   }
 
   if (show_progress_bar) {
-    progressBar <- utils::txtProgressBar(min = 0, max = prod(1:perm_size), initial = 1)
+    progressBar <- utils::txtProgressBar(min = 0, max = OEIS_A051625[perm_size], initial = 1)
   }
 
   if (is.null(D_matrix)) {
