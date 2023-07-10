@@ -1,5 +1,6 @@
 ## code to prepare `perm_group_generators_list` dataset
 # See OEIS sequence A051625
+# See ISSUE#21 **"BF" optimization**
 
 get_perm_group_generators <- function(p) {
   stopifnot(1 < p, p < 19)
@@ -81,6 +82,7 @@ perm_group_generators_6 <- get_perm_group_generators(6) # 2.2 secs
 perm_group_generators_7 <- get_perm_group_generators(7) # 11 secs
 perm_group_generators_8 <- get_perm_group_generators(8) # 2 minutes
 perm_group_generators_9 <- get_perm_group_generators(9) # 2 hours 6 minutes
+#perm_group_generators_10 <- get_perm_group_generators(10) # see ISSUE#21 **"BF" optimization**
 
 perm_group_generators_list <- list(
   perm_group_generators_3,
