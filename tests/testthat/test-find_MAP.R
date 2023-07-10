@@ -234,3 +234,10 @@ test_that("find_map with calculate exact probabilities will return probability",
     1
   )
 })
+
+test_that("there is proper number of generators", {
+  num_of_generators <- sapply(perm_group_generators_list, sum)
+  for (i in 3:9){
+    expect_equal(num_of_generators[i-2], OEIS_A051625[i])
+  }
+})

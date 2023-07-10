@@ -209,7 +209,7 @@ Footnote: Actually, for $\Gamma = \{id\}$, $\delta > 0$ parameter are theoretica
 
 ### `gips` technical details
 
-In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(p)`, respectively. However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Large $d$ (compared to the data) favors small structures.
+In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `d * diag(p)`, respectively, where `d` is TODO(). However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Large $d$ (compared to the data) favors small structures.
 
 One can calculate the logarithm of formula (30) with function `log_posteriori_of_gips()`.
 
@@ -229,7 +229,7 @@ In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
 
 ### Finding the MAP Estimator
 
-The space of all permutations is enormous for bigger $p$ (in our experiments, $p\ge 9$ is too big). In such a big space, it is more reasonable to estimate the MAP than to calculate it precisely.
+The space of all permutations is enormous for bigger $p$ (in our experiments, $p\ge 10$ is too big). In such a big space, it is more reasonable to estimate the MAP than to calculate it precisely.
 
 Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
