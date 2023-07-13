@@ -693,7 +693,7 @@ brute_force_optimizer <- function(S,
   }
   
   if (perm_size > 9) { # I don't know how to test this without running the optimization...
-    rlang::abort(c("Optimizer 'brute_force' will take very long time to browse such a big permutional space.",
+    rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutional space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
         "! (factorial), which has ", prod(1:perm_size),
