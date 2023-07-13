@@ -84,14 +84,15 @@ plot_cosmetic_modifications <- function(gg_plot_object) {
         breaks = 1:4
       ) +
       ggplot2::theme(
-        title = ggplot2::element_text(face = "bold", size = 18),
-        axis.text.y = ggplot2::element_text(face = "bold", size = 17),
-        axis.text.x = ggplot2::element_text(face = "bold", size = 17)
+        title = ggplot2::element_text(face = "bold", size = 16),
+        axis.text.y = ggplot2::element_text(face = "bold", size = 10),
+        axis.text.x = ggplot2::element_text(face = "bold", size = 10, angle = 6)
       )
   )
-
+  
   out +
-    ggplot2::geom_text(ggplot2::aes(label = round(covariance, -3)),
+    ggplot2::geom_text(ggplot2::aes(
+      label = round(covariance, -3)),
       fontface = "bold", size = 6
     ) +
     ggplot2::theme(legend.position = "none")
@@ -221,10 +222,15 @@ Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` 
 
 For more examples and introduction, see `vignette("gips", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
+For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+
 
 # Acknowledgment
 
 Project was funded by Warsaw University of Technology within the Excellence Initiative: Research University (IDUB) programme.
+
+The development was carried out with the support of the Laboratory of Bioinformatics and Computational Genomics and the High Performance Computing Center of the Faculty of Mathematics and Information Science Warsaw University of Technology.
+
 
 ```{r options_back, include = FALSE}
 options(old_options) # back to the original options

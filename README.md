@@ -261,7 +261,16 @@ For more examples and introduction, see
 `vignette("gips", package="gips")` or its [pkgdown
 page](https://przechoj.github.io/gips/articles/gips.html).
 
+For an in-depth analysis of the package performance, capabilities, and
+comparison with similar packages, see an [article by developers
+available on arXiv 2307.00790](https://arxiv.org/abs/2307.00790).
+
 # Acknowledgment
 
 Project was funded by Warsaw University of Technology within the
 Excellence Initiative: Research University (IDUB) programme.
+
+The development was carried out with the support of the Laboratory of
+Bioinformatics and Computational Genomics and the High Performance
+Computing Center of the Faculty of Mathematics and Information Science
+Warsaw University of Technology.

@@ -28,6 +28,11 @@ library(gips)
 As mentioned in the abstract, the outline of the paper is to "derive the distribution of the maximum likelihood estimate of the covariance parameter $\Sigma$ (...)" and then to "perform Bayesian model selection in the class of complete Gaussian models invariant by the action of a subgroup of the symmetric group (...)". Those ideas are implemented in the `gips` package.
 
 
+## Alternative reference
+
+The theory derived in [1] is for general group invariance, while in this paper, we only consider invariance under cyclic groups. This allows for massive simplifications. This simplified version is comprehensibly set out in [2].
+
+
 # Basic definitions
 
 Let $V=\{1,\ldots,p\}$ be a finite index set, and for every $i\in \{1, \dots, n\}$, $Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$, and let $Z^{(1)},\ldots, Z^{(n)}$ be an i.i.d. (independent and identically distributed) sample from this distribution. Name the whole sample $Z = (Z^{(1)},\ldots, Z^{(n)})$.
@@ -402,3 +407,5 @@ We will consider `g_map` better model both in terms of the AIC and the BIC.
 # References
 
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
+
+[2] "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
