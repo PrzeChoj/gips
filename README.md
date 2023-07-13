@@ -61,10 +61,10 @@ Assume we have the data, and we want to understand its structure:
 ``` r
 library(gips)
 
-Z <- HSAUR::aspirin
+Z <- HSAUR2::aspirin
 
 # Renumber the columns for better readability:
-Z[,c(2,3)] <- Z[,c(3,2)]
+Z[, c(2, 3)] <- Z[, c(3, 2)]
 ```
 
 Assume the data `Z` is normally distributed.
@@ -73,59 +73,62 @@ Assume the data `Z` is normally distributed.
 dim(Z)
 #> [1] 7 4
 number_of_observations <- nrow(Z) # 7
-perm_size <- ncol(Z) # 4
+p <- ncol(Z) # 4
 
 S <- cov(Z)
-round(S)
+round(S, -3)
 #>         [,1]    [,2]    [,3]    [,4]
-#> [1,]  381405  345527 1864563 1813725
-#> [2,]  345527  316411 1711853 1663065
-#> [3,] 1864563 1711853 9305049 8991343
-#> [4,] 1813725 1663065 8991343 8755176
+#> [1,]  381000  347000 1834000 1814000
+#> [2,]  347000  317000 1675000 1659000
+#> [3,] 1834000 1675000 8958000 8844000
+#> [4,] 1814000 1659000 8844000 8755000
 
 g <- gips(S, number_of_observations)
-my_add_text(plot(g, type = "heatmap"))
+plot_cosmetic_modifications(plot(g, type = "heatmap"))
 ```
 
 <img src="man/figures/README-example_mean_unknown2-1.png" width="100%" />
 
-Remember, we analyze the covariance matrix. We can see some strong
-similarities between the covariances of columns 3 and 4. Those have
-similar variances (`S[3,3]` $\approx$ `S[4,4]`), and their covariances
-with the rest of the columns are alike (`S[1,3]` $\approx$ `S[1,4]` and
-`S[2,3]` $\approx$ `S[2,4]`).
+Remember, we analyze the covariance matrix. We can see some nearly
+identical colors in the estimated covariance matrix. E.g., variances of
+columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`),
+variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$
+`S[4,4]`). What is more, Covariances are also similar (`S[1,3]`
+$\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Were this
+approximate equalities obtained coincidentally? Or do they reflect some
+underlying data properties? It is hard to decide purely by looking at
+the matrix.
 
-Note that the variances of columns 1 and 2 are also similar, but the
-covariances with other columns (3 and 4) are not alike.
-
-Let’s see if the `find_MAP()` will find this relationship:
+`find_MAP()` will use the Bayestian model to quantify if the approximate
+equalities are coincidental. Let’s see if it will find this
+relationship:
 
 ``` r
 g_MAP <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 
 g_MAP
-#> The permutation (3,4)
-#>  - was found after 24 log_posteriori calculations
-#>  - is 1.062e+14 times more likely than the starting, () permutation.
+#> The permutation (1,2)(3,4):
+#>  - was found after 17 posteriori calculations;
+#>  - is 3.374 times more likely than the () permutation.
 ```
 
-The `find_MAP` found the relationship (3,4). In its opinion, the
-variances \[3,3\] and \[4,4\] are so close to each other that it is
-reasonable to consider them equal. Similarly, the covariances \[1,3\]
-and \[1,4\]; just as covariances \[2,3\] and \[3,4\], also will be
-considered equal:
+The `find_MAP` found the relationship (1,2)(3,4). In its opinion, the
+variances \[1,1\] and \[2,2\] as well as \[3,3\] and \[4,4\] are so
+close to each other that it is reasonable to consider them equal.
+Similarly, the covariances \[1,3\] and \[2,4\]; just as covariances
+\[2,3\] and \[1,4\], also will be considered equal:
 
 ``` r
-S_projected <- project_matrix(S, g_MAP[[1]])
+S_projected <- project_matrix(S, g_MAP)
 round(S_projected)
 #>         [,1]    [,2]    [,3]    [,4]
-#> [1,]  381405  345527 1839144 1839144
-#> [2,]  345527  316411 1687459 1687459
-#> [3,] 1839144 1687459 9030113 8991343
-#> [4,] 1839144 1687459 8991343 9030113
+#> [1,]  349160  347320 1746602 1744545
+#> [2,]  347320  349160 1744545 1746602
+#> [3,] 1746602 1744545 8856368 8844312
+#> [4,] 1744545 1746602 8844312 8856368
 
-my_add_text(plot(g_MAP, type = "heatmap"))
+plot_cosmetic_modifications(plot(g_MAP, type = "heatmap"))
 ```
 
 <img src="man/figures/README-example_mean_unknown4-1.png" width="100%" />
@@ -133,10 +136,8 @@ my_add_text(plot(g_MAP, type = "heatmap"))
 This `S_projected` matrix can now be interpreted as a more stable
 covariance matrix estimator.
 
-We can also interpret the data suggesting there is, for example, the
-same covariance of “number of deaths after Aspirin” with “number of
-people treated with \*” no matter if the “\*” represents the placebo or
-Aspirin.
+We can also interpret the output as suggesting, that there is no change
+in covariance for treatment with Aspirin.
 
 ### Example 2 - modeling
 
@@ -144,8 +145,8 @@ First, construct data for the example:
 
 ``` r
 # Prepare model, multivariate normal distribution
-perm_size <- 6
-mu <- numeric(perm_size)  
+p <- 6
+mu <- numeric(p)
 sigma_matrix <- matrix(
   data = c(
     1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
@@ -155,13 +156,13 @@ sigma_matrix <- matrix(
     0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
     0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
-  nrow = perm_size, byrow = TRUE
+  nrow = p, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 
 
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
-    code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+  code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
 )
 # End of prepare model
 ```
@@ -180,7 +181,7 @@ library(gips)
 dim(Z)
 #> [1] 4 6
 number_of_observations <- nrow(Z) # 4
-perm_size <- ncol(Z) # 6
+p <- ncol(Z) # 6
 
 # Calculate the covariance matrix from the data:
 S <- (t(Z) %*% Z) / number_of_observations
@@ -210,12 +211,12 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 
 g_map
-#> The permutation (1,2,3,4,5,6)
-#>  - was found after 720 log_posteriori calculations
-#>  - is 504.049 times more likely than the starting, () permutation.
+#> The permutation (1,2,3,4,5,6):
+#>  - was found after 362 posteriori calculations;
+#>  - is 118.863 times more likely than the () permutation.
 ```
 
-We see that the found permutation is hundreds of times more likely than
+We see that the found permutation is over hundred times more likely than
 making no additional assumption. That means the additional assumptions
 are justified.
 
@@ -231,7 +232,7 @@ to $n_0 = 1$, so we can estimate the covariance matrix with the Maximum
 Likelihood estimator:
 
 ``` r
-S_projected <- project_matrix(S, g_map[[1]])
+S_projected <- project_matrix(S, g_map)
 S_projected
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
 #> [1,] 1.3747718 1.0985729 0.6960213 0.4960295 0.6960213 1.0985729

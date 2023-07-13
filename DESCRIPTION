@@ -33,7 +33,7 @@ Suggests:
     ggplot2,
     graphics,
     hash,
-    HSAUR,
+    HSAUR2,
     knitr,
     MASS (>= 7.3-39),
     mvtnorm,
