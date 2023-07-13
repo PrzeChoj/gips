@@ -702,9 +702,19 @@ brute_force_optimizer <- function(S,
       "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
     ))
   }
+  
+  iterations_to_perform <-
+    if ((3 <= perm_size) && (perm_size <= 9)) {
+    # Only the generators are interesting for us:
+    # perm_group_generators are calculated only for up to perm_size = 9
+    # See ISSUE#21 for more information
+    OEIS_A051625[perm_size]
+  } else {
+    prod(1:perm_size)
+  }
 
   if (show_progress_bar) {
-    progressBar <- utils::txtProgressBar(min = 0, max = OEIS_A051625[perm_size], initial = 1)
+    progressBar <- utils::txtProgressBar(min = 0, max = iterations_to_perform, initial = 1)
   }
 
   if (is.null(D_matrix)) {
@@ -771,7 +781,7 @@ brute_force_optimizer <- function(S,
     "start_perm" = permutations::id,
     "last_perm" = NULL,
     "last_perm_log_posteriori" = NULL,
-    "iterations_performed" = OEIS_A051625[perm_size],
+    "iterations_performed" = iterations_to_perform,
     "optimization_algorithm_used" = "brute_force",
     "post_probabilities" = probabilities,
     "did_converge" = TRUE,
