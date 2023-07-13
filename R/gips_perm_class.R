@@ -263,8 +263,6 @@ print.gips_perm <- function(x, ...) {
 #'
 #' Implementation of S3 method.
 #'
-#' @describeIn as.character
-#'
 #' @inheritParams print.gips_perm
 #' @param ... Further arguments passed to [permutations::as.character.cycle()].
 #'
@@ -273,14 +271,18 @@ print.gips_perm <- function(x, ...) {
 #' @returns Returns an object of a `character` type.
 #'
 #' @seealso
+#' [as.character.gips()]
+#' 
 #' [permutations::as.character.cycle()]
 #'
 #' @export
 #'
 #' @examples
-#' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+#' g_perm <- gips_perm("(5,4)", 5)
 #' as.character(g_perm)
 as.character.gips_perm <- function(x, ...) {
+  validate_gips_perm(x)
+  
   as.character(permutations::as.cycle(x), ...)
 }
 

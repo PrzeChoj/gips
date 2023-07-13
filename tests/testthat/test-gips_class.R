@@ -1428,3 +1428,10 @@ test_that("AIC.gips() works", {
   expect_no_warning(AIC(g))
   expect_no_warning(BIC(g))
 })
+
+test_that("as.character.gips() work", {
+  A <- matrix(rnorm(4 * 4), nrow = 4)
+  S <- t(A) %*% A
+  g <- gips(S, 14, perm = "(123)")
+  expect_equal(as.character(g), "(1,2,3)")
+})

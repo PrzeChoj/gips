@@ -1,14 +1,15 @@
-# gips 1.1.0.9000
+# gips 1.1.0.9103
 
 ### New functions
 
 -   `BIC.gips()`
 -   `AIC.gips()`
 -   `logLik.gips()`
+-   `as.character.gips()`
 
 ### Update to functions
 
--   `gips()` has a new default `D_matrix = mean(diag(S)) * I`;
+-   `gips()` has a new default `D_matrix = mean(diag(S)) * diag(p)`;
 -   `summary.gips()` calculates `AIC`, `BIC`, and `n_parameters` (number of free parameters in the covariance matrix);
 -   `get_probabilities_from_gips()` will return sorted vector;
 -   `compare_posteriories_of_perms()` and `compare_log_posteriories_of_perms()` have a new parameter `digits`;

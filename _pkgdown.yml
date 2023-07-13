@@ -25,6 +25,7 @@ reference:
 - title: "Helper functions"
   desc: "Functions for pleasant work in `gips`."
   contents:
+  - as.character.gips
   - gips_perm
   - print.gips_perm
   - as.character.gips_perm

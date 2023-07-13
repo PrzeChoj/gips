@@ -2107,3 +2107,33 @@ forget_perms <- function(g) {
 
   g
 }
+
+
+#' Transform `gips` object to character vector
+#'
+#' Implementation of S3 method.
+#'
+#' @inheritParams print.gips
+#' @param ... Further arguments passed to [as.character.gips_perm()].
+#'
+#' @method as.character gips
+#'
+#' @returns Returns an object of a `character` type.
+#'
+#' @seealso
+#' [as.character.gips_perm()]
+#' 
+#' [permutations::as.character.cycle()]
+#'
+#' @export
+#'
+#' @examples
+#' A <- matrix(rnorm(4 * 4), nrow = 4)
+#' S <- t(A) %*% A
+#' g <- gips(S, 14, perm = "(123)")
+#' as.character(g)
+as.character.gips <- function(x, ...) {
+  validate_gips(x)
+  
+  as.character(x[[1]], ...)
+}
