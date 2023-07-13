@@ -6,7 +6,7 @@
 #' will not be performed. One must call the [find_MAP()]
 #' function to do it. See examples below.
 #'
-#' @param S A matrix; estimated covariance matrix.
+#' @param S A matrix; empirical covariance matrix.
 #'     When `Z` is the observed data:
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`,
@@ -67,8 +67,8 @@
 #'
 #' @export
 #' @seealso
-#' * [stats::cov()] - The `S` parameter is most of the time
-#'     an estimated covariance matrix, so a result of the `cov()` function.
+#' * [stats::cov()] - The `S` parameter, as an empirical covariance matrix,
+#'     most of the time is a result of the `cov()` function.
 #'     For more information, see
 #'     [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 #' * [find_MAP()] - The function that finds
@@ -1269,7 +1269,7 @@ plot.gips <- function(x, type = NA,
         ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
         ggplot2::theme_bw() +
         ggplot2::labs(
-          title = paste0("Covariance matrix projected on permutation ", x[[1]]),
+          title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
           x = "", y = ""
         )
 
