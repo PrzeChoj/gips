@@ -10,7 +10,7 @@
 
 -   `gips()` has a new default `D_matrix = mean(diag(S)) * I`;
 -   `summary.gips()` calculates `AIC`, `BIC`, and `n_parameters` (number of free parameters in the covariance matrix);
--   `get_probabilities_from_gips()` has a new parameter `sorted`;
+-   `get_probabilities_from_gips()` will return sorted vector;
 -   `compare_posteriories_of_perms()` and `compare_log_posteriories_of_perms()` have a new parameter `digits`;
 -   Everywhere a permutation was expected, the `gips` object can now be passed and interpreted as a permutation. Those are:
     -   `perm` in `gips()`, `project_matrix()`, `prepare_orthogonal_matrix()`, `get_structure_constants()`, `calculate_gamma_function()`;

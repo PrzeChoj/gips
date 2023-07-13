@@ -33,7 +33,7 @@ estimate_probabilities <- function(perms, show_progress_bar = FALSE) {
   probabilities <- as.numeric(probabilities)
   names(probabilities) <- names(unnormalized_probabilities)
 
-  probabilities
+  sort(probabilities, decreasing = TRUE)
 }
 
 
@@ -149,6 +149,5 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
     close(progressBar)
   }
 
-
-  change_log_probabilities_unnorm_to_probabilities(groups_unrepeated_log_posteriories)
+  sort(change_log_probabilities_unnorm_to_probabilities(groups_unrepeated_log_posteriories), decreasing = TRUE)
 }
