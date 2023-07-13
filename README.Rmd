@@ -82,6 +82,11 @@ plot_cosmetic_modifications <- function(gg_plot_object) {
       ggplot2::scale_y_reverse(
         labels = my_col_names,
         breaks = 1:4
+      ) +
+      ggplot2::theme(
+        title = ggplot2::element_text(face = "bold", size = 18),
+        axis.text.y = ggplot2::element_text(face = "bold", size = 17),
+        axis.text.x = ggplot2::element_text(face = "bold", size = 17)
       )
   )
 
