@@ -2,6 +2,7 @@
 
 S3method(AIC,gips)
 S3method(BIC,gips)
+S3method(as.character,gips)
 S3method(as.character,gips_perm)
 S3method(logLik,gips)
 S3method(plot,gips)

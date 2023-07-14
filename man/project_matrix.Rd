@@ -8,7 +8,7 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 }
 \arguments{
 \item{S}{A square matrix to be projected.
-The covariance estimator.
+The empirical covariance matrix.
 (See the \code{S} parameter in \code{\link[=gips]{gips()}} function).
 When it is not positive semi definite,
 shows a warning of a class \code{not_positive_semi_definite_matrix}.}

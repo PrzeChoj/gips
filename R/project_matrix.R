@@ -35,7 +35,7 @@
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
 #' @param S A square matrix to be projected.
-#'     The covariance estimator.
+#'     The empirical covariance matrix.
 #'     (See the `S` parameter in [gips()] function).
 #'     When it is not positive semi definite,
 #'     shows a warning of a class `not_positive_semi_definite_matrix`.

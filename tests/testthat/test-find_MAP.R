@@ -206,24 +206,26 @@ test_that("find_MAP will remember the right number of observations and was_mean_
 })
 
 test_that("find_map with calculate exact probabilities will return probability", {
-  g <- gips(S = matrix_invariant_by_example_perm[1:4, 1:4],
-            number_of_observations = 13,
-            D_matrix = diag(1, 4))
+  g <- gips(
+    S = matrix_invariant_by_example_perm[1:4, 1:4],
+    number_of_observations = 13,
+    D_matrix = diag(1, 4)
+  )
   g_map <- find_MAP(g,
     max_iter = 10, show_progress_bar = FALSE,
     optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE
   )
 
   my_post_prob <- c(
-    `()` = 1.18881017985689e-13, `(3,4)` = 2.56690835859916e-08,
-    `(2,3)` = 3.5989590475781e-08, `(2,3,4)` = 0.00466132503808372,
-    `(2,4)` = 2.56690835859916e-08, `(1,2)` = 3.5989590475781e-08,
-    `(1,2)(3,4)` = 2.13328433453314e-06, `(1,2,3)` = 0.00709444735420907,
     `(1,2,3,4)` = 0.326304997567465, `(1,2,4,3)` = 0.326304997567465,
-    `(1,2,4)` = 0.00466132503808372, `(1,3)` = 3.5989590475781e-08,
-    `(1,3,4)` = 0.00466132503808372, `(1,3)(2,4)` = 2.13328433453314e-06,
-    `(1,3,2,4)` = 0.326304997567465, `(1,4)` = 2.56690835859916e-08,
-    `(1,4)(2,3)` = 2.13328433453314e-06
+    `(1,3,2,4)` = 0.326304997567465, `(1,2,3)` = 0.00709444735420907,
+    `(2,3,4)` = 0.00466132503808372, `(1,2,4)` = 0.00466132503808372,
+    `(1,3,4)` = 0.00466132503808372, `(1,2)(3,4)` = 2.13328433453314e-06,
+    `(1,3)(2,4)` = 2.13328433453314e-06, `(1,4)(2,3)` = 2.13328433453314e-06,
+    `(2,3)` = 3.5989590475781e-08, `(1,2)` = 3.5989590475781e-08,
+    `(1,3)` = 3.5989590475781e-08, `(3,4)` = 2.56690835859916e-08,
+    `(2,4)` = 2.56690835859916e-08, `(1,4)` = 2.56690835859916e-08,
+    `()` = 1.18881017985689e-13
   )
   expect_equal(
     attr(g_map, "optimization_info")[["post_probabilities"]],
@@ -237,7 +239,7 @@ test_that("find_map with calculate exact probabilities will return probability",
 
 test_that("there is proper number of generators", {
   num_of_generators <- sapply(perm_group_generators_list, sum)
-  for (i in 3:9){
-    expect_equal(num_of_generators[i-2], OEIS_A051625[i])
+  for (i in 3:9) {
+    expect_equal(num_of_generators[i - 2], OEIS_A051625[i])
   }
 })

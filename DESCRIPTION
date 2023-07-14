@@ -1,7 +1,7 @@
 Type: Package
 Package: gips
 Title: Gaussian Model Invariant by Permutation Symmetry
-Version: 1.1.0.9101
+Version: 1.1.0.9103
 Authors@R: c(
     person(c("Adam", "Przemysław"), "Chojecki", , "adam.prze.choj@gmail.com", role = c("aut", "cre")),
     person("Paweł", "Morgen", , "seriousmorgen@protonmail.com", role = "aut"),
@@ -33,7 +33,7 @@ Suggests:
     ggplot2,
     graphics,
     hash,
-    HSAUR,
+    HSAUR2,
     knitr,
     MASS (>= 7.3-39),
     mvtnorm,

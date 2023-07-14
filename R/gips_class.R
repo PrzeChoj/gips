@@ -6,7 +6,7 @@
 #' will not be performed. One must call the [find_MAP()]
 #' function to do it. See examples below.
 #'
-#' @param S A matrix; estimated covariance matrix.
+#' @param S A matrix; empirical covariance matrix.
 #'     When `Z` is the observed data:
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`,
@@ -67,8 +67,8 @@
 #'
 #' @export
 #' @seealso
-#' * [stats::cov()] - The `S` parameter is most of the time
-#'     an estimated covariance matrix, so a result of the `cov()` function.
+#' * [stats::cov()] - The `S` parameter, as an empirical covariance matrix,
+#'     most of the time is a result of the `cov()` function.
 #'     For more information, see
 #'     [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 #' * [find_MAP()] - The function that finds
@@ -1269,7 +1269,7 @@ plot.gips <- function(x, type = NA,
         ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
         ggplot2::theme_bw() +
         ggplot2::labs(
-          title = paste0("Covariance matrix projected on permutation ", x[[1]]),
+          title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
           x = "", y = ""
         )
 
@@ -2005,8 +2005,6 @@ BIC.gips <- function(object, ...){
 #'
 #' @param g An object of class "gips";
 #'     a result of a `find_MAP(return_probabilities = TRUE)`.
-#' @param sorted Logical; for `TRUE` (default) the output
-#'     will be sorted according to the probability.
 #'
 #' @returns Returns a numeric vector, calculated values of probabilities.
 #' Names contains permutations this probability represent.
@@ -2031,7 +2029,7 @@ BIC.gips <- function(object, ...){
 #' )
 #'
 #' get_probabilities_from_gips(g_map)
-get_probabilities_from_gips <- function(g, sorted = TRUE) {
+get_probabilities_from_gips <- function(g) {
   validate_gips(g)
 
   if (is.null(attr(g, "optimization_info"))) {
@@ -2053,13 +2051,7 @@ get_probabilities_from_gips <- function(g, sorted = TRUE) {
     ))
   }
 
-  out <- attr(g, "optimization_info")[["post_probabilities"]]
-  
-  if (sorted){
-    out <- sort(out, decreasing = TRUE)
-  }
-  
-  out
+  attr(g, "optimization_info")[["post_probabilities"]]
 }
 
 
@@ -2114,4 +2106,34 @@ forget_perms <- function(g) {
   }
 
   g
+}
+
+
+#' Transform `gips` object to character vector
+#'
+#' Implementation of S3 method.
+#'
+#' @inheritParams print.gips
+#' @param ... Further arguments passed to [as.character.gips_perm()].
+#'
+#' @method as.character gips
+#'
+#' @returns Returns an object of a `character` type.
+#'
+#' @seealso
+#' [as.character.gips_perm()]
+#' 
+#' [permutations::as.character.cycle()]
+#'
+#' @export
+#'
+#' @examples
+#' A <- matrix(rnorm(4 * 4), nrow = 4)
+#' S <- t(A) %*% A
+#' g <- gips(S, 14, perm = "(123)")
+#' as.character(g)
+as.character.gips <- function(x, ...) {
+  validate_gips(x)
+  
+  as.character(x[[1]], ...)
 }

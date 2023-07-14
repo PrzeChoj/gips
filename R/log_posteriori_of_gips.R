@@ -273,12 +273,25 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   if (!print_output) {
     return(out)
   }
+  
+  perm1_is_gips <- inherits(perm1, "gips")
+  perm2_is_gips <- inherits(perm2, "gips")
 
-  if (inherits(perm1, "gips")) {
+  if (perm1_is_gips) {
+    S <- attr(perm1, "S")
     perm1 <- perm1[[1]]
   }
-  if (inherits(perm2, "gips")) {
+  if (perm2_is_gips) {
+    S <- attr(perm2, "S")
     perm2 <- perm2[[1]]
+  }
+  
+  perm_size <- ncol(S)
+  if (!inherits(perm1, "gips_perm")) {
+    perm1 <- gips_perm(perm1, perm_size)
+  }
+  if (!inherits(perm2, "gips_perm")) {
+    perm2 <- gips_perm(perm2, perm_size)
   }
 
   my_print_text <- paste0(

@@ -28,6 +28,11 @@ library(gips)
 As mentioned in the abstract, the outline of the paper is to "derive the distribution of the maximum likelihood estimate of the covariance parameter $\Sigma$ (...)" and then to "perform Bayesian model selection in the class of complete Gaussian models invariant by the action of a subgroup of the symmetric group (...)". Those ideas are implemented in the `gips` package.
 
 
+## Alternative reference
+
+The theory derived in [1] is for general group invariance, while in this paper, we only consider invariance under cyclic groups. This allows for massive simplifications. This simplified version is comprehensibly set out in [2].
+
+
 # Basic definitions
 
 Let $V=\{1,\ldots,p\}$ be a finite index set, and for every $i\in \{1, \dots, n\}$, $Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top$ be a multivariate random variable following a centered Gaussian model $\mathrm{N}_p(0,\Sigma)$, and let $Z^{(1)},\ldots, Z^{(n)}$ be an i.i.d. (independent and identically distributed) sample from this distribution. Name the whole sample $Z = (Z^{(1)},\ldots, Z^{(n)})$.
@@ -51,12 +56,14 @@ The exact form of blocks depends on so-called *structure constants* $(k_i,d_i,r_
 
 ```{r th1_1}
 p <- 6
-S <- matrix(c(1.1,0.9,0.8,0.7,0.8,0.9,
-              0.9,1.1,0.9,0.8,0.7,0.8,
-              0.8,0.9,1.1,0.9,0.8,0.7,
-              0.7,0.8,0.9,1.1,0.9,0.8,
-              0.8,0.7,0.8,0.9,1.1,0.9,
-              0.9,0.8,0.7,0.8,0.9,1.1), nrow = p)
+S <- matrix(c(
+  1.1, 0.9, 0.8, 0.7, 0.8, 0.9,
+  0.9, 1.1, 0.9, 0.8, 0.7, 0.8,
+  0.8, 0.9, 1.1, 0.9, 0.8, 0.7,
+  0.7, 0.8, 0.9, 1.1, 0.9, 0.8,
+  0.8, 0.7, 0.8, 0.9, 1.1, 0.9,
+  0.9, 0.8, 0.7, 0.8, 0.9, 1.1
+), nrow = p)
 ```
 
 ```{r th1_2, echo=FALSE}
@@ -84,12 +91,14 @@ The result was rounded to the 5th place after the decimal to hide the inaccuraci
 Let's see the other example:
 ```{r th1_5}
 p <- 6
-S <- matrix(c(1.2,0.9,0.9,0.4,0.2,0.1,
-              0.9,1.2,0.9,0.1,0.4,0.2,
-              0.9,0.9,1.2,0.2,0.1,0.4,
-              0.4,0.1,0.2,1.2,0.9,0.9,
-              0.2,0.4,0.1,0.9,1.2,0.9,
-              0.1,0.2,0.4,0.9,0.9,1.2), nrow = p)
+S <- matrix(c(
+  1.2, 0.9, 0.9, 0.4, 0.2, 0.1,
+  0.9, 1.2, 0.9, 0.1, 0.4, 0.2,
+  0.9, 0.9, 1.2, 0.2, 0.1, 0.4,
+  0.4, 0.1, 0.2, 1.2, 0.9, 0.9,
+  0.2, 0.4, 0.1, 0.9, 1.2, 0.9,
+  0.1, 0.2, 0.4, 0.9, 0.9, 1.2
+), nrow = p)
 ```
 
 ```{r th1_6, echo=FALSE}
@@ -138,9 +147,9 @@ Let `S` be any symmetric square matrix:
 p <- 6
 n <- 10
 withr::with_seed(2022,
-  code = Z <- matrix(runif(n*p, min = -10, max = 10), ncol = p)
+  code = Z <- matrix(runif(n * p, min = -10, max = 10), ncol = p)
 )
-Z[,1] <- 2*Z[,1]
+Z[, 1] <- 2 * Z[, 1]
 S <- t(Z) %*% Z / n
 ```
 
@@ -209,7 +218,7 @@ Footnote: Actually, for $\Gamma = \{id\}$, $\delta > 0$ parameter are theoretica
 
 ### `gips` technical details
 
-In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `d * diag(p)`, respectively, where `d` is TODO(). However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Large $d$ (compared to the data) favors small structures.
+In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(d, p)`, respectively, where `d = mean(diag(S))`. However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Small $d$ (compared to the data) favors small structures. Large $d$ will "forget" the data.
 
 One can calculate the logarithm of formula (30) with function `log_posteriori_of_gips()`.
 
@@ -256,7 +265,8 @@ sigma_matrix <- matrix(
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
   code = MASS::mvrnorm(number_of_observations,
-                       mu = mu, Sigma = sigma_matrix)
+    mu = mu, Sigma = sigma_matrix
+  )
 )
 # End of prepare model
 ```
@@ -286,14 +296,14 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 g_map <- find_MAP(g, optimizer = "brute_force")
 print(g_map)
 
-S_projected <- project_matrix(S, g_map[[1]])
+S_projected <- project_matrix(S, g_map)
 ```
 
 ```{r, example2_readme3, echo=FALSE}
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
-We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503) has the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 500 times bigger than for the trivial $\text{id} = (1)(2)\ldots(p)$ permutation. We interpret that under the assumptions (centered Gaussian), it is over 500 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
+We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503) has the biggest value for the permutation $(1,2,3,4,5,6)$. It was over 100 times bigger than for the trivial $\text{id} = (1)(2)\ldots(p)$ permutation. We interpret that under the assumptions (centered Gaussian), it is over 100 times more reasonable to assume the data `Z` was drawn from model $\mathrm{N}_p(0,\text{S_projected})$ than from model $\mathrm{N}_p(0,\text{S})$.
 
 
 # Information Criterion - AIC and BIC
@@ -355,7 +365,8 @@ sigma_matrix <- matrix(
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
   code = MASS::mvrnorm(number_of_observations,
-                       mu = mu, Sigma = sigma_matrix)
+    mu = mu, Sigma = sigma_matrix
+  )
 )
 # End of prepare model
 ```
@@ -396,3 +407,5 @@ We will consider `g_map` better model both in terms of the AIC and the BIC.
 # References
 
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
+
+[2] "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).

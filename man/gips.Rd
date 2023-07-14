@@ -28,7 +28,7 @@ new_gips(
 validate_gips(g)
 }
 \arguments{
-\item{S}{A matrix; estimated covariance matrix.
+\item{S}{A matrix; empirical covariance matrix.
 When \code{Z} is the observed data:
 \itemize{
 \item if one does not know the theoretical mean and has to
@@ -164,8 +164,8 @@ if (require("graphics")) {
 }
 \seealso{
 \itemize{
-\item \code{\link[stats:cor]{stats::cov()}} - The \code{S} parameter is most of the time
-an estimated covariance matrix, so a result of the \code{cov()} function.
+\item \code{\link[stats:cor]{stats::cov()}} - The \code{S} parameter, as an empirical covariance matrix,
+most of the time is a result of the \code{cov()} function.
 For more information, see
 \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that finds

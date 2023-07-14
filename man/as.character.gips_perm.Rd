@@ -17,15 +17,12 @@ Returns an object of a \code{character} type.
 \description{
 Implementation of S3 method.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{as.character(gips_perm)}: 
-
-}}
 \examples{
-g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+g_perm <- gips_perm("(5,4)", 5)
 as.character(g_perm)
 }
 \seealso{
+\code{\link[=as.character.gips]{as.character.gips()}}
+
 \code{\link[permutations:print]{permutations::as.character.cycle()}}
 }
