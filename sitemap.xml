@@ -31,7 +31,10 @@
     <loc>https://przechoj.github.io/gips/reference/AIC.gips.html</loc>
   </url>
   <url>
-    <loc>https://przechoj.github.io/gips/reference/as.character.html</loc>
+    <loc>https://przechoj.github.io/gips/reference/as.character.gips.html</loc>
+  </url>
+  <url>
+    <loc>https://przechoj.github.io/gips/reference/as.character.gips_perm.html</loc>
   </url>
   <url>
     <loc>https://przechoj.github.io/gips/reference/calculate_gamma_function.html</loc>

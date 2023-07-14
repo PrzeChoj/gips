@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9101</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9103</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,21 +55,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0.9000" id="gips-1109000">gips 1.1.0.9000<a class="anchor" aria-label="anchor" href="#gips-1109000"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0.9103" id="gips-1109103">gips 1.1.0.9103<a class="anchor" aria-label="anchor" href="#gips-1109103"></a></h2>
 <div class="section level4">
-<h4 id="new-functions-1-1-0-9000">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-1-0-9000"></a></h4>
+<h4 id="new-functions-1-1-0-9103">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-1-0-9103"></a></h4>
 <ul><li><code><a href="../reference/AIC.gips.html">BIC.gips()</a></code></li>
 <li><code><a href="../reference/AIC.gips.html">AIC.gips()</a></code></li>
 <li><code><a href="../reference/logLik.gips.html">logLik.gips()</a></code></li>
+<li><code><a href="../reference/as.character.gips.html">as.character.gips()</a></code></li>
 </ul></div>
 <div class="section level4">
-<h4 id="update-to-functions-1-1-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-1-0-9000"></a></h4>
+<h4 id="update-to-functions-1-1-0-9103">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-1-0-9103"></a></h4>
 <ul><li>
-<code><a href="../reference/gips.html">gips()</a></code> has a new default <code>D_matrix = mean(diag(S)) * I</code>;</li>
+<code><a href="../reference/gips.html">gips()</a></code> has a new default <code>D_matrix = mean(diag(S)) * diag(p)</code>;</li>
 <li>
 <code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code>, and <code>n_parameters</code> (number of free parameters in the covariance matrix);</li>
 <li>
-<code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> has a new parameter <code>sorted</code>;</li>
+<code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> will return sorted vector;</li>
 <li>
 <code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> have a new parameter <code>digits</code>;</li>
 <li>Everywhere a permutation was expected, the <code>gips</code> object can now be passed and interpreted as a permutation. Those are:
@@ -86,7 +87,7 @@
 <code>find_MAP(optimizer = "BF")</code> is 3 times faster.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bugfixes-1-1-0-9000">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-1-0-9000"></a></h4>
+<h4 id="bugfixes-1-1-0-9103">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-1-0-9103"></a></h4>
 <ul><li>Sometimes, <code>post_probabilities</code> underflows to 0. This is appropriately validated now;</li>
 <li>
 <code>NaN</code>s should not occur in <code><a href="../reference/find_MAP.html">find_MAP()</a></code> for <code>D_matrix &lt;- diag(ncol(S)) * d</code> when <code>1000 &lt; d &lt; 1e300</code>;</li>

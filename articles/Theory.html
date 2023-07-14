@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9101</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9103</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,6 +109,14 @@ parameter <span class="math inline">\(\Sigma\)</span> (…)” and then to
 “perform Bayesian model selection in the class of complete Gaussian
 models invariant by the action of a subgroup of the symmetric group
 (…)”. Those ideas are implemented in the <code>gips</code> package.</p>
+<div class="section level3">
+<h3 id="alternative-reference">Alternative reference<a class="anchor" aria-label="anchor" href="#alternative-reference"></a>
+</h3>
+<p>The theory derived in [1] is for general group invariance, while in
+this paper, we only consider invariance under cyclic groups. This allows
+for massive simplifications. This simplified version is comprehensibly
+set out in [2].</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="basic-definitions">Basic definitions<a class="anchor" aria-label="anchor" href="#basic-definitions"></a>
@@ -156,12 +164,14 @@ within cyclic subgroups only.</p>
 </h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,</span>
-<span>              <span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,</span>
-<span>              <span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,</span>
-<span>              <span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>,</span>
+<span>  <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>,</span>
+<span>  <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>,</span>
+<span>  <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_2-1.png" width="700"></p>
 <p><code>S</code> is a symmetric matrix invariant under the group <span class="math inline">\(\Gamma =
 \left&lt;(1,2,3,4,5,6)\right&gt;\)</span>.</p>
@@ -188,12 +198,14 @@ inaccuracies of floating point arithmetic.</p>
 <p>Let’s see the other example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">0.4</span>,<span class="fl">0.2</span>,<span class="fl">0.1</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.1</span>,<span class="fl">0.4</span>,<span class="fl">0.2</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.2</span>,<span class="fl">0.1</span>,<span class="fl">0.4</span>,</span>
-<span>              <span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.4</span>,</span>
+<span>  <span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_6-1.png" width="700"></p>
 <p>Now, <code>S</code> is a symmetric matrix invariant under the group
 <span class="math inline">\(\Gamma =
@@ -353,12 +365,13 @@ to be defined for all cyclic groups <span class="math inline">\(\Gamma\)</span>,
 </h4>
 <p>In <code>gips</code>, <span class="math inline">\(\delta\)</span> is
 named <code>delta</code>, and <span class="math inline">\(D\)</span> is
-named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>d * diag(p)</code>,
-respectively, where <code>d</code> is TODO(). However, it is worth
+named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>diag(d, p)</code>,
+respectively, where <code>d = mean(diag(S))</code>. However, it is worth
 running the procedure for several parameters <code>D_matrix</code> of
 form <span class="math inline">\(d\cdot diag(p)\)</span> for positive
-constant <span class="math inline">\(d\)</span>. Large <span class="math inline">\(d\)</span> (compared to the data) favors small
-structures.</p>
+constant <span class="math inline">\(d\)</span>. Small <span class="math inline">\(d\)</span> (compared to the data) favors small
+structures. Large <span class="math inline">\(d\)</span> will “forget”
+the data.</p>
 <p>One can calculate the logarithm of formula (30) with function
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p>
 </div>
@@ -413,7 +426,8 @@ page</a>.</p>
 <span><span class="co"># Generate example data from a model:</span></span>
 <span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
 <span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
-<span>                       mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span>    mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># End of prepare model</span></span></code></pre></div>
 </div>
@@ -445,13 +459,13 @@ covariance matrix:</p>
 <span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 133.158 times more likely than the () permutation.</span></span>
 <span></span>
-<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/example2_readme3-1.png" width="700"></p>
 <p>We see the posterior probability <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,(30)]</a> has the biggest
-value for the permutation <span class="math inline">\((1,2,3,4,5,6)\)</span>. It was over 500 times
+value for the permutation <span class="math inline">\((1,2,3,4,5,6)\)</span>. It was over 100 times
 bigger than for the trivial <span class="math inline">\(\text{id} =
 (1)(2)\ldots(p)\)</span> permutation. We interpret that under the
-assumptions (centered Gaussian), it is over 500 times more reasonable to
+assumptions (centered Gaussian), it is over 100 times more reasonable to
 assume the data <code>Z</code> was drawn from model <span class="math inline">\(\mathrm{N}_p(0,\text{S_projected})\)</span> than
 from model <span class="math inline">\(\mathrm{N}_p(0,\text{S})\)</span>.</p>
 </div>
@@ -528,7 +542,8 @@ selection</strong> section:</p>
 <span><span class="co"># Generate example data from a model:</span></span>
 <span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
 <span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
-<span>                       mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span>    mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># End of prepare model</span></span></code></pre></div>
 </div>
@@ -573,6 +588,9 @@ AIC and the BIC.</p>
 “Model selection in the space of Gaussian models invariant by symmetry.”
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
+<p>[2] “Learning permutation symmetries with gips in R” by
+<code>gips</code>’ developers Adam Chojecki, Paweł Morgen, Bartosz
+Kołodziejek available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
