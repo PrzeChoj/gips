@@ -27,8 +27,8 @@ times more likely is the current permutation compared to:
 \item the starting permutation (for optimized \code{gips} object).
 }}
 
-\item{log_value}{A logical. Whether to print the value
-of a \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}. Default to \code{FALSE}.}
+\item{log_value}{A logical. Whether to print the logarithmic value.
+Default to \code{FALSE}.}
 
 \item{oneline}{A logical. Whether to print in
 one or multiple lines. Default to \code{FALSE}.}

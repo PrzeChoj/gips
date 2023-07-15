@@ -2,20 +2,22 @@
 % Please edit documentation in R/gips_class.R
 \name{logLik.gips}
 \alias{logLik.gips}
-\title{Extract Log-Likelihood for gips class}
+\title{Extract Log-Likelihood for \code{gips} class}
 \usage{
 \method{logLik}{gips}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{gips}; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}. Usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
 }
 \value{
 Log-Likelihood of the sample.
 
-When one does not exists, returns \code{NULL}.
-When it overflows, returns \code{-Inf}.
+When multivariate normal model does not exists
+(\code{number_of_observations < n0}), returns \code{NULL}.
+When multivariate normal model cannot be reasonably approximated
+(output of \code{\link[=project_matrix]{project_matrix()}} is singular), returns \code{-Inf}.
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood} section below.
@@ -39,13 +41,6 @@ In the \code{gips} context, such a model exists only when
 the number of observations is bigger or equal to \code{n0}. To get \code{n0}
 for the \code{gips} object \code{g}, call \code{summary(g)$n0}.
 
-In case \code{n < n0}, the model does not exist, so the likelihood does not exist.
-In such a case, the \code{logLik.gips()} will return \code{NULL} and show a warning.
-
-When \code{n >= n0}, but the estimated covariance matrix is very close to
-singular, the calculated likelihood can overflow to \code{-Inf}.
-In such a case, the \code{logLik.gips()} will return \code{-Inf} and show a warning.
-
 For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 \code{vignette("Theory", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
@@ -66,7 +61,7 @@ S <- matrix(c(5.15,2.05,3.60,1.99,
               1.99,3.57,1.97,5.13), nrow = 4)
 g <- gips(S, 5)
 logLik(g) # -32.67048
-# For perm = "", which is default, there is p + choose(p, 2) degrees of freedom
+# For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom
 
 g_map <- find_MAP(g, optimizer = "brute_force")
 logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
@@ -86,6 +81,6 @@ To see why one may be interested in \code{n0},
 see the \strong{Existence of likelihood} section above.
 \item \code{\link[=project_matrix]{project_matrix()}} - Project the known matrix
 onto the found permutations space.
-Mentioned in \strong{Calculation details} section above
+Mentioned in \strong{Calculation details} section above.
 }
 }

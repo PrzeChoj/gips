@@ -23,27 +23,27 @@
 \item{x}{Object of a \code{gips} class.}
 
 \item{type}{A character vector of length 1. One of
-\code{c("heatmap", "MLE", "all", "best", "both", "block_heatmap")}.
+\code{c("heatmap", "MLE", "best", "all", "both", "block_heatmap")}:
 \itemize{
 \item \code{"heatmap"}, \code{"MLE"} - Plots a heatmap of the Maximum Likelihood
 Estimator of the covariance matrix given the permutation.
 That is, the \code{S} matrix inside the \code{gips} object
 projected on the permutation in the \code{gips} object.
-\item \code{"all"} - Plots the line of a posteriori for all visited states.
 \item \code{"best"} - Plots the line of the biggest a posteriori found over time.
+\item \code{"all"} - Plots the line of a posteriori for all visited states.
 \item \code{"both"} - Plots both lines from "all" and "best".
 \item \code{"block_heatmap"} - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 For more information see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 
 The default value is \code{NA}, which will be changed to "heatmap" for
 non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
 All other arguments are ignored for
-the \code{type = "heatmap"} or \code{type = "MLE"}.}
+the \code{type = "heatmap"}, \code{type = "MLE"} or \code{type = "block_heatmap"}.}
 
 \item{logarithmic_y, logarithmic_x}{A boolean.
 Sets the axis of the plot in logarithmic scale.}
@@ -64,11 +64,11 @@ the minimum and maximum of the \code{\link[=log_posteriori_of_gips]{log_posterio
 \item{xlim}{Limits of the x axis. When \code{NULL},
 the whole optimization process is shown.}
 
-\item{...}{Additional arguments passed to \code{\link[stats:heatmap]{stats::heatmap()}}
-or other various elements of the plot.}
+\item{...}{Additional arguments passed to
+other various elements of the plot.}
 }
 \value{
-When \code{type} is one of \code{"all"}, \code{"best"} or \code{"both"},
+When \code{type} is one of \code{"best"}, \code{"all"} or \code{"both"},
 returns an invisible \code{NULL}.
 When \code{type} is one of \code{"heatmap"}, \code{"MLE"} or \code{"block_heatmap"},
 returns an object of class \code{ggplot}.
@@ -100,7 +100,7 @@ S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 if (require("graphics")) {
-  plot(g, type = "heatmap")
+  plot(g, type = "MLE")
 }
 
 g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
@@ -109,7 +109,7 @@ if (require("graphics")) {
 }
 
 if (require("graphics")) {
-  plot(g_map, type = "heatmap")
+  plot(g_map, type = "MLE")
 }
 # Now, the output is (most likely) different because the permutation
   # `g_map[[1]]` is (most likely) not an identity permutation.
@@ -118,7 +118,7 @@ if (require("graphics")) {
 \itemize{
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{plot.gips()}
 is called on the output of \code{find_MAP()}.
-\item \code{\link[=project_matrix]{project_matrix()}} - The function used with \code{type = "heatmap"}.
+\item \code{\link[=project_matrix]{project_matrix()}} - The function used with \code{type = "MLE"}.
 \item \code{\link[=gips]{gips()}} - The constructor of a \code{gips} class.
 The \code{gips} object is used as the \code{x} parameter.
 }

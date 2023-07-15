@@ -43,8 +43,6 @@
 #'     An object of a `gips` class,
 #'     a `gips_perm` class, or anything that can be used
 #'     as the `x` argument in [`gips_perm()`] function.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
 #' @param precomputed_equal_indices This parameter is for internal use only.
 #'
 #' @returns Returns the matrix `S` projected on the space of symmetrical matrices invariant
@@ -67,11 +65,11 @@
 #'     creating the MAP Estimator of the covariance matrix
 #'     (see examples).
 #' * [gips_perm()] - Constructor for the `perm` parameter.
-#' * [plot.gips()] - For `plot(g, type = 'heatmap')`,
+#' * [plot.gips()] - For `plot(g, type = "MLE")`,
 #'     the `project_matrix()` is called (see examples).
 #' * [summary.gips()] - Can calculate the `n0`, the minimal
 #'     number of observations, so that the projected matrix
-#'     will be the MAP estimator of the covariance matrix.
+#'     will be the MLE estimator of the covariance matrix.
 #'
 #' @examples
 #' p <- 6
@@ -86,7 +84,7 @@
 #'
 #' # Plot the projected matrix:
 #' g <- gips(S, number_of_observations, perm = my_perm)
-#' plot(g, type = "heatmap")
+#' plot(g, type = "MLE")
 #'
 #' # Find the MAP Estimator of covariance
 #' g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")

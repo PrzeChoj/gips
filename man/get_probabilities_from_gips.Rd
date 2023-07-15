@@ -7,14 +7,15 @@
 get_probabilities_from_gips(g)
 }
 \arguments{
-\item{g}{An object of class "gips";
-a result of a \code{find_MAP(return_probabilities = TRUE)}.}
+\item{g}{An object of class \code{gips}.
+A result of a \code{find_MAP(return_probabilities = TRUE)}.}
 }
 \value{
 Returns a numeric vector, calculated values of probabilities.
 Names contains permutations this probability represent.
 For \code{gips} object optimized with \code{find_MAP(return_probabilities = FALSE)},
 returns a \code{NULL} object.
+It is sorted according to the probability.
 }
 \description{
 After the \code{gips} object was optimized with \code{\link[=find_MAP]{find_MAP()}} function with

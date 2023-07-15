@@ -2,7 +2,7 @@
 #'
 #' It calculates the value of the integral defined in
 #' [Definition 11 from references](https://arxiv.org/abs/2004.03503).
-#' It is implementation of the
+#' It implements the
 #' [Theorem 8 from references](https://arxiv.org/abs/2004.03503)
 #' and is using the
 #' [formula (19) from references](https://arxiv.org/abs/2004.03503).
@@ -23,17 +23,16 @@
 #'
 #' @seealso
 #' * [get_structure_constants()] - The function useful inside
-#'     the `calculate_gamma_function()` function.
+#'     the `calculate_gamma_function()`.
 #' * [log_posteriori_of_gips()] - The function that uses
-#'     the values of the gamma function calculable
-#'     with `calculate_gamma_function()`.
+#'     the values of the gamma function.
 #' * `vignette("Theory", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
 #' @examples
-#' id_perm <- gips_perm(permutations::id, 2)
+#' id_perm <- gips_perm("()", 2)
 #' calculate_gamma_function(id_perm, 0.5001) # 10.7...
 #' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 #' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...

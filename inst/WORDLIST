@@ -5,6 +5,7 @@ CMD
 DOI
 Diaconis
 EDA
+EPYC
 Eq
 Graczyk
 HC
@@ -16,10 +17,10 @@ Ishi
 Lifecycle
 MH
 Massam
+OEIS
 OY
 Optimizers
 Piotr
-Posteri
 Posteriori
 Pseudocode
 Schwarz's
@@ -73,4 +74,3 @@ th
 underflows
 unoptimized
 withr
-’

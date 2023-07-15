@@ -3,42 +3,37 @@
 \name{AIC.gips}
 \alias{AIC.gips}
 \alias{BIC.gips}
-\title{Akaike's An Information Criterion for gips class}
+\title{Akaike's An Information Criterion for \code{gips} class}
 \usage{
 \method{AIC}{gips}(object, ..., k = 2)
 
 \method{BIC}{gips}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{gips}; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}. Usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
 
-\item{k}{numeric, the \emph{penalty} per parameter to be used; the
-    default \code{k = 2} is the classical AIC.}
+\item{k}{Numeric, the \emph{penalty} per parameter to be used.
+The default \code{k = 2} is the classical AIC.}
 }
 \value{
 \code{AIC.gips()} returns calculated Akaike's An Information Criterion
 
-When normal model does not exists, returns \code{NULL}.
-When normal model cannot be reasonably approximated (matrix is singular),
-returns \code{Inf}.
+When multivariate normal model does not exists
+(\code{number_of_observations < n0}), returns \code{NULL}.
+When multivariate normal model cannot be reasonably approximated
+(output of \code{\link[=project_matrix]{project_matrix()}} is singular), returns \code{Inf}.
 
 In both failure situations, shows a warning.
 More information can be found in \strong{Existence of likelihood}
 section of \code{\link[=logLik.gips]{logLik.gips()}}.
 
-\code{BIC.gips()} returns calculated Schwarz's Bayesian Information Criterion
+\code{BIC.gips()} returns calculated
+Schwarz's Bayesian Information Criterion.
 }
 \description{
-Akaike's An Information Criterion for gips class
-}
-\details{
-If the found permutation will still require more parameters than \code{n},
-the Likelihood does not exist, thus the function returns \code{NULL}.
-
-If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
-is close to singular, the \code{NA} is returned.
+Akaike's An Information Criterion for \code{gips} class
 }
 \section{Functions}{
 \itemize{
@@ -59,9 +54,9 @@ S <- matrix(c(5.15,2.05,3.10,1.99,
               3.10,2.03,5.21,1.97,
               1.99,3.07,1.97,5.13), nrow = 4)
 g <- gips(S, 14)
-AIC(g) # 238
-
 g_map <- find_MAP(g, optimizer = "brute_force")
+
+AIC(g) # 238
 AIC(g_map) # 224 < 238, so g_map is better than g in AIC
 # ================================================================================
 BIC(g) # 244

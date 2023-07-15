@@ -14,18 +14,18 @@ find_MAP(
 )
 }
 \arguments{
-\item{g}{Object of a \code{gips} class}
+\item{g}{Object of a \code{gips} class.}
 
 \item{max_iter}{Number of iterations for an algorithm to perform.
 At least 2. For \code{optimizer="MH"} it has to be finite;
 for \code{optimizer="HC"} it can be infinite;
 for \code{optimizer="BF"} it is not used.}
 
-\item{optimizer}{The optimizer for the search of the maximum posteriori.
+\item{optimizer}{The optimizer for the search of the maximum posteriori:
 \itemize{
-\item \code{"MH"} (the default for unoptimized \code{g}) - Metropolis-Hastings
-\item \code{"HC"} - Hill Climbing
-\item \code{"BF"} - Brute Force
+\item \code{"MH"} (the default for unoptimized \code{g}) - Metropolis-Hastings;
+\item \code{"HC"} - Hill Climbing;
+\item \code{"BF"} - Brute Force;
 \item \code{"continue"} (the default for optimized \code{g}) - The same as
 the \code{g} was optimized by (see Examples).
 }
@@ -34,29 +34,29 @@ For more details, see the "\strong{Possible algorithms to use as optimizers}"
 section below.}
 
 \item{show_progress_bar}{A boolean.
-Indicate whether or not to show the progress bar.
+Indicate whether or not to show the progress bar:
 \itemize{
-\item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE}.
+\item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE};
 \item When \code{return_probabilities=TRUE}, then
 shows an additional progress bar for the time
-when the probabilities are calculated
+when the probabilities are calculated.
 }}
 
 \item{save_all_perms}{A boolean. \code{TRUE} indicates to save a list of
 all permutations that were visited during optimization.
-This can be useful, but need a lot more RAM.}
+This can be useful sometimes, but need a lot more RAM.}
 
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
-when \code{save_all_perms} is \code{TRUE} and for:
+only when \code{save_all_perms = TRUE}. For:
 \itemize{
 \item \code{optimizer="MH"} - use Metropolis-Hastings results to
-estimate posterior probabilities
+estimate posterior probabilities;
 \item \code{optimizer="BF"} - use brute force results to
-calculate exact posterior probabilities
+calculate exact posterior probabilities.
 }
 
 This additional calculations are costly, so second progress bar
-is shown (when \code{show_progress_bar} is \code{TRUE}).
+is shown (when \code{show_progress_bar = TRUE}).
 
 To examine probabilities after optimization,
 call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}
@@ -86,7 +86,7 @@ in \code{vignette("Theory", package = "gips")} or in its
 \section{Possible algorithms to use as optimizers}{
 
 
-For a more in-depth explanations, see
+For a in-depth explanations, see
 \code{vignette("Optimizers", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 
@@ -98,10 +98,10 @@ the \strong{Metropolis-Hastings} algorithm;
 The algorithm will draw a random transposition in every iteration
 and consider changing the current state (permutation).
 When the \code{max_iter} is reached, the algorithm will return the best
-permutation calculated so far as the MAP Estimator. This implements
+permutation calculated as the MAP Estimator. This implements
 the \href{https://arxiv.org/abs/2004.03503}{\emph{Second approach} from references, section 4.1.2}.
 This algorithm used in this context is a special case of the
-\strong{Simulated Annealing} the reader may be more familiar with;
+\strong{Simulated Annealing} the user may be more familiar with;
 \href{https://en.wikipedia.org/wiki/Simulated_annealing}{see Wikipedia}.
 \item \code{"hill_climbing"}, \code{"HC"} - use
 the \strong{hill climbing} algorithm;
@@ -110,8 +110,9 @@ The algorithm will check all transpositions in every iteration and
 go to the one with the biggest a posteriori value.
 The optimization ends when all \emph{neighbors} will have a smaller
 a posteriori value. If the \code{max_iter} is reached before the end,
-then the warning is shown, and it is recommended to start
-the optimization again on the output of the \code{find_MAP()}.
+then the warning is shown, and it is recommended to continue
+the optimization on the output of the \code{find_MAP()} with
+\code{optimizer = "continue"}; see examples.
 Remember that there are \code{p*(p-1)/2} transpositions to be checked
 in every iteration. For bigger \code{p}, this may be costly.
 \item \code{"brute_force"}, \code{"BF"}, \code{"full"} - use
@@ -120,6 +121,9 @@ space of a given size. This algorithm will definitely find
 the actual Maximum A Posteriori Estimation but is
 very computationally expensive for bigger spaces.
 It is only recommended for \code{p <= 9}.
+For the time the Brute Force takes on our machines see
+\code{vignette("Optimizers", package = "gips")} or in its
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 }
 }
 
@@ -166,7 +170,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \seealso{
 \itemize{
 \item \code{\link[=gips]{gips()}} - The constructor of a \code{gips} class.
-The \code{gips} object is used as the \code{g} parameter.
+The \code{gips} object is used as the \code{g} parameter of \code{find_MAP()}.
 \item \code{\link[=plot.gips]{plot.gips()}} - Practical plotting function for
 visualizing the optimization process.
 \item \code{\link[=summary.gips]{summary.gips()}} - Summarize the output of optimization.
@@ -179,8 +183,8 @@ then those probabilities can be extracted with this function.
 of \code{find_MAP()} tries to find the argmax of.
 \item \code{\link[=forget_perms]{forget_perms()}} - When the \code{gips} object was optimized
 with \code{find_MAP(save_all_perms = TRUE)}, it will be of
-considerable size in RAM. \code{forget_perms} can make such an object
-lighter in memory by forgetting the permutations that it was in.
+considerable size in RAM. \code{forget_perms()} can make such an object
+lighter in memory by forgetting the permutations that it was considering.
 \item \code{vignette("Optimizers", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page} -
 A place to learn more about
