@@ -227,8 +227,8 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'     Number of digits after comma to print.
 #'     Can be negative, can be `+Inf`. It is passed to `base::round()`.
 #'
-#' @returns `compare_posteriories_of_perms` returns the value of
-#'     how many times the `perm1` is more likely than `perm2`.
+#' @returns The function `compare_posteriories_of_perms()` returns
+#'     the value of how many times the `perm1` is more likely than `perm2`.
 #'
 #' @seealso
 #' * [print.gips()] - The function that prints the posterior of
@@ -326,8 +326,8 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 #'     logarithmic version of `compare_posteriories_of_perms()`.
 #'     The natural logarithm is used.
 #'
-#' @returns `compare_log_posteriories_of_perms` returns the logarithm of
-#'     how many times the `perm1` is more likely than `perm2`.
+#' @returns The function `compare_log_posteriories_of_perms()` returns
+#'     the logarithm of how many times the `perm1` is more likely than `perm2`.
 #'
 #' @export
 compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,

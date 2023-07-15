@@ -51,11 +51,11 @@ Number of digits after comma to print.
 Can be negative, can be \code{+Inf}. It is passed to \code{base::round()}.}
 }
 \value{
-\code{compare_posteriories_of_perms} returns the value of
-how many times the \code{perm1} is more likely than \code{perm2}.
+The function \code{compare_posteriories_of_perms()} returns
+the value of how many times the \code{perm1} is more likely than \code{perm2}.
 
-\code{compare_log_posteriories_of_perms} returns the logarithm of
-how many times the \code{perm1} is more likely than \code{perm2}.
+The function \code{compare_log_posteriories_of_perms()} returns
+the logarithm of how many times the \code{perm1} is more likely than \code{perm2}.
 }
 \description{
 Check which permutation is more likely and how much more likely.

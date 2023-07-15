@@ -17,7 +17,7 @@
 \item{x}{An object of class \code{summary.gips} to be printed}
 }
 \value{
-The function \code{summary.gips} computes and returns a list of summary
+The function \code{summary.gips()} computes and returns a list of summary
 statistics of the given \code{gips} object. Those are:
 \itemize{
 \item For unoptimized \code{gips} object:
@@ -114,7 +114,7 @@ in an iteration.
 }
 }
 
-\code{print.summary.gips} returns an invisible \code{NULL}.
+The function \code{print.summary.gips()} returns an invisible \code{NULL}.
 }
 \description{
 \code{summary} method for \code{gips} class.

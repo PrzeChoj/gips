@@ -1451,7 +1451,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' @param object An object of class `gips`; usually a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @return The function `summary.gips` computes and returns a list of summary
+#' @return The function `summary.gips()` computes and returns a list of summary
 #'     statistics of the given `gips` object. Those are:
 #' * For unoptimized `gips` object:
 #'   1. `optimized` - `FALSE`.
@@ -1664,7 +1664,7 @@ summary.gips <- function(object, ...) {
 #' @param x An object of class `summary.gips` to be printed
 #' @describeIn summary.gips Printing method for class `summary.gips`.
 #'     Prints every interesting information in a pleasant for human form.
-#' @returns `print.summary.gips` returns an invisible `NULL`.
+#' @returns The function `print.summary.gips()` returns an invisible `NULL`.
 #' @export
 #'
 #' @examples
