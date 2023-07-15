@@ -239,9 +239,9 @@ This is the only optimizer that will certainly find the actual MAP Estimator.
 
 This is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force, and we show the time in the table below:
 
-| p=2       | p=3       | p=4      | p=5     | p=6   | p=7     | p=8    | p=9   | p=10 |
-|-----------|-----------|----------|---------|-------|---------|--------|-------|------|
-| 0.007 sec | 0.015 sec | 0.04 sec | 0.2 sec | 1 sec | 4.5 sec | 30 sec | 4 min | TODO |
+| p=2       | p=3       | p=4      | p=5     | p=6   | p=7     | p=8    | p=9   | p=10          |
+|-----------|-----------|----------|---------|-------|---------|--------|-------|---------------|
+| 0.007 sec | 0.015 sec | 0.04 sec | 0.2 sec | 1 sec | 4.5 sec | 30 sec | 4 min | 1 hour 45 min |
 
 
 
@@ -360,7 +360,7 @@ We encourage everyone to leave a comment on available and potential new optimize
 
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 
-[2] "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+[2] "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 ```{r options_back, include = FALSE}
 options(old_options) # back to the original options

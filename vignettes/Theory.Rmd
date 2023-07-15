@@ -30,7 +30,7 @@ As mentioned in the abstract, the outline of the paper is to "derive the distrib
 
 ## Alternative reference
 
-The theory derived in [1] is for general group invariance, while in this paper, we only consider invariance under cyclic groups. This allows for massive simplifications. This simplified version is comprehensibly set out in [2].
+The theory derived in [1] is for general group invariance, while in this package, we only consider invariance under cyclic groups. This allows for massive simplifications. This simplified version is comprehensibly set out in [2].
 
 
 # Basic definitions
@@ -308,14 +308,14 @@ We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503) ha
 
 # Information Criterion - AIC and BIC
 
-One may be interested in Akaike's An Information Criterion (AIC) or Schwarz's Bayesian Information Criterion (BIC) of the found model. Those are defined as follows:
+One may be interested in Akaike's An Information Criterion (AIC) or Schwarz's Bayesian Information Criterion (BIC) of the found model. Those are defined based on log-Likelihood:
 
-$$\log L\left(\hat{K}; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \hat{K}\right)\right) - \frac12 {Z^{(i)}}^\top \hat{K}^{-1} Z^{(i)}\right)= $$
+$$\log L\left(\hat{\Sigma}; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) - \frac12 {Z^{(i)}}^\top \hat{\Sigma}^{-1} Z^{(i)}\right)= $$
 
-$$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \hat{K}\right)\right) - \frac{n}2\mathrm{tr}(\hat{K}^{-1} S),$$
+$$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) - \frac{n}2\mathrm{tr}(\hat{\Sigma}^{-1} S),$$
 where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$.
 
-Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
+In `gips` we estimate $\Sigma$ as $\hat{\Sigma} = \pi_{c}(S)$. Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
 
 $$\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2$$
 
@@ -408,4 +408,4 @@ We will consider `g_map` better model both in terms of the AIC and the BIC.
 
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 
-[2] "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+[2] "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).

@@ -263,7 +263,7 @@ page](https://przechoj.github.io/gips/articles/gips.html).
 
 For an in-depth analysis of the package performance, capabilities, and
 comparison with similar packages, see an article “Learning permutation
-symmetries with gips in R” by `gips`’ developers Adam Chojecki, Paweł
+symmetries with gips in R” by `gips` developers Adam Chojecki, Paweł
 Morgen, Bartosz Kołodziejek available on
 [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
