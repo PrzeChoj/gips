@@ -242,9 +242,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,19,56,40,47,58,26,9,7,30,67,64,16,53,59,22,13,52,36,32,34,29,43,23,28,21,20,55,61,2,68,38,49,24,65,3,31,11,70,41,46,69,66,51,25,35,10,37,8,50,39,18,12,62,15,4,42,57,6,14,54,63,45,17,44,5,33,48):</span></span>
+<span><span class="co">#&gt; The permutation (1,55,15,31,24,47,21,59,56,13,29,40,5,43,48,28,51,20,39,23,49,17,57,6,10,16,35,53,7,41,64,27,70,3,34,18,62,30,37,68,26,11,63,58,32,22,8,52,54,69,19,61,2,12,25,67,44,14,33,38,9,66,42,65,60,4,50,46,45):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 5.745e+626 times more likely than the () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 5.556e+628 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After just hundred and fifty iterations, the found permutation is
 unimaginably more likely than the original, <code>()</code>
 permutation.</p>
@@ -364,9 +364,9 @@ Show/hide data preparation
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (14,25)(16,20):</span></span>
+<span><span class="co">#&gt; The permutation (6,14)(12,20):</span></span>
 <span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 5.992e+12 times more likely than the () permutation.</span></span>
+<span><span class="co">#&gt;  - is 2.193e+9 times more likely than the () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warning is expected.</p>
@@ -384,15 +384,15 @@ time it takes to browse with Brute Force, and we show the time in the
 table below:</p>
 <table class="table">
 <colgroup>
-<col width="14%">
-<col width="14%">
 <col width="12%">
-<col width="11%">
-<col width="8%">
+<col width="12%">
 <col width="11%">
 <col width="10%">
 <col width="8%">
-<col width="7%">
+<col width="10%">
+<col width="9%">
+<col width="8%">
+<col width="17%">
 </colgroup>
 <thead><tr class="header">
 <th>p=2</th>
@@ -414,7 +414,7 @@ table below:</p>
 <td>4.5 sec</td>
 <td>30 sec</td>
 <td>4 min</td>
-<td>TODO</td>
+<td>1 hour 45 min</td>
 </tr></tbody>
 </table>
 <div class="section level4">
@@ -553,7 +553,7 @@ one can also find the implemented optimizers but not yet added to
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
 <p>[2] “Learning permutation symmetries with gips in R” by
-<code>gips</code>’ developers Adam Chojecki, Paweł Morgen, Bartosz
+<code>gips</code> developers Adam Chojecki, Paweł Morgen, Bartosz
 Kołodziejek available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
