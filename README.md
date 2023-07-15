@@ -94,10 +94,9 @@ identical colors in the estimated covariance matrix. E.g., variances of
 columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`),
 variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$
 `S[4,4]`). What is more, Covariances are also similar (`S[1,3]`
-$\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Were this
-approximate equalities obtained coincidentally? Or do they reflect some
-underlying data properties? It is hard to decide purely by looking at
-the matrix.
+$\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Are those
+approximate equalities coincidental? Or do they reflect some underlying
+data properties? It is hard to decide purely by looking at the matrix.
 
 `find_MAP()` will use the Bayesian model to quantify if the approximate
 equalities are coincidental. Let’s see if it will find this
@@ -146,6 +145,7 @@ First, construct data for the example:
 ``` r
 # Prepare model, multivariate normal distribution
 p <- 6
+n <- 4
 mu <- numeric(p)
 sigma_matrix <- matrix(
   data = c(
@@ -162,16 +162,16 @@ sigma_matrix <- matrix(
 
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
-  code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+  code = MASS::mvrnorm(n, mu = mu, Sigma = sigma_matrix)
 )
 # End of prepare model
 ```
 
+<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
+
 Suppose we do not know the true covariance matrix $\Sigma$ and we want
 to estimate it. We cannot use the standard MLE because it does not
 exists ($4 < 6$, $n < p$).
-
-<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
 
 We will assume it was generated from the normal distribution with the
 mean $0$.
@@ -193,8 +193,8 @@ Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
-We can see the standard estimator of the covariance matrix,
-$\hat{\Sigma} = (1/n) \cdot \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$.
+We can see the standard estimator of the covariance matrix:
+$$\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
 It is not MLE (again, because MLE does not exists for $n < p$):
 
 ``` r

@@ -113,7 +113,7 @@ g <- gips(S, number_of_observations)
 plot_cosmetic_modifications(plot(g, type = "heatmap"))
 ```
 
-Remember, we analyze the covariance matrix. We can see some nearly identical colors in the estimated covariance matrix. E.g., variances of columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`), variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$ `S[4,4]`). What is more, Covariances are also similar (`S[1,3]` $\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Were this approximate equalities obtained coincidentally? Or do they reflect some underlying data properties? It is hard to decide purely by looking at the matrix.
+Remember, we analyze the covariance matrix. We can see some nearly identical colors in the estimated covariance matrix. E.g., variances of columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`), variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$ `S[4,4]`). What is more, Covariances are also similar (`S[1,3]` $\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Are those approximate equalities coincidental? Or do they reflect some underlying data properties? It is hard to decide purely by looking at the matrix.
 
 `find_MAP()` will use the Bayesian model to quantify if the approximate equalities are coincidental. Let's see if it will find this relationship:
 
@@ -142,6 +142,7 @@ First, construct data for the example:
 ```{r example_mean_known1}
 # Prepare model, multivariate normal distribution
 p <- 6
+n <- 4
 mu <- numeric(p)
 sigma_matrix <- matrix(
   data = c(
@@ -158,17 +159,17 @@ sigma_matrix <- matrix(
 
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
-  code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+  code = MASS::mvrnorm(n, mu = mu, Sigma = sigma_matrix)
 )
 # End of prepare model
 ```
-
-Suppose we do not know the true covariance matrix $\Sigma$ and we want to estimate it. We cannot use the standard MLE because it does not exists ($4 < 6$, $n < p$).
 
 ```{r example_mean_known1_1, echo=FALSE}
 plot(gips(sigma_matrix, 1), type = "heatmap") +
   ggplot2::labs(title = "This is the real covariance matrix\nWe want to estimate it based on n = 4 observations", x = "", y = "")
 ```
+
+Suppose we do not know the true covariance matrix $\Sigma$ and we want to estimate it. We cannot use the standard MLE because it does not exists ($4 < 6$, $n < p$).
 
 We will assume it was generated from the normal distribution with the mean $0$.
 ```{r example_mean_known2}
@@ -186,12 +187,14 @@ Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
-We can see the standard estimator of the covariance matrix, $\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$. It is not MLE (again, because MLE does not exists for $n < p$):
+We can see the standard estimator of the covariance matrix:
+$$\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
+It is not MLE (again, because MLE does not exists for $n < p$):
 ```{r example_mean_known3_1}
 plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
 ```
 
-Find the Maximum A Posteriori Estimator for the permutation. Space is small ($6! = 720$), so it is reasonable to browse the whole of it:
+Let's find the Maximum A Posteriori Estimator for the permutation. Space is small ($6! = 720$), so it is reasonable to browse the whole of it:
 ```{r example_mean_known4}
 g_map <- find_MAP(g, optimizer = "brute_force")
 
@@ -222,7 +225,7 @@ Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` 
 
 For more examples and introduction, see `vignette("gips", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
-For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 
 # Acknowledgment

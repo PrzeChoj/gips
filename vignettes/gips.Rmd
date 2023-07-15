@@ -58,7 +58,7 @@ We propose creating a set of constraints on the covariance matrix to use the max
 
 This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means maximizing the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch are explored in another vignette that can be accessed by `vignette("Theory", package="gips")` or on its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 
-For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 
 # Practical example
@@ -193,7 +193,7 @@ Note that the rank of the `S` matrix is 3, despite the `number_of_observations` 
 We want to find reasonable additional assumptions on `S` to make it easier to estimate.
 
 ```{r toy_example_data_show2}
-g <- gips(S = S, number_of_observations = nrow(toy_example_data))
+g <- gips(S, number_of_observations)
 
 plot(g, type = "heatmap")
 ```
@@ -223,10 +223,12 @@ get_probabilities_from_gips(g_map)
 ```
 We see that assumption $(3,4,5)$ is the most likely with $6.2\%$ posterior probability. There is 21 possible permutations that are more likely than id.
 
-Remember that for the `n0` could still be to big for your data. In this example the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 4$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
+Remember that the `n0` could still be to big for your data. In this example the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 5$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6}
-S_projected <- project_matrix(S, g_map[[1]])
+summary(g_map)$n0 # n0 = 4 <= 4 = number_of_observations
+
+S_projected <- project_matrix(S, g_map)
 S_projected
 sum(eigen(S_projected)$values > 0.00000001)
 ```
@@ -237,7 +239,7 @@ Now, the estimated covariance matrix is of full rank (5).
 
 1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
-3. For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+3. For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 ```{r options_back, include = FALSE}
 options(old_options) # back to the original options

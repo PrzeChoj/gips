@@ -26,9 +26,9 @@
 -   `NaN`s should not occur in `find_MAP()` for `D_matrix <- diag(ncol(S)) * d` when `1000 < d < 1e300`;
 -   When `NaN`s do occur in `find_MAP()`, they will throw an error (used to show a warning);
 -   `Inf` better handled in `print.gips()`;
--   `print.*()` will print `\n` in the end;
+-   `print.*()` functions will print `\n` in the end;
 -   Slightly different punctuation in `print.gips()`;
--   Small Vignettes and documentation improvements;
+-   Tremendous vignettes and documentation improvements;
 -   Proper testing of examples;
 -   `delta` parameter of `gips()` has to be bigger than `1`. We used to restrict it as bigger than `2`;
 -   `project_matrix()` shows a warning when the non-positive-semi-definite matrix is passed as an `S` argument;
