@@ -62,9 +62,9 @@ other functions of the \code{gips} package.
 # All 7 following lines give the same output:
 gperm <- gips_perm("(12)(45)", 5)
 gperm <- gips_perm("(1,2)(4,5)", 5)
-gperm <- gips_perm(as.matrix(c(2,1,3,5,4)), 5)
-gperm <- gips_perm(t(as.matrix(c(2,1,3,5,4))), 5) # both way for a matrix works
-gperm <- gips_perm(list(list(c(2,1),c(4,5))), 5)
+gperm <- gips_perm(as.matrix(c(2, 1, 3, 5, 4)), 5)
+gperm <- gips_perm(t(as.matrix(c(2, 1, 3, 5, 4))), 5) # both way for a matrix works
+gperm <- gips_perm(list(list(c(2, 1), c(4, 5))), 5)
 gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
 gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 gperm

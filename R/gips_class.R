@@ -1857,10 +1857,12 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     It is mentioned in the **Calculation details** section above.
 #' 
 #' @examples 
-#' S <- matrix(c(5.15,2.05,3.60,1.99,
-#'               2.05,5.09,2.03,3.57,
-#'               3.60,2.03,5.21,1.97,
-#'               1.99,3.57,1.97,5.13), nrow = 4)
+#' S <- matrix(c(
+#'   5.15, 2.05, 3.60, 1.99,
+#'   2.05, 5.09, 2.03, 3.57,
+#'   3.60, 2.03, 5.21, 1.97,
+#'   1.99, 3.57, 1.97, 5.13
+#' ), nrow = 4)
 #' g <- gips(S, 5)
 #' logLik(g) # -32.67048
 #' # For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom
@@ -1953,10 +1955,12 @@ logLik.gips <- function(object, ...){
 #' 
 #' @export
 #' @examples 
-#' S <- matrix(c(5.15,2.05,3.10,1.99,
-#'               2.05,5.09,2.03,3.07,
-#'               3.10,2.03,5.21,1.97,
-#'               1.99,3.07,1.97,5.13), nrow = 4)
+#' S <- matrix(c(
+#'   5.15, 2.05, 3.10, 1.99,
+#'   2.05, 5.09, 2.03, 3.07,
+#'   3.10, 2.03, 5.21, 1.97,
+#'   1.99, 3.07, 1.97, 5.13
+#' ), nrow = 4)
 #' g <- gips(S, 14)
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #' 

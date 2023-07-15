@@ -49,10 +49,12 @@ the \strong{Information Criterion - AIC and BIC} section in
 }
 
 \examples{
-S <- matrix(c(5.15,2.05,3.10,1.99,
-              2.05,5.09,2.03,3.07,
-              3.10,2.03,5.21,1.97,
-              1.99,3.07,1.97,5.13), nrow = 4)
+S <- matrix(c(
+  5.15, 2.05, 3.10, 1.99,
+  2.05, 5.09, 2.03, 3.07,
+  3.10, 2.03, 5.21, 1.97,
+  1.99, 3.07, 1.97, 5.13
+), nrow = 4)
 g <- gips(S, 14)
 g_map <- find_MAP(g, optimizer = "brute_force")
 

@@ -55,10 +55,12 @@ the \strong{Information Criterion - AIC and BIC} section in
 }
 
 \examples{
-S <- matrix(c(5.15,2.05,3.60,1.99,
-              2.05,5.09,2.03,3.57,
-              3.60,2.03,5.21,1.97,
-              1.99,3.57,1.97,5.13), nrow = 4)
+S <- matrix(c(
+  5.15, 2.05, 3.60, 1.99,
+  2.05, 5.09, 2.03, 3.57,
+  3.60, 2.03, 5.21, 1.97,
+  1.99, 3.57, 1.97, 5.13
+), nrow = 4)
 g <- gips(S, 5)
 logLik(g) # -32.67048
 # For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom
