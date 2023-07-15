@@ -101,14 +101,14 @@ projected on the permutation in the <code>gips</code> object.</p></li>
 <li><p><code>"both"</code> - Plots both lines from "all" and "best".</p></li>
 <li><p><code>"block_heatmap"</code> - Plots a heatmap of diagonally block representation of <code>S</code>.
 Non-block entries (equal to 0) are white for better clarity.
-For more information see <strong>Block Decomposition - [1], Theorem 1</strong>
+For more information, see <strong>Block Decomposition - [1], Theorem 1</strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 </ul><p>The default value is <code>NA</code>, which will be changed to "heatmap" for
 non-optimized <code>gips</code> objects and to "both" for optimized ones.
 Using the default produces a warning.
 All other arguments are ignored for
-the <code>type = "heatmap"</code>, <code>type = "MLE"</code> or <code>type = "block_heatmap"</code>.</p></dd>
+the <code>type = "heatmap"</code>, <code>type = "MLE"</code>, or <code>type = "block_heatmap"</code>.</p></dd>
 
 
 <dt>logarithmic_y, logarithmic_x</dt>
@@ -138,7 +138,7 @@ Sets the axis of the plot in logarithmic scale.</p></dd>
 
 <dt>ylim</dt>
 <dd><p>Limits of the y axis. When <code>NULL</code>,
-the minimum and maximum of the <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> are taken.</p></dd>
+the minimum, and maximum of the <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> are taken.</p></dd>
 
 
 <dt>xlim</dt>

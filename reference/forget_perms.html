@@ -80,7 +80,7 @@ but without the visited permutation list.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>For example, <code>perm_size = 150</code> and <code>max_iter = 150000</code> we checked it saves ~350 MB of RAM.</p>
+    <p>For example, <code>perm_size = 150</code> and <code>max_iter = 150000</code> we checked <code>forget_perms()</code> saves ~350 MB of RAM.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -101,10 +101,10 @@ the output of <code>find_MAP(save_all_perms = TRUE)</code>.</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># ~18 KB</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17632 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17120 bytes</span>
 <span class="r-in"><span><span class="va">g_map_slim</span> <span class="op">&lt;-</span> <span class="fu">forget_perms</span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">g_map_slim</span><span class="op">)</span> <span class="co"># ~8 KB</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9008 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8784 bytes</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

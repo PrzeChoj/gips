@@ -71,7 +71,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>An object of class <code>gips</code>; usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
+<dd><p>An object of class <code>gips</code>. Usually, a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -93,28 +93,27 @@ statistics of the given <code>gips</code> object. Those are:</p><ul><li><p>For u
 value the start permutation has.</p></li>
 <li><p><code>times_more_likely_than_id</code> - how many more likely
 the <code>start_permutation</code> is over the identity permutation, <code>()</code>.
-It can be a number less than 1, which means
-the identity permutation is more likely. Keep in mind
-this number can be really big and can be overflowed to <code>Inf</code>,
-or really small and underflow to 0.</p></li>
-<li><p><code>n0</code> - the minimal number of observations needed for
-the maximum likelihood estimator (corresponding to a MAP) of
-the covariance matrix to exist. See <strong>\(C\sigma\) and <code>n0</code></strong>
+It can be less than 1, meaning the identity permutation
+is more likely. Remember that this number can big and
+overflow to <code>Inf</code> or small and underflow to 0.</p></li>
+<li><p><code>n0</code> - the minimum number of observations needed for
+the covariance matrix's maximum likelihood estimator
+(corresponding to a MAP) to exist. See <strong>\(C\sigma\) and <code>n0</code></strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
-This is the matrix that will be used in calculations of
+This matrix will be used in calculations of
 the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>number_of_observations</code> - the number of observations that
 were observed for the <code>S_matrix</code> to be calculated.
-This is the value that will be used in calculations of
+This value will be used in calculations of
 the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
-<li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was output of <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
+<li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was the output of <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
 <li><p><code>FALSE</code> means the <code>S</code> parameter was calculated with
 <code>S = t(X) %*% X / number_of_observations</code>.</p></li>
 </ul></li>
 <li><p><code>delta</code>, <code>D_matrix</code> - the hyperparameters of the Bayesian method.
-See <strong>Hyperparameters</strong> section of <code><a href="gips.html">gips()</a></code> documentation.</p></li>
+See the <strong>Hyperparameters</strong> section of <code><a href="gips.html">gips()</a></code> documentation.</p></li>
 <li><p><code>AIC</code>, <code>BIC</code> - output of <code><a href="AIC.gips.html">AIC.gips()</a></code> and <code><a href="AIC.gips.html">BIC.gips()</a></code> functions.</p></li>
 <li><p><code>n_parameters</code> - number of free parameters in the covariance matrix.</p></li>
 </ol></li>
@@ -122,33 +121,33 @@ See <strong>Hyperparameters</strong> section of <code><a href="gips.html">gips()
 <li><p><code>found_permutation</code> - the permutation this <code>gips</code> represents.
 The visited permutation with the biggest a posteriori value.</p></li>
 <li><p><code>found_permutation_log_posteriori</code> - the log of the a posteriori
-value the found permutation have.</p></li>
+value the found permutation has.</p></li>
 <li><p><code>start_permutation</code> - the original permutation this <code>gips</code>
-represented before optimization. The first visited permutation.</p></li>
+represented before optimization. It is the first visited permutation.</p></li>
 <li><p><code>start_permutation_log_posteriori</code> - the log of the a posteriori
 value the start permutation has.</p></li>
 <li><p><code>times_more_likely_than_start</code> - how many more likely
 the <code>found_permutation</code> is over the <code>start_permutation</code>.
-It cannot be a number less than 1. Keep in mind
-this number can be really big and can be overflowed to <code>Inf</code>.</p></li>
-<li><p><code>n0</code> - the minimal number of observations needed for existence of
+It cannot be a number less than 1.
+Remember that this number can big and overflow to <code>Inf</code>.</p></li>
+<li><p><code>n0</code> - the minimal number of observations needed for the existence of
 the maximum likelihood estimator (corresponding to a MAP) of
 the covariance matrix (see <strong>\(C\sigma\) and <code>n0</code></strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
-This is the matrix that will be used in calculations of
+This matrix will be used in calculations of
 the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>number_of_observations</code> - the number of observations that
 were observed for the <code>S_matrix</code> to be calculated.
-This is the value that will be used in calculations of
+This value will be used in calculations of
 the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
-<li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was output of <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
+<li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was output of the <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
 <li><p><code>FALSE</code> means the <code>S</code> parameter was calculated with
 <code>S = t(X) %*% X / number_of_observations</code>.</p></li>
 </ul></li>
 <li><p><code>delta</code>, <code>D_matrix</code> - the hyperparameters of the Bayesian method.
-See <strong>Hyperparameters</strong> section of <code><a href="gips.html">gips()</a></code> documentation.</p></li>
+See the <strong>Hyperparameters</strong> section of <code><a href="gips.html">gips()</a></code> documentation.</p></li>
 <li><p><code>AIC</code>, <code>BIC</code> - output of <code><a href="AIC.gips.html">AIC.gips()</a></code> and <code><a href="AIC.gips.html">BIC.gips()</a></code> functions.</p></li>
 <li><p><code>n_parameters</code> - number of free parameters in the covariance matrix.</p></li>
 <li><p><code>optimization_algorithm_used</code> - all used optimization algorithms
@@ -165,7 +164,7 @@ the <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></co
 the <code>found_permutation</code>; in other words, how long ago
 could the optimization be stopped and have the same result.
 If this value is small, consider running <code><a href="find_MAP.html">find_MAP()</a></code>
-one more time with <code>optimizer = "continue"</code>.
+again with <code>optimizer = "continue"</code>.
 For <code>optimizer = "BF"</code>, it is <code>NULL</code>.</p></li>
 <li><p><code>acceptance_rate</code> - only interesting for <code>optimizer = "MH"</code>.
 How often was the algorithm accepting the change of permutation
@@ -177,7 +176,7 @@ in an iteration.</p></li>
     <h2 id="methods-by-generic-">Methods (by generic)<a class="anchor" aria-label="anchor" href="#methods-by-generic-"></a></h2>
     
 <ul><li><p><code>print(summary.gips)</code>: Printing method for class <code>summary.gips</code>.
-Prints every interesting information in a pleasant for human form.</p></li>
+Prints every interesting information in a form pleasant for humans.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -225,13 +224,13 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $found_permutation_log_posteriori</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -25.68762</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -26.42187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $start_permutation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $start_permutation_log_posteriori</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -25.68762</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -26.42187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $times_more_likely_than_start</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
@@ -244,12 +243,12 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $S_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.032540 1.361112 1.332370 1.146586 0.818014 0.846756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.361112 2.220362 2.217014 1.873701 1.014451 1.017799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 1.332370 2.217014 2.496290 1.983451 1.098807 0.819531</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.146586 1.873701 1.983451 2.308134 1.581019 1.471269</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.818014 1.014451 1.098807 1.581019 1.384582 1.300226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.846756 1.017799 0.819531 1.471269 1.300226 1.498494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.553636 2.206108 2.075795 1.295253 1.642782 1.773094</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 2.206108 2.185226 2.058011 1.179731 1.200612 1.327827</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2.075795 2.058011 2.163352 1.378681 1.396465 1.291124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.295253 1.179731 1.378681 1.412542 1.528064 1.329114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.642782 1.200612 1.396465 1.528064 1.970234 1.774381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.773094 1.327827 1.291124 1.329114 1.774381 1.811084</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $number_of_observations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 13</span>
@@ -261,22 +260,22 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $D_matrix</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.8234 0.0000 0.0000 0.0000 0.0000 0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0000 1.8234 0.0000 0.0000 0.0000 0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.0000 0.0000 1.8234 0.0000 0.0000 0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.0000 0.0000 0.0000 1.8234 0.0000 0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.0000 0.0000 0.0000 0.0000 1.8234 0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.0000 0.0000 0.0000 0.0000 0.0000 1.8234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.016012 0.000000 0.000000 0.000000 0.000000 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000 2.016012 0.000000 0.000000 0.000000 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.000000 0.000000 2.016012 0.000000 0.000000 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.000000 0.000000 0.000000 2.016012 0.000000 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.000000 0.000000 0.000000 0.000000 2.016012 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.000000 0.000000 0.000000 0.000000 0.000000 2.016012</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $AIC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -620.8562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -642.6791</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $BIC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -608.9923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -630.8152</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $optimization_algorithm_used</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Metropolis_Hastings"</span>
@@ -288,13 +287,13 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.01925874 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.01789308 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $acceptance_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">10</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span></span>
@@ -302,13 +301,13 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The optimized `gips` object.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -25.10349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -26.42187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1.793</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -318,32 +317,32 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There are 12 degrees of freedom left.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> n0:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations is bigger than n0 for this permutation,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of free parameters in the covariance matrix:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -604.5464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -630.8152</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -613.5856</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -642.6791</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  hill_climbing did converge</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of log_posteriori calls:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.0586803 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.02892685 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15</span>
 <span class="r-in"><span><span class="co"># ================================================================================</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">10</span><span class="op">)</span></span></span>

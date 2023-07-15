@@ -483,7 +483,8 @@ Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log
 \frac{n}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) -
 \frac{n}2\mathrm{tr}(\hat{\Sigma}^{-1} S),\]</span> where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot
 {Z^{(i)}}^\top\)</span>.</p>
-<p>In <code>gips</code> we estimate <span class="math inline">\(\Sigma\)</span> as <span class="math inline">\(\hat{\Sigma} = \pi_{c}(S)\)</span>. Further, for
+<p>The MLE of <span class="math inline">\(\Sigma\)</span> in a model
+invariant under <span class="math inline">\(\Gamma=c\)</span> is <span class="math inline">\(\hat{\Sigma} = \pi_{c}(S)\)</span>. Further, for
 every <span class="math inline">\(c\)</span> we have <span class="math inline">\(\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p\)</span>,
 so:</p>
 <p><span class="math display">\[\log L\left(\pi_{c}(S);
@@ -493,10 +494,10 @@ Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) -
 <p>which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
 <p>Then AIC and BIC are defined by:</p>
 <p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log L(\hat
-K)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim M)
--2 \log L(\hat K)\]</span></p>
-<p>The interpretation is as follows: the smaller the criterion, the
-better the model.</p>
+\Sigma)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim
+M) -2 \log L(\hat \Sigma)\]</span></p>
+<p>A smaller value of the criteria for a given model indicates a better
+fit.</p>
 <p>Those can be calculated by <code><a href="../reference/AIC.gips.html">AIC.gips()</a></code> and
 <code><a href="../reference/AIC.gips.html">BIC.gips()</a></code>.</p>
 <div class="section level4">
@@ -512,8 +513,8 @@ mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = -
 \pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2\]</span></p>
 <p>And definitions of AIC and BIC stay the same:</p>
 <p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log
-L_{estimated\ mean}(\hat K)\]</span> <span class="math display">\[BIC =
-(\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)\]</span></p>
+L_{estimated\ mean}(\hat \Sigma)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim M) -2 \log
+L_{estimated\ mean}(\hat \Sigma)\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>

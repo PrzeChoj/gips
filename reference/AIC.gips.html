@@ -71,7 +71,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>An object of class <code>gips</code>. Usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
+<dd><p>An object of class <code>gips</code>. Usually, a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -90,14 +90,14 @@ The default <code>k = 2</code> is the classical AIC.</p></dd>
 <p><code>AIC.gips()</code> returns calculated Akaike's An Information Criterion</p>
 
 
-<p>When multivariate normal model does not exists
-(<code>number_of_observations &lt; n0</code>), returns <code>NULL</code>.
-When multivariate normal model cannot be reasonably approximated
-(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), returns <code>Inf</code>.</p>
+<p>When the multivariate normal model does not exist
+(<code>number_of_observations &lt; n0</code>), it returns <code>NULL</code>.
+When the multivariate normal model cannot be reasonably approximated
+(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), it returns <code>Inf</code>.</p>
 
 
 <p>In both failure situations, shows a warning.
-More information can be found in <strong>Existence of likelihood</strong></p>
+More information can be found in the <strong>Existence of likelihood</strong></p>
 
 
 <p>section of <code><a href="logLik.gips.html">logLik.gips()</a></code>.</p>
@@ -127,17 +127,19 @@ the <strong>Information Criterion - AIC and BIC</strong> section in
 this <code>AIC.gips()</code> and <code>BIC.gips()</code> extend.</p></li>
 <li><p><code><a href="find_MAP.html">find_MAP()</a></code> - Usually, the <code>AIC.gips()</code> and <code>BIC.gips()</code>
 are called on the output of <code><a href="find_MAP.html">find_MAP()</a></code>.</p></li>
-<li><p><code><a href="logLik.gips.html">logLik.gips()</a></code> - Calculates the log likelihood for
-the <code>gips</code> object. Important part of the Information Criteria.</p></li>
+<li><p><code><a href="logLik.gips.html">logLik.gips()</a></code> - Calculates the log-likelihood for
+the <code>gips</code> object. An important part of the Information Criteria.</p></li>
 </ul></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5.15</span>,<span class="fl">2.05</span>,<span class="fl">3.10</span>,<span class="fl">1.99</span>,</span></span>
-<span class="r-in"><span>              <span class="fl">2.05</span>,<span class="fl">5.09</span>,<span class="fl">2.03</span>,<span class="fl">3.07</span>,</span></span>
-<span class="r-in"><span>              <span class="fl">3.10</span>,<span class="fl">2.03</span>,<span class="fl">5.21</span>,<span class="fl">1.97</span>,</span></span>
-<span class="r-in"><span>              <span class="fl">1.99</span>,<span class="fl">3.07</span>,<span class="fl">1.97</span>,<span class="fl">5.13</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fl">5.15</span>, <span class="fl">2.05</span>, <span class="fl">3.10</span>, <span class="fl">1.99</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">2.05</span>, <span class="fl">5.09</span>, <span class="fl">2.03</span>, <span class="fl">3.07</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">3.10</span>, <span class="fl">2.03</span>, <span class="fl">5.21</span>, <span class="fl">1.97</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.99</span>, <span class="fl">3.07</span>, <span class="fl">1.97</span>, <span class="fl">5.13</span></span></span>
+<span class="r-in"><span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">14</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>
