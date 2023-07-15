@@ -1,6 +1,6 @@
 #' Prepare orthogonal matrix
 #'
-#' Calculate orthogonal matrix `U_Gamma` for decomposition in
+#' Calculate the orthogonal matrix `U_Gamma` for decomposition in
 #' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' Given X - a matrix invariant under the permutation `perm`. Call Gamma
@@ -10,18 +10,18 @@
 #'
 #' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a
 #' block-diagonal structure, which is ensured by
-#' [Theorem 1 from references](https://arxiv.org/abs/2004.03503)
+#' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
-#' Formula for U_Gamma can be found in
+#' The formula for `U_Gamma` can be found in
 #' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #' 
-#' Nice example is demonstrated in **Block Decomposition - \[1\], Theorem 1**
+#' A nice example is demonstrated in the **Block Decomposition - \[1\], Theorem 1**
 #' section of `vignette("Theory", package="gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
 #' @param perm An object of a `gips_perm` or anything
-#'     a `gips_perm()` can handle. Can also be of a `gips` class,
-#'     but will be interpreted as the underlying `gips_perm`.
+#'     a `gips_perm()` can handle. It can also be of a `gips` class,
+#'     but it will be interpreted as the underlying `gips_perm`.
 #' @param perm_size Size of a permutation.
 #'     Required if `perm` is neither `gips_perm` nor `gips`.
 #' @param basis A matrix with basis vectors in COLUMNS. Identity by default.

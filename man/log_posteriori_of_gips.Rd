@@ -15,8 +15,8 @@ the logarithm of an unnormalized A Posteriori.
 }
 \description{
 More precisely, it is the logarithm of an unnormalized
-posterior probability.
-It is the goal function for optimization algorithms in \code{\link[=find_MAP]{find_MAP()}} function.
+posterior probability. It is the goal function for
+optimization algorithms in the \code{find_MAP()} function.
 The \code{perm_proposal} that maximizes this function is
 the Maximum A Posteriori (MAP) Estimator.
 }
@@ -71,7 +71,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 the value needed for \code{log_posteriori_of_gips()}.
 \item \code{\link[=get_structure_constants]{get_structure_constants()}} - The function that calculates
 the structure constants needed for \code{log_posteriori_of_gips()}.
-\item \code{\link[=find_MAP]{find_MAP()}} - The functions that optimizes
+\item \code{\link[=find_MAP]{find_MAP()}} - The function that optimizes
 the \code{log_posteriori_of_gips} function.
 \item \code{\link[=compare_posteriories_of_perms]{compare_posteriories_of_perms()}} - Uses \code{log_posteriori_of_gips()}
 to compare a posteriori of two permutations.

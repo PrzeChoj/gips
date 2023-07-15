@@ -1,14 +1,14 @@
 #' Get Structure Constants
 #'
-#' Finds constants that are necessary for internal calculations of integrals and
+#' Finds constants necessary for internal calculations of integrals and
 #' eventually the posteriori probability in [log_posteriori_of_gips()].
 #'
-#' Uses the [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
+#' Uses [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
 #' to calculate the constants.
 #'
 #' @param perm An object of a `gips_perm` class.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
+#'     It can also be of a `gips` class, but
+#'     it will be interpreted as the underlying `gips_perm`.
 #'
 #' @returns Returns a list of 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from

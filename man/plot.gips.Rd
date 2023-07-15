@@ -34,7 +34,7 @@ projected on the permutation in the \code{gips} object.
 \item \code{"both"} - Plots both lines from "all" and "best".
 \item \code{"block_heatmap"} - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
-For more information see \strong{Block Decomposition - [1], Theorem 1}
+For more information, see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
@@ -43,7 +43,7 @@ The default value is \code{NA}, which will be changed to "heatmap" for
 non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
 All other arguments are ignored for
-the \code{type = "heatmap"}, \code{type = "MLE"} or \code{type = "block_heatmap"}.}
+the \code{type = "heatmap"}, \code{type = "MLE"}, or \code{type = "block_heatmap"}.}
 
 \item{logarithmic_y, logarithmic_x}{A boolean.
 Sets the axis of the plot in logarithmic scale.}
@@ -59,7 +59,7 @@ Sets the axis of the plot in logarithmic scale.}
 \item{show_legend}{A boolean. Whether or not to show a legend.}
 
 \item{ylim}{Limits of the y axis. When \code{NULL},
-the minimum and maximum of the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} are taken.}
+the minimum, and maximum of the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} are taken.}
 
 \item{xlim}{Limits of the x axis. When \code{NULL},
 the whole optimization process is shown.}

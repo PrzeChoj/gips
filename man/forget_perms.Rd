@@ -18,7 +18,7 @@ but without the visited permutation list.
 Slim the \code{gips} object by forgetting the visited permutations from \code{find_MAP(save_all_perms = TRUE)}.
 }
 \details{
-For example, \code{perm_size = 150} and \code{max_iter = 150000} we checked it saves ~350 MB of RAM.
+For example, \code{perm_size = 150} and \code{max_iter = 150000} we checked \code{forget_perms()} saves ~350 MB of RAM.
 }
 \examples{
 A <- matrix(rnorm(10 * 10), nrow = 10)

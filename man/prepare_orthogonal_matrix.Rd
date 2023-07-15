@@ -8,8 +8,8 @@ prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 }
 \arguments{
 \item{perm}{An object of a \code{gips_perm} or anything
-a \code{gips_perm()} can handle. Can also be of a \code{gips} class,
-but will be interpreted as the underlying \code{gips_perm}.}
+a \code{gips_perm()} can handle. It can also be of a \code{gips} class,
+but it will be interpreted as the underlying \code{gips_perm}.}
 
 \item{perm_size}{Size of a permutation.
 Required if \code{perm} is neither \code{gips_perm} nor \code{gips}.}
@@ -22,7 +22,7 @@ columns from vector elements \eqn{v_k^{(c)}} according to
 \href{https://arxiv.org/abs/2004.03503}{Theorem 6 from references}.
 }
 \description{
-Calculate orthogonal matrix \code{U_Gamma} for decomposition in
+Calculate the orthogonal matrix \code{U_Gamma} for decomposition in
 \href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}.
 }
 \details{
@@ -33,12 +33,12 @@ Then, \eqn{U_\Gamma} is such an orthogonal matrix, which block-diagonalizes X.
 
 To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has a
 block-diagonal structure, which is ensured by
-\href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}
+\href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}.
 
-Formula for U_Gamma can be found in
+The formula for \code{U_Gamma} can be found in
 \href{https://arxiv.org/abs/2004.03503}{Theorem 6 from references}.
 
-Nice example is demonstrated in \strong{Block Decomposition - [1], Theorem 1}
+A nice example is demonstrated in the \strong{Block Decomposition - [1], Theorem 1}
 section of \code{vignette("Theory", package="gips")} or its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }

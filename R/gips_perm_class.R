@@ -6,8 +6,8 @@
 #' @param x A single object that can be interpreted by
 #'     the [permutations::permutation()] function.
 #'     For example, the character of a form `"(1,2)(4,5)"`. See examples.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
+#'     It can also be of a `gips` class but
+#'     it will be interpreted as the underlying `gips_perm`.
 #' @param size An integer. Size of a permutation
 #'     (AKA cardinality of a set, on which permutation is defined. See examples).
 #'
@@ -35,7 +35,7 @@
 #' gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 #' gperm
 #' 
-#' # note the necessity of `size` parameter:
+#' # note the necessity of the `size` parameter:
 #' gperm <- gips_perm("(12)(45)", 5)
 #' gperm <- gips_perm("(12)(45)", 7) # this one is a different permutation
 #'
@@ -105,7 +105,7 @@ gips_perm <- function(x, size) {
   all_ints <- unlist(cycles)
   if (size < max(all_ints)) {
     wrong_argument_abort(
-      i = "`size` attribute must be greater or equal to largest integer in elements of `x`.",
+      i = "`size` attribute must be greater or equal to the largest integer in elements of `x`.",
       x = paste0(
         "`size` equals ", size,
         " while the maximum element is ",
@@ -261,9 +261,9 @@ print.gips_perm <- function(x, ...) {
   invisible(NULL)
 }
 
-#' Transform `gips_perm` object to a character vector
+#' Transform the `gips_perm` object to a character vector
 #'
-#' Implementation of S3 method.
+#' Implementation of the S3 method.
 #'
 #' @inheritParams print.gips_perm
 #' @param ... Further arguments (currently ignored).

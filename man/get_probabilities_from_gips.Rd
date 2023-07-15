@@ -12,15 +12,15 @@ A result of a \code{find_MAP(return_probabilities = TRUE)}.}
 }
 \value{
 Returns a numeric vector, calculated values of probabilities.
-Names contains permutations this probability represent.
+Names contain permutations this probabilities represent.
 For \code{gips} object optimized with \code{find_MAP(return_probabilities = FALSE)},
-returns a \code{NULL} object.
+it returns a \code{NULL} object.
 It is sorted according to the probability.
 }
 \description{
-After the \code{gips} object was optimized with \code{\link[=find_MAP]{find_MAP()}} function with
-\code{return_probabilities = TRUE}, then those calculated probabilities
-can be extracted with this function.
+After the \code{gips} object was optimized with
+the \code{find_MAP(return_probabilities = TRUE)} function, then
+those calculated probabilities can be extracted with this function.
 }
 \examples{
 g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)

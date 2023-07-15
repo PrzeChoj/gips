@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_perm_class.R
 \name{as.character.gips_perm}
 \alias{as.character.gips_perm}
-\title{Transform \code{gips_perm} object to a character vector}
+\title{Transform the \code{gips_perm} object to a character vector}
 \usage{
 \method{as.character}{gips_perm}(x, ...)
 }
@@ -15,7 +15,7 @@
 Returns an object of a \code{character} type.
 }
 \description{
-Implementation of S3 method.
+Implementation of the S3 method.
 }
 \examples{
 g_perm <- gips_perm("(5,4)", 5)

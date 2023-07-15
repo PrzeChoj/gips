@@ -17,7 +17,7 @@
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a in-depth explanations, see
+#' For a in-depth explanation, see in
 #'   `vignette("Optimizers", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'   
@@ -45,24 +45,24 @@
 #'     then the warning is shown, and it is recommended to continue
 #'     the optimization on the output of the `find_MAP()` with
 #'     `optimizer = "continue"`; see examples.
-#'     Remember that there are `p*(p-1)/2` transpositions to be checked
+#'     Remember that `p*(p-1)/2` transpositions will be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
 #' * `"brute_force"`, `"BF"`, `"full"` - use
 #'     the **Brute Force** algorithm that checks the whole permutation
-#'     space of a given size. This algorithm will definitely find
-#'     the actual Maximum A Posteriori Estimation but is
+#'     space of a given size. This algorithm will find
+#'     the actual Maximum A Posteriori Estimation, but it is
 #'     very computationally expensive for bigger spaces.
-#'     It is only recommended for `p <= 9`.
-#'     For the time the Brute Force takes on our machines see
+#'     We recommend Brute Force only for `p <= 9`.
+#'     For the time the Brute Force takes on our machines, see in
 #'     `vignette("Optimizers", package = "gips")` or in its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
 #' @param g Object of a `gips` class.
-#' @param max_iter Number of iterations for an algorithm to perform.
-#'     At least 2. For `optimizer="MH"` it has to be finite;
-#'     for `optimizer="HC"` it can be infinite;
-#'     for `optimizer="BF"` it is not used.
+#' @param max_iter The number of iterations for an algorithm to perform.
+#'     At least 2. For `optimizer="MH"`, it has to be finite;
+#'     for `optimizer="HC"`, it can be infinite;
+#'     for `optimizer="BF"`, it is not used.
 #' @param optimizer The optimizer for the search of the maximum posteriori:
 #'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
@@ -70,17 +70,17 @@
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
-#' For more details, see the "**Possible algorithms to use as optimizers**"
-#' section below.
+#' See the **Possible algorithms to use as optimizers**
+#' section below for more details.
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar:
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 #'   * When `return_probabilities=TRUE`, then
 #'       shows an additional progress bar for the time
 #'       when the probabilities are calculated.
-#' @param save_all_perms A boolean. `TRUE` indicates to save a list of
-#'     all permutations that were visited during optimization.
-#'     This can be useful sometimes, but need a lot more RAM.
+#' @param save_all_perms A boolean. `TRUE` indicates saving
+#'     a list of all permutations visited during optimization.
+#'     This can be useful sometimes but need a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     only when `save_all_perms = TRUE`. For:
 #'   * `optimizer="MH"` - use Metropolis-Hastings results to
@@ -88,7 +88,7 @@
 #'   * `optimizer="BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
 #'
-#' This additional calculations are costly, so second progress bar
+#' These additional calculations are costly, so a second progress bar
 #'     is shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
@@ -114,13 +114,13 @@
 #'     of the found model.
 #' * [get_probabilities_from_gips()] - When
 #'     `find_MAP(return_probabilities = TRUE)` was called,
-#'     then those probabilities can be extracted with this function.
+#'     probabilities can be extracted with this function.
 #' * [log_posteriori_of_gips()] - The function that the optimizers
 #'     of `find_MAP()` tries to find the argmax of.
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms()` can make such an object
-#'     lighter in memory by forgetting the permutations that it was considering.
+#'     lighter in memory by forgetting the permutations it considered.
 #' * `vignette("Optimizers", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) - 
 #'     A place to learn more about

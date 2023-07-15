@@ -1,8 +1,8 @@
 #' A log of a posteriori that the covariance matrix is invariant under permutation
 #'
 #' More precisely, it is the logarithm of an unnormalized
-#' posterior probability.
-#' It is the goal function for optimization algorithms in [find_MAP()] function.
+#' posterior probability. It is the goal function for
+#' optimization algorithms in the `find_MAP()` function.
 #' The `perm_proposal` that maximizes this function is
 #' the Maximum A Posteriori (MAP) Estimator.
 #'
@@ -26,7 +26,7 @@
 #'     the value needed for `log_posteriori_of_gips()`.
 #' * [get_structure_constants()] - The function that calculates
 #'     the structure constants needed for `log_posteriori_of_gips()`.
-#' * [find_MAP()] - The functions that optimizes
+#' * [find_MAP()] - The function that optimizes
 #'     the `log_posteriori_of_gips` function.
 #' * [compare_posteriories_of_perms()] - Uses `log_posteriori_of_gips()`
 #'     to compare a posteriori of two permutations.
@@ -212,20 +212,20 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' @param perm1,perm2 Permutations to compare.
 #'     How many times `perm1` is more likely than `perm2`?
 #'     Those can be provided as the `gips` objects,
-#'     the `gips_perm` objects or anything that can be used as
+#'     the `gips_perm` objects, or anything that can be used as
 #'     the `x` parameter in the [gips_perm()] function.
 #'     They do not have to be of the same class.
 #' @param S,number_of_observations,delta,D_matrix,was_mean_estimated
 #'     The same parameters as in the [gips()] function.
 #'     If at least one of `perm1` or `perm2` is a `gips` object,
-#'     they are overwritten with those from `gips` object.
+#'     they are overwritten with those from the `gips` object.
 #' @param print_output A boolean.
 #'     When `TRUE` (default), the computed value will be printed with
 #'     additional text and returned invisibly. When `FALSE`,
 #'     the computed value will be returned visibly.
 #' @param digits Integer. Only used when `print_output = TRUE`.
-#'     Number of digits after comma to print.
-#'     Can be negative, can be `+Inf`. It is passed to `base::round()`.
+#'     The number of digits after the comma to print.
+#'     It can be negative, can be `+Inf`. It is passed to `base::round()`.
 #'
 #' @returns The function `compare_posteriories_of_perms()` returns
 #'     the value of how many times the `perm1` is more likely than `perm2`.

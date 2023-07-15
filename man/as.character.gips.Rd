@@ -2,7 +2,7 @@
 % Please edit documentation in R/gips_class.R
 \name{as.character.gips}
 \alias{as.character.gips}
-\title{Transform \code{gips} object to a character vector}
+\title{Transform the \code{gips} object to a character vector}
 \usage{
 \method{as.character}{gips}(x, ...)
 }
@@ -15,7 +15,7 @@
 Returns an object of a \code{character} type.
 }
 \description{
-Implementation of S3 method.
+Implementation of the S3 method.
 }
 \examples{
 A <- matrix(rnorm(4 * 4), nrow = 4)

@@ -1,10 +1,10 @@
 #' The constructor of a `gips` class.
 #'
 #' Create a `gips` object.
-#' This object will consist of initial data and all other information
+#' This object will contain initial data and all other information
 #' needed to find the most likely invariant permutation.
-#' The optimization itself will not be performed.
-#' One must call the [find_MAP()] function to do it. See examples below.
+#' It will not perform optimization. One must call
+#' the [find_MAP()] function to do it. See the examples below.
 #'
 #' @param S A matrix; empirical covariance matrix.
 #'     When `Z` is the observed data:
@@ -17,22 +17,22 @@
 #' @param number_of_observations A number of data points
 #'     that `S` is based on.
 #' @param delta A number, hyper-parameter of a Bayesian model.
-#'     Has to be strictly bigger than 1.
-#'     See **Hyperparameters** section bellow.
-#' @param D_matrix A symmetric, positive-definite matrix of the same size as `S`.
+#'     It has to be strictly bigger than 1.
+#'     See the **Hyperparameters** section below.
+#' @param D_matrix Symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
 #'     When `NULL`, the (hopefully) reasonable one is derived from the data.
-#'     For more details, see **Hyperparameters** section bellow.
+#'     For more details, see the **Hyperparameters** section below.
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
 #' * Set FALSE when your `S` parameter is a result of
 #'     a `(t(Z) %*% Z) / number_of_observations` calculation.
 #' @param perm An optional permutation to be the base for the `gips` object.
-#'     Can be of a `gips_perm` or a `permutation` class, or anything
+#'     It can be of a `gips_perm` or a `permutation` class, or anything
 #'     the function [permutations::permutation()] can handle.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
+#'     It can also be of a `gips` class, but
+#'     it will be interpreted as the underlying `gips_perm`.
 #'
 #' @section Methods for a `gips` class:
 #' * [summary.gips()]
@@ -44,11 +44,11 @@
 #' * [as.character.gips()]
 #'
 #' @section Hyperparameters:
-#' We encourage to try `D_matrix = d * I`, where `I` is an identity matrix of a size
-#' `p x p`, and `d > 0` for some different `d`.
-#' When `d` is small compared to the data (e.g. `d=0.1 * mean(diag(S))`),
+#' We encourage the user to try `D_matrix = d * I`, where `I` is an identity matrix of a size
+#' `p x p` and `d > 0` for some different `d`.
+#' When `d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
 #'     bigger structures will be found.
-#' When `d` is big compared to the data (e.g. `d=100 * mean(diag(S))`),
+#' When `d` is big compared to the data (e.g., `d=100 * mean(diag(S))`),
 #'     the posterior distribution does not depend on the data.
 #' 
 #' Taking `D_matrix = d * I` is equivalent to setting `S <- S / d`.
@@ -61,7 +61,7 @@
 #' the covariance matrix is a generalized case of
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
 #' 
-#' For brief introduction, see **Bayesian model selection**
+#' For a brief introduction, see the **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #' 
@@ -76,7 +76,7 @@
 #' @export
 #' @seealso
 #' * [stats::cov()] - The `S` parameter, as an empirical covariance matrix,
-#'     most of the time is a result of the `cov()` function.
+#'     is most of the time a result of the `cov()` function.
 #'     For more information, see
 #'     [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 #' * [find_MAP()] - The function that finds
@@ -152,7 +152,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 }
 
 
-#' @describeIn gips Constructor. Only intended for low-level use.
+#' @describeIn gips Constructor. It is only intended for low-level use.
 #'
 #' @param list_of_gips_perm A list with a single element of
 #'     a `gips_perm` class. The base object for the `gips` object.
@@ -186,9 +186,9 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 }
 
 
-#' @describeIn gips Validator. Only intended for low-level use.
+#' @describeIn gips Validator. It is only intended for low-level use.
 #'
-#' @param g Object to be checked whether it is proper object of a `gips` class.
+#' @param g Object to be checked whether it is a proper object of a `gips` class.
 #'
 #' @returns `validate_gips()` returns its argument unchanged.
 #'     If the argument is not a proper element of a `gips` class,
@@ -1084,7 +1084,7 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #'   * `"both"` - Plots both lines from "all" and "best".
 #'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
-#'       For more information see **Block Decomposition - \[1\], Theorem 1**
+#'       For more information, see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
@@ -1092,7 +1092,7 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
 #'     All other arguments are ignored for
-#'     the `type = "heatmap"`, `type = "MLE"` or `type = "block_heatmap"`.
+#'     the `type = "heatmap"`, `type = "MLE"`, or `type = "block_heatmap"`.
 #' @param logarithmic_y,logarithmic_x A boolean.
 #'     Sets the axis of the plot in logarithmic scale.
 #' @param color Vector of colors to be used to plot lines.
@@ -1101,7 +1101,7 @@ convert_log_diff_to_str <- function(log_diff, digits){
 #' @param ylabel Text to be on the left of the plot.
 #' @param show_legend A boolean. Whether or not to show a legend.
 #' @param ylim Limits of the y axis. When `NULL`,
-#'     the minimum and maximum of the [log_posteriori_of_gips()] are taken.
+#'     the minimum, and maximum of the [log_posteriori_of_gips()] are taken.
 #' @param xlim Limits of the x axis. When `NULL`,
 #'     the whole optimization process is shown.
 #' @param ... Additional arguments passed to
@@ -1448,7 +1448,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'
 #' `summary` method for `gips` class.
 #'
-#' @param object An object of class `gips`; usually a result of a [find_MAP()].
+#' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @return The function `summary.gips()` computes and returns a list of summary
@@ -1460,28 +1460,27 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       value the start permutation has.
 #'   4. `times_more_likely_than_id` - how many more likely
 #'       the `start_permutation` is over the identity permutation, `()`.
-#'       It can be a number less than 1, which means
-#'       the identity permutation is more likely. Keep in mind
-#'       this number can be really big and can be overflowed to `Inf`,
-#'       or really small and underflow to 0.
-#'   5. `n0` - the minimal number of observations needed for
-#'       the maximum likelihood estimator (corresponding to a MAP) of
-#'       the covariance matrix to exist. See **\eqn{C\sigma} and `n0`**
+#'       It can be less than 1, meaning the identity permutation
+#'       is more likely. Remember that this number can big and
+#'       overflow to `Inf` or small and underflow to 0.
+#'   5. `n0` - the minimum number of observations needed for
+#'       the covariance matrix's maximum likelihood estimator
+#'       (corresponding to a MAP) to exist. See **\eqn{C\sigma} and `n0`**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'   6. `S_matrix` - the underlying matrix.
-#'       This is the matrix that will be used in calculations of
+#'       This matrix will be used in calculations of
 #'       the posteriori value in [log_posteriori_of_gips()].
 #'   7. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated.
-#'       This is the value that will be used in calculations of
+#'       This value will be used in calculations of
 #'       the posteriori value in [log_posteriori_of_gips()].
 #'   8. `was_mean_estimated` - given by the user while creating the `gips` object:
-#'       * `TRUE` means the `S` parameter was output of [stats::cov()] function;
+#'       * `TRUE` means the `S` parameter was the output of [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`.
 #'   9. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
-#'       See **Hyperparameters** section of [gips()] documentation.
+#'       See the **Hyperparameters** section of [gips()] documentation.
 #'   10. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions.
 #'   11. `n_parameters` - number of free parameters in the covariance matrix.
 #' * For optimized `gips` object:
@@ -1489,33 +1488,33 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'   2. `found_permutation` - the permutation this `gips` represents.
 #'       The visited permutation with the biggest a posteriori value.
 #'   3. `found_permutation_log_posteriori` - the log of the a posteriori
-#'       value the found permutation have.
+#'       value the found permutation has.
 #'   4. `start_permutation` - the original permutation this `gips`
-#'       represented before optimization. The first visited permutation.
+#'       represented before optimization. It is the first visited permutation.
 #'   5. `start_permutation_log_posteriori` - the log of the a posteriori
 #'       value the start permutation has.
 #'   6. `times_more_likely_than_start` - how many more likely
 #'       the `found_permutation` is over the `start_permutation`.
-#'       It cannot be a number less than 1. Keep in mind
-#'       this number can be really big and can be overflowed to `Inf`.
-#'   7. `n0` - the minimal number of observations needed for existence of
+#'       It cannot be a number less than 1.
+#'       Remember that this number can big and overflow to `Inf`.
+#'   7. `n0` - the minimal number of observations needed for the existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of
 #'       the covariance matrix (see **\eqn{C\sigma} and `n0`**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'   8. `S_matrix` - the underlying matrix.
-#'       This is the matrix that will be used in calculations of
+#'       This matrix will be used in calculations of
 #'       the posteriori value in [log_posteriori_of_gips()].
 #'   9. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated.
-#'       This is the value that will be used in calculations of
+#'       This value will be used in calculations of
 #'       the posteriori value in [log_posteriori_of_gips()].
 #'   10. `was_mean_estimated` - given by the user while creating the `gips` object:
-#'       * `TRUE` means the `S` parameter was output of [stats::cov()] function;
+#'       * `TRUE` means the `S` parameter was output of the [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
 #'           `S = t(X) %*% X / number_of_observations`.
 #'   11. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
-#'       See **Hyperparameters** section of [gips()] documentation.
+#'       See the **Hyperparameters** section of [gips()] documentation.
 #'   12. `AIC`, `BIC` - output of [AIC.gips()] and [BIC.gips()] functions.
 #'   13. `n_parameters` - number of free parameters in the covariance matrix.
 #'   14. `optimization_algorithm_used` - all used optimization algorithms
@@ -1532,7 +1531,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       the `found_permutation`; in other words, how long ago
 #'       could the optimization be stopped and have the same result.
 #'       If this value is small, consider running [find_MAP()]
-#'       one more time with `optimizer = "continue"`.
+#'       again with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`.
 #'   19. `acceptance_rate` - only interesting for `optimizer = "MH"`.
 #'       How often was the algorithm accepting the change of permutation
@@ -1663,7 +1662,7 @@ summary.gips <- function(object, ...) {
 #' @method print summary.gips
 #' @param x An object of class `summary.gips` to be printed
 #' @describeIn summary.gips Printing method for class `summary.gips`.
-#'     Prints every interesting information in a pleasant for human form.
+#'     Prints every interesting information in a form pleasant for humans.
 #' @returns The function `print.summary.gips()` returns an invisible `NULL`.
 #' @export
 #'
@@ -1799,19 +1798,19 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
   c(n0, edited_number_of_observations)
 }
 
-#' Extract Log-Likelihood for `gips` class
+#' Extract the Log-Likelihood for `gips` class
 #' 
 #' Calculates Log-Likelihood of the sample based on the `gips` object.
 #' 
 #' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
 #' 
-#' If the found permutation will still require more parameters than `n`,
-#'     the Likelihood does not exist, thus the function returns `NULL`.
+#' If the found permutation still requires more parameters than `n`,
+#'     the likelihood does not exist; thus the function returns `NULL`.
 #' 
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
 #' 
-#' @param object An object of class `gips`. Usually a result of a [find_MAP()].
+#' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' 
 #' @section Existence of likelihood:
@@ -1834,13 +1833,13 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' 
 #' @returns Log-Likelihood of the sample.
 #' 
-#' When multivariate normal model does not exists
-#'     (`number_of_observations < n0`), returns `NULL`.
-#' When multivariate normal model cannot be reasonably approximated
-#'     (output of [project_matrix()] is singular), returns `-Inf`.
+#' When the multivariate normal model does not exist
+#'     (`number_of_observations < n0`), it returns `NULL`.
+#' When the multivariate normal model cannot be reasonably approximated
+#'     (output of [project_matrix()] is singular), it returns `-Inf`.
 #'     
-#' In both failure situations, shows a warning.
-#' More information can be found in **Existence of likelihood** section below.
+#' In both failure situations, it shows a warning.
+#' More information can be found in the **Existence of likelihood** section below.
 #' 
 #' @export
 #' 
@@ -1855,7 +1854,7 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #'     see the **Existence of likelihood** section above.
 #' * [project_matrix()] - Project the known matrix
 #'     onto the found permutations space.
-#'     Mentioned in **Calculation details** section above.
+#'     It is mentioned in the **Calculation details** section above.
 #' 
 #' @examples 
 #' S <- matrix(c(5.15,2.05,3.60,1.99,
@@ -1887,7 +1886,7 @@ logLik.gips <- function(object, ...){
     rlang::warn(c("The likelihood is not defined for this `gips`.",
                   "x" = paste0("The n = ", n,
                                " is smaller than the minimum required n0 = ", n0,
-                               ". For more information see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).")
+                               ". For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).")
     ), class = "likelihood_does_not_exists")
     
     return(NULL)
@@ -1926,20 +1925,20 @@ logLik.gips <- function(object, ...){
 #' 
 #' @method AIC gips
 #' 
-#' @param object An object of class `gips`. Usually a result of a [find_MAP()].
+#' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' @param k Numeric, the *penalty* per parameter to be used.
 #'     The default `k = 2` is the classical AIC.
 #' 
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #' 
-#' When multivariate normal model does not exists
-#'     (`number_of_observations < n0`), returns `NULL`.
-#' When multivariate normal model cannot be reasonably approximated
-#'     (output of [project_matrix()] is singular), returns `Inf`.
+#' When the multivariate normal model does not exist
+#'     (`number_of_observations < n0`), it returns `NULL`.
+#' When the multivariate normal model cannot be reasonably approximated
+#'     (output of [project_matrix()] is singular), it returns `Inf`.
 #'     
 #' In both failure situations, shows a warning.
-#' More information can be found in **Existence of likelihood**
+#' More information can be found in the **Existence of likelihood**
 #' section of [logLik.gips()].
 #' 
 #' @importFrom stats AIC
@@ -1949,8 +1948,8 @@ logLik.gips <- function(object, ...){
 #'     this `AIC.gips()` and `BIC.gips()` extend.
 #' * [find_MAP()] - Usually, the `AIC.gips()` and `BIC.gips()`
 #'     are called on the output of `find_MAP()`.
-#' * [logLik.gips()] - Calculates the log likelihood for
-#'     the `gips` object. Important part of the Information Criteria.
+#' * [logLik.gips()] - Calculates the log-likelihood for
+#'     the `gips` object. An important part of the Information Criteria.
 #' 
 #' @export
 #' @examples 
@@ -2007,17 +2006,17 @@ BIC.gips <- function(object, ...){
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
 #'
-#' After the `gips` object was optimized with [find_MAP()] function with
-#' `return_probabilities = TRUE`, then those calculated probabilities
-#' can be extracted with this function.
+#' After the `gips` object was optimized with
+#' the `find_MAP(return_probabilities = TRUE)` function, then
+#' those calculated probabilities can be extracted with this function.
 #'
 #' @param g An object of class `gips`.
 #'     A result of a `find_MAP(return_probabilities = TRUE)`.
 #'
 #' @returns Returns a numeric vector, calculated values of probabilities.
-#' Names contains permutations this probability represent.
+#' Names contain permutations this probabilities represent.
 #' For `gips` object optimized with `find_MAP(return_probabilities = FALSE)`,
-#' returns a `NULL` object.
+#' it returns a `NULL` object.
 #' It is sorted according to the probability.
 #'
 #' @export
@@ -2068,7 +2067,7 @@ get_probabilities_from_gips <- function(g) {
 #'
 #' Slim the `gips` object by forgetting the visited permutations from `find_MAP(save_all_perms = TRUE)`.
 #'
-#' For example, `perm_size = 150` and `max_iter = 150000` we checked it saves ~350 MB of RAM.
+#' For example, `perm_size = 150` and `max_iter = 150000` we checked `forget_perms()` saves ~350 MB of RAM.
 #'
 #' @param g An object of class `gips`.
 #'     A result of a `find_MAP(save_all_perms = TRUE)`.
@@ -2118,9 +2117,9 @@ forget_perms <- function(g) {
 }
 
 
-#' Transform `gips` object to a character vector
+#' Transform the `gips` object to a character vector
 #'
-#' Implementation of S3 method.
+#' Implementation of the S3 method.
 #'
 #' @inheritParams print.gips
 #' @param ... Further arguments (currently ignored).
