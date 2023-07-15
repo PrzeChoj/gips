@@ -114,6 +114,6 @@ test_that("calculate_gamma_function has desired properties", {
 test_that("calculate_gamma_function can get a gips object", {
   my_perm <- gips_perm("(1,2,3)", 3)
   expect_silent(gamma1 <- calculate_gamma_function(my_perm, 0.5001))
-  expect_silent(gamma2 <- calculate_gamma_function(gips(diag(3), 13, perm=my_perm), 0.5001))
+  expect_silent(gamma2 <- calculate_gamma_function(gips(diag(3), 13, perm = my_perm), 0.5001))
   expect_equal(gamma1, gamma2)
 })

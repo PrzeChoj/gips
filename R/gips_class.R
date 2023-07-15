@@ -50,21 +50,21 @@
 #'     bigger structures will be found.
 #' When `d` is big compared to the data (e.g., `d=100 * mean(diag(S))`),
 #'     the posterior distribution does not depend on the data.
-#' 
+#'
 #' Taking `D_matrix = d * I` is equivalent to setting `S <- S / d`.
-#' 
+#'
 #' The default for `D_matrix` is `D_matrix = d * I`, where
 #' `d = mean(diag(S))`, which is equivalent to modifying `S`
 #' so that the mean value on the diagonal is 1.
-#' 
+#'
 #' In the Bayesian model, the prior distribution for
 #' the covariance matrix is a generalized case of
 #' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
-#' 
+#'
 #' For a brief introduction, see the **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
-#' 
+#'
 #' For analysis of the Hyperparameters influence, see **Section 3.2.**
 #' of "Learning permutation symmetries with gips in R"
 #' by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
@@ -802,13 +802,13 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     )
   } else if (any(is.nan(D_matrix))) {
     abort_text <- c(abort_text,
-       "i" = "`D_matrix` must not contain any `NaN`s.",
-       "x" = "You provided `D_matrix` with `NaN`s!"
+      "i" = "`D_matrix` must not contain any `NaN`s.",
+      "x" = "You provided `D_matrix` with `NaN`s!"
     )
   } else if (any(is.infinite(D_matrix))) {
     abort_text <- c(abort_text,
-       "i" = "`D_matrix` must not contain any infinite values.",
-       "x" = "You provided `D_matrix` with infinite values!"
+      "i" = "`D_matrix` must not contain any infinite values.",
+      "x" = "You provided `D_matrix` with infinite values!"
     )
   }
   if (!is.logical(was_mean_estimated)) {
@@ -883,7 +883,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
         paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
       )
     }
-    
+
     abort_text <- c(
       abort_text,
       ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
@@ -943,7 +943,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
 print.gips <- function(x, digits = 3, compare_to_original = TRUE,
                        log_value = FALSE, oneline = FALSE, ...) {
   validate_gips(x)
-  
+
   printing_text <- paste0("The permutation ", as.character(x[[1]]))
 
   if (is.null(attr(x, "optimization_info"))) { # it is unoptimized gips object
@@ -964,7 +964,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
         was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
       )
       log_posteriori_id <- log_posteriori_of_gips(x_id)
-      
+
       printing_text <- c(
         printing_text,
         paste0(
@@ -1010,49 +1010,50 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
       )
     )
   }
-  
+
   # The first line will end with ":", all following lines will end with ";".
   cat(
     paste0(c(
       printing_text[1],
       paste0(printing_text[-1],
-             collapse = ifelse(oneline, "; ", ";\n - ")
+        collapse = ifelse(oneline, "; ", ";\n - ")
       )
     ), collapse = ifelse(oneline, ": ", ":\n - ")),
     ".\n",
     sep = "", ...
   )
-  
+
   invisible(NULL)
 }
 
 
 #' Convert the log difference to the appropriate string.
 #' If bigger than 10 millions, use the scientific notation
-#' 
+#'
 #' @param digits Number of digits after comma
-#' 
+#'
 #' @examples
 #' convert_log_diff_to_str(1009.5, 3) == "2.632e+438"
 #' convert_log_diff_to_str(16.1, 3) == "9820670.922"
 #' convert_log_diff_to_str(16.2, 3) == "1.085e+7"
 #' convert_log_diff_to_str(-7.677, 3) == "4.634e-4"
-#' 
+#'
 #' @noRd
-convert_log_diff_to_str <- function(log_diff, digits){
-  if(is.infinite(log_diff)){
+convert_log_diff_to_str <- function(log_diff, digits) {
+  if (is.infinite(log_diff)) {
     return(ifelse(log_diff > 0, "Inf", "-Inf"))
   }
-  if(log_diff == 0){
+  if (log_diff == 0) {
     return("1")
   }
-  
+
   times_more_likely <- round(
-    exp(log_diff), digits = digits
+    exp(log_diff),
+    digits = digits
   )
-  
+
   log10_diff <- log_diff * log10(exp(1))
-  
+
   ifelse(0 < times_more_likely && times_more_likely < 10000000,
     as.character(times_more_likely),
     paste0(
@@ -1172,8 +1173,8 @@ plot.gips <- function(x, type = NA,
   }
 
   validate_gips(x)
-  
-  if (length(type) != 1){
+
+  if (length(type) != 1) {
     rlang::abort(c("There was a problem identified with provided arguments:",
       "i" = "`type` must be an character vector of length 1.",
       "x" = paste0("You provided `type` with length ", length(type), " which is wrong!")
@@ -1192,8 +1193,8 @@ plot.gips <- function(x, type = NA,
       )
     ))
   }
-  
-  if (type == "MLE"){
+
+  if (type == "MLE") {
     type <- "heatmap"
   }
 
@@ -1206,7 +1207,7 @@ plot.gips <- function(x, type = NA,
   }
 
   if (type != "block_heatmap" && type != "heatmap" &&
-        is.null(attr(x, "optimization_info"))) {
+    is.null(attr(x, "optimization_info"))) {
     rlang::abort(
       c(
         "There was a problem identified with provided arguments:",
@@ -1244,7 +1245,7 @@ plot.gips <- function(x, type = NA,
       if (is.null(rownames(my_projected_matrix))) {
         rownames(my_projected_matrix) <- paste0(seq(1, p))
       }
-      
+
       my_rownames <- rownames(my_projected_matrix)
       my_colnames <- colnames(my_projected_matrix)
       rownames(my_projected_matrix) <- as.character(1:p)
@@ -1252,7 +1253,7 @@ plot.gips <- function(x, type = NA,
 
       # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
       col_id <- covariance <- row_id <- NULL
-      
+
       # Life would be easier with pipes (%>%)
       my_transformed_matrix <- tibble::rownames_to_column(
         as.data.frame(my_projected_matrix),
@@ -1578,11 +1579,11 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
   permutation_log_posteriori <- log_posteriori_of_gips(object)
-  
+
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
-  
+
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
 
   if (is.null(attr(object, "optimization_info"))) {
@@ -1591,7 +1592,7 @@ summary.gips <- function(object, ...) {
       number_of_observations = edited_number_of_observations,
       delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
     )
-    
+
     summary_list <- list(
       optimized = FALSE,
       start_permutation = object[[1]],
@@ -1606,7 +1607,7 @@ summary.gips <- function(object, ...) {
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
       AIC = suppressWarnings(AIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))), # warning for NA and NULL
-      BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists")))  # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))) # warning for NA and NULL
     )
   } else {
     optimization_info <- attr(object, "optimization_info")
@@ -1672,59 +1673,60 @@ summary.gips <- function(object, ...) {
 #' g <- gips(S, 10)
 #' print(summary(g))
 print.summary.gips <- function(x, ...) {
-  cat(ifelse(x[["optimized"]],
-    "The optimized",
-    "The unoptimized"
-  ),
-  " `gips` object.\n\nPermutation:\n ",
-  ifelse(x[["optimized"]],
-    as.character(x[["found_permutation"]]),
-    as.character(x[["start_permutation"]])
-  ),
-  "\n\nLog_posteriori:\n ",
-  ifelse(x[["optimized"]],
-    x[["found_permutation_log_posteriori"]],
-    x[["start_permutation_log_posteriori"]]
-  ),
-  "\n\nTimes more likely than ",
-  ifelse(x[["optimized"]],
-    paste0(
-      "starting permutation:\n ",
-      convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
+  cat(
+    ifelse(x[["optimized"]],
+      "The optimized",
+      "The unoptimized"
     ),
-    paste0(
-      "identity permutation:\n ",
-      convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
-    )
-  ),
-  "\n\nThe number of observations:\n ", x[["number_of_observations"]],
-  "\n\n", ifelse(x[["was_mean_estimated"]],
-    paste0(
-      "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
-      x[["number_of_observations"]] - 1, " degrees of freedom left."
+    " `gips` object.\n\nPermutation:\n ",
+    ifelse(x[["optimized"]],
+      as.character(x[["found_permutation"]]),
+      as.character(x[["start_permutation"]])
     ),
-    paste0(
-      "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
-      x[["number_of_observations"]], ")."
-    )
-  ),
-  "\n\nn0:\n ", x[["n0"]],
-  "\n\nThe number of observations is ",
-  ifelse(x[["n0"]] > x[["number_of_observations"]],
-    "smaller",
-    ifelse(x[["n0"]] == x[["number_of_observations"]],
-      "equal",
-      "bigger"
-    )
-  ),
-  " than n0 for this permutation,\nso the gips model based on the found permutation does ",
-  ifelse(x[["n0"]] > x[["number_of_observations"]],
-    "not ", ""
-  ), "exist.",
-  "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
-  "\n\nBIC:\n ", x[["BIC"]],
-  "\n\nAIC:\n ", x[["AIC"]],
-  sep = ""
+    "\n\nLog_posteriori:\n ",
+    ifelse(x[["optimized"]],
+      x[["found_permutation_log_posteriori"]],
+      x[["start_permutation_log_posteriori"]]
+    ),
+    "\n\nTimes more likely than ",
+    ifelse(x[["optimized"]],
+      paste0(
+        "starting permutation:\n ",
+        convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
+      ),
+      paste0(
+        "identity permutation:\n ",
+        convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
+      )
+    ),
+    "\n\nThe number of observations:\n ", x[["number_of_observations"]],
+    "\n\n", ifelse(x[["was_mean_estimated"]],
+      paste0(
+        "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
+        x[["number_of_observations"]] - 1, " degrees of freedom left."
+      ),
+      paste0(
+        "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
+        x[["number_of_observations"]], ")."
+      )
+    ),
+    "\n\nn0:\n ", x[["n0"]],
+    "\n\nThe number of observations is ",
+    ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "smaller",
+      ifelse(x[["n0"]] == x[["number_of_observations"]],
+        "equal",
+        "bigger"
+      )
+    ),
+    " than n0 for this permutation,\nso the gips model based on the found permutation does ",
+    ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "not ", ""
+    ), "exist.",
+    "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
+    "\n\nBIC:\n ", x[["BIC"]],
+    "\n\nAIC:\n ", x[["AIC"]],
+    sep = ""
   )
 
   if (x[["optimized"]]) {
@@ -1774,7 +1776,7 @@ print.summary.gips <- function(x, ...) {
       )
     }
   }
-  
+
   cat("\n")
 
   invisible(NULL)
@@ -1783,66 +1785,66 @@ print.summary.gips <- function(x, ...) {
 #' Internal
 #' @return a vector of length 2 with n0 and edited_number_of_observations
 #' @noRd
-get_n0_and_edited_number_of_observations_from_gips <- function(g){
+get_n0_and_edited_number_of_observations_from_gips <- function(g) {
   # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
-  
+
   structure_constants <- get_structure_constants(g[[1]])
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-  
+
   edited_number_of_observations <- attr(g, "number_of_observations")
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
     edited_number_of_observations <- edited_number_of_observations - 1
   }
-  
+
   c(n0, edited_number_of_observations)
 }
 
 #' Extract the Log-Likelihood for `gips` class
-#' 
+#'
 #' Calculates Log-Likelihood of the sample based on the `gips` object.
-#' 
+#'
 #' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
-#' 
+#'
 #' If the found permutation still requires more parameters than `n`,
 #'     the likelihood does not exist; thus the function returns `NULL`.
-#' 
+#'
 #' If the `projected_cov` (output of [project_matrix()])
 #'     is close to singular, the `NA` is returned.
-#' 
+#'
 #' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
-#' 
+#'
 #' @section Existence of likelihood:
 #' We only consider the non-degenerate multivariate normal model.
 #' In the `gips` context, such a model exists only when
 #' the number of observations is bigger or equal to `n0`. To get `n0`
 #' for the `gips` object `g`, call `summary(g)$n0`.
-#' 
+#'
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
-#' 
+#'
 #' @section Calculation details:
 #' For more details and used formulas, see
 #' the **Information Criterion - AIC and BIC** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
-#' 
+#'
 #' @importFrom stats logLik
-#' 
+#'
 #' @returns Log-Likelihood of the sample.
-#' 
+#'
 #' When the multivariate normal model does not exist
 #'     (`number_of_observations < n0`), it returns `NULL`.
 #' When the multivariate normal model cannot be reasonably approximated
 #'     (output of [project_matrix()] is singular), it returns `-Inf`.
-#'     
+#'
 #' In both failure situations, it shows a warning.
 #' More information can be found in the **Existence of likelihood** section below.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @seealso
 #' * [logLik()] - Generic function this [logLik.gips()] extends.
 #' * [find_MAP()] - Usually, the `logLik.gips()`
@@ -1855,8 +1857,8 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' * [project_matrix()] - Project the known matrix
 #'     onto the found permutations space.
 #'     It is mentioned in the **Calculation details** section above.
-#' 
-#' @examples 
+#'
+#' @examples
 #' S <- matrix(c(
 #'   5.15, 2.05, 3.60, 1.99,
 #'   2.05, 5.09, 2.03, 3.57,
@@ -1866,85 +1868,89 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g){
 #' g <- gips(S, 5)
 #' logLik(g) # -32.67048
 #' # For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom
-#' 
+#'
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #' logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
-#' 
+#'
 #' g_n_too_small <- gips(S, 4)
 #' logLik(g_n_too_small) # NULL # the likelihood does not exists
-logLik.gips <- function(object, ...){
+logLik.gips <- function(object, ...) {
   validate_gips(object)
-  
+
   original_cov <- attributes(object)[["S"]]
   projected_cov <- project_matrix(original_cov, object[[1]])
   p <- ncol(original_cov)
   n <- attr(object, "number_of_observations")
-  
+
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
-  
-  if(n < n0){ # Likelihood is not defined in that setting
-    rlang::warn(c("The likelihood is not defined for this `gips`.",
-                  "x" = paste0("The n = ", n,
-                               " is smaller than the minimum required n0 = ", n0,
-                               ". For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).")
+
+  if (n < n0) { # Likelihood is not defined in that setting
+    rlang::warn(c(
+      "The likelihood is not defined for this `gips`.",
+      "x" = paste0(
+        "The n = ", n,
+        " is smaller than the minimum required n0 = ", n0,
+        ". For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html)."
+      )
     ), class = "likelihood_does_not_exists")
-    
+
     return(NULL)
   }
-  
+
   log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)[["modulus"]]
   attributes(log_det_projected_cov) <- NULL
-  if(is.infinite(log_det_projected_cov)){
-    rlang::warn(c("The projected matrix is computationally singular.",
-                  "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
-                  "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
+  if (is.infinite(log_det_projected_cov)) {
+    rlang::warn(c(
+      "The projected matrix is computationally singular.",
+      "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
+      "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
     ), class = "singular_matrix")
-    
+
     return(-Inf)
   }
-  
+
   log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
-  
-  log_L_S <- -edited_number_of_observations*(p*log_2pi_plus_1 + log_det_projected_cov)/2
-  
+
+  log_L_S <- -edited_number_of_observations * (p * log_2pi_plus_1 + log_det_projected_cov) / 2
+
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
-  
+
   attr(log_L_S, "df") <- n_parameters
   attr(log_L_S, "nobs") <- n # The AIC and BIC will use n, not edited_number_of_observations
-  
+
   log_L_S
 }
 
 #' Akaike's An Information Criterion for `gips` class
-#' 
+#'
 #' @section Calculation details:
 #' For more details and used formulas, see
 #' the **Information Criterion - AIC and BIC** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
-#' 
+#'
 #' @method AIC gips
-#' 
+#'
 #' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #' @param k Numeric, the *penalty* per parameter to be used.
 #'     The default `k = 2` is the classical AIC.
-#' 
+#'
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
-#' 
+#'
 #' When the multivariate normal model does not exist
 #'     (`number_of_observations < n0`), it returns `NULL`.
 #' When the multivariate normal model cannot be reasonably approximated
 #'     (output of [project_matrix()] is singular), it returns `Inf`.
-#'     
+#'
 #' In both failure situations, shows a warning.
 #' More information can be found in the **Existence of likelihood**
 #' section of [logLik.gips()].
-#' 
+#'
 #' @importFrom stats AIC
-#' 
+#'
 #' @seealso
 #' * [AIC()], [BIC()] - Generic functions
 #'     this `AIC.gips()` and `BIC.gips()` extend.
@@ -1952,9 +1958,9 @@ logLik.gips <- function(object, ...){
 #'     are called on the output of `find_MAP()`.
 #' * [logLik.gips()] - Calculates the log-likelihood for
 #'     the `gips` object. An important part of the Information Criteria.
-#' 
+#'
 #' @export
-#' @examples 
+#' @examples
 #' S <- matrix(c(
 #'   5.15, 2.05, 3.10, 1.99,
 #'   2.05, 5.09, 2.03, 3.07,
@@ -1963,47 +1969,47 @@ logLik.gips <- function(object, ...){
 #' ), nrow = 4)
 #' g <- gips(S, 14)
 #' g_map <- find_MAP(g, optimizer = "brute_force")
-#' 
+#'
 #' AIC(g) # 238
 #' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
-AIC.gips <- function(object, ..., k = 2){
+AIC.gips <- function(object, ..., k = 2) {
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
-  
-  if(is.null(log_likelihood_S)){
+
+  if (is.null(log_likelihood_S)) {
     return(NULL)
   }
-  
-  if(is.infinite(log_likelihood_S)){
+
+  if (is.infinite(log_likelihood_S)) {
     return(Inf)
   }
-  
+
   -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
 }
 
 #' @method BIC gips
 #' @describeIn AIC.gips Schwarz's Bayesian Information Criterion
-#' 
+#'
 #' @importFrom stats BIC
-#' 
+#'
 #' @returns `BIC.gips()` returns calculated
 #'     Schwarz's Bayesian Information Criterion.
-#' 
+#'
 #' @export
-#' @examples 
+#' @examples
 #' # ================================================================================
 #' BIC(g) # 244
 #' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
-BIC.gips <- function(object, ...){
+BIC.gips <- function(object, ...) {
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
-  
-  if(is.null(log_likelihood_S)){
+
+  if (is.null(log_likelihood_S)) {
     return(NULL)
   }
-  
-  if(is.infinite(log_likelihood_S)){
+
+  if (is.infinite(log_likelihood_S)) {
     return(Inf)
   }
-  
+
   k <- log(attr(log_likelihood_S, "nobs")) # this line is the only difference from `AIC.gips()`
   -2 * as.numeric(log_likelihood_S) + k * attr(log_likelihood_S, "df")
 }
@@ -2147,6 +2153,6 @@ forget_perms <- function(g) {
 #' as.character(g)
 as.character.gips <- function(x, ...) {
   validate_gips(x)
-  
+
   as.character(x[[1]], ...)
 }

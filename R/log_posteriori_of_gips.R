@@ -31,7 +31,7 @@
 #' * [compare_posteriories_of_perms()] - Uses `log_posteriori_of_gips()`
 #'     to compare a posteriori of two permutations.
 #' * `vignette("Theory", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about the math behind the `gips` package.
 #'
 #' @returns Returns a value of
@@ -50,7 +50,7 @@
 #' exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 55.0
 #' # g1 is 55 times more likely than g2.
 #' # This is the expected outcome because S[1,1] significantly differs from S[2,2].
-#' 
+#'
 #' compare_posteriories_of_perms(g1, g2)
 #' # The same result, but presented in a more pleasant way
 #'
@@ -65,7 +65,7 @@
 #' exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.05
 #' # g2 is 12 times more likely than g1.
 #' # This is the expected outcome because S[1,1] is very close to S[2,2].
-#' 
+#'
 #' compare_posteriories_of_perms(g2, g1)
 #' # The same result, but presented in a more pleasant way
 log_posteriori_of_gips <- function(g) {
@@ -146,7 +146,6 @@ runif_transposition <- function(perm_size) {
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U,
                                delta, D_matrix, structure_constants) {
-
   # projection of matrices on perm_proposal
   equal_indices <- get_equal_indices_by_perm(perm_proposal)
   Dc <- project_matrix(D_matrix, perm_proposal,
@@ -237,7 +236,7 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'     the optimized `gips` object compared to the starting permutation.
 #' * [find_MAP()] - The function that finds the permutation that
 #'     maximizes `log_posteriori_of_gips()`.
-#' * [log_posteriori_of_gips()] - The function this 
+#' * [log_posteriori_of_gips()] - The function this
 #'     `compare_posteriories_of_perms()` calls underneath.
 #'
 #' @export
@@ -283,11 +282,11 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   )
 
   out <- exp(compare_log)
-  
+
   if (!print_output) {
     return(out)
   }
-  
+
   perm1_is_gips <- inherits(perm1, "gips")
   perm2_is_gips <- inherits(perm2, "gips")
 
@@ -299,7 +298,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     S <- attr(perm2, "S")
     perm2 <- perm2[[1]]
   }
-  
+
   perm_size <- ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
@@ -338,46 +337,53 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                               digits = 3) {
   perm1_is_gips <- inherits(perm1, "gips")
   perm2_is_gips <- inherits(perm2, "gips")
-  
+
   if (perm1_is_gips) {
     validate_gips(perm1)
   }
   if (perm2_is_gips) {
     validate_gips(perm2)
   }
-  
+
   if (perm1_is_gips && perm2_is_gips) {
     # Check the same parameters
     if (dim(attr(perm1, "S"))[1] != dim(attr(perm2, "S"))[1]) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (any(abs((attr(perm1, "S") - attr(perm2, "S"))) > 0.00000001)) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (attr(perm1, "number_of_observations") != attr(perm2, "number_of_observations")) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `number_of_observations`! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (attr(perm1, "delta") != attr(perm2, "delta")) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `delta`! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (dim(attr(perm1, "D_matrix"))[1] != dim(attr(perm2, "D_matrix"))[1]) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (any(abs((attr(perm1, "D_matrix") - attr(perm2, "D_matrix"))) > 0.00000001)) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
     if (attr(perm1, "was_mean_estimated") != attr(perm2, "was_mean_estimated")) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `was_mean_estimated`! They cannot be compared!"),
-                   class = "different_parameters")
+        class = "different_parameters"
+      )
     }
   }
-  
+
   if (perm1_is_gips) {
     S <- attr(perm1, "S")
     number_of_observations <- attr(perm1, "number_of_observations")
@@ -431,7 +437,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   )
 
   out <- log_post1 - log_post2
-  
+
   if (!print_output) {
     return(out)
   }

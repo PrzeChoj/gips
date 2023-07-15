@@ -14,7 +14,7 @@
 #'
 #' The formula for `U_Gamma` can be found in
 #' [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
-#' 
+#'
 #' A nice example is demonstrated in the **Block Decomposition - \[1\], Theorem 1**
 #' section of `vignette("Theory", package="gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).

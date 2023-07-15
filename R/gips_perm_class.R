@@ -34,7 +34,7 @@
 #' gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
 #' gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 #' gperm
-#' 
+#'
 #' # note the necessity of the `size` parameter:
 #' gperm <- gips_perm("(12)(45)", 5)
 #' gperm <- gips_perm("(12)(45)", 7) # this one is a different permutation
@@ -46,14 +46,16 @@
 gips_perm <- function(x, size) {
   if (inherits(x, "gips")) {
     validate_gips(x)
-    if (attr(x[[1]], "size") != size){
-      rlang::abort(c("x" = paste0("You provided a `gips` object as the `x` parameter of `gips_perm()`, which in general is OK, but You also provided size = ",
-                                  size, ", which is different from attr(x[[1]], 'size') = ", attr(x[[1]], "size"))))
+    if (attr(x[[1]], "size") != size) {
+      rlang::abort(c("x" = paste0(
+        "You provided a `gips` object as the `x` parameter of `gips_perm()`, which in general is OK, but You also provided size = ",
+        size, ", which is different from attr(x[[1]], 'size') = ", attr(x[[1]], "size")
+      )))
     }
     return(x[[1]])
   }
   if (!inherits(x, "permutation")) {
-    if (is.matrix(x) && dim(x)[1] != 1){
+    if (is.matrix(x) && dim(x)[1] != 1) {
       x <- t(x) # matrix x has to be a row, not a column
     }
     if (is.matrix(x) || is.character(x) || is.list(x)) {
@@ -257,7 +259,7 @@ print.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
   x <- permutations::as.cycle(x)
   permutations::print.cycle(x, ...)
-  
+
   invisible(NULL)
 }
 
@@ -285,7 +287,7 @@ print.gips_perm <- function(x, ...) {
 #' as.character(g_perm)
 as.character.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
-  
+
   as.character(permutations::as.cycle(x), ...)
 }
 

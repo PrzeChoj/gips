@@ -53,7 +53,7 @@
 #' * [Wikipedia - Estimation of covariance matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices)
 #' * **Project Matrix - Equation (6)** section of
 #'     `vignette("Theory", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about the math
 #'     behind the `gips` package and see
 #'     more examples of `project_matrix()`.
@@ -111,15 +111,15 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
       )
     ))
   }
-  if (!is.positive.semi.definite.matrix(S)){
+  if (!is.positive.semi.definite.matrix(S)) {
     rlang::warn(c(
       "i" = "`project_matrix()` is designed for positive semi-definite matrices",
       "x" = "You provided `S` that is not positive semi-definite matrix",
       "*" = "`gips` can still project this matrix on the provided permutation",
       "i" = "Did You provided the wrong `S` matrix?"
-      ), class = "not_positive_semi_definite_matrix")
+    ), class = "not_positive_semi_definite_matrix")
   }
-  
+
   if (is.null(precomputed_equal_indices)) {
     perm_size <- ncol(S)
     if (!inherits(perm, "gips_perm")) {
@@ -145,10 +145,10 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   means <- rep(mean_values, sapply(equal_indices_by_perm, length))
   projected_matrix <- matrix(nrow = nrow(S), ncol = ncol(S))
   projected_matrix[unlist(equal_indices_by_perm)] <- means
-  
+
   colnames(projected_matrix) <- colnames(S)
   rownames(projected_matrix) <- rownames(S)
-  
+
   projected_matrix
 }
 
@@ -176,11 +176,12 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
 get_equal_indices_by_perm <- function(perm) {
   perm_size <- attr(perm, "size")
   # We'll be iterating over pairs of subcycles
-  subcycle_indice_pairs <- matrix(c(
-    rep(1:length(perm), each = length(perm)),
-    rep(1:length(perm), times = length(perm))
-  ),
-  ncol = 2
+  subcycle_indice_pairs <- matrix(
+    c(
+      rep(1:length(perm), each = length(perm)),
+      rep(1:length(perm), times = length(perm))
+    ),
+    ncol = 2
   )
 
   subcycle_indice_pairs <- subcycle_indice_pairs[subcycle_indice_pairs[, 1] <= subcycle_indice_pairs[, 2], ,

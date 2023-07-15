@@ -27,7 +27,7 @@
 #' * [log_posteriori_of_gips()] - The function that uses
 #'     the values of the gamma function.
 #' * `vignette("Theory", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
@@ -36,13 +36,13 @@
 #' calculate_gamma_function(id_perm, 0.5001) # 10.7...
 #' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 #' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
-#' 
+#'
 #' oldw <- getOption("warn")
 #' options(warn = -1)
 #' calculate_gamma_function(id_perm, 0.5) # Inf
 #' # Integral diverges; returns Inf and warning
 #' options(warn = oldw)
-#' 
+#'
 #' @export
 calculate_gamma_function <- function(perm, lambda) {
   constants <- get_structure_constants(perm)

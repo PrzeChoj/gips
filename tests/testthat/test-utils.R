@@ -52,8 +52,10 @@ test_that("change_log_probabilities_unnorm_to_probabilities forks as intendent",
 test_that("pretty_plot work", {
   gg_plot_object <- pretty_plot_matrix(matrix_invariant_by_example_perm)
   expect_true(inherits(gg_plot_object, "ggplot"))
-  
-  gg_plot_object2 <- pretty_plot_block_matrix(matrix_invariant_by_example_perm,
-                                              example_perm)
+
+  gg_plot_object2 <- pretty_plot_block_matrix(
+    matrix_invariant_by_example_perm,
+    example_perm
+  )
   expect_true(inherits(gg_plot_object2, "ggplot"))
 })

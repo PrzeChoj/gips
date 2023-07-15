@@ -186,39 +186,73 @@ test_that("compare_posteriories_of_perms properly calculates", {
 
   expect_output(compare_posteriories_of_perms(g2, "(34)"))
   expect_output(compare_posteriories_of_perms("(34)", g2))
-  
+
   g3 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", D_matrix = diag(1, 6))
   expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE),
-                regexp = "is 1\\.693 times") # 3 numbers after decimal
-  expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = 5),
-                regexp = "is 1\\.69318 times") # 5 numbers after decimal
-  expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = 0),
-                regexp = "is 2 times") # 0 numbers after decimal
-  expect_output(compare_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = +Inf),
-                regexp = "is 1\\.69317733127") # a lot numbers after decimal
-  expect_output(compare_posteriories_of_perms(g2, g, print_output = TRUE,
-                                              digits = -3),
-                regexp = "is 95000 times") # round on the lest of decimal
-  
-  
+    regexp = "is 1\\.693 times"
+  ) # 3 numbers after decimal
+  expect_output(
+    compare_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = 5
+    ),
+    regexp = "is 1\\.69318 times"
+  ) # 5 numbers after decimal
+  expect_output(
+    compare_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = 0
+    ),
+    regexp = "is 2 times"
+  ) # 0 numbers after decimal
+  expect_output(
+    compare_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = +Inf
+    ),
+    regexp = "is 1\\.69317733127"
+  ) # a lot numbers after decimal
+  expect_output(
+    compare_posteriories_of_perms(g2, g,
+      print_output = TRUE,
+      digits = -3
+    ),
+    regexp = "is 95000 times"
+  ) # round on the lest of decimal
+
+
   expect_output(compare_log_posteriories_of_perms(g, g3, print_output = TRUE),
-                regexp = "is exp\\(0\\.527\\) times") # 3 numbers after decimal
-  expect_output(compare_log_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = 5),
-                regexp = "is exp\\(0\\.52661\\) times") # 5 numbers after decimal
-  expect_output(compare_log_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = 0),
-                regexp = "is exp\\(1\\) times") # 0 numbers after decimal
-  expect_output(compare_log_posteriories_of_perms(g, g3, print_output = TRUE,
-                                              digits = +Inf),
-                regexp = "is exp\\(0\\.52660684147") # a lot numbers after decimal
-  expect_output(compare_log_posteriories_of_perms(g2, g, print_output = TRUE,
-                                              digits = -1),
-                regexp = "is exp\\(10\\) times") # round on the lest of decimal
-  
+    regexp = "is exp\\(0\\.527\\) times"
+  ) # 3 numbers after decimal
+  expect_output(
+    compare_log_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = 5
+    ),
+    regexp = "is exp\\(0\\.52661\\) times"
+  ) # 5 numbers after decimal
+  expect_output(
+    compare_log_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = 0
+    ),
+    regexp = "is exp\\(1\\) times"
+  ) # 0 numbers after decimal
+  expect_output(
+    compare_log_posteriories_of_perms(g, g3,
+      print_output = TRUE,
+      digits = +Inf
+    ),
+    regexp = "is exp\\(0\\.52660684147"
+  ) # a lot numbers after decimal
+  expect_output(
+    compare_log_posteriories_of_perms(g2, g,
+      print_output = TRUE,
+      digits = -1
+    ),
+    regexp = "is exp\\(10\\) times"
+  ) # round on the lest of decimal
+
   # mean was not estimated
   g4 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", was_mean_estimated = FALSE)
   expect_equal(compare_posteriories_of_perms("(1243)", g4, print_output = FALSE), 1)
@@ -228,22 +262,22 @@ test_that("compare_posteriories_of_perms refuse to compare different parameters"
   g1 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", D_matrix = diag(4, 6), delta = 3)
   g2 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1243)", D_matrix = diag(1, 6), delta = 3)
   g3 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1256)", D_matrix = diag(1, 6), delta = 10)
-  
+
   expect_error(compare_posteriories_of_perms(g1, g2), class = "different_parameters")
   expect_error(compare_posteriories_of_perms(g1, g3), class = "different_parameters")
   expect_error(compare_posteriories_of_perms(g2, g3), class = "different_parameters")
-  
+
   g4 <- gips(matrix_invariant_by_example_perm[1:5, 1:5], 14, perm = "(1235)", D_matrix = diag(1, 5), delta = 10)
   expect_error(compare_posteriories_of_perms(g2, g4), class = "different_parameters")
-  
+
   matrix_invariant_by_example_perm2 <- matrix_invariant_by_example_perm
   matrix_invariant_by_example_perm2[1, 1] <- 70
   g5 <- gips(matrix_invariant_by_example_perm2, 14, perm = "(1235)", D_matrix = diag(1, 6), delta = 10)
   expect_error(compare_posteriories_of_perms(g4, g5), class = "different_parameters")
-  
+
   g6 <- gips(matrix_invariant_by_example_perm2, 140, perm = "(1235)", D_matrix = diag(1, 6), delta = 10)
   expect_error(compare_posteriories_of_perms(g5, g6), class = "different_parameters")
-  
+
   g7 <- gips(matrix_invariant_by_example_perm2, 140, perm = "(1235)", D_matrix = diag(1, 6), delta = 10, was_mean_estimated = FALSE)
   expect_error(compare_posteriories_of_perms(g6, g7), class = "different_parameters")
 })

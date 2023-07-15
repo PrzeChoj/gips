@@ -58,12 +58,16 @@ test_that("calculate_d works for identity", {
 
 test_that("get_structure_constants checks for proper argument", {
   expect_silent(get_structure_constants(gips_perm("(1,2,3)", 3)))
-  
-  expect_error(get_structure_constants(3),
-               "You provided `perm` with `class\\(perm\\) == \\(numeric\\)`")
-  
-  expect_error(get_structure_constants(permutations::as.cycle("(1,2,3)")),
-               "You provided `perm` with `class\\(perm\\) == \\(permutation, cycle\\)`")
+
+  expect_error(
+    get_structure_constants(3),
+    "You provided `perm` with `class\\(perm\\) == \\(numeric\\)`"
+  )
+
+  expect_error(
+    get_structure_constants(permutations::as.cycle("(1,2,3)")),
+    "You provided `perm` with `class\\(perm\\) == \\(permutation, cycle\\)`"
+  )
 })
 
 test_that("get_structure_constants can get a gips as perm", {
