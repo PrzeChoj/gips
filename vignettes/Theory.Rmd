@@ -315,7 +315,7 @@ $$\log L\left(\hat{\Sigma}; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(-
 $$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) - \frac{n}2\mathrm{tr}(\hat{\Sigma}^{-1} S),$$
 where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$.
 
-In `gips` we estimate $\Sigma$ as $\hat{\Sigma} = \pi_{c}(S)$. Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
+The MLE of $\Sigma$ in a model invariant under $\Gamma=c$ is $\hat{\Sigma} = \pi_{c}(S)$. Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
 
 $$\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2$$
 
@@ -323,10 +323,10 @@ which can be calculated by `logLik.gips()`.
 
 Then AIC and BIC are defined by:
 
-$$AIC = 2 \cdot (\dim M) -2 \log L(\hat K)$$
-$$BIC = (\log n) \cdot (\dim M) -2 \log L(\hat K)$$
+$$AIC = 2 \cdot (\dim M) -2 \log L(\hat \Sigma)$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L(\hat \Sigma)$$
 
-The interpretation is as follows: the smaller the criterion, the better the model.
+A smaller value of the criteria for a given model indicates a better fit.
 
 Those can be calculated by `AIC.gips()` and `BIC.gips()`.
 
@@ -337,8 +337,8 @@ $$\log L_{estimated\ mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \f
 
 And definitions of AIC and BIC stay the same:
 
-$$AIC = 2 \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
-$$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
+$$AIC = 2 \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat \Sigma)$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat \Sigma)$$
 
 ### Example
 
