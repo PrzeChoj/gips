@@ -15,7 +15,7 @@ knitr::opts_chunk[["set"]](
 )
 ```
 
-# Theory the `gips` is based on
+# The theory the `gips` is based on
 
 The package is based on the article [[1]](https://arxiv.org/abs/2004.03503). There the math behind the package is precisely demonstrated, and all the theorems are proven.
 
@@ -41,7 +41,7 @@ Let $\mathfrak{S}_p$ denote the symmetric group
 on $V$, that is, the set of all permutations on $\{1,\ldots,p\}$ with function composition as the group operation. Let $\Gamma$ be an arbitrary subgroup of $\mathfrak{S}_p$. The model $\mathrm{N}_p(0,\Sigma)$ is said to be invariant under the action of $\Gamma$ if for all $g\in \Gamma$, $g\cdot\Sigma\cdot g^\top=\Sigma$ 
 (here, we identify a permutation $g$ with its permutation matrix).
 
-For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e. the space of symmetric matrices invariant under $\Gamma$,
+For a subgroup $\Gamma \subset  \mathfrak{S}_p$, we define the colored space, i.e., the space of symmetric matrices invariant under $\Gamma$,
 $$\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},$$
 and the colored cone of positive definite matrices valued in $\mathcal{Z}_{\Gamma}$,
 $$\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).$$
@@ -137,7 +137,7 @@ So it has some identical elements.
 
 Note that for $\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}$ we have $\pi_{\{\text{id}\}}(S) = S$.
 
-So, no additional assumptions are made; thus the standard covariance estimator is the best we can do.
+So, no additional assumptions are made; thus, the standard covariance estimator is the best we can do.
 
 
 ### Example
@@ -172,13 +172,13 @@ round(S_projected, 2)
 gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 ```
 
-Notice in the `S_projected` matrix, there are identical elements according to the equation from the beginning of this section. For example, `S_projected[1,1] = S_projected[2,2]`.
+Notice in the `S_projected` matrix there are identical elements according to the equation from the beginning of this section. For example, `S_projected[1,1] = S_projected[2,2]`.
 
 ## $C_\sigma$ and `n0`
-It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix in the Gaussian model exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
+It is well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix in the Gaussian model exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
 required for the MLE to exist is lower than $p$. It is equal to the number of cycles, denoted hereafter by $C_\sigma$.
 
-For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$ and so 2 observations would be enough.
+For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$, and so 2 observations would be enough.
 
 To get this $C_\sigma$ number in `gips`, one can call `summary()` on the appropriate `gips` object:
 ```{r n0_2}
@@ -187,7 +187,7 @@ summary(g1)$n0
 g2 <- gips(S, n, perm = "(1,2)(3,4,5,6)", was_mean_estimated = FALSE)
 summary(g2)$n0
 ```
-This is called `n0` and not $C_\sigma$, because it is increased by 1 when the mean was estimated:
+This is called `n0` and not $C_\sigma$ because it is increased by 1 when the mean was estimated:
 
 ```{r n0_1}
 S <- cov(Z)
@@ -204,7 +204,7 @@ When one has the data matrix `Z`, one would like to know if it has a hidden stru
 ### General workflow
 
 1. Choose the prior distribution on $\Gamma$ and $\Sigma$.
-2. Calculate the posteriori distribution (up to a normalizing constant) by formula [[1]](https://arxiv.org/abs/2004.03503), (30).
+2. Calculate the posteriori distribution (up to a normalizing constant) by the formula [[1]](https://arxiv.org/abs/2004.03503), (30).
 3. Use the Metropolis-Hastings algorithm to find the permutation with the biggest value of the posterior probability $\mathbb{P}(\Gamma|Z)$.
 
 ### Details on the prior distribution
@@ -214,13 +214,13 @@ The considered prior distribution of $\Gamma$ and $K=\Sigma^{-1}$:
 1. $\Gamma$ is uniformly distributed on the set of all cyclic subgroups of $\mathfrak{S}_p$.
 2. $K$ given $\Gamma$ follows the Diaconis-Ylvisaker conjugate prior distribution with parameters $\delta$ (real number, $\delta > 1$) and $D$ (symmetric, positive definite square matrix of the same size as `S`), see [[1]](https://arxiv.org/abs/2004.03503), Sec. 3.4.
 
-Footnote: Actually, for $\Gamma = \{id\}$, $\delta > 0$ parameter are theoretically correct. In `gips` we want this to be defined for all cyclic groups $\Gamma$, so we restrict $\delta > 1$. Refer to the [[1]](https://arxiv.org/abs/2004.03503).
+Footnote: Actually, for $\Gamma = \{id\}$, $\delta > 0$ parameters are theoretically correct. In `gips`, we want this to be defined for all cyclic groups $\Gamma$, so we restrict $\delta > 1$. Refer to the [[1]](https://arxiv.org/abs/2004.03503).
 
 ### `gips` technical details
 
 In `gips`, $\delta$ is named `delta`, and $D$ is named `D_matrix`. By default, they are set to $3$ and `diag(d, p)`, respectively, where `d = mean(diag(S))`. However, it is worth running the procedure for several parameters `D_matrix` of form $d\cdot diag(p)$ for positive constant $d$. Small $d$ (compared to the data) favors small structures. Large $d$ will "forget" the data.
 
-One can calculate the logarithm of formula (30) with function `log_posteriori_of_gips()`.
+One can calculate the logarithm of formula (30) with the function `log_posteriori_of_gips()`.
 
 ### Interpretation
 
@@ -234,11 +234,11 @@ $$\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))$$
 
 where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$
 
-In such a case, we call $c_{\text{map}}$ the Maximum A Posteri (MAP).
+In such a case, we call $c_{\text{map}}$ the Maximum A Posteriori (MAP).
 
 ### Finding the MAP Estimator
 
-The space of all permutations is enormous for bigger $p$ (in our experiments, $p\ge 10$ is too big). In such a big space, it is more reasonable to estimate the MAP than to calculate it precisely.
+The space of all permutations is enormous for bigger $p$ (in our experiments, $p\ge 10$ is too big). In such a big space, estimating the MAP is more reasonable than calculating it precisely.
 
 Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To see the discussion on it and other options available in `gips`, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
@@ -319,7 +319,7 @@ In `gips` we estimate $\Sigma$ as $\hat{\Sigma} = \pi_{c}(S)$. Further, for ever
 
 $$\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2$$
 
-Which can be calculated by `logLik.gips()`.
+which can be calculated by `logLik.gips()`.
 
 Then AIC and BIC are defined by:
 
@@ -342,7 +342,7 @@ $$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat K)$$
 
 ### Example
 
-Consider example similar to one in **Bayesian model selection** section:
+Consider an example similar to one in the **Bayesian model selection** section:
 
 <div id="spoiler4" style="display:none">
 ```{r example3_1}
@@ -401,7 +401,7 @@ BIC(g)
 BIC(g_map) # this is smaller, so this is better
 ```
 
-We will consider `g_map` better model both in terms of the AIC and the BIC.
+We will consider a `g_map` better model both in terms of the AIC and the BIC.
 
 
 # References

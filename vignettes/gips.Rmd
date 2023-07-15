@@ -20,7 +20,7 @@ old_options <- options(scipen = 999) # turn off scientific notation
 
 # The problem
 
-Quite often, we have too little data to perform valid inference. Consider the 
+Quite often, we have too little data to perform valid inferences. Consider the 
 situation with multivariate Gaussian distribution, where we have few observations 
 compared to the number of variables. For example, that's the case for
 graphical models used in biology or medicine. In such a setting, the usual way
@@ -30,7 +30,7 @@ statistically applicable. What now?
 
 # Invariance by permutation
 
-In some cases, the interchange of variables in the vector does not change its distribution.
+Sometimes, the interchange of variables in the vector does not change its distribution.
 In the multivariate Gaussian case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
 
 ```{r symvariant_matrix, echo=FALSE}
@@ -103,7 +103,7 @@ library(gips)
 Z <- DAAG::oddbooks[, c(1, 2, 3)]
 ```
 
-We suspect books from this dataset were printed with $\sqrt{2}$ aspect ratio as in popular [A series paper size](https://en.wikipedia.org/wiki/Paper_size#A_series). Therefore, we can use this expert knowledge in the analysis and unify the data for height and width:
+We suspect books from this dataset were printed with $\sqrt{2}$ aspect ratio as in popular [A-series paper size](https://en.wikipedia.org/wiki/Paper_size#A_series). Therefore, we can use this expert knowledge in the analysis and unify the data for height and width:
 
 ```{r change_D_matrix_example1_1}
 Z$height <- Z$height / sqrt(2)
@@ -122,7 +122,7 @@ plot_cosmetic_modifications(plot(g, type = "heatmap")) +
   ggplot2::ggtitle("Standard, MLE estimator\nof a covariance matrix")
 ```
 
-We can see similarities between columns 2 and 3, representing the book’s height and breadth. In particular, the covariance between [1,2] is very similar to [1,3], and the variance of [2] is similar to the variance of [3]. Those are not surprising, given the interpretation of the data (after the rescaling of height that we did).
+We can see similarities between columns 2 and 3, representing the book’s height and breadth. In particular, the covariance between [1,2] is very similar to [1,3], and the variance of [2] is similar to the variance of [3]. Those are not surprising, given the data interpretation (after the rescaling of height that we did).
 
 Let's see what the `gips` will tell about this data:
 
@@ -198,7 +198,7 @@ g <- gips(S, number_of_observations)
 plot(g, type = "heatmap")
 ```
 
-Looking at the plot, one can see the similarities between columns 3, 4, and 5. They have similar variance and covariance to each other. The 3 and 5 have similar covariance with columns 1 and 2. However, the 4 is not far from them.
+Looking at the plot, one can see the similarities between columns 3, 4, and 5. They have similar variance and covariance to each other. The 3 and 5 have similar covariance with columns 1 and 2. However, the 4 is also close.
 
 Let's see if `gips` will find the relationship:
 
@@ -221,9 +221,9 @@ This assumption is over 3 times more believable than making no assumption. Let's
 ```{r toy_example_data_show5}
 get_probabilities_from_gips(g_map)
 ```
-We see that assumption $(3,4,5)$ is the most likely with $6.2\%$ posterior probability. There is 21 possible permutations that are more likely than id.
+We see that assumption $(3,4,5)$ is the most likely with a $6.2\%$ posterior probability. 21 possible permutations are more likely than id.
 
-Remember that the `n0` could still be to big for your data. In this example the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 5$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
+Remember that the `n0` could still be too big for your data. In this example, the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 5$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6}
 summary(g_map)$n0 # n0 = 4 <= 4 = number_of_observations

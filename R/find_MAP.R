@@ -358,7 +358,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
         number_of_observations, "."
       ),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 

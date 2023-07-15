@@ -29,7 +29,7 @@ library(gips)
 
 The goal of the `find_MAP()` is to find the permutation $\sigma$ that maximizes the a posteriori probability (MAP - Maximum A Posteriori). Such a permutation represents the most plausible symmetry given the data.
 
-This a posteriori probability function is described in-depth in the **Bayesian model selection** section of the `vignette("Theory", package="gips")`, also available as a [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can calculate the logarithm of it by `log_posteriori_of_gips()` function. In the following paragraphs, we will refer to this a posteriori probability function as $f(\sigma)$. We have $f(\sigma) > 0$.
+This a posteriori probability function is described in-depth in the **Bayesian model selection** section of the `vignette("Theory", package="gips")`, also available as a [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can calculate the logarithm of it by the `log_posteriori_of_gips()` function. In the following paragraphs, we will refer to this a posteriori probability function as $f(\sigma)$. We have $f(\sigma) > 0$.
 
 # Available optimizers
 
@@ -45,7 +45,7 @@ The `max_iter` parameter functions differently in Metropolis-Hastings and hill c
 
 For Metropolis-Hastings, it computes a posteriori of `max_iter` permutations, whereas for hill climbing, it computes ${p\choose 2} \cdot$ `max_iter` of them.
 
-In the case of the Brute Force optimizer, it computes all $f(\sigma)$ values. There number of all different $\sigma$s follows [OEIS sequence A051625](https://oeis.org/A051625).
+In the case of the Brute Force optimizer, it computes all $f(\sigma)$ values. The number of all different $\sigma$s follows [OEIS sequence A051625](https://oeis.org/A051625).
 
 
 ## Brute Force
@@ -54,7 +54,7 @@ It searches through the whole space at once.
 
 This is the only optimizer that will certainly find the actual MAP Estimator. 
 
-This is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (AMD EPYC 7413 Processor, single core), and we show the time in the table below:
+Brute Force is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (AMD EPYC 7413 Processor, single core), and we show the time in the table below:
 
 | p=2       | p=3       | p=4      | p=5     | p=6   | p=7     | p=8    | p=9   | p=10          |
 |-----------|-----------|----------|---------|-------|---------|--------|-------|---------------|
@@ -107,32 +107,32 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
 
-Brute Force needed 362 calculations, as in predicted in [OEIS sequence A051625](https://oeis.org/A051625) for $p = 6$.
+Brute Force needed 362 calculations, as predicted in [OEIS sequence A051625](https://oeis.org/A051625) for $p = 6$.
 
-## Metropolis Hastings
+## Metropolis-Hastings
 
-This optimizer is implementation of the *Second approach* from [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
+This optimizer implements the *Second approach* from [[1, Sec 4.1.2]](https://arxiv.org/abs/2004.03503).
 
-This uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
+It uses the Metropolis-Hastings algorithm to optimize the space; [see Wikipedia](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm). This algorithm used in this context is a special case of the Simulated Annealing the reader may be more familiar with; [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 ### Short description
 
-In every iteration $i$, an algorithm considers a permutation, say, $\sigma_i$. Then a random transposition is drawn uniformly $t_i = (j,k)$ and the value of $f(\sigma_i \circ t_i)$ is computed.
+In every iteration $i$, an algorithm considers a permutation, say, $\sigma_i$. Then a random transposition is drawn uniformly $t_i = (j,k)$, and the value of $f(\sigma_i \circ t_i)$ is computed.
 
-* If new value is bigger than the previous one, (i.e. $f(\sigma_i \circ t_i) \ge f(\sigma_i)$), then we set $\sigma_{i+1} = \sigma_i \circ t_i$. 
-* If new value is smaller ($f(\sigma_i \circ t_i) < f(\sigma_i)$), then we will choose $\sigma_{i+1} = \sigma_i \circ t_i$ with probability $\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$. Otherwise, we set $\sigma_{i+1} = \sigma_i$ with complementary probability $1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$.
+* If a new value is bigger than the previous one (i.e., $f(\sigma_i \circ t_i) \ge f(\sigma_i)$), then we set $\sigma_{i+1} = \sigma_i \circ t_i$. 
+* If a new value is smaller ($f(\sigma_i \circ t_i) < f(\sigma_i)$), then we will choose $\sigma_{i+1} = \sigma_i \circ t_i$ with probability $\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$. Otherwise, we set $\sigma_{i+1} = \sigma_i$ with complementary probability $1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}$.
 
-The final value is the best $\sigma$ that was ever computed.
+The final value is the best $\sigma$ ever computed.
 
 ### Notes
 
 This algorithm was tested in multiple settings and turned out to be an outstanding optimizer for this problem. Especially given it does not need any hyperparameters tuned.
 
-The only parameter it depends on is `max_iter`, which determines the number of steps described above. One should choose this number rationally. When decided too small, there is a missed opportunity to find potentially a much better permutation. When decided too big, there is a lost time and computational power that does not lead to growth. Our recommendation is to plot the convergence plot with a logarithmic OX scale: `plot(g_map, type = "best", logarithmic_x = TRUE)`, then decide if the line has flattened already. Keep in mind that the OY scale is also logarithmic. For example, a marginal change on the OY scale could mean $10000$ **times** the change in A Posteriori.
+The only parameter it depends on is `max_iter`, which determines the number of steps described above. One should choose this number rationally. When decided too small, there is a missed opportunity to find a much better permutation. When decided too big, there is a lost time and computational power that does not lead to growth. We recommend plotting the convergence plot with a logarithmic OX scale: `plot(g_map, type = "best", logarithmic_x = TRUE)`, then decide if the line has flattened already. Keep in mind that the OY scale is also logarithmic. For example, a marginal change on the OY scale could mean $10000$ **times** the change in A Posteriori.
 
-For more information about continuing the optimization, see the **Continuing of the optimization** section below.
+For more information about continuing the optimization, see the **Continuing the optimization** section below.
 
-This algorithm has been analyzed extensively by statisticians. Thanks to the ergodic theorem, the frequency of visits of a given state converges almost surely to the probability of that state. This is the approach explained in the [[1, Sec.4.1.2]](https://arxiv.org/abs/2004.03503) and shown in [[1, Sec. 5.2]](https://arxiv.org/abs/2004.03503). One can obtain estimates of posterior probabilities by setting `return_probabilities = TRUE`.
+This algorithm has been analyzed extensively by statisticians. Thanks to the ergodic theorem, the frequency of visits to a given state converges almost surely to the probability of that state. This is the approach explained in [[1, Sec.4.1.2]](https://arxiv.org/abs/2004.03503) and shown in [[1, Sec. 5.2]](https://arxiv.org/abs/2004.03503). One can obtain estimates of posterior probabilities by setting `return_probabilities = TRUE`.
 
 ### Example
 
@@ -176,7 +176,7 @@ g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 g_map
 ```
 
-After just hundred and fifty iterations, the found permutation is unimaginably more likely than the original, `()` permutation.
+After just a hundred and fifty iterations, the found permutation is unimaginably more likely than the $\sigma_0 = $ `()` permutation.
 
 ```{r Metropolis_Hastings_3}
 plot(g_map, type = "best", logarithmic_x = TRUE)
@@ -198,7 +198,7 @@ $$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\
 Where:
 $$\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}$$
 
-The algorithm ends when all neighbors are less likely, or the `max_iter` was achieved. In the first case, the algorithm will end in a local maximum, but there is no guarantee that this is also the global maximum.
+The algorithm ends when all neighbors are less likely, or the `max_iter` is achieved. In the first case, the algorithm will finish at a local maximum, but there is no guarantee that this is also the global maximum.
 
 ### Pseudocode
 
@@ -236,9 +236,9 @@ hill_climb <- function(g, max_iter) {
       } # end for k
     } # end for j
     i <- i + 1
-    
+
     perm_i_minus_1_log_f <- perm_i_log_f
-    
+
     perm_i <- best_neighbor
     perm_i_log_f <- best_neighbor_log_f
   } # end while
@@ -297,9 +297,9 @@ plot(g_map, type = "best")
 The above warnings are expected.
 
 
-# Continuing of the optimization
+# Continuing the optimization
 
-When `max_iter` is reached during Metropolis-Hastings or hill climbing, the optimization stops and returns the result. Users are expected to plot the result and determine if it has converged. If necessary, users can continue the optimization, as shown below.
+When `max_iter` is reached during Metropolis-Hastings or hill climbing, the optimization stops and returns the result. Users are encouraged to plot the result and determine if it has converged. If necessary, users can continue the optimization, as shown below.
 
 <div id="spoiler5" style="display:none">
 ```{r continuing_1}
@@ -351,16 +351,16 @@ The improvement has slowed down significantly. It is fair to stop the algorithm 
 
 The `find_MAP()` function has two additional parameters: `show_progress_bar` and `save_all_perms`, which can be set to `TRUE` or `FALSE`.
 
-When `show_progress_bar = TRUE`, `gips` will print "=" characters on the console during optimization. Keep in mind that when user sets the `return_probabilities = TRUE`, a second progress bar will indicate the calculation of the probabilities after optimization.
+When `show_progress_bar = TRUE`, `gips` will print "=" characters on the console during optimization. Remember that when the user sets the `return_probabilities = TRUE`, a second progress bar will indicate the calculation of the probabilities after optimization.
 
-The `save_all_perms = TRUE` will save all visited permutations in the outputted object, but this significantly increases the required RAM. For instance, with $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, whereas `save_all_perms = FALSE` only required 2 MB. However, `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE`, or more complex path analysis.
+The `save_all_perms = TRUE` will save all visited permutations in the outputted object, which significantly increases the required RAM. For instance, with $p=150$ and `max_perm = 150000`, we needed 400 MB to store it, whereas `save_all_perms = FALSE` only required 2 MB. However, `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE` or more complex path analysis.
 
 
 # Discussion
 
-We are considering implementing the **First approach** from [1] in the future as well. In this approach, the Markov chain travels along cyclic groups rather than permutations. 
+We are also considering implementing the **First approach** from [1] in the future. The Markov chain travels along cyclic groups rather than permutations in this approach.
 
-We encourage everyone join in discussion on available and potential new optimizers on the [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). There, one can also see why some optimizers were implemented but not yet added to `gips`.
+We encourage everyone to discuss on available and potential new optimizers on [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). One can also see why some optimizers were implemented but not yet added to gips there.
 
 
 # References
