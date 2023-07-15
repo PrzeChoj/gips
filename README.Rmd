@@ -115,7 +115,7 @@ plot_cosmetic_modifications(plot(g, type = "heatmap"))
 
 Remember, we analyze the covariance matrix. We can see some nearly identical colors in the estimated covariance matrix. E.g., variances of columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`), variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$ `S[4,4]`). What is more, Covariances are also similar (`S[1,3]` $\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Were this approximate equalities obtained coincidentally? Or do they reflect some underlying data properties? It is hard to decide purely by looking at the matrix.
 
-`find_MAP()` will use the Bayestian model to quantify if the approximate equalities are coincidental. Let's see if it will find this relationship:
+`find_MAP()` will use the Bayesian model to quantify if the approximate equalities are coincidental. Let's see if it will find this relationship:
 
 ```{r example_mean_unknown3}
 g_MAP <- find_MAP(g, optimizer = "brute_force")
@@ -222,7 +222,7 @@ Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` 
 
 For more examples and introduction, see `vignette("gips", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
-For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see an article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 
 # Acknowledgment

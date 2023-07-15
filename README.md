@@ -99,7 +99,7 @@ approximate equalities obtained coincidentally? Or do they reflect some
 underlying data properties? It is hard to decide purely by looking at
 the matrix.
 
-`find_MAP()` will use the Bayestian model to quantify if the approximate
+`find_MAP()` will use the Bayesian model to quantify if the approximate
 equalities are coincidental. Let’s see if it will find this
 relationship:
 
@@ -262,8 +262,10 @@ For more examples and introduction, see
 page](https://przechoj.github.io/gips/articles/gips.html).
 
 For an in-depth analysis of the package performance, capabilities, and
-comparison with similar packages, see an [article by developers
-available on arXiv 2307.00790](https://arxiv.org/abs/2307.00790).
+comparison with similar packages, see an article “Learning permutation
+symmetries with gips in R” by `gips` developers Adam Chojecki, Paweł
+Morgen, Bartosz Kołodziejek available on
+[arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 # Acknowledgment
 
