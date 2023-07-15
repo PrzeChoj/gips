@@ -50,13 +50,13 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Akaike's An Information Criterion for gips class</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Akaike's An Information Criterion for <code>gips</code> class</h1>
       <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/HEAD/R/gips_class.R" class="external-link"><code>R/gips_class.R</code></a></small>
       <div class="d-none name"><code>AIC.gips.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Akaike's An Information Criterion for gips class</p>
+    <p>Akaike's An Information Criterion for <code>gips</code> class</p>
     </div>
 
     <div class="section level2">
@@ -71,7 +71,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>An object of class <code>gips</code>; usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
+<dd><p>An object of class <code>gips</code>. Usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -79,8 +79,8 @@
 
 
 <dt>k</dt>
-<dd><p>numeric, the <em>penalty</em> per parameter to be used; the
-    default <code>k = 2</code> is the classical AIC.</p></dd>
+<dd><p>Numeric, the <em>penalty</em> per parameter to be used.
+The default <code>k = 2</code> is the classical AIC.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -90,9 +90,10 @@
 <p><code>AIC.gips()</code> returns calculated Akaike's An Information Criterion</p>
 
 
-<p>When normal model does not exists, returns <code>NULL</code>.
-When normal model cannot be reasonably approximated (matrix is singular),
-returns <code>Inf</code>.</p>
+<p>When multivariate normal model does not exists
+(<code>number_of_observations &lt; n0</code>), returns <code>NULL</code>.
+When multivariate normal model cannot be reasonably approximated
+(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), returns <code>Inf</code>.</p>
 
 
 <p>In both failure situations, shows a warning.
@@ -102,14 +103,8 @@ More information can be found in <strong>Existence of likelihood</strong></p>
 <p>section of <code><a href="logLik.gips.html">logLik.gips()</a></code>.</p>
 
 
-<p><code>BIC.gips()</code> returns calculated Schwarz's Bayesian Information Criterion</p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>If the found permutation will still require more parameters than <code>n</code>,
-the Likelihood does not exist, thus the function returns <code>NULL</code>.</p>
-<p>If the <code>projected_cov</code> (output of <code><a href="project_matrix.html">project_matrix()</a></code>)
-is close to singular, the <code>NA</code> is returned.</p>
+<p><code>BIC.gips()</code> returns calculated
+Schwarz's Bayesian Information Criterion.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
@@ -144,11 +139,11 @@ the <code>gips</code> object. Important part of the Information Criteria.</p></l
 <span class="r-in"><span>              <span class="fl">3.10</span>,<span class="fl">2.03</span>,<span class="fl">5.21</span>,<span class="fl">1.97</span>,</span></span>
 <span class="r-in"><span>              <span class="fl">1.99</span>,<span class="fl">3.07</span>,<span class="fl">1.97</span>,<span class="fl">5.13</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">14</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="co"># 238</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 237.6098</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="co"># 238</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 237.6098</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># 224 &lt; 238, so g_map is better than g in AIC</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 223.6188</span>
 <span class="r-in"><span><span class="co"># ================================================================================</span></span></span>

@@ -92,7 +92,7 @@
     
     
 <div class="section level2">
-<h2 id="theory-the-gips-is-based-on">Theory the <code>gips</code> is based on<a class="anchor" aria-label="anchor" href="#theory-the-gips-is-based-on"></a>
+<h2 id="the-theory-the-gips-is-based-on">The theory the <code>gips</code> is based on<a class="anchor" aria-label="anchor" href="#the-theory-the-gips-is-based-on"></a>
 </h2>
 <p>The package is based on the article <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>. There the math behind
 the package is precisely demonstrated, and all the theorems are
@@ -138,7 +138,7 @@ invariant under the action of <span class="math inline">\(\Gamma\)</span> if for
 identify a permutation <span class="math inline">\(g\)</span> with its
 permutation matrix).</p>
 <p>For a subgroup <span class="math inline">\(\Gamma \subset
-\mathfrak{S}_p\)</span>, we define the colored space, i.e. the space of
+\mathfrak{S}_p\)</span>, we define the colored space, i.e., the space of
 symmetric matrices invariant under <span class="math inline">\(\Gamma\)</span>, <span class="math display">\[\mathcal{Z}_{\Gamma} := \{S \in
 \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)}
 \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},\]</span>
@@ -248,7 +248,7 @@ all }\sigma\in\Gamma\]</span></p>
 </h4>
 <p>Note that for <span class="math inline">\(\Gamma = \{\text{id}\} =
 \{(1)(2)\dots(p)\}\)</span> we have <span class="math inline">\(\pi_{\{\text{id}\}}(S) = S\)</span>.</p>
-<p>So, no additional assumptions are made; thus the standard covariance
+<p>So, no additional assumptions are made; thus, the standard covariance
 estimator is the best we can do.</p>
 </div>
 <div class="section level4">
@@ -278,7 +278,7 @@ estimator is the best we can do.</p>
 <span><span class="co">#&gt; [5,]  -0.28  -3.91 -8.66 -1.51 26.25 -1.51</span></span>
 <span><span class="co">#&gt; [6,]  -3.91  -0.28 -1.51 -8.66 -1.51 26.25</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/def3_4-1.png" width="700"></p>
-<p>Notice in the <code>S_projected</code> matrix, there are identical
+<p>Notice in the <code>S_projected</code> matrix there are identical
 elements according to the equation from the beginning of this section.
 For example, <code>S_projected[1,1] = S_projected[2,2]</code>.</p>
 </div>
@@ -287,7 +287,7 @@ For example, <code>S_projected[1,1] = S_projected[2,2]</code>.</p>
 <span class="math inline">\(C_\sigma\)</span> and
 <code>n0</code><a class="anchor" aria-label="anchor" href="#c_sigma-and-n0"></a>
 </h3>
-<p>It is a well-known fact that without additional assumptions, the
+<p>It is well-known fact that without additional assumptions, the
 Maximum Likelihood Estimator (MLE) of the covariance matrix in the
 Gaussian model exists if and only if <span class="math inline">\(n \ge
 p\)</span>. However, if the additional assumption is added as the
@@ -299,7 +299,7 @@ of cycles, denoted hereafter by <span class="math inline">\(C_\sigma\)</span>.</
 function, then there is a single cycle in it <span class="math inline">\(C_\sigma = 1\)</span>. Therefore a single
 observation would be enough to estimate a covariance matrix with
 <code><a href="../reference/project_matrix.html">project_matrix()</a></code>. If the permutation <span class="math inline">\(\sigma = (1,2)(3,4,5,6)\)</span> is discovered,
-then <span class="math inline">\(C_\sigma = 2\)</span> and so 2
+then <span class="math inline">\(C_\sigma = 2\)</span>, and so 2
 observations would be enough.</p>
 <p>To get this <span class="math inline">\(C_\sigma\)</span> number in
 <code>gips</code>, one can call <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> on the
@@ -311,7 +311,7 @@ appropriate <code>gips</code> object:</p>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">n</span>, perm <span class="op">=</span> <span class="st">"(1,2)(3,4,5,6)"</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span></span>
 <span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
-<p>This is called <code>n0</code> and not <span class="math inline">\(C_\sigma\)</span>, because it is increased by 1
+<p>This is called <code>n0</code> and not <span class="math inline">\(C_\sigma\)</span> because it is increased by 1
 when the mean was estimated:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
@@ -335,7 +335,7 @@ the paper demonstrates a way how to find it.</p>
 <ol style="list-style-type: decimal">
 <li>Choose the prior distribution on <span class="math inline">\(\Gamma\)</span> and <span class="math inline">\(\Sigma\)</span>.</li>
 <li>Calculate the posteriori distribution (up to a normalizing constant)
-by formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
+by the formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
 (30).</li>
 <li>Use the Metropolis-Hastings algorithm to find the permutation with
 the biggest value of the posterior probability <span class="math inline">\(\mathbb{P}(\Gamma|Z)\)</span>.</li>
@@ -356,7 +356,7 @@ matrix of the same size as <code>S</code>), see <a href="https://arxiv.org/abs/2
 </ol>
 <p>Footnote: Actually, for <span class="math inline">\(\Gamma =
 \{id\}\)</span>, <span class="math inline">\(\delta &gt; 0\)</span>
-parameter are theoretically correct. In <code>gips</code> we want this
+parameters are theoretically correct. In <code>gips</code>, we want this
 to be defined for all cyclic groups <span class="math inline">\(\Gamma\)</span>, so we restrict <span class="math inline">\(\delta &gt; 1\)</span>. Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
 </div>
 <div class="section level4">
@@ -372,7 +372,7 @@ form <span class="math inline">\(d\cdot diag(p)\)</span> for positive
 constant <span class="math inline">\(d\)</span>. Small <span class="math inline">\(d\)</span> (compared to the data) favors small
 structures. Large <span class="math inline">\(d\)</span> will “forget”
 the data.</p>
-<p>One can calculate the logarithm of formula (30) with function
+<p>One can calculate the logarithm of formula (30) with the function
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p>
 </div>
 <div class="section level4">
@@ -387,15 +387,14 @@ data was drawn from that model.</p>
 <p>one can reasonably assume the data <span class="math inline">\(Z\)</span> was drawn from the model <span class="math display">\[\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))\]</span></p>
 <p>where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n
 Z^{(i)}\cdot {Z^{(i)}}^\top\)</span></p>
-<p>In such a case, we call <span class="math inline">\(c_{\text{map}}\)</span> the Maximum A Posteri
+<p>In such a case, we call <span class="math inline">\(c_{\text{map}}\)</span> the Maximum A Posteriori
 (MAP).</p>
 </div>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
 <p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments, <span class="math inline">\(p\ge 10\)</span> is too big). In such a big space,
-it is more reasonable to estimate the MAP than to calculate it
-precisely.</p>
+estimating the MAP is more reasonable than calculating it precisely.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
 it. To see the discussion on it and other options available in
 <code>gips</code>, see
@@ -491,7 +490,7 @@ so:</p>
 Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) -
 \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) -
 \frac{np}2\]</span></p>
-<p>Which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
+<p>which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
 <p>Then AIC and BIC are defined by:</p>
 <p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log L(\hat
 K)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim M)
@@ -519,7 +518,7 @@ L_{estimated\ mean}(\hat K)\]</span> <span class="math display">\[BIC =
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h4>
-<p>Consider example similar to one in <strong>Bayesian model
+<p>Consider an example similar to one in the <strong>Bayesian model
 selection</strong> section:</p>
 <div id="spoiler4" style="display:none">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -577,8 +576,8 @@ covariance matrix:</p>
 <span><span class="co">#&gt; [1] 63.06318</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># this is smaller, so this is better</span></span>
 <span><span class="co">#&gt; [1] 62.78115</span></span></code></pre></div>
-<p>We will consider <code>g_map</code> better model both in terms of the
-AIC and the BIC.</p>
+<p>We will consider a <code>g_map</code> better model both in terms of
+the AIC and the BIC.</p>
 </div>
 </div>
 <div class="section level2">
@@ -589,8 +588,8 @@ AIC and the BIC.</p>
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
 <p>[2] “Learning permutation symmetries with gips in R” by
-<code>gips</code> developers Adam Chojecki, Paweł Morgen, Bartosz
-Kołodziejek available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
+<code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
+Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

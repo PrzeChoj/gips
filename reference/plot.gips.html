@@ -92,23 +92,23 @@ The plot depends on the <code>type</code> argument.</p>
 
 <dt>type</dt>
 <dd><p>A character vector of length 1. One of
-<code>c("heatmap", "MLE", "all", "best", "both", "block_heatmap")</code>.</p><ul><li><p><code>"heatmap"</code>, <code>"MLE"</code> - Plots a heatmap of the Maximum Likelihood
+<code>c("heatmap", "MLE", "best", "all", "both", "block_heatmap")</code>:</p><ul><li><p><code>"heatmap"</code>, <code>"MLE"</code> - Plots a heatmap of the Maximum Likelihood
 Estimator of the covariance matrix given the permutation.
 That is, the <code>S</code> matrix inside the <code>gips</code> object
 projected on the permutation in the <code>gips</code> object.</p></li>
-<li><p><code>"all"</code> - Plots the line of a posteriori for all visited states.</p></li>
 <li><p><code>"best"</code> - Plots the line of the biggest a posteriori found over time.</p></li>
+<li><p><code>"all"</code> - Plots the line of a posteriori for all visited states.</p></li>
 <li><p><code>"both"</code> - Plots both lines from "all" and "best".</p></li>
 <li><p><code>"block_heatmap"</code> - Plots a heatmap of diagonally block representation of <code>S</code>.
 Non-block entries (equal to 0) are white for better clarity.
 For more information see <strong>Block Decomposition - [1], Theorem 1</strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
-<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p></li>
+<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 </ul><p>The default value is <code>NA</code>, which will be changed to "heatmap" for
 non-optimized <code>gips</code> objects and to "both" for optimized ones.
 Using the default produces a warning.
 All other arguments are ignored for
-the <code>type = "heatmap"</code> or <code>type = "MLE"</code>.</p></dd>
+the <code>type = "heatmap"</code>, <code>type = "MLE"</code> or <code>type = "block_heatmap"</code>.</p></dd>
 
 
 <dt>logarithmic_y, logarithmic_x</dt>
@@ -147,15 +147,15 @@ the whole optimization process is shown.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Additional arguments passed to <code><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">stats::heatmap()</a></code>
-or other various elements of the plot.</p></dd>
+<dd><p>Additional arguments passed to
+other various elements of the plot.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>When <code>type</code> is one of <code>"all"</code>, <code>"best"</code> or <code>"both"</code>,
+<p>When <code>type</code> is one of <code>"best"</code>, <code>"all"</code> or <code>"both"</code>,
 returns an invisible <code>NULL</code>.
 When <code>type</code> is one of <code>"heatmap"</code>, <code>"MLE"</code> or <code>"block_heatmap"</code>,
 returns an object of class <code>ggplot</code>.</p>
@@ -165,7 +165,7 @@ returns an object of class <code>ggplot</code>.</p>
     <div class="dont-index">
 <ul><li><p><code><a href="find_MAP.html">find_MAP()</a></code> - Usually, the <code>plot.gips()</code>
 is called on the output of <code><a href="find_MAP.html">find_MAP()</a></code>.</p></li>
-<li><p><code><a href="project_matrix.html">project_matrix()</a></code> - The function used with <code>type = "heatmap"</code>.</p></li>
+<li><p><code><a href="project_matrix.html">project_matrix()</a></code> - The function used with <code>type = "MLE"</code>.</p></li>
 <li><p><code><a href="gips.html">gips()</a></code> - The constructor of a <code>gips</code> class.
 The <code>gips</code> object is used as the <code>x</code> parameter.</p></li>
 </ul></div>
@@ -194,7 +194,7 @@ The <code>gips</code> object is used as the <code>x</code> parameter.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-plt img"><img src="plot.gips-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -205,7 +205,7 @@ The <code>gips</code> object is used as the <code>x</code> parameter.</p></li>
 <span class="r-plt img"><img src="plot.gips-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-plt img"><img src="plot.gips-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Now, the output is (most likely) different because the permutation</span></span></span>

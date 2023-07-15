@@ -94,7 +94,7 @@
 <div class="section level2">
 <h2 id="the-problem">The problem<a class="anchor" aria-label="anchor" href="#the-problem"></a>
 </h2>
-<p>Quite often, we have too little data to perform valid inference.
+<p>Quite often, we have too little data to perform valid inferences.
 Consider the situation with multivariate Gaussian distribution, where we
 have few observations compared to the number of variables. For example,
 that’s the case for graphical models used in biology or medicine. In
@@ -104,12 +104,12 @@ maximum likelihood method) isn’t statistically applicable. What now?</p>
 <div class="section level2">
 <h2 id="invariance-by-permutation">Invariance by permutation<a class="anchor" aria-label="anchor" href="#invariance-by-permutation"></a>
 </h2>
-<p>In some cases, the interchange of variables in the vector does not
-change its distribution. In the multivariate Gaussian case, it would
-mean that they have the same variances and covariances with other
-respective variables. For instance, in the following covariance matrix,
-variables X1 and X3 are interchangeable, meaning that vectors (X1, X2,
-X3) and (X3, X2, X1) have the same distribution.</p>
+<p>Sometimes, the interchange of variables in the vector does not change
+its distribution. In the multivariate Gaussian case, it would mean that
+they have the same variances and covariances with other respective
+variables. For instance, in the following covariance matrix, variables
+X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and
+(X3, X2, X1) have the same distribution.</p>
 <p><img src="gips_files/figure-html/symvariant_matrix-1.png" width="700"></p>
 <p>Now, we can state this interchangeability property in terms of
 permutations. In our case, the distribution of (X1, X2, X3) is
@@ -139,9 +139,9 @@ algorithm sketch are explored in another vignette that can be accessed
 by <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or on its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>.</p>
 <p>For an in-depth analysis of the package performance, capabilities,
-and comparison with similar packages, see an article “Learning
+and comparison with similar packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code>’ developers
-Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="practical-example">Practical example<a class="anchor" aria-label="anchor" href="#practical-example"></a>
@@ -151,7 +151,7 @@ Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on <a href="https:/
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>We suspect books from this dataset were printed with <span class="math inline">\(\sqrt{2}\)</span> aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A series paper
+<p>We suspect books from this dataset were printed with <span class="math inline">\(\sqrt{2}\)</span> aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A-series paper
 size</a>. Therefore, we can use this expert knowledge in the analysis
 and unify the data for height and width:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -174,8 +174,8 @@ and unify the data for height and width:</p>
 <p>We can see similarities between columns 2 and 3, representing the
 book’s height and breadth. In particular, the covariance between [1,2]
 is very similar to [1,3], and the variance of [2] is similar to the
-variance of [3]. Those are not surprising, given the interpretation of
-the data (after the rescaling of height that we did).</p>
+variance of [3]. Those are not surprising, given the data interpretation
+(after the rescaling of height that we did).</p>
 <p>Let’s see what the <code>gips</code> will tell about this data:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -243,11 +243,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]     [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -7.02873  1.093741  9.634325 -6.493363 3.046858</span></span>
-<span><span class="co">#&gt; [2,] -12.80456 -4.671983 10.446987 -6.175571 3.177077</span></span>
-<span><span class="co">#&gt; [3,] -12.05330 -2.458167  9.244956 -7.920849 2.677891</span></span>
-<span><span class="co">#&gt; [4,] -14.10826 -1.491719  8.214963 -8.884996 1.612225</span></span>
+<span><span class="co">#&gt;           [,1]      [,2]     [,3]       [,4]       [,5]</span></span>
+<span><span class="co">#&gt; [1,] -2.427025  1.037543 3.747164  -8.065882 -0.2945897</span></span>
+<span><span class="co">#&gt; [2,] -8.202850 -4.728181 4.559827  -7.748089 -0.1643708</span></span>
+<span><span class="co">#&gt; [3,] -7.451593 -2.514365 3.357796  -9.493367 -0.6635564</span></span>
+<span><span class="co">#&gt; [4,] -9.506553 -1.547918 2.327803 -10.457514 -1.7292223</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -265,14 +265,14 @@ Show/hide data preparation
 <p>We want to find reasonable additional assumptions on <code>S</code>
 to make it easier to estimate.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span>S <span class="op">=</span> <span class="va">S</span>, number_of_observations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/toy_example_data_show2-1.png" width="700"></p>
 <p>Looking at the plot, one can see the similarities between columns 3,
 4, and 5. They have similar variance and covariance to each other. The 3
 and 5 have similar covariance with columns 1 and 2. However, the 4 is
-not far from them.</p>
+also close.</p>
 <p>Let’s see if <code>gips</code> will find the relationship:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -321,15 +321,18 @@ assumptions:</p>
 <span><span class="co">#&gt;    (1,3,4,5) </span></span>
 <span><span class="co">#&gt;  0.001034102</span></span></code></pre></div>
 <p>We see that assumption <span class="math inline">\((3,4,5)\)</span>
-is the most likely with <span class="math inline">\(6.2\%\)</span>
-posterior probability. There is 21 possible permutations that are more
-likely than id.</p>
-<p>Remember that for the <code>n0</code> could still be to big for your
-data. In this example the assumptions with transpositions (like <span class="math inline">\((3,5)\)</span>) would yield the <code>n0</code>
-<span class="math inline">\(= 4\)</span>, which would be insufficient
+is the most likely with a <span class="math inline">\(6.2\%\)</span>
+posterior probability. 21 possible permutations are more likely than
+id.</p>
+<p>Remember that the <code>n0</code> could still be too big for your
+data. In this example, the assumptions with transpositions (like <span class="math inline">\((3,5)\)</span>) would yield the <code>n0</code>
+<span class="math inline">\(= 5\)</span>, which would be insufficient
 for us to estimate covariance correctly. The assumption <span class="math inline">\((3,4,5)\)</span> will be just right:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># n0 = 4 &lt;= 4 = number_of_observations</span></span>
+<span><span class="co">#&gt; [1] 4</span></span>
+<span></span>
+<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="va">S_projected</span></span>
 <span><span class="co">#&gt;          [,1]       [,2]       [,3]       [,4]       [,5]</span></span>
 <span><span class="co">#&gt; [1,] 9.601087  5.4152903  1.4727442  1.4727442  1.4727442</span></span>
@@ -353,9 +356,9 @@ page</a>.</li>
 package, see <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>.</li>
 <li>For an in-depth analysis of the package performance, capabilities,
-and comparison with similar packages, see an article “Learning
+and comparison with similar packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code> developers
-Adam Chojecki, Paweł Morgen, Bartosz Kołodziejek available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</li>
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

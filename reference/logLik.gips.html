@@ -50,7 +50,7 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Extract Log-Likelihood for gips class</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Extract Log-Likelihood for <code>gips</code> class</h1>
       <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/HEAD/R/gips_class.R" class="external-link"><code>R/gips_class.R</code></a></small>
       <div class="d-none name"><code>logLik.gips.Rd</code></div>
     </div>
@@ -68,7 +68,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>An object of class <code>gips</code>; usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
+<dd><p>An object of class <code>gips</code>. Usually a result of a <code><a href="find_MAP.html">find_MAP()</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -82,8 +82,10 @@
 <p>Log-Likelihood of the sample.</p>
 
 
-<p>When one does not exists, returns <code>NULL</code>.
-When it overflows, returns <code>-Inf</code>.</p>
+<p>When multivariate normal model does not exists
+(<code>number_of_observations &lt; n0</code>), returns <code>NULL</code>.
+When multivariate normal model cannot be reasonably approximated
+(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), returns <code>-Inf</code>.</p>
 
 
 <p>In both failure situations, shows a warning.
@@ -105,11 +107,6 @@ is close to singular, the <code>NA</code> is returned.</p>
 In the <code>gips</code> context, such a model exists only when
 the number of observations is bigger or equal to <code>n0</code>. To get <code>n0</code>
 for the <code>gips</code> object <code>g</code>, call <code>summary(g)$n0</code>.</p>
-<p>In case <code>n &lt; n0</code>, the model does not exist, so the likelihood does not exist.
-In such a case, the <code>logLik.gips()</code> will return <code>NULL</code> and show a warning.</p>
-<p>When <code>n &gt;= n0</code>, but the estimated covariance matrix is very close to
-singular, the calculated likelihood can overflow to <code>-Inf</code>.
-In such a case, the <code>logLik.gips()</code> will return <code>-Inf</code> and show a warning.</p>
 <p>For more information, refer to <strong>\(C_\sigma\) and <code>n0</code></strong> section in
 <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p>
@@ -136,7 +133,7 @@ To see why one may be interested in <code>n0</code>,
 see the <strong>Existence of likelihood</strong> section above.</p></li>
 <li><p><code><a href="project_matrix.html">project_matrix()</a></code> - Project the known matrix
 onto the found permutations space.
-Mentioned in <strong>Calculation details</strong> section above</p></li>
+Mentioned in <strong>Calculation details</strong> section above.</p></li>
 </ul></div>
     </div>
 
@@ -153,7 +150,7 @@ Mentioned in <strong>Calculation details</strong> section above</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"nobs")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
-<span class="r-in"><span><span class="co"># For perm = "", which is default, there is p + choose(p, 2) degrees of freedom</span></span></span>
+<span class="r-in"><span><span class="co"># For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>

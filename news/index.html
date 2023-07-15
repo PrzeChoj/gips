@@ -70,7 +70,7 @@
 <li>
 <code><a href="../reference/summary.gips.html">summary.gips()</a></code> calculates <code>AIC</code>, <code>BIC</code>, and <code>n_parameters</code> (number of free parameters in the covariance matrix);</li>
 <li>
-<code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> will return sorted vector;</li>
+<code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> will return a sorted vector;</li>
 <li>
 <code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> have a new parameter <code>digits</code>;</li>
 <li>Everywhere a permutation was expected, the <code>gips</code> object can now be passed and interpreted as a permutation. Those are:
@@ -95,12 +95,12 @@
 <li>
 <code>Inf</code> better handled in <code><a href="../reference/print.gips.html">print.gips()</a></code>;</li>
 <li>
-<code>print.*()</code> will print <code>\n</code> in the end;</li>
+<code>print.*()</code> functions will print <code>\n</code> in the end;</li>
 <li>Slightly different punctuation in <code><a href="../reference/print.gips.html">print.gips()</a></code>;</li>
-<li>Small Vignettes and documentation improvements;</li>
+<li>Tremendous vignettes and documentation improvements;</li>
 <li>Proper testing of examples;</li>
 <li>
-<code>delta</code> parameter of <code><a href="../reference/gips.html">gips()</a></code> has to be bigger than <code>1</code>. We used to restrict it as bigger than <code>2</code>;</li>
+<code>delta</code> parameter of <code><a href="../reference/gips.html">gips()</a></code> has to be bigger than <code>1</code>. We used to restrict it to bigger than <code>2</code>;</li>
 <li>
 <code><a href="../reference/project_matrix.html">project_matrix()</a></code> shows a warning when the non-positive-semi-definite matrix is passed as an <code>S</code> argument;</li>
 <li>
@@ -109,7 +109,7 @@
 <code>D_matrix</code> are checked for containing any <code>NaN</code> or <code>Inf</code> values;</li>
 <li>Absurdly long structure constants vectors may overflow an <code>integer</code>; now we use <code>double</code>;</li>
 <li>
-<code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> show an error when given two incomparable <code>gips</code> object (with different parameters).</li>
+<code><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms()</a></code> and <code><a href="../reference/compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> show an error when given two incomparable <code>gips</code> objects (with different parameters).</li>
 </ul></div>
 </div>
     <div class="section level2">

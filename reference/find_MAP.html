@@ -86,7 +86,7 @@ the "<strong>Possible algorithms to use as optimizers</strong>" section below.</
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>g</dt>
-<dd><p>Object of a <code>gips</code> class</p></dd>
+<dd><p>Object of a <code>gips</code> class.</p></dd>
 
 
 <dt>max_iter</dt>
@@ -97,9 +97,9 @@ for <code>optimizer="BF"</code> it is not used.</p></dd>
 
 
 <dt>optimizer</dt>
-<dd><p>The optimizer for the search of the maximum posteriori.</p><ul><li><p><code>"MH"</code> (the default for unoptimized <code>g</code>) - Metropolis-Hastings</p></li>
-<li><p><code>"HC"</code> - Hill Climbing</p></li>
-<li><p><code>"BF"</code> - Brute Force</p></li>
+<dd><p>The optimizer for the search of the maximum posteriori:</p><ul><li><p><code>"MH"</code> (the default for unoptimized <code>g</code>) - Metropolis-Hastings;</p></li>
+<li><p><code>"HC"</code> - Hill Climbing;</p></li>
+<li><p><code>"BF"</code> - Brute Force;</p></li>
 <li><p><code>"continue"</code> (the default for optimized <code>g</code>) - The same as
 the <code>g</code> was optimized by (see Examples).</p></li>
 </ul><p>For more details, see the "<strong>Possible algorithms to use as optimizers</strong>"
@@ -108,27 +108,27 @@ section below.</p></dd>
 
 <dt>show_progress_bar</dt>
 <dd><p>A boolean.
-Indicate whether or not to show the progress bar.</p><ul><li><p>When <code>max_iter</code> is infinite, <code>show_progress_bar</code> has to be <code>FALSE</code>.</p></li>
+Indicate whether or not to show the progress bar:</p><ul><li><p>When <code>max_iter</code> is infinite, <code>show_progress_bar</code> has to be <code>FALSE</code>;</p></li>
 <li><p>When <code>return_probabilities=TRUE</code>, then
 shows an additional progress bar for the time
-when the probabilities are calculated</p></li>
+when the probabilities are calculated.</p></li>
 </ul></dd>
 
 
 <dt>save_all_perms</dt>
 <dd><p>A boolean. <code>TRUE</code> indicates to save a list of
 all permutations that were visited during optimization.
-This can be useful, but need a lot more RAM.</p></dd>
+This can be useful sometimes, but need a lot more RAM.</p></dd>
 
 
 <dt>return_probabilities</dt>
 <dd><p>A boolean. <code>TRUE</code> can only be provided
-when <code>save_all_perms</code> is <code>TRUE</code> and for:</p><ul><li><p><code>optimizer="MH"</code> - use Metropolis-Hastings results to
-estimate posterior probabilities</p></li>
+only when <code>save_all_perms = TRUE</code>. For:</p><ul><li><p><code>optimizer="MH"</code> - use Metropolis-Hastings results to
+estimate posterior probabilities;</p></li>
 <li><p><code>optimizer="BF"</code> - use brute force results to
-calculate exact posterior probabilities</p></li>
+calculate exact posterior probabilities.</p></li>
 </ul><p>This additional calculations are costly, so second progress bar
-is shown (when <code>show_progress_bar</code> is <code>TRUE</code>).</p>
+is shown (when <code>show_progress_bar = TRUE</code>).</p>
 <p>To examine probabilities after optimization,
 call <code><a href="get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code>.</p></dd>
 
@@ -154,7 +154,7 @@ in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")<
     
 
 
-<p>For a more in-depth explanations, see
+<p>For a in-depth explanations, see
 <code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a>.</p>
 <p>For every algorithm, there are some aliases available.</p><ul><li><p><code>"Metropolis_Hastings"</code>, <code>"MH"</code> - use
@@ -163,10 +163,10 @@ the <strong>Metropolis-Hastings</strong> algorithm;
 The algorithm will draw a random transposition in every iteration
 and consider changing the current state (permutation).
 When the <code>max_iter</code> is reached, the algorithm will return the best
-permutation calculated so far as the MAP Estimator. This implements
+permutation calculated as the MAP Estimator. This implements
 the <a href="https://arxiv.org/abs/2004.03503" class="external-link"><em>Second approach</em> from references, section 4.1.2</a>.
 This algorithm used in this context is a special case of the
-<strong>Simulated Annealing</strong> the reader may be more familiar with;
+<strong>Simulated Annealing</strong> the user may be more familiar with;
 <a href="https://en.wikipedia.org/wiki/Simulated_annealing" class="external-link">see Wikipedia</a>.</p></li>
 <li><p><code>"hill_climbing"</code>, <code>"HC"</code> - use
 the <strong>hill climbing</strong> algorithm;
@@ -175,8 +175,9 @@ The algorithm will check all transpositions in every iteration and
 go to the one with the biggest a posteriori value.
 The optimization ends when all <em>neighbors</em> will have a smaller
 a posteriori value. If the <code>max_iter</code> is reached before the end,
-then the warning is shown, and it is recommended to start
-the optimization again on the output of the <code>find_MAP()</code>.
+then the warning is shown, and it is recommended to continue
+the optimization on the output of the <code>find_MAP()</code> with
+<code>optimizer = "continue"</code>; see examples.
 Remember that there are <code>p*(p-1)/2</code> transpositions to be checked
 in every iteration. For bigger <code>p</code>, this may be costly.</p></li>
 <li><p><code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> - use
@@ -184,7 +185,10 @@ the <strong>Brute Force</strong> algorithm that checks the whole permutation
 space of a given size. This algorithm will definitely find
 the actual Maximum A Posteriori Estimation but is
 very computationally expensive for bigger spaces.
-It is only recommended for <code>p &lt;= 9</code>.</p></li>
+It is only recommended for <code>p &lt;= 9</code>.
+For the time the Brute Force takes on our machines see
+<code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or in its
+<a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -198,7 +202,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">
 <ul><li><p><code><a href="gips.html">gips()</a></code> - The constructor of a <code>gips</code> class.
-The <code>gips</code> object is used as the <code>g</code> parameter.</p></li>
+The <code>gips</code> object is used as the <code>g</code> parameter of <code>find_MAP()</code>.</p></li>
 <li><p><code><a href="plot.gips.html">plot.gips()</a></code> - Practical plotting function for
 visualizing the optimization process.</p></li>
 <li><p><code><a href="summary.gips.html">summary.gips()</a></code> - Summarize the output of optimization.</p></li>
@@ -211,8 +215,8 @@ then those probabilities can be extracted with this function.</p></li>
 of <code>find_MAP()</code> tries to find the argmax of.</p></li>
 <li><p><code><a href="forget_perms.html">forget_perms()</a></code> - When the <code>gips</code> object was optimized
 with <code>find_MAP(save_all_perms = TRUE)</code>, it will be of
-considerable size in RAM. <code>forget_perms</code> can make such an object
-lighter in memory by forgetting the permutations that it was in.</p></li>
+considerable size in RAM. <code><a href="forget_perms.html">forget_perms()</a></code> can make such an object
+lighter in memory by forgetting the permutations that it was considering.</p></li>
 <li><p><code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or its
 <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a> -
 A place to learn more about
@@ -248,9 +252,9 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (2,3):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - was found after 5 posteriori calculations;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 1.009 times more likely than the () permutation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 1.209 times more likely than the () permutation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -267,10 +271,10 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -4.806839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -0.7317773</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  214.515</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8317.374</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -289,10 +293,10 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  111.7639</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98.7939</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  110.069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97.09905</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
@@ -302,7 +306,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1650152 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1629593 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

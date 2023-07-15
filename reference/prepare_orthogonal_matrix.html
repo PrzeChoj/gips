@@ -58,7 +58,7 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
     </div>
 
     <div class="ref-description section level2">
-    <p>Calculate orthogonal matrix U_Gamma for decomposition in
+    <p>Calculate orthogonal matrix <code>U_Gamma</code> for decomposition in
 <a href="https://arxiv.org/abs/2004.03503" class="external-link">Theorem 1 from references</a>.</p>
     </div>
 
@@ -70,14 +70,14 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>perm</dt>
-<dd><p>An object of a <code>gips_perm</code> or a <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::cycle</a></code> class.
-Can also be of a <code>gips</code> class, but
-will be interpreted as the underlying <code>gips_perm</code>.</p></dd>
+<dd><p>An object of a <code>gips_perm</code> or anything
+a <code><a href="gips_perm.html">gips_perm()</a></code> can handle. Can also be of a <code>gips</code> class,
+but will be interpreted as the underlying <code>gips_perm</code>.</p></dd>
 
 
 <dt>perm_size</dt>
 <dd><p>Size of a permutation.
-Required if <code>perm</code> is of a <code><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">permutations::cycle</a></code> class.</p></dd>
+Required if <code>perm</code> is neither <code>gips_perm</code> nor <code>gips</code>.</p></dd>
 
 
 <dt>basis</dt>
@@ -95,13 +95,16 @@ columns from vector elements \(v_k^{(c)}\) according to
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Given X - a matrix invariant under the permutation <code>perm</code>. Call Gamma
-the permutations cyclic group \(&lt;perm&gt; = \{perm, perm^2, ...\}\).</p>
-<p>Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X.</p>
+the permutations cyclic group: \(\Gamma = &lt;perm&gt; = \{perm, perm^2, ...\}\).</p>
+<p>Then, \(U_\Gamma\) is such an orthogonal matrix, which block-diagonalizes X.</p>
 <p>To be more precise, the matrix <code>t(U_Gamma) %*% X %*% U_Gamma</code> has a
 block-diagonal structure, which is ensured by
 <a href="https://arxiv.org/abs/2004.03503" class="external-link">Theorem 1 from references</a></p>
 <p>Formula for U_Gamma can be found in
 <a href="https://arxiv.org/abs/2004.03503" class="external-link">Theorem 6 from references</a>.</p>
+<p>Nice example is demonstrated in <strong>Block Decomposition - [1], Theorem 1</strong>
+section of <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or its
+<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -118,7 +121,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 to show the properties of <code>prepare_orthogonal_matrix()</code>.</p></li>
 <li><p><strong>Block Decomposition - [1], Theorem 1</strong> section of
 <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or its
-<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>) -
+<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a> -
 A place to learn more about the math behind the <code>gips</code> package
 and see more examples of <code>prepare_orthogonal_matrix()</code>.</p></li>
 </ul></div>
@@ -136,12 +139,12 @@ and see more examples of <code>prepare_orthogonal_matrix()</code>.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">block_decomposition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">U_Gamma</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">U_Gamma</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">block_decomposition</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># the non-zeros only on diagonal and [1,2] and [2,1]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]    [,2]    [,3]    [,4]    [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.8296 0.00870 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0087 0.46626 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.0000 0.00000 1.44656 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.0000 0.00000 0.00000 1.44656 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.0000 0.00000 0.00000 0.00000 0.15903</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]    [,2]   [,3]   [,4]    [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.97088 0.69166 0.0000 0.0000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.69166 2.06299 0.0000 0.0000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.00000 0.00000 1.0183 0.0000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.00000 0.00000 0.0000 1.0183 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.00000 0.00000 0.0000 0.0000 0.63541</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

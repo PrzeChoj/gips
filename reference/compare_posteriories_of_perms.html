@@ -91,27 +91,27 @@
     <dl><dt>perm1, perm2</dt>
 <dd><p>Permutations to compare.
 How many times <code>perm1</code> is more likely than <code>perm2</code>?
-Those can be provided as the <code>gips</code> object,
-the <code>gips_perm</code> object or anything that can be used as
+Those can be provided as the <code>gips</code> objects,
+the <code>gips_perm</code> objects or anything that can be used as
 the <code>x</code> parameter in the <code><a href="gips_perm.html">gips_perm()</a></code> function.
 They do not have to be of the same class.</p></dd>
 
 
 <dt>S, number_of_observations, delta, D_matrix, was_mean_estimated</dt>
 <dd><p>The same parameters as in the <code><a href="gips.html">gips()</a></code> function.
-If at least one of <code>perm1</code> or <code>perm2</code> is of a <code>gips</code> class,
-they overwritten with those from <code>gips</code> object.</p></dd>
+If at least one of <code>perm1</code> or <code>perm2</code> is a <code>gips</code> object,
+they are overwritten with those from <code>gips</code> object.</p></dd>
 
 
 <dt>print_output</dt>
 <dd><p>A boolean.
-When TRUE, the computed value will be printed with
-additional text and returned invisibly. When FALSE,
+When <code>TRUE</code> (default), the computed value will be printed with
+additional text and returned invisibly. When <code>FALSE</code>,
 the computed value will be returned visibly.</p></dd>
 
 
 <dt>digits</dt>
-<dd><p>Integer. Only used when <code>print_output == TRUE</code>.
+<dd><p>Integer. Only used when <code>print_output = TRUE</code>.
 Number of digits after comma to print.
 Can be negative, can be <code>+Inf</code>. It is passed to <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">base::round()</a></code>.</p></dd>
 
@@ -120,18 +120,18 @@ Can be negative, can be <code>+Inf</code>. It is passed to <code><a href="https:
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p><code>compare_posteriories_of_perms</code> returns the value of
-how many times the <code>perm1</code> is more likely than <code>perm2</code>.</p>
+<p>The function <code>compare_posteriories_of_perms()</code> returns
+the value of how many times the <code>perm1</code> is more likely than <code>perm2</code>.</p>
 
 
-<p><code>compare_log_posteriories_of_perms</code> returns the logarithm of
-how many times the <code>perm1</code> is more likely than <code>perm2</code>.</p>
+<p>The function <code>compare_log_posteriories_of_perms()</code> returns
+the logarithm of how many times the <code>perm1</code> is more likely than <code>perm2</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
 <ul><li><p><code>compare_log_posteriories_of_perms()</code>: More stable,
-logarithmic version of <code>compare_posteriories_of_perms</code>.
+logarithmic version of <code>compare_posteriories_of_perms()</code>.
 The natural logarithm is used.</p></li>
 </ul></div>
     <div class="section level2">
@@ -141,6 +141,10 @@ The natural logarithm is used.</p></li>
 the optimized <code>gips</code> object compared to the starting permutation.</p></li>
 <li><p><code><a href="summary.gips.html">summary.gips()</a></code> - The function that calculates the posterior of
 the optimized <code>gips</code> object compared to the starting permutation.</p></li>
+<li><p><code><a href="find_MAP.html">find_MAP()</a></code> - The function that finds the permutation that
+maximizes <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
+<li><p><code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> - The function this
+<code>compare_posteriories_of_perms()</code> calls underneath.</p></li>
 </ul></div>
     </div>
 
@@ -169,10 +173,10 @@ the optimized <code>gips</code> object compared to the starting permutation.</p>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">10</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">compare_posteriories_of_perms</span><span class="op">(</span><span class="va">g_map</span>, <span class="va">g</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 27.89655</span>
-<span class="r-in"><span><span class="fu">compare_log_posteriories_of_perms</span><span class="op">(</span><span class="va">g_map</span>, <span class="va">g</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.328503</span>
+<span class="r-in"><span><span class="fu">compare_posteriories_of_perms</span><span class="op">(</span><span class="va">g_map</span>, <span class="va">g</span>, print_output <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (3,6) is 1.452 times more likely than the () permutation.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">compare_log_posteriories_of_perms</span><span class="op">(</span><span class="va">g_map</span>, <span class="va">g</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.451505</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

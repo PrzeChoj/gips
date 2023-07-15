@@ -79,7 +79,7 @@ the Maximum A Posteriori (MAP) Estimator.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>g</dt>
-<dd><p>An object of a <code>gips_perm</code> class.</p></dd>
+<dd><p>An object of a <code>gips</code> class.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -106,10 +106,14 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">
-<ul><li><p><code><a href="calculate_gamma_function.html">calculate_gamma_function()</a></code> - The function that calculates the value
-needed for <code>log_posteriori_of_gips()</code>.</p></li>
-<li><p><code><a href="find_MAP.html">find_MAP()</a></code> - The functions that tries
-to optimize the <code>log_posteriori_of_gips</code> function.</p></li>
+<ul><li><p><code><a href="calculate_gamma_function.html">calculate_gamma_function()</a></code> - The function that calculates
+the value needed for <code>log_posteriori_of_gips()</code>.</p></li>
+<li><p><code><a href="get_structure_constants.html">get_structure_constants()</a></code> - The function that calculates
+the structure constants needed for <code>log_posteriori_of_gips()</code>.</p></li>
+<li><p><code><a href="find_MAP.html">find_MAP()</a></code> - The functions that optimizes
+the <code>log_posteriori_of_gips</code> function.</p></li>
+<li><p><code><a href="compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> - Uses <code>log_posteriori_of_gips()</code>
+to compare a posteriori of two permutations.</p></li>
 <li><p><code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a> -
 A place to learn more about the math behind the <code>gips</code> package.</p></li>
@@ -119,35 +123,43 @@ A place to learn more about the math behind the <code>gips</code> package.</p></
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># In the space with p = 2, there is only 2 permutations:</span></span></span>
-<span class="r-in"><span><span class="va">perm1</span> <span class="op">&lt;-</span> <span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.word</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># (1)(2)</span></span></span>
-<span class="r-in"><span><span class="va">perm2</span> <span class="op">&lt;-</span> <span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.word</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># (1,2)</span></span></span>
+<span class="r-in"><span><span class="va">perm1</span> <span class="op">&lt;-</span> <span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(1)(2)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">perm2</span> <span class="op">&lt;-</span> <span class="fu">permutations</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/permutations/man/permutation.html" class="external-link">as.cycle</a></span><span class="op">(</span><span class="st">"(1,2)"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">S1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S1</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S1</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -136.6, this is the MAP Estimator</span></span></span>
+<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -134.1615, this is the MAP Estimator</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -134.1615</span>
-<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -140.4</span></span></span>
+<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -138.1695</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -138.1695</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">)</span> <span class="co"># 41.3</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">)</span> <span class="co"># 55.0</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 55.03601</span>
-<span class="r-in"><span><span class="co"># g1 is over 40 times more likely than g2.</span></span></span>
+<span class="r-in"><span><span class="co"># g1 is 55 times more likely than g2.</span></span></span>
 <span class="r-in"><span><span class="co"># This is the expected outcome because S[1,1] significantly differs from S[2,2].</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="compare_posteriories_of_perms.html">compare_posteriories_of_perms</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation () is 55.036 times more likely than the (1,2) permutation.</span>
+<span class="r-in"><span><span class="co"># The same result, but presented in a more pleasant way</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ========================================================================</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">S2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S2</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S2</span>, <span class="fl">100</span>, perm <span class="op">=</span> <span class="va">perm2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -99.5</span></span></span>
+<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span> <span class="co"># -98.40984</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -98.40984</span>
-<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -96.9, this is the MAP Estimator</span></span></span>
+<span class="r-in"><span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># -95.92039, this is the MAP Estimator</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -95.92039</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span><span class="op">)</span> <span class="co"># 12.7</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="op">-</span> <span class="fu">log_posteriori_of_gips</span><span class="op">(</span><span class="va">g1</span><span class="op">)</span><span class="op">)</span> <span class="co"># 12.05</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.0546</span>
-<span class="r-in"><span><span class="co"># g2 is over 12 times more likely than g1.</span></span></span>
+<span class="r-in"><span><span class="co"># g2 is 12 times more likely than g1.</span></span></span>
 <span class="r-in"><span><span class="co"># This is the expected outcome because S[1,1] is very close to S[2,2].</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="compare_posteriories_of_perms.html">compare_posteriories_of_perms</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">g1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,2) is 12.055 times more likely than the () permutation.</span>
+<span class="r-in"><span><span class="co"># The same result, but presented in a more pleasant way</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
