@@ -91,13 +91,12 @@ plot_cosmetic_modifications(plot(g, type = "heatmap"))
 
 Remember, we analyze the covariance matrix. We can see some nearly
 identical colors in the estimated covariance matrix. E.g., variances of
-columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`),
+columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`), and
 variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$
 `S[4,4]`). What is more, Covariances are also similar (`S[1,3]`
-$\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Were this
-approximate equalities obtained coincidentally? Or do they reflect some
-underlying data properties? It is hard to decide purely by looking at
-the matrix.
+$\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Are those
+approximate equalities coincidental? Or do they reflect some underlying
+data properties? It is hard to decide purely by looking at the matrix.
 
 `find_MAP()` will use the Bayesian model to quantify if the approximate
 equalities are coincidental. Let’s see if it will find this
@@ -113,11 +112,11 @@ g_MAP
 #>  - is 3.374 times more likely than the () permutation.
 ```
 
-The `find_MAP` found the relationship (1,2)(3,4). In its opinion, the
-variances \[1,1\] and \[2,2\] as well as \[3,3\] and \[4,4\] are so
-close to each other that it is reasonable to consider them equal.
-Similarly, the covariances \[1,3\] and \[2,4\]; just as covariances
-\[2,3\] and \[1,4\], also will be considered equal:
+The `find_MAP` found the relationship (1,2)(3,4). The variances \[1,1\]
+and \[2,2\] as well as \[3,3\] and \[4,4\] are so close to each other
+that it is reasonable to consider them equal. Similarly, the covariances
+\[1,3\] and \[2,4\]; just as covariances \[2,3\] and \[1,4\], also will
+be considered equal:
 
 ``` r
 S_projected <- project_matrix(S, g_MAP)
@@ -136,7 +135,7 @@ plot_cosmetic_modifications(plot(g_MAP, type = "heatmap"))
 This `S_projected` matrix can now be interpreted as a more stable
 covariance matrix estimator.
 
-We can also interpret the output as suggesting, that there is no change
+We can also interpret the output as suggesting that there is no change
 in covariance for treatment with Aspirin.
 
 ### Example 2 - modeling
@@ -146,6 +145,7 @@ First, construct data for the example:
 ``` r
 # Prepare model, multivariate normal distribution
 p <- 6
+n <- 4
 mu <- numeric(p)
 sigma_matrix <- matrix(
   data = c(
@@ -162,16 +162,16 @@ sigma_matrix <- matrix(
 
 # Generate example data from a model:
 Z <- withr::with_seed(2022,
-  code = MASS::mvrnorm(4, mu = mu, Sigma = sigma_matrix)
+  code = MASS::mvrnorm(n, mu = mu, Sigma = sigma_matrix)
 )
 # End of prepare model
 ```
 
-Suppose we do not know the true covariance matrix $\Sigma$ and we want
+<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
+
+Suppose we do not know the actual covariance matrix $\Sigma$ and we want
 to estimate it. We cannot use the standard MLE because it does not
 exists ($4 < 6$, $n < p$).
-
-<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
 
 We will assume it was generated from the normal distribution with the
 mean $0$.
@@ -193,9 +193,9 @@ Make the gips object out of data:
 g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
-We can see the standard estimator of the covariance matrix,
-$\hat{\Sigma} = (1/n) \cdot \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$.
-It is not MLE (again, because MLE does not exists for $n < p$):
+We can see the standard estimator of the covariance matrix:
+$$\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
+It is not MLE (again, because MLE does not exist for $n < p$):
 
 ``` r
 plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
@@ -203,8 +203,8 @@ plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard w
 
 <img src="man/figures/README-example_mean_known3_1-1.png" width="100%" />
 
-Find the Maximum A Posteriori Estimator for the permutation. Space is
-small ($6! = 720$), so it is reasonable to browse the whole of it:
+Let’s find the Maximum A Posteriori Estimator for the permutation. Space
+is small ($6! = 720$), so it is reasonable to browse the whole of it:
 
 ``` r
 g_map <- find_MAP(g, optimizer = "brute_force")
@@ -216,9 +216,9 @@ g_map
 #>  - is 118.863 times more likely than the () permutation.
 ```
 
-We see that the found permutation is over hundred times more likely than
-making no additional assumption. That means the additional assumptions
-are justified.
+We see that the found permutation is over a hundred times more likely
+than making no additional assumption. That means the additional
+assumptions are justified.
 
 ``` r
 summary(g_map)$n0
@@ -262,9 +262,9 @@ For more examples and introduction, see
 page](https://przechoj.github.io/gips/articles/gips.html).
 
 For an in-depth analysis of the package performance, capabilities, and
-comparison with similar packages, see an article “Learning permutation
+comparison with similar packages, see the article “Learning permutation
 symmetries with gips in R” by `gips` developers Adam Chojecki, Paweł
-Morgen, Bartosz Kołodziejek available on
+Morgen, and Bartosz Kołodziejek, available on
 [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
 
 # Acknowledgment

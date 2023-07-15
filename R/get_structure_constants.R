@@ -28,7 +28,7 @@
 #'     that rely heavily on `get_structure_constants()`.
 #'
 #' @examples
-#' perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
+#' perm <- gips_perm("(1)(2)(3)(4,5)", 5)
 #' get_structure_constants(perm)
 get_structure_constants <- function(perm) {
   if (inherits(perm, "gips")) {

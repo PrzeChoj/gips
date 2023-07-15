@@ -22,13 +22,13 @@ Returns the value of the Gamma function of the colored cone
 \description{
 It calculates the value of the integral defined in
 \href{https://arxiv.org/abs/2004.03503}{Definition 11 from references}.
-It is implementation of the
+It implements the
 \href{https://arxiv.org/abs/2004.03503}{Theorem 8 from references}
 and is using the
 \href{https://arxiv.org/abs/2004.03503}{formula (19) from references}.
 }
 \examples{
-id_perm <- gips_perm(permutations::id, 2)
+id_perm <- gips_perm("()", 2)
 calculate_gamma_function(id_perm, 0.5001) # 10.7...
 calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
@@ -50,10 +50,9 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022.
 \seealso{
 \itemize{
 \item \code{\link[=get_structure_constants]{get_structure_constants()}} - The function useful inside
-the \code{calculate_gamma_function()} function.
+the \code{calculate_gamma_function()}.
 \item \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} - The function that uses
-the values of the gamma function calculable
-with \code{calculate_gamma_function()}.
+the values of the gamma function.
 \item \code{vignette("Theory", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
 A place to learn more about

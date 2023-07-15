@@ -16,9 +16,7 @@ shows a warning of a class \code{not_positive_semi_definite_matrix}.}
 \item{perm}{A permutation to be projected on.
 An object of a \code{gips} class,
 a \code{gips_perm} class, or anything that can be used
-as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.
-Can also be of a \code{gips} class, but
-will be interpreted as the underlying \code{gips_perm}.}
+as the \code{x} argument in \code{\link[=gips_perm]{gips_perm()}} function.}
 
 \item{precomputed_equal_indices}{This parameter is for internal use only.}
 }
@@ -75,7 +73,7 @@ projected_S
 
 # Plot the projected matrix:
 g <- gips(S, number_of_observations, perm = my_perm)
-plot(g, type = "heatmap")
+plot(g, type = "MLE")
 
 # Find the MAP Estimator of covariance
 g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
@@ -100,10 +98,10 @@ After the MAP Estimator is found, the matrix
 creating the MAP Estimator of the covariance matrix
 (see examples).
 \item \code{\link[=gips_perm]{gips_perm()}} - Constructor for the \code{perm} parameter.
-\item \code{\link[=plot.gips]{plot.gips()}} - For \code{plot(g, type = 'heatmap')},
+\item \code{\link[=plot.gips]{plot.gips()}} - For \code{plot(g, type = "MLE")},
 the \code{project_matrix()} is called (see examples).
 \item \code{\link[=summary.gips]{summary.gips()}} - Can calculate the \code{n0}, the minimal
 number of observations, so that the projected matrix
-will be the MAP estimator of the covariance matrix.
+will be the MLE estimator of the covariance matrix.
 }
 }

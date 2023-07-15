@@ -17,7 +17,7 @@
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a more in-depth explanations, see
+#' For a in-depth explanations, see
 #'   `vignette("Optimizers", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'   
@@ -29,10 +29,10 @@
 #'     The algorithm will draw a random transposition in every iteration
 #'     and consider changing the current state (permutation).
 #'     When the `max_iter` is reached, the algorithm will return the best
-#'     permutation calculated so far as the MAP Estimator. This implements
+#'     permutation calculated as the MAP Estimator. This implements
 #'     the [*Second approach* from references, section 4.1.2](https://arxiv.org/abs/2004.03503).
 #'     This algorithm used in this context is a special case of the
-#'     **Simulated Annealing** the reader may be more familiar with;
+#'     **Simulated Annealing** the user may be more familiar with;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 #'
 #' * `"hill_climbing"`, `"HC"` - use
@@ -42,8 +42,9 @@
 #'     go to the one with the biggest a posteriori value.
 #'     The optimization ends when all *neighbors* will have a smaller
 #'     a posteriori value. If the `max_iter` is reached before the end,
-#'     then the warning is shown, and it is recommended to start
-#'     the optimization again on the output of the `find_MAP()`.
+#'     then the warning is shown, and it is recommended to continue
+#'     the optimization on the output of the `find_MAP()` with
+#'     `optimizer = "continue"`; see examples.
 #'     Remember that there are `p*(p-1)/2` transpositions to be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
@@ -53,39 +54,42 @@
 #'     the actual Maximum A Posteriori Estimation but is
 #'     very computationally expensive for bigger spaces.
 #'     It is only recommended for `p <= 9`.
+#'     For the time the Brute Force takes on our machines see
+#'     `vignette("Optimizers", package = "gips")` or in its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
-#' @param g Object of a `gips` class
+#' @param g Object of a `gips` class.
 #' @param max_iter Number of iterations for an algorithm to perform.
 #'     At least 2. For `optimizer="MH"` it has to be finite;
 #'     for `optimizer="HC"` it can be infinite;
 #'     for `optimizer="BF"` it is not used.
-#' @param optimizer The optimizer for the search of the maximum posteriori.
-#'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings
-#'   * `"HC"` - Hill Climbing
-#'   * `"BF"` - Brute Force
+#' @param optimizer The optimizer for the search of the maximum posteriori:
+#'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings;
+#'   * `"HC"` - Hill Climbing;
+#'   * `"BF"` - Brute Force;
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
 #' For more details, see the "**Possible algorithms to use as optimizers**"
 #' section below.
 #' @param show_progress_bar A boolean.
-#'     Indicate whether or not to show the progress bar.
-#'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
+#'     Indicate whether or not to show the progress bar:
+#'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 #'   * When `return_probabilities=TRUE`, then
 #'       shows an additional progress bar for the time
-#'       when the probabilities are calculated
+#'       when the probabilities are calculated.
 #' @param save_all_perms A boolean. `TRUE` indicates to save a list of
 #'     all permutations that were visited during optimization.
-#'     This can be useful, but need a lot more RAM.
+#'     This can be useful sometimes, but need a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
-#'     when `save_all_perms` is `TRUE` and for:
+#'     only when `save_all_perms = TRUE`. For:
 #'   * `optimizer="MH"` - use Metropolis-Hastings results to
-#'       estimate posterior probabilities
+#'       estimate posterior probabilities;
 #'   * `optimizer="BF"` - use brute force results to
-#'       calculate exact posterior probabilities
+#'       calculate exact posterior probabilities.
 #'
 #' This additional calculations are costly, so second progress bar
-#'     is shown (when `show_progress_bar` is `TRUE`).
+#'     is shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
@@ -102,7 +106,7 @@
 #'
 #' @seealso
 #' * [gips()] - The constructor of a `gips` class.
-#'     The `gips` object is used as the `g` parameter.
+#'     The `gips` object is used as the `g` parameter of `find_MAP()`.
 #' * [plot.gips()] - Practical plotting function for
 #'     visualizing the optimization process.
 #' * [summary.gips()] - Summarize the output of optimization.
@@ -115,8 +119,8 @@
 #'     of `find_MAP()` tries to find the argmax of.
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
-#'     considerable size in RAM. `forget_perms` can make such an object
-#'     lighter in memory by forgetting the permutations that it was in.
+#'     considerable size in RAM. `forget_perms()` can make such an object
+#'     lighter in memory by forgetting the permutations that it was considering.
 #' * `vignette("Optimizers", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) - 
 #'     A place to learn more about
@@ -358,7 +362,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
         number_of_observations, "."
       ),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 

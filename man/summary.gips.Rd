@@ -10,112 +10,119 @@
 \method{print}{summary.gips}(x, ...)
 }
 \arguments{
-\item{object}{An object of class "gips"; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}; usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
-\item{x}{An object of class "summary.gips" to be printed}
+\item{x}{An object of class \code{summary.gips} to be printed}
 }
 \value{
-The function \code{summary.gips} computes and returns a list of summary
+The function \code{summary.gips()} computes and returns a list of summary
 statistics of the given \code{gips} object. Those are:
 \itemize{
 \item For unoptimized \code{gips} object:
 \enumerate{
-\item \code{optimized} - \code{FALSE}
-\item \code{start_permutation} - the permutation this \code{gips} represents
+\item \code{optimized} - \code{FALSE}.
+\item \code{start_permutation} - the permutation this \code{gips} represents.
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
-value the start permutation has
+value the start permutation has.
 \item \code{times_more_likely_than_id} - how many more likely
 the \code{start_permutation} is over the identity permutation, \verb{()}.
 It can be a number less than 1, which means
-the identity permutation, \verb{()}, is more likely. Keep in mind
-this number can be really big and can be overflowed to \code{Inf}
-\item \code{n0} - the minimal number of observations needed for existence of
+the identity permutation is more likely. Keep in mind
+this number can be really big and can be overflowed to \code{Inf},
+or really small and underflow to 0.
+\item \code{n0} - the minimal number of observations needed for
 the maximum likelihood estimator (corresponding to a MAP) of
-the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
+the covariance matrix to exist. See \strong{\eqn{C\sigma} and \code{n0}}
 section in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
-\item \code{S_matrix} - the underlying matrix; this is used to calculate
-the posteriori value
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
+\item \code{S_matrix} - the underlying matrix.
+This is the matrix that will be used in calculations of
+the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{number_of_observations} - the number of observations that
-were observed for the \code{S_matrix} to be calculated; this is
-used to calculate the posteriori value
+were observed for the \code{S_matrix} to be calculated.
+This is the value that will be used in calculations of
+the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
-\code{S = t(X) \%*\% X / number_of_observations}
+\code{S = t(X) \%*\% X / number_of_observations}.
 }
-\item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
-\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
-\item \code{n_parameters} - number of free parameters in the covariance matrix
+\item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
+See \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
+\item \code{n_parameters} - number of free parameters in the covariance matrix.
 }
 \item For optimized \code{gips} object:
 \enumerate{
-\item \code{optimized} - \code{TRUE}
-\item \code{found_permutation} - the permutation this \code{gips} represents;
-the visited permutation with the biggest a posteriori value
+\item \code{optimized} - \code{TRUE}.
+\item \code{found_permutation} - the permutation this \code{gips} represents.
+The visited permutation with the biggest a posteriori value.
 \item \code{found_permutation_log_posteriori} - the log of the a posteriori
-value the found permutation have
+value the found permutation have.
 \item \code{start_permutation} - the original permutation this \code{gips}
-represented before optimization; the first visited permutation
+represented before optimization. The first visited permutation.
 \item \code{start_permutation_log_posteriori} - the log of the a posteriori
-value the start permutation has
+value the start permutation has.
 \item \code{times_more_likely_than_start} - how many more likely
 the \code{found_permutation} is over the \code{start_permutation}.
-It cannot be a number less than 1. Keep in mind this number
-can be really big and can be overflowed to \code{Inf}
+It cannot be a number less than 1. Keep in mind
+this number can be really big and can be overflowed to \code{Inf}.
 \item \code{n0} - the minimal number of observations needed for existence of
 the maximum likelihood estimator (corresponding to a MAP) of
 the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
-\item \code{S_matrix} - the underlying matrix; this is used to calculate
-the posteriori value
+\item \code{S_matrix} - the underlying matrix.
+This is the matrix that will be used in calculations of
+the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{number_of_observations} - the number of observations that
-were observed for the \code{S_matrix} to be calculated; this is
-used to calculate the posteriori value
+were observed for the \code{S_matrix} to be calculated.
+This is the value that will be used in calculations of
+the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function
+\item \code{TRUE} means the \code{S} parameter was output of \code{\link[stats:cor]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
-\code{S = t(X) \%*\% X / number_of_observations}
+\code{S = t(X) \%*\% X / number_of_observations}.
 }
-\item \code{delta}, \code{D_matrix} - the parameters of the Bayesian method
-\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions
-\item \code{n_parameters} - number of free parameters in the covariance matrix
+\item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
+See \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
+\item \code{n_parameters} - number of free parameters in the covariance matrix.
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
-do an "HC")
-\item \code{did_converge} - a boolean, did the last used algorithm converge
+do an "HC").
+\item \code{did_converge} - a boolean, did the last used algorithm converge.
 \item \code{number_of_log_posteriori_calls} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
-the optimization
+the optimization.
 \item \code{whole_optimization_time} - how long was the optimization process;
-the sum of all optimization times (when there were multiple)
+the sum of all optimization times (when there were multiple).
 \item \code{log_posteriori_calls_after_best} - how many times was
 the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called after
 the \code{found_permutation}; in other words, how long ago
-could the optimization be stopped and have the same result;
-if this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
+could the optimization be stopped and have the same result.
+If this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
 one more time with \code{optimizer = "continue"}.
-For \code{optimizer = "BF"}, it is \code{NULL}
-\item \code{acceptance_rate} - only interesting for \code{optimizer = "MH"};
-how often was the algorithm accepting the change of permutation
-in an iteration
+For \code{optimizer = "BF"}, it is \code{NULL}.
+\item \code{acceptance_rate} - only interesting for \code{optimizer = "MH"}.
+How often was the algorithm accepting the change of permutation
+in an iteration.
 }
 }
 
-\code{print.summary.gips} returns an invisible \code{NULL}.
+The function \code{print.summary.gips()} returns an invisible \code{NULL}.
 }
 \description{
-\code{summary} method for class "gips".
+\code{summary} method for \code{gips} class.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{print(summary.gips)}: Printing method for class "summary.gips".
-Prints every interesting information in a pleasant, human readable form
+\item \code{print(summary.gips)}: Printing method for class \code{summary.gips}.
+Prints every interesting information in a pleasant for human form.
 
 }}
 \examples{
@@ -159,6 +166,6 @@ the likelihood of a permutation.
 \item \code{\link[=AIC.gips]{AIC.gips()}}, \code{\link[=BIC.gips]{BIC.gips()}} - Calculate
 Akaike's or Bayesian Information Criterion
 \item \code{\link[=project_matrix]{project_matrix()}} - Project the known
-matrix of the found permutations space.
+matrix on the found permutations space.
 }
 }

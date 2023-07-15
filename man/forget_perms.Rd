@@ -7,8 +7,8 @@
 forget_perms(g)
 }
 \arguments{
-\item{g}{An object of class "gips";
-a result of a \code{find_MAP(save_all_perms = TRUE)}.}
+\item{g}{An object of class \code{gips}.
+A result of a \code{find_MAP(save_all_perms = TRUE)}.}
 }
 \value{
 Returns the same object \code{g} as given,
@@ -18,11 +18,11 @@ but without the visited permutation list.
 Slim the \code{gips} object by forgetting the visited permutations from \code{find_MAP(save_all_perms = TRUE)}.
 }
 \details{
-For \code{perm_size = 150} and \code{max_iter = 150000} we checked it saves ~350 MB of RAM.
+For example, \code{perm_size = 150} and \code{max_iter = 150000} we checked it saves ~350 MB of RAM.
 }
 \examples{
-example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
-S <- t(example_matrix) \%*\% example_matrix
+A <- matrix(rnorm(10 * 10), nrow = 10)
+S <- t(A) \%*\% A
 g <- gips(S, 13, was_mean_estimated = FALSE)
 g_map <- find_MAP(g,
   max_iter = 10, optimizer = "Metropolis_Hastings",

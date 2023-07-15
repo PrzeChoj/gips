@@ -2,14 +2,14 @@
 % Please edit documentation in R/gips_perm_class.R
 \name{as.character.gips_perm}
 \alias{as.character.gips_perm}
-\title{Transform \code{gips_perm} object to character vector}
+\title{Transform \code{gips_perm} object to a character vector}
 \usage{
 \method{as.character}{gips_perm}(x, ...)
 }
 \arguments{
 \item{x}{An object of a \code{gips_perm} class.}
 
-\item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.}
+\item{...}{Further arguments (currently ignored).}
 }
 \value{
 Returns an object of a \code{character} type.
@@ -22,7 +22,10 @@ g_perm <- gips_perm("(5,4)", 5)
 as.character(g_perm)
 }
 \seealso{
-\code{\link[=as.character.gips]{as.character.gips()}}
-
-\code{\link[permutations:print]{permutations::as.character.cycle()}}
+\itemize{
+\item \code{\link[=as.character.gips]{as.character.gips()}} - The underlying \code{gips_perm} of
+the \code{gips} object is passed to \code{\link[=as.character.gips_perm]{as.character.gips_perm()}}.
+\item \code{\link[permutations:print]{permutations::as.character.cycle()}} - The underlying permutation of
+the \code{gips} object is passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.
+}
 }

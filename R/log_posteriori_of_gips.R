@@ -13,7 +13,7 @@
 #'
 #' @export
 #'
-#' @param g An object of a `gips_perm` class.
+#' @param g An object of a `gips` class.
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
 #' "Model selection in the space of Gaussian models invariant by symmetry."
@@ -22,10 +22,14 @@
 #' \doi{10.1214/22-AOS2174}
 #'
 #' @seealso
-#' * [calculate_gamma_function()] - The function that calculates the value
-#'     needed for `log_posteriori_of_gips()`.
-#' * [find_MAP()] - The functions that tries
-#'     to optimize the `log_posteriori_of_gips` function.
+#' * [calculate_gamma_function()] - The function that calculates
+#'     the value needed for `log_posteriori_of_gips()`.
+#' * [get_structure_constants()] - The function that calculates
+#'     the structure constants needed for `log_posteriori_of_gips()`.
+#' * [find_MAP()] - The functions that optimizes
+#'     the `log_posteriori_of_gips` function.
+#' * [compare_posteriories_of_perms()] - Uses `log_posteriori_of_gips()`
+#'     to compare a posteriori of two permutations.
 #' * `vignette("Theory", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
 #'     A place to learn more about the math behind the `gips` package.
@@ -35,29 +39,35 @@
 #'
 #' @examples
 #' # In the space with p = 2, there is only 2 permutations:
-#' perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2))) # (1)(2)
-#' perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1))) # (1,2)
+#' perm1 <- permutations::as.cycle("(1)(2)")
+#' perm2 <- permutations::as.cycle("(1,2)")
 #' S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 #' g1 <- gips(S1, 100, perm = perm1)
 #' g2 <- gips(S1, 100, perm = perm2)
-#' log_posteriori_of_gips(g1) # -136.6, this is the MAP Estimator
-#' log_posteriori_of_gips(g2) # -140.4
+#' log_posteriori_of_gips(g1) # -134.1615, this is the MAP Estimator
+#' log_posteriori_of_gips(g2) # -138.1695
 #'
-#' exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 41.3
-#' # g1 is over 40 times more likely than g2.
+#' exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 55.0
+#' # g1 is 55 times more likely than g2.
 #' # This is the expected outcome because S[1,1] significantly differs from S[2,2].
+#' 
+#' compare_posteriories_of_perms(g1, g2)
+#' # The same result, but presented in a more pleasant way
 #'
 #' # ========================================================================
 #'
 #' S2 <- matrix(c(1, 0.5, 0.5, 1.1), nrow = 2, byrow = TRUE)
 #' g1 <- gips(S2, 100, perm = perm1)
 #' g2 <- gips(S2, 100, perm = perm2)
-#' log_posteriori_of_gips(g1) # -99.5
-#' log_posteriori_of_gips(g2) # -96.9, this is the MAP Estimator
+#' log_posteriori_of_gips(g1) # -98.40984
+#' log_posteriori_of_gips(g2) # -95.92039, this is the MAP Estimator
 #'
-#' exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.7
-#' # g2 is over 12 times more likely than g1.
+#' exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.05
+#' # g2 is 12 times more likely than g1.
 #' # This is the expected outcome because S[1,1] is very close to S[2,2].
+#' 
+#' compare_posteriories_of_perms(g2, g1)
+#' # The same result, but presented in a more pleasant way
 log_posteriori_of_gips <- function(g) {
   validate_gips(g)
 
@@ -201,30 +211,34 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'
 #' @param perm1,perm2 Permutations to compare.
 #'     How many times `perm1` is more likely than `perm2`?
-#'     Those can be provided as the `gips` object,
-#'     the `gips_perm` object or anything that can be used as
+#'     Those can be provided as the `gips` objects,
+#'     the `gips_perm` objects or anything that can be used as
 #'     the `x` parameter in the [gips_perm()] function.
 #'     They do not have to be of the same class.
 #' @param S,number_of_observations,delta,D_matrix,was_mean_estimated
 #'     The same parameters as in the [gips()] function.
-#'     If at least one of `perm1` or `perm2` is of a `gips` class,
-#'     they overwritten with those from `gips` object.
+#'     If at least one of `perm1` or `perm2` is a `gips` object,
+#'     they are overwritten with those from `gips` object.
 #' @param print_output A boolean.
-#'     When TRUE, the computed value will be printed with
-#'     additional text and returned invisibly. When FALSE,
+#'     When `TRUE` (default), the computed value will be printed with
+#'     additional text and returned invisibly. When `FALSE`,
 #'     the computed value will be returned visibly.
-#' @param digits Integer. Only used when `print_output == TRUE`.
+#' @param digits Integer. Only used when `print_output = TRUE`.
 #'     Number of digits after comma to print.
 #'     Can be negative, can be `+Inf`. It is passed to `base::round()`.
 #'
-#' @returns `compare_posteriories_of_perms` returns the value of
-#'     how many times the `perm1` is more likely than `perm2`.
+#' @returns The function `compare_posteriories_of_perms()` returns
+#'     the value of how many times the `perm1` is more likely than `perm2`.
 #'
 #' @seealso
 #' * [print.gips()] - The function that prints the posterior of
 #'     the optimized `gips` object compared to the starting permutation.
 #' * [summary.gips()] - The function that calculates the posterior of
 #'     the optimized `gips` object compared to the starting permutation.
+#' * [find_MAP()] - The function that finds the permutation that
+#'     maximizes `log_posteriori_of_gips()`.
+#' * [log_posteriori_of_gips()] - The function this 
+#'     `compare_posteriories_of_perms()` calls underneath.
 #'
 #' @export
 #'
@@ -251,8 +265,8 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' g <- gips(S, number_of_observations)
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #'
-#' compare_posteriories_of_perms(g_map, g, print_output = FALSE)
-#' compare_log_posteriories_of_perms(g_map, g, print_output = FALSE)
+#' compare_posteriories_of_perms(g_map, g, print_output = TRUE)
+#' exp(compare_log_posteriories_of_perms(g_map, g, print_output = FALSE))
 compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
                                           number_of_observations = NULL,
                                           delta = 3, D_matrix = NULL,
@@ -309,11 +323,11 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 }
 
 #' @describeIn compare_posteriories_of_perms More stable,
-#'     logarithmic version of `compare_posteriories_of_perms`.
+#'     logarithmic version of `compare_posteriories_of_perms()`.
 #'     The natural logarithm is used.
 #'
-#' @returns `compare_log_posteriories_of_perms` returns the logarithm of
-#'     how many times the `perm1` is more likely than `perm2`.
+#' @returns The function `compare_log_posteriories_of_perms()` returns
+#'     the logarithm of how many times the `perm1` is more likely than `perm2`.
 #'
 #' @export
 compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,

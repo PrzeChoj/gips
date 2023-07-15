@@ -5,16 +5,16 @@ reference:
 - title: "Main functions"
   desc: >
     Functions for the main `gips` purpose: Finding
-    the permutation, under which a matrix is (approximately) 
-    invariant under, and estimating the covariance matrix.
+    the permutation under which a matrix is (approximately) 
+    invariant and estimating the covariance matrix.
   contents:
   - gips
   - find_MAP
   - project_matrix
 - title: "Analysis functions"
   desc: >
-    Functions for analysis of `gips` optimization
-    process or its results.
+    Functions for analysis of the `gips`
+    optimization process or its results.
   contents:
   - plot.gips
   - print.gips

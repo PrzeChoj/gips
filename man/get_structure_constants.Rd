@@ -27,7 +27,7 @@ Uses the \href{https://arxiv.org/abs/2004.03503}{Theorem 5 from references}
 to calculate the constants.
 }
 \examples{
-perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
+perm <- gips_perm("(1)(2)(3)(4,5)", 5)
 get_structure_constants(perm)
 }
 \references{

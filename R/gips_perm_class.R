@@ -9,7 +9,7 @@
 #'     Can also be of a `gips` class, but
 #'     will be interpreted as the underlying `gips_perm`.
 #' @param size An integer. Size of a permutation
-#'     (AKA cardinality of a set, on which permutation is defined; see examples).
+#'     (AKA cardinality of a set, on which permutation is defined. See examples).
 #'
 #' @section Methods for a `gips` class:
 #' * [as.character.gips_perm()]
@@ -19,7 +19,7 @@
 #'     a `gips_perm` class after the safety checks.
 #'
 #' @seealso
-#' * [project_matrix()] - `gips_perm` is the `perm` parameter in `project_matrix()`.
+#' * [project_matrix()] - `gips_perm` is the `perm` parameter of `project_matrix()`.
 #' * [permutations::permutation()] - The constructor for the `x` parameter.
 #' * [gips()] - The constructor for the `gips` class uses
 #'     the `gips_perm` object as the base object.
@@ -244,9 +244,9 @@ validate_gips_perm <- function(g) {
 #' Printing function for a `gips_perm` class.
 #'
 #' @param x An object of a `gips_perm` class.
-#' @param ... Further arguments passed to [permutations::print.cycle()].
+#' @param ... Further arguments (currently ignored).
 #'
-#' @returns Returns its argument invisibly, after printing it.
+#' @returns Returns an invisible `NULL`.
 #'
 #' @export
 #'
@@ -257,23 +257,26 @@ print.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
   x <- permutations::as.cycle(x)
   permutations::print.cycle(x, ...)
+  
+  invisible(NULL)
 }
 
-#' Transform `gips_perm` object to character vector
+#' Transform `gips_perm` object to a character vector
 #'
 #' Implementation of S3 method.
 #'
 #' @inheritParams print.gips_perm
-#' @param ... Further arguments passed to [permutations::as.character.cycle()].
+#' @param ... Further arguments (currently ignored).
 #'
 #' @method as.character gips_perm
 #'
 #' @returns Returns an object of a `character` type.
 #'
 #' @seealso
-#' [as.character.gips()]
-#' 
-#' [permutations::as.character.cycle()]
+#' * [as.character.gips()] - The underlying `gips_perm` of
+#'     the `gips` object is passed to [as.character.gips_perm()].
+#' * [permutations::as.character.cycle()] - The underlying permutation of
+#'     the `gips` object is passed to [permutations::as.character.cycle()].
 #'
 #' @export
 #'

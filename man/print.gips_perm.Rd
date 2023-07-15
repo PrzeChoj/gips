@@ -9,10 +9,10 @@
 \arguments{
 \item{x}{An object of a \code{gips_perm} class.}
 
-\item{...}{Further arguments passed to \code{\link[permutations:print]{permutations::print.cycle()}}.}
+\item{...}{Further arguments (currently ignored).}
 }
 \value{
-Returns its argument invisibly, after printing it.
+Returns an invisible \code{NULL}.
 }
 \description{
 Printing function for a \code{gips_perm} class.

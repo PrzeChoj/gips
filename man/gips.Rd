@@ -33,10 +33,10 @@ When \code{Z} is the observed data:
 \itemize{
 \item if one does not know the theoretical mean and has to
 estimate it with the observed mean, use \code{S = cov(Z)},
-and leave parameter \code{was_mean_estimated = TRUE} as default.
+and leave parameter \code{was_mean_estimated = TRUE} as default;
 \item if one know the theoretical mean is 0, use
 \code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
-parameter \code{was_mean_estimated = FALSE};
+parameter \code{was_mean_estimated = FALSE}.
 }}
 
 \item{number_of_observations}{A number of data points
@@ -86,10 +86,10 @@ it produces an error.
 }
 \description{
 Create a \code{gips} object.
-This object will consist of data and all other information needed to find
-the most likely invariant permutation. The optimization itself
-will not be performed. One must call the \code{\link[=find_MAP]{find_MAP()}}
-function to do it. See examples below.
+This object will consist of initial data and all other information
+needed to find the most likely invariant permutation.
+The optimization itself will not be performed.
+One must call the \code{\link[=find_MAP]{find_MAP()}} function to do it. See examples below.
 }
 \section{Functions}{
 \itemize{
@@ -107,6 +107,7 @@ function to do it. See examples below.
 \item \code{\link[=logLik.gips]{logLik.gips()}}
 \item \code{\link[=AIC.gips]{AIC.gips()}}
 \item \code{\link[=BIC.gips]{BIC.gips()}}
+\item \code{\link[=as.character.gips]{as.character.gips()}}
 }
 }
 
@@ -114,8 +115,10 @@ function to do it. See examples below.
 
 We encourage to try \code{D_matrix = d * I}, where \code{I} is an identity matrix of a size
 \verb{p x p}, and \code{d > 0} for some different \code{d}.
-When \code{d} is small (e.g. \code{d=0.1}), bigger structures will be found.
-When \code{d} is big (e.g. \code{d=100}), smaller structures will be found.
+When \code{d} is small compared to the data (e.g. \code{d=0.1 * mean(diag(S))}),
+bigger structures will be found.
+When \code{d} is big compared to the data (e.g. \code{d=100 * mean(diag(S))}),
+the posterior distribution does not depend on the data.
 
 Taking \code{D_matrix = d * I} is equivalent to setting \code{S <- S / d}.
 
@@ -130,6 +133,11 @@ the covariance matrix is a generalized case of
 For brief introduction, see \strong{Bayesian model selection}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+
+For analysis of the Hyperparameters influence, see \strong{Section 3.2.}
+of "Learning permutation symmetries with gips in R"
+by \code{gips} developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
+available on \href{https://arxiv.org/abs/2307.00790}{arXiv:2307.00790}.
 }
 
 \examples{

@@ -20,7 +20,7 @@ Can also be of a \code{gips} class, but
 will be interpreted as the underlying \code{gips_perm}.}
 
 \item{size}{An integer. Size of a permutation
-(AKA cardinality of a set, on which permutation is defined; see examples).}
+(AKA cardinality of a set, on which permutation is defined. See examples).}
 
 \item{rearranged_cycles}{A list of rearranged integer vectors.
 Each vector corresponds to a single cycle of a permutation.}
@@ -79,7 +79,7 @@ try(gperm <- gips_perm("(12)(45)", 4))
 }
 \seealso{
 \itemize{
-\item \code{\link[=project_matrix]{project_matrix()}} - \code{gips_perm} is the \code{perm} parameter in \code{project_matrix()}.
+\item \code{\link[=project_matrix]{project_matrix()}} - \code{gips_perm} is the \code{perm} parameter of \code{project_matrix()}.
 \item \code{\link[permutations:permutation]{permutations::permutation()}} - The constructor for the \code{x} parameter.
 \item \code{\link[=gips]{gips()}} - The constructor for the \code{gips} class uses
 the \code{gips_perm} object as the base object.
