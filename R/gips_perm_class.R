@@ -6,8 +6,8 @@
 #' @param x A single object that can be interpreted by
 #'     the [permutations::permutation()] function.
 #'     For example, the character of a form `"(1,2)(4,5)"`. See examples.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
+#'     It can also be of a `gips` class but
+#'     it will be interpreted as the underlying `gips_perm`.
 #' @param size An integer. Size of a permutation
 #'     (AKA cardinality of a set, on which permutation is defined. See examples).
 #'
@@ -28,14 +28,14 @@
 #' # All 7 following lines give the same output:
 #' gperm <- gips_perm("(12)(45)", 5)
 #' gperm <- gips_perm("(1,2)(4,5)", 5)
-#' gperm <- gips_perm(as.matrix(c(2,1,3,5,4)), 5)
-#' gperm <- gips_perm(t(as.matrix(c(2,1,3,5,4))), 5) # both way for a matrix works
-#' gperm <- gips_perm(list(list(c(2,1),c(4,5))), 5)
+#' gperm <- gips_perm(as.matrix(c(2, 1, 3, 5, 4)), 5)
+#' gperm <- gips_perm(t(as.matrix(c(2, 1, 3, 5, 4))), 5) # both way for a matrix works
+#' gperm <- gips_perm(list(list(c(2, 1), c(4, 5))), 5)
 #' gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
 #' gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)
 #' gperm
-#' 
-#' # note the necessity of `size` parameter:
+#'
+#' # note the necessity of the `size` parameter:
 #' gperm <- gips_perm("(12)(45)", 5)
 #' gperm <- gips_perm("(12)(45)", 7) # this one is a different permutation
 #'
@@ -46,14 +46,16 @@
 gips_perm <- function(x, size) {
   if (inherits(x, "gips")) {
     validate_gips(x)
-    if (attr(x[[1]], "size") != size){
-      rlang::abort(c("x" = paste0("You provided a `gips` object as the `x` parameter of `gips_perm()`, which in general is OK, but You also provided size = ",
-                                  size, ", which is different from attr(x[[1]], 'size') = ", attr(x[[1]], "size"))))
+    if (attr(x[[1]], "size") != size) {
+      rlang::abort(c("x" = paste0(
+        "You provided a `gips` object as the `x` parameter of `gips_perm()`, which in general is OK, but You also provided size = ",
+        size, ", which is different from attr(x[[1]], 'size') = ", attr(x[[1]], "size")
+      )))
     }
     return(x[[1]])
   }
   if (!inherits(x, "permutation")) {
-    if (is.matrix(x) && dim(x)[1] != 1){
+    if (is.matrix(x) && dim(x)[1] != 1) {
       x <- t(x) # matrix x has to be a row, not a column
     }
     if (is.matrix(x) || is.character(x) || is.list(x)) {
@@ -105,7 +107,7 @@ gips_perm <- function(x, size) {
   all_ints <- unlist(cycles)
   if (size < max(all_ints)) {
     wrong_argument_abort(
-      i = "`size` attribute must be greater or equal to largest integer in elements of `x`.",
+      i = "`size` attribute must be greater or equal to the largest integer in elements of `x`.",
       x = paste0(
         "`size` equals ", size,
         " while the maximum element is ",
@@ -251,19 +253,19 @@ validate_gips_perm <- function(g) {
 #' @export
 #'
 #' @examples
-#' g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-#' print(g_perm)
+#' gperm <- gips_perm("(5,4)", 5)
+#' print(gperm)
 print.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
   x <- permutations::as.cycle(x)
   permutations::print.cycle(x, ...)
-  
+
   invisible(NULL)
 }
 
-#' Transform `gips_perm` object to a character vector
+#' Transform the `gips_perm` object to a character vector
 #'
-#' Implementation of S3 method.
+#' Implementation of the S3 method.
 #'
 #' @inheritParams print.gips_perm
 #' @param ... Further arguments (currently ignored).
@@ -285,7 +287,7 @@ print.gips_perm <- function(x, ...) {
 #' as.character(g_perm)
 as.character.gips_perm <- function(x, ...) {
   validate_gips_perm(x)
-  
+
   as.character(permutations::as.cycle(x), ...)
 }
 

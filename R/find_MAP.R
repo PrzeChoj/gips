@@ -17,10 +17,10 @@
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a in-depth explanations, see
+#' For a in-depth explanation, see in
 #'   `vignette("Optimizers", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
-#'   
+#'
 #' For every algorithm, there are some aliases available.
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - use
@@ -45,24 +45,24 @@
 #'     then the warning is shown, and it is recommended to continue
 #'     the optimization on the output of the `find_MAP()` with
 #'     `optimizer = "continue"`; see examples.
-#'     Remember that there are `p*(p-1)/2` transpositions to be checked
+#'     Remember that `p*(p-1)/2` transpositions will be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
 #' * `"brute_force"`, `"BF"`, `"full"` - use
 #'     the **Brute Force** algorithm that checks the whole permutation
-#'     space of a given size. This algorithm will definitely find
-#'     the actual Maximum A Posteriori Estimation but is
+#'     space of a given size. This algorithm will find
+#'     the actual Maximum A Posteriori Estimation, but it is
 #'     very computationally expensive for bigger spaces.
-#'     It is only recommended for `p <= 9`.
-#'     For the time the Brute Force takes on our machines see
+#'     We recommend Brute Force only for `p <= 9`.
+#'     For the time the Brute Force takes on our machines, see in
 #'     `vignette("Optimizers", package = "gips")` or in its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
 #' @param g Object of a `gips` class.
-#' @param max_iter Number of iterations for an algorithm to perform.
-#'     At least 2. For `optimizer="MH"` it has to be finite;
-#'     for `optimizer="HC"` it can be infinite;
-#'     for `optimizer="BF"` it is not used.
+#' @param max_iter The number of iterations for an algorithm to perform.
+#'     At least 2. For `optimizer="MH"`, it has to be finite;
+#'     for `optimizer="HC"`, it can be infinite;
+#'     for `optimizer="BF"`, it is not used.
 #' @param optimizer The optimizer for the search of the maximum posteriori:
 #'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
@@ -70,17 +70,17 @@
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
-#' For more details, see the "**Possible algorithms to use as optimizers**"
-#' section below.
+#' See the **Possible algorithms to use as optimizers**
+#' section below for more details.
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar:
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 #'   * When `return_probabilities=TRUE`, then
 #'       shows an additional progress bar for the time
 #'       when the probabilities are calculated.
-#' @param save_all_perms A boolean. `TRUE` indicates to save a list of
-#'     all permutations that were visited during optimization.
-#'     This can be useful sometimes, but need a lot more RAM.
+#' @param save_all_perms A boolean. `TRUE` indicates saving
+#'     a list of all permutations visited during optimization.
+#'     This can be useful sometimes but need a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     only when `save_all_perms = TRUE`. For:
 #'   * `optimizer="MH"` - use Metropolis-Hastings results to
@@ -88,7 +88,7 @@
 #'   * `optimizer="BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
 #'
-#' This additional calculations are costly, so second progress bar
+#' These additional calculations are costly, so a second progress bar
 #'     is shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
@@ -114,19 +114,19 @@
 #'     of the found model.
 #' * [get_probabilities_from_gips()] - When
 #'     `find_MAP(return_probabilities = TRUE)` was called,
-#'     then those probabilities can be extracted with this function.
+#'     probabilities can be extracted with this function.
 #' * [log_posteriori_of_gips()] - The function that the optimizers
 #'     of `find_MAP()` tries to find the argmax of.
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms()` can make such an object
-#'     lighter in memory by forgetting the permutations that it was considering.
+#'     lighter in memory by forgetting the permutations it considered.
 #' * `vignette("Optimizers", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) -
 #'     A place to learn more about
 #'     the available optimizers.
 #' * `vignette("Theory", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) - 
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
@@ -286,15 +286,16 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   if ((optimizer %in% c("MH", "Metropolis_Hastings")) &&
     (max_iter * 10 >= prod(1:ncol(attr(g, "S")))) &&
     is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
-    rlang::inform(c(paste0(
-      "You called optimization with Metropolis_Hastings algorith with ",
-      max_iter, " iterations."
-    ),
-    "i" = paste0(
-      "Consider using `optimizer = 'brute_force'`, because it will use ",
-      ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
-      " iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
-    )
+    rlang::inform(c(
+      paste0(
+        "You called optimization with Metropolis_Hastings algorith with ",
+        max_iter, " iterations."
+      ),
+      "i" = paste0(
+        "Consider using `optimizer = 'brute_force'`, because it will use ",
+        ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
+        " iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
+      )
     ))
   }
 
@@ -412,16 +413,17 @@ Metropolis_Hastings_optimizer <- function(S,
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
-    
+
     if (is.nan(out_val) || is.infinite(out_val)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
-      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
-                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
-                     "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
       ))
     }
-    
+
     out_val
   }
 
@@ -561,16 +563,17 @@ hill_climbing_optimizer <- function(S,
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
-    
+
     if (is.nan(out_val) || is.infinite(out_val)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
-      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
-                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
-                     "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
       ))
     }
-    
+
     out_val
   }
 
@@ -670,7 +673,8 @@ hill_climbing_optimizer <- function(S,
 }
 
 
-brute_force_optimizer <- function(S,
+brute_force_optimizer <- function(
+    S,
     number_of_observations,
     delta = 3, D_matrix = NULL,
     return_probabilities = return_probabilities,
@@ -695,7 +699,7 @@ brute_force_optimizer <- function(S,
       "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
     ))
   }
-  
+
   if (perm_size > 9) { # I don't know how to test this without running the optimization...
     rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutional space.",
       "x" = paste0(
@@ -706,16 +710,16 @@ brute_force_optimizer <- function(S,
       "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
     ))
   }
-  
+
   iterations_to_perform <-
     if ((3 <= perm_size) && (perm_size <= 9)) {
-    # Only the generators are interesting for us:
-    # perm_group_generators are calculated only for up to perm_size = 9
-    # See ISSUE#21 for more information
-    OEIS_A051625[perm_size]
-  } else {
-    prod(1:perm_size)
-  }
+      # Only the generators are interesting for us:
+      # perm_group_generators are calculated only for up to perm_size = 9
+      # See ISSUE#21 for more information
+      OEIS_A051625[perm_size]
+    } else {
+      prod(1:perm_size)
+    }
 
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = iterations_to_perform, initial = 1)
@@ -730,16 +734,17 @@ brute_force_optimizer <- function(S,
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
-    
+
     if (is.nan(out_val) || is.infinite(out_val)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
-      rlang::abort(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-                     "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
-                     "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
-                     "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
       ))
     }
-    
+
     out_val
   }
 

@@ -38,13 +38,13 @@ test_that("Setting custom permutation in gips constructor works", {
   expect_identical(custom_perm1, g1[[1]])
 
   expect_identical(gips_perm(custom_perm2, ncol(S)), g2[[1]])
-  
+
   # gips as the `perm` parameter
   g3 <- gips(
     S, number_of_observations,
     was_mean_estimated = FALSE, perm = g2
   )
-  
+
   expect_equal(g2, g3)
 })
 
@@ -124,29 +124,31 @@ test_that("Properly validate the gips class with no optimization or after a sing
     optimizer = "HC", return_probabilities = FALSE
   )
 
-  g_BF <- find_MAP(gips(
-    matrix(c(
-      1, 0.5, 0.5,
-      0.5, 1, 0.5,
-      0.5, 0.5, 1
-    ), nrow = 3),
-    number_of_observations,
-    was_mean_estimated = FALSE
-  ),
-  optimizer = "BF", show_progress_bar = FALSE
+  g_BF <- find_MAP(
+    gips(
+      matrix(c(
+        1, 0.5, 0.5,
+        0.5, 1, 0.5,
+        0.5, 0.5, 1
+      ), nrow = 3),
+      number_of_observations,
+      was_mean_estimated = FALSE
+    ),
+    optimizer = "BF", show_progress_bar = FALSE
   )
 
-  g_BF_prob <- find_MAP(gips(
-    matrix(c(
-      1, 0.5, 0.5,
-      0.5, 1, 0.5,
-      0.5, 0.5, 1
-    ), nrow = 3),
-    number_of_observations,
-    was_mean_estimated = FALSE
-  ),
-  optimizer = "BF", show_progress_bar = FALSE,
-  return_probabilities = TRUE, save_all_perms = TRUE
+  g_BF_prob <- find_MAP(
+    gips(
+      matrix(c(
+        1, 0.5, 0.5,
+        0.5, 1, 0.5,
+        0.5, 0.5, 1
+      ), nrow = 3),
+      number_of_observations,
+      was_mean_estimated = FALSE
+    ),
+    optimizer = "BF", show_progress_bar = FALSE,
+    return_probabilities = TRUE, save_all_perms = TRUE
   )
 
 
@@ -156,9 +158,9 @@ test_that("Properly validate the gips class with no optimization or after a sing
   expect_silent(validate_gips(g3))
   expect_silent(validate_gips(g_BF))
   expect_silent(validate_gips(g_BF_prob))
-  
-  
-  
+
+
+
   # NaNs or Infs in D_matrix
   expect_error(gips(
     S[1:4, 1:4], number_of_observations,
@@ -166,9 +168,9 @@ test_that("Properly validate the gips class with no optimization or after a sing
   ))
   expect_error(gips(
     S[1:4, 1:4], number_of_observations,
-    was_mean_estimated = FALSE, D_matrix = diag(Inf, 4) 
+    was_mean_estimated = FALSE, D_matrix = diag(Inf, 4)
   ))
-  
+
   # Other tests
   g_err <- g2
   class(g_err[[1]]) <- "test"
@@ -373,7 +375,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
     validate_gips(g_err),
     "must have properties of probability. All elements in range"
   )
-  
+
   g_good <- g2
   attr(g_good, "optimization_info")[["post_probabilities"]] <- c(1, rep(0, length(attr(g_good, "optimization_info")[["post_probabilities"]]) - 1)) # this could underflow to 0
   names(attr(g_good, "optimization_info")[["post_probabilities"]]) <- names(attr(g2, "optimization_info")[["post_probabilities"]])
@@ -494,17 +496,19 @@ test_that("Properly validate the gips class after multiple optimizations", {
   g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
 
   expect_warning(expect_message(expect_message(
-    g_MH_MH <- find_MAP(find_MAP(gips(
-      matrix(c(1, 0.5, 0.5, 5), nrow = 2),
-      number_of_observations,
-      was_mean_estimated = FALSE
-    ),
-    optimizer = "MH", show_progress_bar = FALSE,
-    return_probabilities = FALSE, max_iter = 3
-    ),
-    optimizer = "MH", show_progress_bar = FALSE,
-    return_probabilities = TRUE, save_all_perms = TRUE,
-    max_iter = 3
+    g_MH_MH <- find_MAP(
+      find_MAP(
+        gips(
+          matrix(c(1, 0.5, 0.5, 5), nrow = 2),
+          number_of_observations,
+          was_mean_estimated = FALSE
+        ),
+        optimizer = "MH", show_progress_bar = FALSE,
+        return_probabilities = FALSE, max_iter = 3
+      ),
+      optimizer = "MH", show_progress_bar = FALSE,
+      return_probabilities = TRUE, max_iter = 3,
+      save_all_perms = TRUE
     )
   ))) # 2 messages and a warning
 
@@ -1009,7 +1013,7 @@ test_that("print.gips() works", {
     convert_log_diff_to_str(0, 3),
     "1"
   )
-  
+
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
 
@@ -1080,7 +1084,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
 test_that("plot.gips() works for books example", {
   Z <- DAAG::oddbooks[, c(1, 2, 3)]
   Z$height <- Z$height / sqrt(2)
-  
+
   g <- gips(cov(Z), 7, D_matrix = 1 * diag(3))
   expect_silent(plot(g, type = "heatmap"))
 })
@@ -1140,15 +1144,15 @@ test_that("summary.gips() works", {
     print(summary(g1)),
     "The number of observations is bigger than n0 for this permutation,\nso "
   )
-  
+
   expect_output(
     print(summary(g1)), "free parameters"
   )
-  
+
   expect_output(
     print(summary(g1)), "AIC"
   )
-  
+
   expect_output(
     print(summary(g1)), "BIC"
   )
@@ -1169,7 +1173,7 @@ test_that("summary.gips() works", {
     print(summary(g3)),
     "Optimization algorithms:"
   )
-  
+
   # Optimized with BF; those 3 are computed differently for optimized with BF:
   g4 <- find_MAP(gips(S[1:4, 1:4], number_of_observations), optimizer = "BF", show_progress_bar = FALSE)
   expect_true(is.null(summary(g4)[["when_was_best"]]))
@@ -1283,10 +1287,10 @@ test_that("get_probabilities_from_gips works", {
     "on the `gips` object that does not have saved probabilities."
   )
   expect_null(out)
-  
+
   # sorted
   probs <- get_probabilities_from_gips(g_map)
-  expect_equal(order(probs, decreasing = TRUE), c(1,2))
+  expect_equal(order(probs, decreasing = TRUE), c(1, 2))
 })
 
 test_that("forget_perms works properly", {
@@ -1314,50 +1318,57 @@ test_that("forget_perms works properly", {
 
 test_that("logLik.gips() works", {
   # logLik calculated by hand:
-  Z <- matrix(c(-1,2,-3,4,
-                1,-1,1,1,
-                -1,2,2,3,
-                2,-3,2,-3,
-                3,-2,2,-3), nrow=5, byrow=TRUE)
-  
+  Z <- matrix(c(
+    -1, 2, -3, 4,
+    1, -1, 1, 1,
+    -1, 2, 2, 3,
+    2, -3, 2, -3,
+    3, -2, 2, -3
+  ), nrow = 5, byrow = TRUE)
+
   p <- ncol(Z) # 4
   n <- nrow(Z) # 5
-  
-  
+
+
   # ==================
   # Mean is (0,0,0,0)
   U <- t(Z) %*% Z
   perm <- gips_perm("(12)(34)", 4)
-  S <- project_matrix(U, perm)/n
-  
+  S <- project_matrix(U, perm) / n
+
   # logLik from definition:
-  loglikelihoods <- mvtnorm::dmvnorm(Z, rep(0, 4), S,
-                                     log = TRUE)
+  loglikelihoods <- mvtnorm::dmvnorm(
+    Z, rep(0, 4), S, log = TRUE
+  )
   logLik_definition <- sum(loglikelihoods)
-  
+
   expect_equal(logLik_definition, -35.2883973048347)
-  
-  attr(logLik_definition, 'df') <- 6 # 10 - 2 - 2 parameters
-  attr(logLik_definition, 'nobs') <- n
-  
+
+  attr(logLik_definition, "df") <- 6 # 10 - 2 - 2 parameters
+  attr(logLik_definition, "nobs") <- n
+
   # logLik.gips:
-  expect_equal(logLik(gips(U/n, n, perm = perm, was_mean_estimated = FALSE)),
-               logLik_definition)
-  
-  
+  expect_equal(
+    logLik(gips(U / n, n, perm = perm, was_mean_estimated = FALSE)),
+    logLik_definition
+  )
+
+
   # ==================
   # mean was estimated
-  U <- cov(Z) * (n-1)
+  U <- cov(Z) * (n - 1)
   perm <- gips_perm("(12)(34)", 4)
-  S <- project_matrix(U, perm)/(n-1)
-  
+  S <- project_matrix(U, perm) / (n - 1)
+
   logLik_expected <- structure(-28.8015774226105, df = 6, nobs = 5L)
-  
+
   # logLik.gips:
-  expect_equal(logLik(gips(U/(n-1), n, perm = perm, was_mean_estimated = TRUE)),
-               logLik_expected)
-  
-  
+  expect_equal(
+    logLik(gips(U / (n - 1), n, perm = perm, was_mean_estimated = TRUE)),
+    logLik_expected
+  )
+
+
   # ==================
   # NUll:
   U <- t(Z) %*% Z
@@ -1367,7 +1378,7 @@ test_that("logLik.gips() works", {
     ),
     class = "likelihood_does_not_exists"
   )
-  
+
   # ==================
   # -Inf:
   g <- gips(diag(0, 4), n)
@@ -1375,29 +1386,31 @@ test_that("logLik.gips() works", {
     expect_equal(logLik(g), -Inf),
     class = "singular_matrix"
   )
-  
+
   # ==================
   # Not -Inf:
   p <- 150
-  g <- gips(diag(1e-310, p), p*2)
+  g <- gips(diag(1e-310, p), p * 2)
   expect_no_warning(logLik(g))
 })
 
 test_that("AIC.gips() works", {
-  Z <- matrix(c(-1,2,-3,4,
-                1,-1,1,1,
-                -1,2,2,3,
-                2,-3,2,-3,
-                3,-2,2,-3), nrow=5, byrow=TRUE)
-  
+  Z <- matrix(c(
+    -1, 2, -3, 4,
+    1, -1, 1, 1,
+    -1, 2, 2, 3,
+    2, -3, 2, -3,
+    3, -2, 2, -3
+  ), nrow = 5, byrow = TRUE)
+
   p <- ncol(Z) # 4
   n <- nrow(Z) # 5
-  
+
   g <- gips(t(Z) %*% Z / n, n, perm = "(12)(34)", was_mean_estimated = FALSE)
-  
+
   expect_equal(AIC(g), 82.5767946096694)
   expect_equal(BIC(g), 80.233422084274)
-  
+
   # ==================
   # NUll
   S <- t(Z) %*% Z / n
@@ -1414,17 +1427,17 @@ test_that("AIC.gips() works", {
     ),
     class = "likelihood_does_not_exists"
   )
-  
+
   # ==================
   # Inf
   g <- gips(diag(0, 4), n)
   expect_warning(expect_equal(AIC(g), Inf), class = "singular_matrix")
   expect_warning(expect_equal(BIC(g), Inf), class = "singular_matrix")
-  
+
   # ==================
   # Not -Inf:
   p <- 150
-  g <- gips(diag(1e-310, p), p*2)
+  g <- gips(diag(1e-310, p), p * 2)
   expect_no_warning(AIC(g))
   expect_no_warning(BIC(g))
 })

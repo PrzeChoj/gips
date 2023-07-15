@@ -141,5 +141,4 @@ test_that("gips object can be passed as perm", {
   g <- gips(diag(5), 14, perm = gperm)
   expect_silent(U_Gamma2 <- prepare_orthogonal_matrix(g))
   expect_equal(U_Gamma1, U_Gamma2)
-  
 })

@@ -8,23 +8,23 @@ calculate_gamma_function(perm, lambda)
 }
 \arguments{
 \item{perm}{An object of a \code{gips_perm} class.
-Can also be of a \code{gips} class, but
-will be interpreted as the underlying \code{gips_perm}.}
+It can also be of a \code{gips} class, but
+it will be interpreted as the underlying \code{gips_perm}.}
 
 \item{lambda}{A positive real number.}
 }
 \value{
 Returns the value of the Gamma function of the colored cone
-(for definition of colored cone see \strong{Basic definitions} section in
-\code{vignette("Theory", package = "gips")} or in its
+(for definition of colored cone, see the \strong{Basic definitions} section
+in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 \description{
 It calculates the value of the integral defined in
 \href{https://arxiv.org/abs/2004.03503}{Definition 11 from references}.
-It implements the
+It implements
 \href{https://arxiv.org/abs/2004.03503}{Theorem 8 from references}
-and is using the
+and uses the
 \href{https://arxiv.org/abs/2004.03503}{formula (19) from references}.
 }
 \examples{

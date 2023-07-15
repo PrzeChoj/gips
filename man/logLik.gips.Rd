@@ -2,25 +2,25 @@
 % Please edit documentation in R/gips_class.R
 \name{logLik.gips}
 \alias{logLik.gips}
-\title{Extract Log-Likelihood for \code{gips} class}
+\title{Extract the Log-Likelihood for \code{gips} class}
 \usage{
 \method{logLik}{gips}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{gips}. Usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}. Usually, a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
 }
 \value{
 Log-Likelihood of the sample.
 
-When multivariate normal model does not exists
-(\code{number_of_observations < n0}), returns \code{NULL}.
-When multivariate normal model cannot be reasonably approximated
-(output of \code{\link[=project_matrix]{project_matrix()}} is singular), returns \code{-Inf}.
+When the multivariate normal model does not exist
+(\code{number_of_observations < n0}), it returns \code{NULL}.
+When the multivariate normal model cannot be reasonably approximated
+(output of \code{\link[=project_matrix]{project_matrix()}} is singular), it returns \code{-Inf}.
 
-In both failure situations, shows a warning.
-More information can be found in \strong{Existence of likelihood} section below.
+In both failure situations, it shows a warning.
+More information can be found in the \strong{Existence of likelihood} section below.
 }
 \description{
 Calculates Log-Likelihood of the sample based on the \code{gips} object.
@@ -28,8 +28,8 @@ Calculates Log-Likelihood of the sample based on the \code{gips} object.
 \details{
 This will always be the biggest for \code{perm = "()"} (provided that \code{p <= n}).
 
-If the found permutation will still require more parameters than \code{n},
-the Likelihood does not exist, thus the function returns \code{NULL}.
+If the found permutation still requires more parameters than \code{n},
+the likelihood does not exist; thus the function returns \code{NULL}.
 
 If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
 is close to singular, the \code{NA} is returned.
@@ -55,10 +55,12 @@ the \strong{Information Criterion - AIC and BIC} section in
 }
 
 \examples{
-S <- matrix(c(5.15,2.05,3.60,1.99,
-              2.05,5.09,2.03,3.57,
-              3.60,2.03,5.21,1.97,
-              1.99,3.57,1.97,5.13), nrow = 4)
+S <- matrix(c(
+  5.15, 2.05, 3.60, 1.99,
+  2.05, 5.09, 2.03, 3.57,
+  3.60, 2.03, 5.21, 1.97,
+  1.99, 3.57, 1.97, 5.13
+), nrow = 4)
 g <- gips(S, 5)
 logLik(g) # -32.67048
 # For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom
@@ -81,6 +83,6 @@ To see why one may be interested in \code{n0},
 see the \strong{Existence of likelihood} section above.
 \item \code{\link[=project_matrix]{project_matrix()}} - Project the known matrix
 onto the found permutations space.
-Mentioned in \strong{Calculation details} section above.
+It is mentioned in the \strong{Calculation details} section above.
 }
 }

@@ -33,13 +33,13 @@ compare_log_posteriories_of_perms(
 \item{perm1, perm2}{Permutations to compare.
 How many times \code{perm1} is more likely than \code{perm2}?
 Those can be provided as the \code{gips} objects,
-the \code{gips_perm} objects or anything that can be used as
+the \code{gips_perm} objects, or anything that can be used as
 the \code{x} parameter in the \code{\link[=gips_perm]{gips_perm()}} function.
 They do not have to be of the same class.}
 
 \item{S, number_of_observations, delta, D_matrix, was_mean_estimated}{The same parameters as in the \code{\link[=gips]{gips()}} function.
 If at least one of \code{perm1} or \code{perm2} is a \code{gips} object,
-they are overwritten with those from \code{gips} object.}
+they are overwritten with those from the \code{gips} object.}
 
 \item{print_output}{A boolean.
 When \code{TRUE} (default), the computed value will be printed with
@@ -47,8 +47,8 @@ additional text and returned invisibly. When \code{FALSE},
 the computed value will be returned visibly.}
 
 \item{digits}{Integer. Only used when \code{print_output = TRUE}.
-Number of digits after comma to print.
-Can be negative, can be \code{+Inf}. It is passed to \code{base::round()}.}
+The number of digits after the comma to print.
+It can be negative, can be \code{+Inf}. It is passed to \code{base::round()}.}
 }
 \value{
 The function \code{compare_posteriories_of_perms()} returns

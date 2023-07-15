@@ -8,8 +8,8 @@ get_structure_constants(perm)
 }
 \arguments{
 \item{perm}{An object of a \code{gips_perm} class.
-Can also be of a \code{gips} class, but
-will be interpreted as the underlying \code{gips_perm}.}
+It can also be of a \code{gips} class, but
+it will be interpreted as the underlying \code{gips_perm}.}
 }
 \value{
 Returns a list of 5 items:
@@ -19,11 +19,11 @@ and the beginning of
 \href{https://arxiv.org/abs/2004.03503}{section 3.1. from references}.
 }
 \description{
-Finds constants that are necessary for internal calculations of integrals and
+Finds constants necessary for internal calculations of integrals and
 eventually the posteriori probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 }
 \details{
-Uses the \href{https://arxiv.org/abs/2004.03503}{Theorem 5 from references}
+Uses \href{https://arxiv.org/abs/2004.03503}{Theorem 5 from references}
 to calculate the constants.
 }
 \examples{

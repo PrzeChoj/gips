@@ -18,6 +18,6 @@ Returns an invisible \code{NULL}.
 Printing function for a \code{gips_perm} class.
 }
 \examples{
-g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
-print(g_perm)
+gperm <- gips_perm("(5,4)", 5)
+print(gperm)
 }

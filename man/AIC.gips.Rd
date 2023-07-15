@@ -10,7 +10,7 @@
 \method{BIC}{gips}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{gips}. Usually a result of a \code{\link[=find_MAP]{find_MAP()}}.}
+\item{object}{An object of class \code{gips}. Usually, a result of a \code{\link[=find_MAP]{find_MAP()}}.}
 
 \item{...}{Further arguments will be ignored.}
 
@@ -20,13 +20,13 @@ The default \code{k = 2} is the classical AIC.}
 \value{
 \code{AIC.gips()} returns calculated Akaike's An Information Criterion
 
-When multivariate normal model does not exists
-(\code{number_of_observations < n0}), returns \code{NULL}.
-When multivariate normal model cannot be reasonably approximated
-(output of \code{\link[=project_matrix]{project_matrix()}} is singular), returns \code{Inf}.
+When the multivariate normal model does not exist
+(\code{number_of_observations < n0}), it returns \code{NULL}.
+When the multivariate normal model cannot be reasonably approximated
+(output of \code{\link[=project_matrix]{project_matrix()}} is singular), it returns \code{Inf}.
 
 In both failure situations, shows a warning.
-More information can be found in \strong{Existence of likelihood}
+More information can be found in the \strong{Existence of likelihood}
 section of \code{\link[=logLik.gips]{logLik.gips()}}.
 
 \code{BIC.gips()} returns calculated
@@ -49,10 +49,12 @@ the \strong{Information Criterion - AIC and BIC} section in
 }
 
 \examples{
-S <- matrix(c(5.15,2.05,3.10,1.99,
-              2.05,5.09,2.03,3.07,
-              3.10,2.03,5.21,1.97,
-              1.99,3.07,1.97,5.13), nrow = 4)
+S <- matrix(c(
+  5.15, 2.05, 3.10, 1.99,
+  2.05, 5.09, 2.03, 3.07,
+  3.10, 2.03, 5.21, 1.97,
+  1.99, 3.07, 1.97, 5.13
+), nrow = 4)
 g <- gips(S, 14)
 g_map <- find_MAP(g, optimizer = "brute_force")
 
@@ -68,7 +70,7 @@ BIC(g_map) # 226 < 244, so g_map is better than g in BIC
 this \code{AIC.gips()} and \code{BIC.gips()} extend.
 \item \code{\link[=find_MAP]{find_MAP()}} - Usually, the \code{AIC.gips()} and \code{BIC.gips()}
 are called on the output of \code{find_MAP()}.
-\item \code{\link[=logLik.gips]{logLik.gips()}} - Calculates the log likelihood for
-the \code{gips} object. Important part of the Information Criteria.
+\item \code{\link[=logLik.gips]{logLik.gips()}} - Calculates the log-likelihood for
+the \code{gips} object. An important part of the Information Criteria.
 }
 }

@@ -1,14 +1,14 @@
 #' Get Structure Constants
 #'
-#' Finds constants that are necessary for internal calculations of integrals and
+#' Finds constants necessary for internal calculations of integrals and
 #' eventually the posteriori probability in [log_posteriori_of_gips()].
 #'
-#' Uses the [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
+#' Uses [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
 #' to calculate the constants.
 #'
 #' @param perm An object of a `gips_perm` class.
-#'     Can also be of a `gips` class, but
-#'     will be interpreted as the underlying `gips_perm`.
+#'     It can also be of a `gips` class, but
+#'     it will be interpreted as the underlying `gips_perm`.
 #'
 #' @returns Returns a list of 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from
@@ -44,7 +44,7 @@ get_structure_constants <- function(perm) {
       )
     )
   }
-  
+
   perm_size <- attr(perm, "size")
   l <- get_cycle_representatives_and_lengths(perm)
   representatives <- l[["representatives"]]
@@ -108,7 +108,7 @@ calculate_r <- function(cycle_lengths, perm_order) {
 
   # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
   multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
-  
+
   # Now we have to adjust for 2 cases:
   # 1) some alphas are too large
   # 2) some alphas are so small, that we can include their multiples
