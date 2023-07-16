@@ -252,6 +252,14 @@ all }\sigma\in\Gamma\]</span></p>
 estimator is the best we can do.</p>
 </div>
 <div class="section level4">
+<h4 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
+</h4>
+<p>We will abbreviate the notation: when the <span class="math inline">\(\Gamma = \left&lt; c \right&gt;\)</span> is a
+cyclic group of a permutation <span class="math inline">\(c\)</span>, we
+will write <span class="math inline">\(\pi_{c}(S) := \pi_{\Gamma}(S) =
+\pi_{\left&lt; c \right&gt;}(S)\)</span>.</p>
+</div>
+<div class="section level4">
 <h4 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h4>
 <p>Let <code>S</code> be any symmetric square matrix:</p>
@@ -265,7 +273,7 @@ estimator is the best we can do.</p>
 <span><span class="co">#&gt; [5,] -24.35  12.23  -3.81   7.71  26.00  -7.24</span></span>
 <span><span class="co">#&gt; [6,] -17.42  -2.74  -9.60 -13.51  -7.24  16.77</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/def3_2-1.png" width="700"></p>
-<p>One can project this matrix, for example, on <span class="math inline">\(\Gamma =
+<p>One can project this matrix, for example, on <span class="math inline">\(\Gamma = \left&lt; \text{perm} \right&gt; =
 \left&lt;(1,2)(3,4,5,6)\right&gt;\)</span>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, perm <span class="op">=</span> <span class="st">"(1,2)(3,4,5,6)"</span><span class="op">)</span></span>
@@ -287,7 +295,7 @@ For example, <code>S_projected[1,1] = S_projected[2,2]</code>.</p>
 <span class="math inline">\(C_\sigma\)</span> and
 <code>n0</code><a class="anchor" aria-label="anchor" href="#c_sigma-and-n0"></a>
 </h3>
-<p>It is well-known fact that without additional assumptions, the
+<p>It is a well-known fact that without additional assumptions, the
 Maximum Likelihood Estimator (MLE) of the covariance matrix in the
 Gaussian model exists if and only if <span class="math inline">\(n \ge
 p\)</span>. However, if the additional assumption is added as the
@@ -435,10 +443,10 @@ page</a>.</p>
             else{document.getElementById('spoiler3') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have this data, <code>Z</code>. It has only <span class="math inline">\(4\)</span> observations, and its dimension is
-<span class="math inline">\(p=6\)</span>. Let’s assume <code>Z</code>
-was drawn from the normal distribution with the mean <span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate the
-covariance matrix:</p>
+<p>Let’s say we have this data, <code>Z</code>. It has dimension <span class="math inline">\(p=6\)</span> and only <span class="math inline">\(4\)</span> observations. Let’s assume
+<code>Z</code> was drawn from the normal distribution with the mean
+<span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate
+the covariance matrix:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 6</span></span>
@@ -506,15 +514,8 @@ fit.</p>
 <p>When the mean was estimated, we have <span class="math inline">\(S =
 \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} -
 \bar{Z})}^\top\)</span>, where <span class="math inline">\(\bar{Z} =
-\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>. Then:</p>
-<p><span class="math display">\[\log L_{estimated\
-mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = -
-\frac{(n-1)\cdot p}{2}\log (2\pi) - \frac{(n-1)}{2}\log\left( \det\left(
-\pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2\]</span></p>
-<p>And definitions of AIC and BIC stay the same:</p>
-<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log
-L_{estimated\ mean}(\hat \Sigma)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim M) -2 \log
-L_{estimated\ mean}(\hat \Sigma)\]</span></p>
+\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>. Then in the <span class="math inline">\(\log L\)</span> we use <span class="math inline">\(n-1\)</span> in stead of <span class="math inline">\(n\)</span>. Definitions of AIC and BIC stay the
+same.</p>
 </div>
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
@@ -552,10 +553,10 @@ selection</strong> section:</p>
             else{document.getElementById('spoiler4') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have this data, <code>Z</code>. It has <span class="math inline">\(7\)</span> observations, and its dimension is
-<span class="math inline">\(p=6\)</span>. Let’s assume <code>Z</code>
-was drawn from the normal distribution with the mean <span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate the
-covariance matrix:</p>
+<p>Let’s say we have this data, <code>Z</code>. It has dimension <span class="math inline">\(p=6\)</span> and <span class="math inline">\(7\)</span> observations. Let’s assume
+<code>Z</code> was drawn from the normal distribution with the mean
+<span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate
+the covariance matrix:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 7 6</span></span>
