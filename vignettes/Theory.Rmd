@@ -139,6 +139,10 @@ Note that for $\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}$ we have $\pi_{\{\tex
 
 So, no additional assumptions are made; thus, the standard covariance estimator is the best we can do.
 
+### Notation
+
+We will abbreviate the notation: when the $\Gamma = \left< c \right>$ is a cyclic group of a permutation $c$, we will write $\pi_{c}(S) := \pi_{\Gamma}(S) = \pi_{\left< c \right>}(S)$.
+
 
 ### Example
 Let `S` be any symmetric square matrix:
@@ -161,7 +165,7 @@ round(S, 2)
 gips:::pretty_plot_matrix(S, title = "S matrix")
 ```
 
-One can project this matrix, for example, on $\Gamma = \left<(1,2)(3,4,5,6)\right>$:
+One can project this matrix, for example, on $\Gamma = \left< \text{perm} \right> = \left<(1,2)(3,4,5,6)\right>$:
 
 ```{r def3_3}
 S_projected <- project_matrix(S, perm = "(1,2)(3,4,5,6)")
@@ -175,7 +179,7 @@ gips:::pretty_plot_matrix(S_projected, title = "S_projected matrix")
 Notice in the `S_projected` matrix there are identical elements according to the equation from the beginning of this section. For example, `S_projected[1,1] = S_projected[2,2]`.
 
 ## $C_\sigma$ and `n0`
-It is well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix in the Gaussian model exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
+It is a well-known fact that without additional assumptions, the Maximum Likelihood Estimator (MLE) of the covariance matrix in the Gaussian model exists if and only if $n \ge p$. However, if the additional assumption is added as the covariance matrix is invariant under permutation $\sigma$, then the sample size $n$
 required for the MLE to exist is lower than $p$. It is equal to the number of cycles, denoted hereafter by $C_\sigma$.
 
 For example, if the permutation $\sigma = (1,2,3,4,5,6)$ is discovered by the `find_MAP()` function, then there is a single cycle in it $C_\sigma = 1$. Therefore a single observation would be enough to estimate a covariance matrix with `project_matrix()`. If the permutation $\sigma = (1,2)(3,4,5,6)$ is discovered, then $C_\sigma = 2$, and so 2 observations would be enough.
@@ -279,7 +283,7 @@ Z <- withr::with_seed(2022,
   Show/hide data preparation
 </button>
 
-Let's say we have this data, `Z`. It has only $4$ observations, and its dimension is $p=6$.
+Let's say we have this data, `Z`. It has dimension $p=6$ and only $4$ observations.
 Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
 
 ```{r, example2_readme2}
@@ -331,14 +335,8 @@ A smaller value of the criteria for a given model indicates a better fit.
 Those can be calculated by `AIC.gips()` and `BIC.gips()`.
 
 ### Estimated mean
-When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then:
+When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then in the $\log L$ we use $n-1$ in stead of $n$. Definitions of AIC and BIC stay the same.
 
-$$\log L_{estimated\ mean}\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{(n-1)\cdot p}{2}\log (2\pi) - \frac{(n-1)}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{(n-1)\cdot p}2$$
-
-And definitions of AIC and BIC stay the same:
-
-$$AIC = 2 \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat \Sigma)$$
-$$BIC = (\log n) \cdot (\dim M) -2 \log L_{estimated\ mean}(\hat \Sigma)$$
 
 ### Example
 
@@ -379,7 +377,7 @@ Z <- withr::with_seed(2022,
   Show/hide data preparation
 </button>
 
-Let's say we have this data, `Z`. It has $7$ observations, and its dimension is $p=6$.
+Let's say we have this data, `Z`. It has dimension $p=6$ and $7$ observations.
 Let's assume `Z` was drawn from the normal distribution with the mean $(0,0,0,0,0,0)$. We want to estimate the covariance matrix:
 
 ```{r, example3_2}
