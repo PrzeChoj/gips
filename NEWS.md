@@ -18,7 +18,8 @@
     -   `perm1` and `perm2` in `compare_posteriories_of_perms()`, `compare_log_posteriories_of_perms()`;
     -   `x` in `gips_perm()`;
 -   `plot.gips()` can get `type = "MLE"`, which is an alias for `type = "heatmap"`;
--   `find_MAP(optimizer = "BF")` is 3 times faster.
+-   `find_MAP(optimizer = "BF")` is 3 times faster;
+-   `find_MAP(optimizer = "BF")` is default for `perm_size <= 9`.
 
 ### Bugfixes:
 

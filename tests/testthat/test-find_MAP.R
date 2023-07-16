@@ -58,10 +58,9 @@ test_that("Handle improper parameters", {
 
 test_that("Handle proper parameters", {
   g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
-
-  expect_message(
-    g_map <- find_MAP(g1, 10, show_progress_bar = FALSE),
-    "The 'optimizer = NA' was automatically changed to 'optimizer = \"MH\"."
+  
+  expect_silent(
+    g_map <- find_MAP(g1, 10, optimizer = "MH", show_progress_bar = FALSE)
   )
 
   expect_silent(out <- Metropolis_Hastings_optimizer(
@@ -118,6 +117,15 @@ test_that("Handle proper parameters", {
     find_MAP(g1, max_iter = 2, optimizer = "HC", show_progress_bar = FALSE),
     "Hill Climbing algorithm did not converge in 2 iterations!"
   )
+  
+  
+  
+  g2 <- gips(matrix_invariant_by_example_perm[1:4,1:4], 13, was_mean_estimated = FALSE)
+  
+  expect_message(
+    g_map <- find_MAP(g2, show_progress_bar = FALSE),
+    "The 'optimizer = NA' was automatically changed to 'optimizer = \"BF\"."
+  )
 })
 
 test_that("Warns when found group has n0 > n", {
@@ -169,7 +177,7 @@ test_that("find_MAP() can gues the correct optimizer and message the user", {
   )
 })
 
-test_that("find_MAP will remember the right number of observations and was_mean_estimated", {
+test_that("find_MAP() will remember the right number of observations and was_mean_estimated", {
   number_of_observations <- 13
 
   # em - estimated mean
@@ -205,7 +213,7 @@ test_that("find_MAP will remember the right number of observations and was_mean_
   )
 })
 
-test_that("find_map with calculate exact probabilities will return probability", {
+test_that("find_MAP() with calculate exact probabilities will return probability", {
   g <- gips(
     S = matrix_invariant_by_example_perm[1:4, 1:4],
     number_of_observations = 13,

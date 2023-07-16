@@ -11,9 +11,9 @@
 #'   its `max_iter` without converging.
 #' * the optimizer will find the permutation with smaller `n0` than
 #'   `number_of_observations` (for more information on what it means,
-#'   see **\eqn{C\sigma} and `n0`** section
+#'   see **\eqn{C_\sigma} and `n0`** section
 #'   in `vignette("Theory", package = "gips")` or in its
-#'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
@@ -22,6 +22,16 @@
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
 #' For every algorithm, there are some aliases available.
+#' 
+#' * `"brute_force"`, `"BF"`, `"full"` - use
+#'     the **Brute Force** algorithm that checks the whole permutation
+#'     space of a given size. This algorithm will find
+#'     the actual Maximum A Posteriori Estimation, but it is
+#'     very computationally expensive for bigger spaces.
+#'     We recommend Brute Force only for `p <= 9`.
+#'     For the time the Brute Force takes on our machines, see in
+#'     `vignette("Optimizers", package = "gips")` or in its
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
 #' * `"Metropolis_Hastings"`, `"MH"` - use
 #'     the **Metropolis-Hastings** algorithm;
@@ -48,25 +58,15 @@
 #'     Remember that `p*(p-1)/2` transpositions will be checked
 #'     in every iteration. For bigger `p`, this may be costly.
 #'
-#' * `"brute_force"`, `"BF"`, `"full"` - use
-#'     the **Brute Force** algorithm that checks the whole permutation
-#'     space of a given size. This algorithm will find
-#'     the actual Maximum A Posteriori Estimation, but it is
-#'     very computationally expensive for bigger spaces.
-#'     We recommend Brute Force only for `p <= 9`.
-#'     For the time the Brute Force takes on our machines, see in
-#'     `vignette("Optimizers", package = "gips")` or in its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
-#'
 #' @param g Object of a `gips` class.
 #' @param max_iter The number of iterations for an algorithm to perform.
-#'     At least 2. For `optimizer="MH"`, it has to be finite;
-#'     for `optimizer="HC"`, it can be infinite;
-#'     for `optimizer="BF"`, it is not used.
+#'     At least 2. For `optimizer = "BF"`, it is not used;
+#'     for `optimizer = "MH"`, it has to be finite;
+#'     for `optimizer = "HC"`, it can be infinite.
 #' @param optimizer The optimizer for the search of the maximum posteriori:
-#'   * `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings;
+#'   * `"BF"` (the default for unoptimized `g` with `perm size <= 9`) - Brute Force;
+#'   * `"MH"` (the default for unoptimized `g` with `perm size > 10`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
-#'   * `"BF"` - Brute Force;
 #'   * `"continue"` (the default for optimized `g`) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
@@ -75,7 +75,7 @@
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar:
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
-#'   * When `return_probabilities=TRUE`, then
+#'   * When `return_probabilities = TRUE`, then
 #'       shows an additional progress bar for the time
 #'       when the probabilities are calculated.
 #' @param save_all_perms A boolean. `TRUE` indicates saving
@@ -83,13 +83,13 @@
 #'     This can be useful sometimes but need a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     only when `save_all_perms = TRUE`. For:
-#'   * `optimizer="MH"` - use Metropolis-Hastings results to
+#'   * `optimizer = "MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities;
-#'   * `optimizer="BF"` - use brute force results to
+#'   * `optimizer = "BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
 #'
-#' These additional calculations are costly, so a second progress bar
-#'     is shown (when `show_progress_bar = TRUE`).
+#' These additional calculations are costly, so a second and third
+#'     progress bar is shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
@@ -190,8 +190,12 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
   # default optimizer:
   if (is.na(optimizer)) {
-    optimizer <- ifelse(is.null(attr(g, "optimization_info")),
-      "MH", "continue"
+    optimizer <- ifelse(!is.null(attr(g, "optimization_info")),
+      "continue",
+      ifelse(ncol(attr(g, "S")) <= 9,
+        "BF",
+        "MH"
+      )
     )
 
     rlang::inform(c("You used the default value of the 'optimizer' argument in `find_MAP()`.",
@@ -366,7 +370,6 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
-
 
   return(combine_gips(g, gips_optimized))
 }
@@ -822,7 +825,9 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
 
   if (is.null(attr(g1, "optimization_info")) ||
     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force") { # when brute_force was used, forget the initial optimization
-
+    
+    attr(g2, "optimization_info")[["original_perm"]] <- g1[[1]]
+    
     return(g2)
   }
 
@@ -853,6 +858,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   }
 
   optimization_info_new <- list(
+    "original_perm" = optimization_info1[["original_perm"]],
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,

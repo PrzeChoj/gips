@@ -276,7 +276,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
+    legal_fields <- c("original_perm", "acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -316,6 +316,9 @@ validate_gips <- function(g) {
     # All the fields as named as they should be. Check if their content are as expected:
     abort_text <- character(0)
     additional_info <- 0 # for calculation of the number of problems
+    
+    # original_perm is not validated :<
+    
     if (!((is.numeric(optimization_info[["acceptance_rate"]]) &&
       (length(optimization_info[["acceptance_rate"]]) == 1) &&
       optimization_info[["acceptance_rate"]] >= 0 &&
@@ -975,9 +978,14 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     }
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
-    log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
-    start_perm <- attr(x, "optimization_info")[["start_perm"]]
-
+    x_original <- gips(
+      S = attr(x, "S"),
+      number_of_observations = attr(x, "number_of_observations"),
+      delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
+      was_mean_estimated = attr(x, "was_mean_estimated"), perm = attr(x, "optimization_info")[["original_perm"]]
+    )
+    log_posteriori_original <- log_posteriori_of_gips(x_original)
+    
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
@@ -994,9 +1002,9 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
 
     if (compare_to_original) {
       printing_text <- c(printing_text, paste0(
-        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_start, digits),
+        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_original, digits),
         " times more likely than the ",
-        as.character(start_perm), " permutation"
+        as.character(x_original), " permutation"
       ))
     }
   }
@@ -1616,17 +1624,26 @@ summary.gips <- function(object, ...) {
       when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enought; this is the first generator of the group
       log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
       start_permutation <- optimization_info[["start_perm"]]
+      start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
     } else {
       # for brute_force when_was_best is useless.
       # Also, the `optimization_info[["visited_perms"]]` is a list, but
         # its elements are not of class `gips_perm`, because it was done with
         # `optimization_info[["visited_perms"]] <- permutations::allperms()`
+      # Real original permutation is saved in optimization_info[["original_perm"]]
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
-      start_permutation <- gips_perm(optimization_info[["start_perm"]], nrow(attr(object, "S")))
+      start_permutation <- optimization_info[["original_perm"]]
+      gips_start <- gips(
+        S = attr(object, "S"),
+        number_of_observations = attr(object, "number_of_observations"),
+        delta = attr(object, "delta"),
+        D_matrix = attr(object, "D_matrix"),
+        was_mean_estimated = attr(object, "was_mean_estimated"),
+        perm = start_permutation
+      )
+      start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
-
-    start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
 
     summary_list <- list(
       optimized = TRUE,
@@ -1688,15 +1705,20 @@ print.summary.gips <- function(x, ...) {
       x[["found_permutation_log_posteriori"]],
       x[["start_permutation_log_posteriori"]]
     ),
-    "\n\nTimes more likely than ",
-    ifelse(x[["optimized"]],
+    ifelse(!x[["optimized"]] && as.character(x[["start_permutation"]]) == "()",
+      "",
       paste0(
-        "starting permutation:\n ",
-        convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
-      ),
-      paste0(
-        "identity permutation:\n ",
-        convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
+        "\n\nTimes more likely than ",
+        ifelse(x[["optimized"]],
+          paste0(
+            "starting permutation:\n ",
+            convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
+          ),
+          paste0(
+            "identity permutation:\n ",
+            convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
+          )
+        )
       )
     ),
     "\n\nThe number of observations:\n ", x[["number_of_observations"]],
@@ -1724,8 +1746,12 @@ print.summary.gips <- function(x, ...) {
       "not ", ""
     ), "exist.",
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
-    "\n\nBIC:\n ", x[["BIC"]],
-    "\n\nAIC:\n ", x[["AIC"]],
+    "\n\nBIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
+    ),
+    "\n\nAIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
+    ),
     sep = ""
   )
 
