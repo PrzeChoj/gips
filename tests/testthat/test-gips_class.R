@@ -1473,3 +1473,15 @@ test_that("print.gips() will show the original perm for BF", {
   
   expect_output(print(g_map), "than the \\(1,2,3\\)")
 })
+
+test_that("print.summary.gips() will not compare with original the unoptimized gips that is in id", {
+  g <- gips(S[1:4,1:4], number_of_observations, perm = "(123)")
+  expect_output(print(summary(g)), "Times more likely than identity permutation", fixed = TRUE)
+  
+  g <- gips(S[1:4,1:4], number_of_observations, perm = "()")
+  g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
+  expect_output(print(summary(g_map)), "Times more likely than starting permutation", fixed = TRUE)
+  
+  pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe number of observations"
+  expect_output(print(summary(g)), pattern) # The "Times more likely than starting permutation:" is skipped
+})

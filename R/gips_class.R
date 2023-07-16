@@ -1705,15 +1705,20 @@ print.summary.gips <- function(x, ...) {
       x[["found_permutation_log_posteriori"]],
       x[["start_permutation_log_posteriori"]]
     ),
-    "\n\nTimes more likely than ",
-    ifelse(x[["optimized"]],
+    ifelse(!x[["optimized"]] && as.character(x[["start_permutation"]]) == "()",
+      "",
       paste0(
-        "starting permutation:\n ",
-        convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
-      ),
-      paste0(
-        "identity permutation:\n ",
-        convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
+        "\n\nTimes more likely than ",
+        ifelse(x[["optimized"]],
+          paste0(
+            "starting permutation:\n ",
+            convert_log_diff_to_str(x[["log_times_more_likely_than_start"]], 3)
+          ),
+          paste0(
+            "identity permutation:\n ",
+            convert_log_diff_to_str(x[["log_times_more_likely_than_id"]], 3)
+          )
+        )
       )
     ),
     "\n\nThe number of observations:\n ", x[["number_of_observations"]],
