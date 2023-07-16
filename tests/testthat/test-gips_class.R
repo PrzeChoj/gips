@@ -1230,7 +1230,7 @@ test_that("start_permutation_log_posteriori was calculated correctly", {
   )
 })
 
-test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
+test_that("summary.gips() returns proper n0 for estimated and unestimated mean", {
   g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
 
@@ -1238,7 +1238,7 @@ test_that("summary.gips returns proper n0 for estimated and unestimated mean", {
   expect_equal(summary.gips(g_em)[["n0"]], ncol(S) + 1) # for estimated mean and perm id, one needs n >= (p + 1)
 })
 
-test_that("summary.gips returns proper Times more likely than identity permutation", {
+test_that("summary.gips() returns proper Times more likely than identity permutation", {
   g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
 
@@ -1251,6 +1251,22 @@ test_that("summary.gips returns proper Times more likely than identity permutati
     1 # for estimated mean
   )
 })
+
+test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
+  p <- 6
+  number_of_observations <- 2
+  Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix) # this place is random
+  S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+  
+  g <- gips(S, number_of_observations, perm = "()")
+  expect_silent(my_sum <- summary.gips(g))
+  expect_null(my_sum$AIC)
+  expect_null(my_sum$BIC)
+  
+  expect_output(print(my_sum), "BIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")
+  expect_output(print(my_sum), "AIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")
+})
+
 
 test_that("get_probabilities_from_gips works", {
   g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)

@@ -1724,8 +1724,12 @@ print.summary.gips <- function(x, ...) {
       "not ", ""
     ), "exist.",
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
-    "\n\nBIC:\n ", x[["BIC"]],
-    "\n\nAIC:\n ", x[["AIC"]],
+    "\n\nBIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
+    ),
+    "\n\nAIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
+    ),
     sep = ""
   )
 
