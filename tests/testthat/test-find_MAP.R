@@ -169,7 +169,7 @@ test_that("find_MAP() can gues the correct optimizer and message the user", {
   )
 })
 
-test_that("find_MAP will remember the right number of observations and was_mean_estimated", {
+test_that("find_MAP() will remember the right number of observations and was_mean_estimated", {
   number_of_observations <- 13
 
   # em - estimated mean
@@ -205,7 +205,7 @@ test_that("find_MAP will remember the right number of observations and was_mean_
   )
 })
 
-test_that("find_map with calculate exact probabilities will return probability", {
+test_that("find_map() with calculate exact probabilities will return probability", {
   g <- gips(
     S = matrix_invariant_by_example_perm[1:4, 1:4],
     number_of_observations = 13,

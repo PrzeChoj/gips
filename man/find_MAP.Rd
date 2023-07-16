@@ -55,8 +55,8 @@ estimate posterior probabilities;
 calculate exact posterior probabilities.
 }
 
-These additional calculations are costly, so a second progress bar
-is shown (when \code{show_progress_bar = TRUE}).
+These additional calculations are costly, so a second and third
+progress bar is shown (when \code{show_progress_bar = TRUE}).
 
 To examine probabilities after optimization,
 call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}

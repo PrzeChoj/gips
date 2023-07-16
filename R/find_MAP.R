@@ -88,8 +88,8 @@
 #'   * `optimizer="BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
 #'
-#' These additional calculations are costly, so a second progress bar
-#'     is shown (when `show_progress_bar = TRUE`).
+#' These additional calculations are costly, so a second and third
+#'     progress bar is shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].

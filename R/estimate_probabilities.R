@@ -94,14 +94,14 @@ get_coprimes <- function(n) {
 #'
 #' @param perms An output of permutations::allperms()
 #' @param log_posteriories A vector of all values of log posteriories of all `perms`.
-#' @param show_progress_bar A boolean. Indicate whether or not to show the progress bar.
+#' @param show_progress_bar A boolean. Indicate whether or not to show two progress bars.
 #'
 #' @returns A named numeric vector. Names: character representations of permutations.
 #' Elements: estimated posterior probabilities of permutations.
 #' @noRd
 calculate_probabilities <- function(perms, log_posteriories, show_progress_bar = FALSE) {
   if (show_progress_bar) {
-    progressBar <- utils::txtProgressBar(min = 0, max = 20 * length(perms), initial = 1)
+    progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 1)
   }
 
   for (i in 1:19) {
@@ -121,7 +121,7 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
   group_representatives <- character(0)
   for (i in 1:length(perms)) {
     if (show_progress_bar) {
-      utils::setTxtProgressBar(progressBar, 19 * i)
+      utils::setTxtProgressBar(progressBar, i)
     }
 
     # We should use `g_perm <- gips_perm(perms[i], perms_size)`,
@@ -131,14 +131,21 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
     # the `get_group_representative` is what we want to use:
     group_representatives[i] <- as.character(get_group_representative(g_perm))
   }
+  
+  if (show_progress_bar) {
+    close(progressBar)
+  }
 
 
   # get rid of the repeated permutations:
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = length(group_representatives), initial = 1)
+  }
   groups_unrepeated_log_posteriories <- log_posteriories[1]
   names(groups_unrepeated_log_posteriories)[1] <- group_representatives[1]
   for (i in 2:length(group_representatives)) {
     if (show_progress_bar) {
-      utils::setTxtProgressBar(progressBar, 19 * length(perms) + i)
+      utils::setTxtProgressBar(progressBar, i)
     }
     if (!(group_representatives[i] %in% names(groups_unrepeated_log_posteriories))) {
       groups_unrepeated_log_posteriories[length(groups_unrepeated_log_posteriories) + 1] <- log_posteriories[i]
