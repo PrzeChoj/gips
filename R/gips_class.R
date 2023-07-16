@@ -1624,17 +1624,26 @@ summary.gips <- function(object, ...) {
       when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enought; this is the first generator of the group
       log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
       start_permutation <- optimization_info[["start_perm"]]
+      start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
     } else {
       # for brute_force when_was_best is useless.
       # Also, the `optimization_info[["visited_perms"]]` is a list, but
         # its elements are not of class `gips_perm`, because it was done with
         # `optimization_info[["visited_perms"]] <- permutations::allperms()`
+      # Real original permutation is saved in optimization_info[["original_perm"]]
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
-      start_permutation <- gips_perm(optimization_info[["start_perm"]], nrow(attr(object, "S")))
+      start_permutation <- optimization_info[["original_perm"]]
+      gips_start <- gips(
+        S = attr(object, "S"),
+        number_of_observations = attr(object, "number_of_observations"),
+        delta = attr(object, "delta"),
+        D_matrix = attr(object, "D_matrix"),
+        was_mean_estimated = attr(object, "was_mean_estimated"),
+        perm = start_permutation
+      )
+      start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
-
-    start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
 
     summary_list <- list(
       optimized = TRUE,
