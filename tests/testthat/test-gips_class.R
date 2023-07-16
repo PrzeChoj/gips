@@ -48,7 +48,7 @@ test_that("Setting custom permutation in gips constructor works", {
   expect_equal(g2, g3)
 })
 
-test_that("new_gips works or throws an erron on wrong arguments", {
+test_that("new_gips() works or throws an erron on wrong arguments", {
   expect_silent(new_gips(
     list(gips_perm("(1,2)(3,4,5,6)", 6)),
     S, number_of_observations, 3, diag(nrow = ncol(S)), FALSE, NULL
@@ -214,14 +214,14 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["non_existing"]] <- "test"
   expect_error(
     validate_gips(g_err),
-    "You have a list of 14 elements."
+    "You have a list of 15 elements."
   )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 12 elements."
+    "You have a list of 13 elements."
   )
 
   g_err <- g2
@@ -229,7 +229,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 13 elements."
+    "You have a list of 14 elements."
   )
   # this one showed an error that one have the list of 13 elements, which is actually expected, but the names of the fields are not expected.
 
@@ -674,7 +674,7 @@ test_that("Process proper parameters", {
   ))
 })
 
-test_that("check_correctness_of_arguments properly validates arguments", {
+test_that("check_correctness_of_arguments() properly validates arguments", {
   expect_silent(check_correctness_of_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
@@ -1089,7 +1089,7 @@ test_that("plot.gips() works for books example", {
   expect_silent(plot(g, type = "heatmap"))
 })
 
-test_that("get_diagonalized_matrix_for_heatmap works", {
+test_that("get_diagonalized_matrix_for_heatmap() works", {
   custom_perm1 <- gips_perm("(1,2)(3,4,5)(6)", 6)
   g1 <- gips(S, number_of_observations,
     was_mean_estimated = FALSE, perm = custom_perm1
@@ -1187,6 +1187,7 @@ test_that("summary.gips() works", {
   ), dim = c(3L, 3L)), number_of_observations = 10, delta = 3, D_matrix = structure(c(
     1, 0, 0, 0, 1, 0, 0, 0, 1
   ), dim = c(3L, 3L)), was_mean_estimated = TRUE, optimization_info = list(
+    original_perm = gips_perm("", 3),
     acceptance_rate = 0.333333333333333, log_posteriori_values = c(
       -16.01209771488621000000, -18.9125198086359,
       -16.01209771488621421085
@@ -1268,7 +1269,7 @@ test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
 })
 
 
-test_that("get_probabilities_from_gips works", {
+test_that("get_probabilities_from_gips() works", {
   g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
   g_map <- find_MAP(g,
     optimizer = "BF", show_progress_bar = FALSE,
@@ -1309,7 +1310,7 @@ test_that("get_probabilities_from_gips works", {
   expect_equal(order(probs, decreasing = TRUE), c(1, 2))
 })
 
-test_that("forget_perms works properly", {
+test_that("forget_perms() works properly", {
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10,
     show_progress_bar = FALSE, optimizer = "MH",
@@ -1463,4 +1464,12 @@ test_that("as.character.gips() work", {
   S <- t(A) %*% A
   g <- gips(S, 14, perm = "(123)")
   expect_equal(as.character(g), "(1,2,3)")
+})
+
+
+test_that("print.gips() will show the original perm for BF", {
+  g <- gips(S[1:4,1:4], number_of_observations, perm = "(123)")
+  g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
+  
+  expect_output(print(g_map), "than the \\(1,2,3\\)")
 })

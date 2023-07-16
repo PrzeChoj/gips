@@ -276,7 +276,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
+    legal_fields <- c("original_perm", "acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -316,6 +316,9 @@ validate_gips <- function(g) {
     # All the fields as named as they should be. Check if their content are as expected:
     abort_text <- character(0)
     additional_info <- 0 # for calculation of the number of problems
+    
+    # original_perm is not validated :<
+    
     if (!((is.numeric(optimization_info[["acceptance_rate"]]) &&
       (length(optimization_info[["acceptance_rate"]]) == 1) &&
       optimization_info[["acceptance_rate"]] >= 0 &&
@@ -975,9 +978,14 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     }
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
-    log_posteriori_start <- attr(x, "optimization_info")[["log_posteriori_values"]][1]
-    start_perm <- attr(x, "optimization_info")[["start_perm"]]
-
+    x_original <- gips(
+      S = attr(x, "S"),
+      number_of_observations = attr(x, "number_of_observations"),
+      delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
+      was_mean_estimated = attr(x, "was_mean_estimated"), perm = attr(x, "optimization_info")[["original_perm"]]
+    )
+    log_posteriori_original <- log_posteriori_of_gips(x_original)
+    
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
@@ -994,9 +1002,9 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
 
     if (compare_to_original) {
       printing_text <- c(printing_text, paste0(
-        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_start, digits),
+        "is ", convert_log_diff_to_str(log_posteriori - log_posteriori_original, digits),
         " times more likely than the ",
-        as.character(start_perm), " permutation"
+        as.character(x_original), " permutation"
       ))
     }
   }

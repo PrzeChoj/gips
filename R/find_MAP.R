@@ -371,7 +371,6 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     ))
   }
 
-
   return(combine_gips(g, gips_optimized))
 }
 
@@ -826,7 +825,9 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
 
   if (is.null(attr(g1, "optimization_info")) ||
     attr(g2, "optimization_info")[["optimization_algorithm_used"]] == "brute_force") { # when brute_force was used, forget the initial optimization
-
+    
+    attr(g2, "optimization_info")[["original_perm"]] <- g1[[1]]
+    
     return(g2)
   }
 
@@ -857,6 +858,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   }
 
   optimization_info_new <- list(
+    "original_perm" = optimization_info1[["original_perm"]],
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
