@@ -17,15 +17,15 @@ find_MAP(
 \item{g}{Object of a \code{gips} class.}
 
 \item{max_iter}{The number of iterations for an algorithm to perform.
-At least 2. For \code{optimizer="MH"}, it has to be finite;
-for \code{optimizer="HC"}, it can be infinite;
-for \code{optimizer="BF"}, it is not used.}
+At least 2. For \code{optimizer = "BF"}, it is not used;
+for \code{optimizer = "MH"}, it has to be finite;
+for \code{optimizer = "HC"}, it can be infinite.}
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori:
 \itemize{
-\item \code{"MH"} (the default for unoptimized \code{g}) - Metropolis-Hastings;
+\item \code{"BF"} (the default for unoptimized \code{g} with \verb{perm size <= 9}) - Brute Force;
+\item \code{"MH"} (the default for unoptimized \code{g} with \verb{perm size > 10}) - Metropolis-Hastings;
 \item \code{"HC"} - Hill Climbing;
-\item \code{"BF"} - Brute Force;
 \item \code{"continue"} (the default for optimized \code{g}) - The same as
 the \code{g} was optimized by (see Examples).
 }
@@ -37,7 +37,7 @@ section below for more details.}
 Indicate whether or not to show the progress bar:
 \itemize{
 \item When \code{max_iter} is infinite, \code{show_progress_bar} has to be \code{FALSE};
-\item When \code{return_probabilities=TRUE}, then
+\item When \code{return_probabilities = TRUE}, then
 shows an additional progress bar for the time
 when the probabilities are calculated.
 }}
@@ -49,9 +49,9 @@ This can be useful sometimes but need a lot more RAM.}
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
 only when \code{save_all_perms = TRUE}. For:
 \itemize{
-\item \code{optimizer="MH"} - use Metropolis-Hastings results to
+\item \code{optimizer = "MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities;
-\item \code{optimizer="BF"} - use brute force results to
+\item \code{optimizer = "BF"} - use brute force results to
 calculate exact posterior probabilities.
 }
 
@@ -78,9 +78,9 @@ the "\strong{Possible algorithms to use as optimizers}" section below.
 its \code{max_iter} without converging.
 \item the optimizer will find the permutation with smaller \code{n0} than
 \code{number_of_observations} (for more information on what it means,
-see \strong{\eqn{C\sigma} and \code{n0}} section
+see \strong{\eqn{C_\sigma} and \code{n0}} section
 in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 }
 \section{Possible algorithms to use as optimizers}{
@@ -92,6 +92,15 @@ For a in-depth explanation, see in
 
 For every algorithm, there are some aliases available.
 \itemize{
+\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - use
+the \strong{Brute Force} algorithm that checks the whole permutation
+space of a given size. This algorithm will find
+the actual Maximum A Posteriori Estimation, but it is
+very computationally expensive for bigger spaces.
+We recommend Brute Force only for \code{p <= 9}.
+For the time the Brute Force takes on our machines, see in
+\code{vignette("Optimizers", package = "gips")} or in its
+\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - use
 the \strong{Metropolis-Hastings} algorithm;
 \href{https://en.wikipedia.org/wiki/Metropolis\%E2\%80\%93Hastings_algorithm}{see Wikipedia}.
@@ -115,15 +124,6 @@ the optimization on the output of the \code{find_MAP()} with
 \code{optimizer = "continue"}; see examples.
 Remember that \code{p*(p-1)/2} transpositions will be checked
 in every iteration. For bigger \code{p}, this may be costly.
-\item \code{"brute_force"}, \code{"BF"}, \code{"full"} - use
-the \strong{Brute Force} algorithm that checks the whole permutation
-space of a given size. This algorithm will find
-the actual Maximum A Posteriori Estimation, but it is
-very computationally expensive for bigger spaces.
-We recommend Brute Force only for \code{p <= 9}.
-For the time the Brute Force takes on our machines, see in
-\code{vignette("Optimizers", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 }
 }
 
