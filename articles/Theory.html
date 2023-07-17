@@ -483,13 +483,13 @@ from model <span class="math inline">\(\mathrm{N}_p(0,\text{S})\)</span>.</p>
 <p>One may be interested in Akaike’s An Information Criterion (AIC) or
 Schwarz’s Bayesian Information Criterion (BIC) of the found model. Those
 are defined based on log-Likelihood:</p>
-<p><span class="math display">\[\log L\left(\hat{\Sigma};
+<p><span class="math display">\[\log L\left(\Sigma;
 Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log
-(2\pi) - \frac{1}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) -
-\frac12 {Z^{(i)}}^\top \hat{\Sigma}^{-1} Z^{(i)}\right)= \]</span></p>
+(2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12
+{Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= \]</span></p>
 <p><span class="math display">\[- \frac{np}{2}\log (2\pi) -
-\frac{n}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) -
-\frac{n}2\mathrm{tr}(\hat{\Sigma}^{-1} S),\]</span> where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot
+\frac{n}{2}\log\left( \det\left( \Sigma\right)\right) -
+\frac{n}2\mathrm{tr}(\Sigma^{-1} S),\]</span> where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot
 {Z^{(i)}}^\top\)</span>.</p>
 <p>The MLE of <span class="math inline">\(\Sigma\)</span> in a model
 invariant under <span class="math inline">\(\Gamma=c\)</span> is <span class="math inline">\(\hat{\Sigma} = \pi_{c}(S)\)</span>. Further, for
@@ -501,9 +501,9 @@ Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) -
 \frac{np}2\]</span></p>
 <p>which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
 <p>Then AIC and BIC are defined by:</p>
-<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log L(\hat
-\Sigma)\]</span> <span class="math display">\[BIC = (\log n) \cdot (\dim
-M) -2 \log L(\hat \Sigma)\]</span></p>
+<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log
+L(\pi_{c}(S))\]</span> <span class="math display">\[BIC = (\log n) \cdot
+(\dim M) -2 \log L(\pi_{c}(S))\]</span></p>
 <p>A smaller value of the criteria for a given model indicates a better
 fit.</p>
 <p>Those can be calculated by <code><a href="../reference/AIC.gips.html">AIC.gips()</a></code> and
