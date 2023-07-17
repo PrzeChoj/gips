@@ -314,9 +314,9 @@ We see the posterior probability [[1,(30)]](https://arxiv.org/abs/2004.03503) ha
 
 One may be interested in Akaike's An Information Criterion (AIC) or Schwarz's Bayesian Information Criterion (BIC) of the found model. Those are defined based on log-Likelihood:
 
-$$\log L\left(\hat{\Sigma}; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) - \frac12 {Z^{(i)}}^\top \hat{\Sigma}^{-1} Z^{(i)}\right)= $$
+$$\log L\left(\Sigma; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12 {Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= $$
 
-$$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \hat{\Sigma}\right)\right) - \frac{n}2\mathrm{tr}(\hat{\Sigma}^{-1} S),$$
+$$- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \Sigma\right)\right) - \frac{n}2\mathrm{tr}(\Sigma^{-1} S),$$
 where $S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top$.
 
 The MLE of $\Sigma$ in a model invariant under $\Gamma=c$ is $\hat{\Sigma} = \pi_{c}(S)$. Further, for every $c$ we have $\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p$, so:
@@ -327,8 +327,8 @@ which can be calculated by `logLik.gips()`.
 
 Then AIC and BIC are defined by:
 
-$$AIC = 2 \cdot (\dim M) -2 \log L(\hat \Sigma)$$
-$$BIC = (\log n) \cdot (\dim M) -2 \log L(\hat \Sigma)$$
+$$AIC = 2 \cdot (\dim M) -2 \log L(\pi_{c}(S))$$
+$$BIC = (\log n) \cdot (\dim M) -2 \log L(\pi_{c}(S))$$
 
 A smaller value of the criteria for a given model indicates a better fit.
 
