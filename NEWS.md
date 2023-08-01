@@ -1,4 +1,4 @@
-# gips 1.1.0.9103
+# gips 1.2.0
 
 ### New functions
 
