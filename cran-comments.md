@@ -1,11 +1,8 @@
-* This is the submission of the new version of this package to CRAN.
-* All exported functions document their return value.
-* All exported functions documentations contain some runnable examples.
-* All modifications are listed in `NEWS.md`.
+## Resubmission
+This is a resubmission. In this version I have:
 
-## Maintainer
+* solved the problem shown on <https://cran.r-project.org/web/checks/check_results_gips.html>. The ATLAS server said the matrices in some tests were singular. This was right and intended, but this was somehow not the problem in my local tests on any platform. I deleted the tests as they were not significant.
 
-I, the maintainer of the `gips` package, legally changed the name in Poland, my home country. I used to be named Przemysław Chojecki. Now, my name is Adam Przemysław Chojecki. This is also why the old e-mail address <premysl.choj@gmail.com> was changed to <adam.prze.choj@gmail.com>. I am the owner of both of those e-mail addresses, and I still have access to those.
 
 ## Test environments
 

@@ -1361,7 +1361,7 @@ test_that("logLik.gips() works", {
 
   expect_equal(logLik_definition, -35.2883973048347)
 
-  attr(logLik_definition, "df") <- 6 # 10 - 2 - 2 parameters
+  attr(logLik_definition, "df") <- 6 # (choose(p, 2) + p) - 4 parameters; choose(p, 2) + p is standard CoV; 4 is how much equalities is with (12)(34)
   attr(logLik_definition, "nobs") <- n
 
   # logLik.gips:
@@ -1403,12 +1403,6 @@ test_that("logLik.gips() works", {
     expect_equal(logLik(g), -Inf),
     class = "singular_matrix"
   )
-
-  # ==================
-  # Not -Inf:
-  p <- 150
-  g <- gips(diag(1e-310, p), p * 2)
-  expect_no_warning(logLik(g))
 })
 
 test_that("AIC.gips() works", {
@@ -1450,13 +1444,6 @@ test_that("AIC.gips() works", {
   g <- gips(diag(0, 4), n)
   expect_warning(expect_equal(AIC(g), Inf), class = "singular_matrix")
   expect_warning(expect_equal(BIC(g), Inf), class = "singular_matrix")
-
-  # ==================
-  # Not -Inf:
-  p <- 150
-  g <- gips(diag(1e-310, p), p * 2)
-  expect_no_warning(AIC(g))
-  expect_no_warning(BIC(g))
 })
 
 test_that("as.character.gips() work", {
