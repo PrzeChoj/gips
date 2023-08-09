@@ -1,5 +1,12 @@
 # gips 1.2.1
 
+### Bugfix:
+
+-   One test on alternative BLAS/LAPACK has an alternative check for a singular matrix. Found by CRAN's ATLAS test.
+
+
+# gips 1.2.0
+
 ### New functions
 
 -   `BIC.gips()`
