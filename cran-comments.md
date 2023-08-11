@@ -12,7 +12,7 @@ GitHub Actions using `usethis::use_github_actions_check_standard()`
 * Windows-latest (release)
 * Ubuntu-latest (oldrel-1, release, devel)
 
-Testing with `devtools::check_rhub()` - no Errors, no Warnings, only technical Notes (new Maintainer; package 'V8' unavailable; files/directories: ''NULL'', 'lastMiKTeXException')
+Testing with `devtools::check_rhub()` - no Errors, no Warnings, only technical Notes (package 'V8' unavailable; files/directories: ''NULL'', 'lastMiKTeXException')
 
 
 ## R CMD check results
