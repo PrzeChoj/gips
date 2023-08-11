@@ -252,9 +252,9 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation ():</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,4)(2,5,3):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - was found after 5 posteriori calculations;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 1 times more likely than the () permutation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 2.919 times more likely than the () permutation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -268,13 +268,13 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The optimized `gips` object.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2)(3,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -9.028588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -8.636459</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  43.946</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4476.779</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -284,19 +284,19 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There are 12 degrees of freedom left.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> n0:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations is bigger than n0 for this permutation,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of free parameters in the covariance matrix:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  112.5864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  120.9903</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  107.5019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  119.2955</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
@@ -306,7 +306,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1603498 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1692662 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
