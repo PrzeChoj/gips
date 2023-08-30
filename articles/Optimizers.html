@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -332,9 +332,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,59,51,8,70,54,4,35,27,38,52,32,58,47,14,16,6,40,22,42,30,26,56,64,11,34,12,53,60,57,19,17,63,31,50,13,55,61,10,62,29,68,33,65,5,28,9,18,20,41,39,69,45,43,37,7,46,49,15,44,23,21,66,3,48,25,2,36,24):</span></span>
+<span><span class="co">#&gt; The permutation (1,51,37,60,36,14,48,24,27,32,9,16,59,38,68,49,42,23,47,65,35,57,63,26,39,46,64,22,13,17,29,30,67,18,12,2,41,45,70,58,33,25,15,28,43,55,21,31,40,10,54,62,61,19,34,53,20,3,11,8,52,50,69,5,6,56,7,4):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.458e+624 times more likely than the () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 4.401e+662 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After just a hundred and fifty iterations, the found permutation is
 unimaginably more likely than the $_0 = $ <code>()</code>
 permutation.</p>
@@ -461,9 +461,9 @@ process:</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (3,11)(9,13):</span></span>
+<span><span class="co">#&gt; The permutation (3,10)(15,22):</span></span>
 <span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 8.704e+10 times more likely than the () permutation.</span></span>
+<span><span class="co">#&gt;  - is 2.944e+10 times more likely than the () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warnings are expected.</p>
