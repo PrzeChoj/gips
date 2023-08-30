@@ -11,9 +11,9 @@ reference:
   - gips
   - find_MAP
   - project_matrix
-- title: "Analysis functions"
+- title: "Diagnostics"
   desc: >
-    Functions for analysis of the `gips`
+    Functions for diagnostics of the `gips`
     optimization process or its results.
   contents:
   - plot.gips
