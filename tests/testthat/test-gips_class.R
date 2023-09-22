@@ -1363,6 +1363,7 @@ test_that("logLik.gips() works", {
 
   attr(logLik_definition, "df") <- 6 # (choose(p, 2) + p) - 4 parameters; choose(p, 2) + p is standard CoV; 4 is how much equalities is with (12)(34)
   attr(logLik_definition, "nobs") <- n
+  class(logLik_definition) <- "logLik"
 
   # logLik.gips:
   expect_equal(
@@ -1377,8 +1378,8 @@ test_that("logLik.gips() works", {
   perm <- gips_perm("(12)(34)", 4)
   S <- project_matrix(U, perm) / (n - 1)
 
-  logLik_expected <- structure(-28.8015774226105, df = 6, nobs = 5L)
-
+  logLik_expected <- structure(-28.8015774226105, df = 6, nobs = 5L, class = "logLik")
+  
   # logLik.gips:
   expect_equal(
     logLik(gips(U / (n - 1), n, perm = perm, was_mean_estimated = TRUE)),

@@ -1846,6 +1846,10 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g) {
 #' In the `gips` context, such a model exists only when
 #' the number of observations is bigger or equal to `n0`. To get `n0`
 #' for the `gips` object `g`, call `summary(g)$n0`.
+#' 
+#' See examples where the `g_n_too_small` had too small
+#' `number_of_observations` to have likelihood. After the optimization,
+#' the likelihood did exist.
 #'
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
@@ -1859,11 +1863,12 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g) {
 #'
 #' @importFrom stats logLik
 #'
-#' @returns Log-Likelihood of the sample.
+#' @returns Log-Likelihood of the sample. Object of class `logLik`.
 #'
-#' When the multivariate normal model does not exist
+#' Possible failure situations:
+#' * When the multivariate normal model does not exist
 #'     (`number_of_observations < n0`), it returns `NULL`.
-#' When the multivariate normal model cannot be reasonably approximated
+#' * When the multivariate normal model cannot be reasonably approximated
 #'     (output of [project_matrix()] is singular), it returns `-Inf`.
 #'
 #' In both failure situations, it shows a warning.
@@ -1898,8 +1903,13 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g) {
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #' logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 #'
-#' g_n_too_small <- gips(S, 4)
+#' g_n_too_small <- gips(S, number_of_observations = 4)
 #' logLik(g_n_too_small) # NULL # the likelihood does not exists
+#' summary(g_n_too_small)$n0 # 5, but we set number_of_observations = 4, which is smaller
+#' 
+#' g_MAP <- find_MAP(g_n_too_small)
+#' logLik(g_MAP) # -24.94048, this is no longer NULL
+#' summary(g_MAP)$n0 # 2
 logLik.gips <- function(object, ...) {
   validate_gips(object)
 
@@ -1945,7 +1955,9 @@ logLik.gips <- function(object, ...) {
 
   attr(log_L_S, "df") <- n_parameters
   attr(log_L_S, "nobs") <- n # The AIC and BIC will use n, not edited_number_of_observations
-
+  
+  class(log_L_S) <- "logLik"
+  
   log_L_S
 }
 
@@ -1997,7 +2009,7 @@ logLik.gips <- function(object, ...) {
 #' g_map <- find_MAP(g, optimizer = "brute_force")
 #'
 #' AIC(g) # 238
-#' AIC(g_map) # 224 < 238, so g_map is better than g in AIC
+#' AIC(g_map) # 224 < 238, so g_map is better than g according to AIC
 AIC.gips <- function(object, ..., k = 2) {
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
 
@@ -2024,7 +2036,7 @@ AIC.gips <- function(object, ..., k = 2) {
 #' @examples
 #' # ================================================================================
 #' BIC(g) # 244
-#' BIC(g_map) # 226 < 244, so g_map is better than g in BIC
+#' BIC(g_map) # 226 < 244, so g_map is better than g according to BIC
 BIC.gips <- function(object, ...) {
   log_likelihood_S <- logLik.gips(object) # in here we will validate object is of class gips
 

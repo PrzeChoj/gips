@@ -59,10 +59,10 @@ g <- gips(S, 14)
 g_map <- find_MAP(g, optimizer = "brute_force")
 
 AIC(g) # 238
-AIC(g_map) # 224 < 238, so g_map is better than g in AIC
+AIC(g_map) # 224 < 238, so g_map is better than g according to AIC
 # ================================================================================
 BIC(g) # 244
-BIC(g_map) # 226 < 244, so g_map is better than g in BIC
+BIC(g_map) # 226 < 244, so g_map is better than g according to BIC
 }
 \seealso{
 \itemize{

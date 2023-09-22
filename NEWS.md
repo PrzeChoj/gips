@@ -1,3 +1,10 @@
+# gips 1.2.2
+
+### Bugfix:
+
+- `logLik.gips()` will return an object of class `logLik`.
+
+
 # gips 1.2.1
 
 ### Bugfix:
