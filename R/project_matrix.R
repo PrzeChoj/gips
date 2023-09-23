@@ -93,7 +93,7 @@
 #' plot(g_MAP, type = "heatmap")
 project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   if (!is.matrix(S)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`S` must be a matrix.",
       "x" = paste0(
         "You provided `S` with `class(S) == (",
@@ -103,7 +103,7 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
     ))
   }
   if (nrow(S) != ncol(S)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`S` must be a square matrix.",
       "x" = paste0(
         "You provided `S` as a matrix, but with different sizes: ",
@@ -116,7 +116,7 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
       "i" = "`project_matrix()` is designed for positive semi-definite matrices",
       "x" = "You provided `S` that is not positive semi-definite matrix",
       "*" = "`gips` can still project this matrix on the provided permutation",
-      "i" = "Did You provided the wrong `S` matrix?"
+      "i" = "Did You provide the wrong `S` matrix?"
     ), class = "not_positive_semi_definite_matrix")
   }
 
@@ -125,7 +125,7 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
     if (!inherits(perm, "gips_perm")) {
       perm <- gips_perm(perm, perm_size)
     } else if (attr(perm, "size") != ncol(S)) {
-      rlang::abort(c("There was a problem identified with provided arguments:",
+      rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "Size of `perm` must be equal to number of columns and rows of `S`.",
         "x" = paste0(
           "You provided `perm` with `size == ",

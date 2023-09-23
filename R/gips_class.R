@@ -302,13 +302,13 @@ validate_gips <- function(g) {
     if (length(abort_text) > 0) {
       rlang::abort(c("There was a problem with the 'optimization_info' attribute.",
         "i" = paste0(
-          "After optimiation, `attr(g, 'optimization_info')` must be a list of ",
+          "After optimization, `attr(g, 'optimization_info')` must be a list of ",
           length(legal_fields), " elements with names: ",
           paste(legal_fields, collapse = ", "), "."
         ),
         "x" = paste0("You have a list of ", length(names(optimization_info)), " elements."),
         abort_text,
-        "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
+        "i" = "Did You accidentally edit `attr(g, 'optimization_info')` by yourself?",
         "i" = "Did You accidentally set one of `attr(g, 'optimization_info')` elements to `NULL` or `NA`?"
       ))
     }
@@ -510,7 +510,7 @@ validate_gips <- function(g) {
       !(all(is.na(optimization_info[["visited_perms"]])) || is.null(optimization_info[["post_probabilities"]]) ||
         length(optimization_info[["post_probabilities"]]) <= length(optimization_info[["visited_perms"]]))) {
       abort_text <- c(abort_text,
-        "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visided permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
+        "i" = "Every element of `attr(g, 'optimization_info')[['post_probabilities']]` was taken from a visited permutation, so it is in `attr(g, 'optimization_info')[['visited_perms']]`.",
         "x" = paste0(
           "You have `length(attr(g, 'optimization_info')[['visited_perms']]) == ",
           length(optimization_info[["post_probabilities"]]),
@@ -586,8 +586,8 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['optimization_time']]` is initially set to `NA`, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
-        "i" = "Did You modified the `find_MAP()` function?"
+        "i" = "Did You use the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You modify the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["optimization_time"]], "difftime")) {
       abort_text <- c(abort_text,
@@ -611,8 +611,8 @@ validate_gips <- function(g) {
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['whole_optimization_time']]` is initially set to `NA`, but that state of the gips object should not be available to the user.",
         "x" = "You have `is.na(attr(g, 'optimization_info')[['whole_optimization_time']]) == TRUE`.",
-        "i" = "Did You used the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
-        "i" = "Did You modified the `find_MAP()` function?"
+        "i" = "Did You use the inner optimizers like `gips:::Metropolis_Hastings()` or `gips:::hill_climbing()` in stead of the exported function `gips::find_MAP()`?",
+        "i" = "Did You modify the `find_MAP()` function?"
       )
     } else if (!inherits(optimization_info[["whole_optimization_time"]], "difftime")) {
       abort_text <- c(abort_text,
@@ -658,7 +658,7 @@ validate_gips <- function(g) {
       }
 
       abort_text <- c(abort_text,
-        "i" = "Did You accidentally edited `attr(g, 'optimization_info')` by yourself?",
+        "i" = "Did You accidentally edit `attr(g, 'optimization_info')` by yourself?",
         ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
       )
 
@@ -704,7 +704,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     abort_text <- c(abort_text,
       "i" = "`S` matrix must be a symmetric matrix.",
       "x" = "You provided `S` as a matrix, but a non-symmetric one.",
-      "i" = "Is your matrix approximatelly symmetric? Maybe try setting `S <- (S+t(S))/2`?"
+      "i" = "Is your matrix approximately symmetric? Maybe try setting `S <- (S+t(S))/2`?"
     )
     additional_info <- additional_info + 1 # for calculation of the number of problems
   } else if (!is.positive.semi.definite.matrix(S, tolerance = 1e-06)) {
@@ -875,7 +875,7 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
     abort_text <- c(
       paste0(
         "There were ", (length(abort_text) - additional_info) / 2,
-        " problems identified with provided arguments:"
+        " problems identified with the provided arguments:"
       ),
       abort_text
     )
@@ -896,14 +896,14 @@ check_correctness_of_arguments <- function(S, number_of_observations, max_iter,
   }
 
   if (return_probabilities && !save_all_perms) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
       "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
       "i" = "Did You want to set `save_all_perms = TRUE`?",
       "i" = "Did You want to set `return_probabilities = FALSE`?",
       "!" = paste0(
         "Remember that setting `return_probabilities == TRUE` can be computationally costly",
-        ifelse(show_progress_bar, " and second prograss bar will be shown.", ".")
+        ifelse(show_progress_bar, " and second progress bar will be shown.", ".")
       )
     ))
   }
@@ -1174,7 +1174,7 @@ plot.gips <- function(x, type = NA,
                       ylim = NULL, xlim = NULL, ...) {
   # checking the correctness of the arguments:
   if (!requireNamespace("graphics", quietly = TRUE)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Package 'graphics' must be installed to use this function.",
       "x" = "Package 'graphics' seems to be unavailable."
     ))
@@ -1183,7 +1183,7 @@ plot.gips <- function(x, type = NA,
   validate_gips(x)
 
   if (length(type) != 1) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`type` must be an character vector of length 1.",
       "x" = paste0("You provided `type` with length ", length(type), " which is wrong!")
     ))
@@ -1207,7 +1207,7 @@ plot.gips <- function(x, type = NA,
   }
 
   if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both"))) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both').",
       "x" = paste0("You provided `type == ", type, "`."),
       "i" = "Did You misspell the 'type' argument?"
@@ -1218,7 +1218,7 @@ plot.gips <- function(x, type = NA,
     is.null(attr(x, "optimization_info"))) {
     rlang::abort(
       c(
-        "There was a problem identified with provided arguments:",
+        "There was a problem identified with the provided arguments:",
         "i" = "For non-optimized `gips` objects only the `type = 'heatmap', 'MLE' or 'block_heatmap'` can be used.",
         "x" = paste0(
           "You did not optimized `x` and provided `type = '",
@@ -1940,7 +1940,7 @@ logLik.gips <- function(object, ...) {
   if (is.infinite(log_det_projected_cov)) {
     rlang::warn(c(
       "The projected matrix is computationally singular.",
-      "x" = "The likelihood for singular matrixes cannot be estimated with a satisfying precision.",
+      "x" = "The likelihood for singular matrices cannot be estimated with a satisfying precision.",
       "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
     ), class = "singular_matrix")
 
@@ -2089,10 +2089,10 @@ get_probabilities_from_gips <- function(g) {
   validate_gips(g)
 
   if (is.null(attr(g, "optimization_info"))) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
       "x" = "You did not optimized `g`.",
-      "i" = "Did You used the wrong `g` as an argument for this function?",
+      "i" = "Did You use the wrong `g` as an argument for this function?",
       "i" = "Did You forget to optimize `g`?"
     ))
   }
@@ -2101,9 +2101,9 @@ get_probabilities_from_gips <- function(g) {
     rlang::inform(c(
       "You called `get_probabilities_from_gips(g)` on the `gips` object that does not have saved probabilities.",
       "x" = "`NULL` will be returned",
-      "i" = "Did You used the wrong `g` as an argument for this function?",
+      "i" = "Did You use the wrong `g` as an argument for this function?",
       "i" = "Did You forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?",
-      "i" = "Did You unintentionally used `g <- forget_perms(g)`?"
+      "i" = "Did You unintentionally use `g <- forget_perms(g)`?"
     ))
   }
 
@@ -2149,12 +2149,12 @@ forget_perms <- function(g) {
   if (is.null(optimization_info)) {
     rlang::inform(c(
       "Provided `g` is a `gips` object, but it was not optimized yet.",
-      "i" = "Did You provided the wrong `gips` object?"
+      "i" = "Did You provide the wrong `gips` object?"
     ))
   } else if (all(is.na(optimization_info[["visited_perms"]]))) {
     rlang::inform(c(
       "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
-      "i" = "Did You provided the wrong `gips` object?"
+      "i" = "Did You provide the wrong `gips` object?"
     ))
   } else {
     optimization_info[["visited_perms"]] <- I(NA)

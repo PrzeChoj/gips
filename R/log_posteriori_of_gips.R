@@ -87,6 +87,12 @@ log_posteriori_of_gips <- function(g) {
   )
 }
 
+#' We recommend to use the `log_posteriori_of_gips()` function.
+#' 
+#' If You really want to use `log_posteriori_of_perm()`, remember
+#'  to edit `number_of_observations` if the mean was estimated!
+#' 
+#' @noRd
 log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
                                    delta, D_matrix) {
   U <- S * number_of_observations # in the paper there is U everywhere instead of S, so it is easier to use U matrix in the code

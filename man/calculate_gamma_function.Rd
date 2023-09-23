@@ -15,8 +15,8 @@ it will be interpreted as the underlying \code{gips_perm}.}
 }
 \value{
 Returns the value of the Gamma function of the colored cone
-(for definition of colored cone, see the \strong{Basic definitions} section
-in \code{vignette("Theory", package = "gips")} or in its
+(for the definition of the colored cone, see the \strong{Basic definitions}
+section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 \description{

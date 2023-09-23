@@ -838,7 +838,7 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
     S, number_of_observations + 0.1, 1,
     "(1,3)(2,4)(5,6)",
     1, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE", "FALSE"
-  ), "8 problems identified with provided arguments")
+  ), "8 problems identified with the provided arguments")
 
   # old tests:
   # A single problem at the same time:
