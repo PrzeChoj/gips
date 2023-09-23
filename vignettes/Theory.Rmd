@@ -1,8 +1,8 @@
 ---
-title: "Theory"
+title: "The Theory Behind gips"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Theory}
+  %\VignetteIndexEntry{The Theory Behind gips}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,7 @@ knitr::opts_chunk[["set"]](
 )
 ```
 
-# The theory the `gips` is based on
+# What the `gips` is based on
 
 The package is based on the article [[1]](https://arxiv.org/abs/2004.03503). There the math behind the package is precisely demonstrated, and all the theorems are proven.
 

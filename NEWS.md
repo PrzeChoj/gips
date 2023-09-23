@@ -1,8 +1,9 @@
-# gips 1.2.2
+# gips 1.2.1.9000
 
 ### Bugfix:
 
-- `logLik.gips()` will return an object of class `logLik`.
+- `logLik.gips()` will return an object of class `logLik`;
+- Better Vignettes titles.
 
 
 # gips 1.2.1
