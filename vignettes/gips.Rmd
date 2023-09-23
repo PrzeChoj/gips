@@ -1,8 +1,8 @@
 ---
-title: "gips"
+title: "A Gentle Introduction to Modeling with gips"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{gips}
+  %\VignetteIndexEntry{A Gentle Introduction to Modeling with gips}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

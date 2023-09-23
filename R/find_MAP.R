@@ -6,18 +6,18 @@
 #' to find a significant value. More information can be found in
 #' the "**Possible algorithms to use as optimizers**" section below.
 #'
-#' `find_MAP` can produce a warning when:
+#' `find_MAP()` can produce a warning when:
 #' * the optimizer "hill_climbing" gets to the end of
 #'   its `max_iter` without converging.
 #' * the optimizer will find the permutation with smaller `n0` than
 #'   `number_of_observations` (for more information on what it means,
 #'   see **\eqn{C_\sigma} and `n0`** section
-#'   in `vignette("Theory", package = "gips")` or in its
+#'   in the `vignette("Theory", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @section Possible algorithms to use as optimizers:
 #'
-#' For a in-depth explanation, see in
+#' For an in-depth explanation, see in the
 #'   `vignette("Optimizers", package = "gips")` or in its
 #'   [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
@@ -29,7 +29,7 @@
 #'     the actual Maximum A Posteriori Estimation, but it is
 #'     very computationally expensive for bigger spaces.
 #'     We recommend Brute Force only for `p <= 9`.
-#'     For the time the Brute Force takes on our machines, see in
+#'     For the time the Brute Force takes on our machines, see in the
 #'     `vignette("Optimizers", package = "gips")` or in its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 #'
@@ -80,7 +80,7 @@
 #'       when the probabilities are calculated.
 #' @param save_all_perms A boolean. `TRUE` indicates saving
 #'     a list of all permutations visited during optimization.
-#'     This can be useful sometimes but need a lot more RAM.
+#'     This can be useful sometimes but needs a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     only when `save_all_perms = TRUE`. For:
 #'   * `optimizer = "MH"` - use Metropolis-Hastings results to
@@ -120,7 +120,7 @@
 #' * [forget_perms()] - When the `gips` object was optimized
 #'     with `find_MAP(save_all_perms = TRUE)`, it will be of
 #'     considerable size in RAM. `forget_perms()` can make such an object
-#'     lighter in memory by forgetting the permutations it considered.
+#'     lighter in memory by forgetting the permutations it visited.
 #' * `vignette("Optimizers", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) -
 #'     A place to learn more about
@@ -176,7 +176,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
   # check the correctness of the rest of arguments
   if (length(optimizer) > 1) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = paste0(
         "`optimizer` must be the character vector of length 1. Must be one of: c('",
         paste0(possible_optimizers, collapse = "', '"), "')."
@@ -185,7 +185,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
         "You provided `optimizer == (",
         paste0(optimizer, collapse = ", "), ")`."
       ),
-      "i" = "Did You misspelled the optimizer name?"
+      "i" = "Did You misspell the optimizer name?"
     ))
   }
   # default optimizer:
@@ -210,13 +210,13 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   chosen_optimizer_number <- pmatch(optimizer, possible_optimizers)
 
   if (is.na(chosen_optimizer_number)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = paste0(
         "`optimizer` must be one of: c('",
         paste0(possible_optimizers, collapse = "', '"), "')."
       ),
       "x" = paste0("You provided `optimizer == '", optimizer, "'`."),
-      "i" = "Did You misspelled the optimizer name?"
+      "i" = "Did You misspell the optimizer name?"
     ))
   }
 
@@ -235,28 +235,28 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
   if (!(optimizer %in% c("BF", "brute_force", "full")) &&
     is.na(max_iter)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`max_iter = NA` can be provided only for `optimizer` one of: c('BF', 'brute_force', 'full'). For any other, `max_iter` must be a whole number, strictly bigger than 1.",
       "x" = paste0("You provided `optimizer == ", optimizer, "` and `max_iter = NA`."),
-      "i" = "Did You forgot to set the `max_iter`?",
-      "i" = "Did You misspelled the optimizer name?"
+      "i" = "Did You forget to set the `max_iter`?",
+      "i" = "Did You misspell the optimizer name?"
     ))
   }
 
   continue_optimization <- (optimizer == "continue")
   if (continue_optimization) {
     if (is.null(attr(g, "optimization_info"))) {
-      rlang::abort(c("There was a problem identified with provided arguments:",
-        "i" = "`optimizer == 'continue'` can be provided only with optimized gips object `g`.",
+      rlang::abort(c("There was a problem identified with the provided arguments:",
+        "i" = "`optimizer == 'continue'` can be provided only with an optimized gips object `g`.",
         "x" = "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized.",
-        "i" = "Did You provided wrong `gips` object?",
+        "i" = "Did You provide wrong `gips` object?",
         "i" = "Did You want to call another optimizer like 'MH' or 'HC'?"
       ))
     }
 
     optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])] # this is the last used optimizer
     if (optimizer %in% c("BF", "brute_force", "full")) {
-      rlang::abort(c("There was a problem identified with provided arguments:",
+      rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`, because the whole space was already browsed.",
         "x" = "You provided `optimizer == 'continue'`, but the gips object `g` was optimized with brute_force optimizer. Better permutation will not be found."
       ))
@@ -264,7 +264,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
 
   if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BF", "brute_force", "full")) && return_probabilities) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`",
       "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
       "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FLASE`?"
@@ -298,7 +298,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       "i" = paste0(
         "Consider using `optimizer = 'brute_force'`, because it will use ",
         ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
-        " iterations and will browse all permutations, therefore it will definitely find the maximum posteriori estimator."
+        " iterations and will browse all permutations, therefore it will definitely find the maximum a posteriori estimator."
       )
     ))
   }
@@ -306,7 +306,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   # extract parameters
   S <- attr(g, "S")
   number_of_observations <- attr(g, "number_of_observations")
-  if (continue_optimization) { # the `ifelse()` function cannot be used because the objects are lists
+  if (continue_optimization) {
     start_perm <- attr(g, "optimization_info")[["last_perm"]]
   } else {
     start_perm <- g[[1]]
@@ -363,11 +363,11 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     rlang::warn(c(
       paste0(
         "The found permutation has n0 = ", n0,
-        " which is bigger than the number_of_observations = ",
+        ", which is bigger than the number_of_observations = ",
         number_of_observations, "."
       ),
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
 
@@ -397,7 +397,7 @@ Metropolis_Hastings_optimizer <- function(S,
   }
 
   if (is.infinite(max_iter)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`max_iter` in `Metropolis_Hastings_optimizer` must be finite.",
       "x" = paste0("You provided `max_iter == ", max_iter, "`.")
     ))
@@ -412,7 +412,7 @@ Metropolis_Hastings_optimizer <- function(S,
   }
 
   my_goal_function <- function(perm, i) {
-    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -478,7 +478,7 @@ Metropolis_Hastings_optimizer <- function(S,
       if (save_all_perms) {
         visited_perms[[i + 1]] <- current_perm
       }
-      log_posteriori_values[i + 1] <- log_posteriori_values[i] # TODO(Do we really want to forget the calculated values? The algorithm HC works differently)
+      log_posteriori_values[i + 1] <- log_posteriori_values[i]
     }
   }
 
@@ -542,7 +542,7 @@ hill_climbing_optimizer <- function(S,
   }
 
   if (show_progress_bar && is.infinite(max_iter)) {
-    rlang::abort(c("There was a problem identified with provided arguments:",
+    rlang::abort(c("There was a problem identified with the provided arguments:",
       "x" = "You tried to run `find_MAP(show_progress_bar=TRUE, max_iter=Inf)`.",
       "i" = "Progress bar is not yet supported for infinite max_iter.",
       "i" = "Do You want to use `show_progress_bar=FALSE` or a finite `max_iter`?",
@@ -572,7 +572,7 @@ hill_climbing_optimizer <- function(S,
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
-        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "i" = "We think it can only happen for ncol(S) > 500 or for D_matrix with huge values. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
       ))
     }
@@ -693,7 +693,7 @@ brute_force_optimizer <- function(
   perm_size <- dim(S)[1]
 
   if (perm_size > 18) {
-    rlang::abort(c("Optimizer 'brute_force' cannot browse such a big permutional space.",
+    rlang::abort(c("Optimizer 'brute_force' cannot browse such a big permutational space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
         "! (factorial), which has ", prod(1:perm_size),
@@ -704,7 +704,7 @@ brute_force_optimizer <- function(
   }
 
   if (perm_size > 9) { # I don't know how to test this without running the optimization...
-    rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutional space.",
+    rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutational space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
         "! (factorial), which has ", prod(1:perm_size),

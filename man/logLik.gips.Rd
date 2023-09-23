@@ -12,12 +12,15 @@
 \item{...}{Further arguments will be ignored.}
 }
 \value{
-Log-Likelihood of the sample.
+Log-Likelihood of the sample. Object of class \code{logLik}.
 
-When the multivariate normal model does not exist
+Possible failure situations:
+\itemize{
+\item When the multivariate normal model does not exist
 (\code{number_of_observations < n0}), it returns \code{NULL}.
-When the multivariate normal model cannot be reasonably approximated
+\item When the multivariate normal model cannot be reasonably approximated
 (output of \code{\link[=project_matrix]{project_matrix()}} is singular), it returns \code{-Inf}.
+}
 
 In both failure situations, it shows a warning.
 More information can be found in the \strong{Existence of likelihood} section below.
@@ -40,6 +43,10 @@ We only consider the non-degenerate multivariate normal model.
 In the \code{gips} context, such a model exists only when
 the number of observations is bigger or equal to \code{n0}. To get \code{n0}
 for the \code{gips} object \code{g}, call \code{summary(g)$n0}.
+
+See examples where the \code{g_n_too_small} had too small
+\code{number_of_observations} to have likelihood. After the optimization,
+the likelihood did exist.
 
 For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 \code{vignette("Theory", package = "gips")} or its
@@ -68,8 +75,13 @@ logLik(g) # -32.67048
 g_map <- find_MAP(g, optimizer = "brute_force")
 logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 
-g_n_too_small <- gips(S, 4)
+g_n_too_small <- gips(S, number_of_observations = 4)
 logLik(g_n_too_small) # NULL # the likelihood does not exists
+summary(g_n_too_small)$n0 # 5, but we set number_of_observations = 4, which is smaller
+
+g_MAP <- find_MAP(g_n_too_small)
+logLik(g_MAP) # -24.94048, this is no longer NULL
+summary(g_MAP)$n0 # 2
 }
 \seealso{
 \itemize{

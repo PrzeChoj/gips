@@ -11,8 +11,8 @@
 #' @param lambda A positive real number.
 #'
 #' @returns Returns the value of the Gamma function of the colored cone
-#'     (for definition of colored cone, see the **Basic definitions** section
-#'     in `vignette("Theory", package = "gips")` or in its
+#'     (for the definition of the colored cone, see the **Basic definitions**
+#'     section in `vignette("Theory", package = "gips")` or in its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
@@ -78,7 +78,7 @@ calculate_gamma_function <- function(perm, lambda) {
 }
 
 
-#' Calculate logarithm of a single Gamma omega function
+#' Calculate the logarithm of a single Gamma omega function
 #'
 #' Using the formula (12) from the paper
 #'
@@ -87,7 +87,7 @@ calculate_gamma_function <- function(perm, lambda) {
 #' @param r_i Single element from `get_structure_constants`.
 #' @param d_i Single element from `get_structure_constants`.
 #'
-#' @returns Logarithm of value of Gamma function.
+#' @returns Logarithm of the value of Gamma function.
 #'
 #' @noRd
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
@@ -110,13 +110,13 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 
 #' G_function for `log_posteriori_of_gips()`
 #'
-#' @param delta Parameter of a method. Default is `3`.
-#'     When `structure_constants` are from a id permutation, `delta <= 0` iff `G_function() = +Inf`.
+#' @param delta Parameter of a method. The default is `3`.
+#'     When `structure_constants` are from an id permutation, `delta <= 0` iff `G_function() = +Inf`.
 #'     When `structure_constants` are from a permutation that is not id, `delta <= 1` iff `G_function() = +Inf`.
 #' @param structure_constants Constants from `get_structure_constants` function.
 #'
 #' @returns Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
-#' It is log of a product part of equation (27). For more information, see Issue #3 on `gips`' GitHub.
+#' It is a log of a product part of the equation (27). For more information, see Issue #3 on `gips`' GitHub.
 #'
 #' @examples
 #' perm_size <- 6

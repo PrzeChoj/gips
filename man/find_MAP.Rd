@@ -44,7 +44,7 @@ when the probabilities are calculated.
 
 \item{save_all_perms}{A boolean. \code{TRUE} indicates saving
 a list of all permutations visited during optimization.
-This can be useful sometimes but need a lot more RAM.}
+This can be useful sometimes but needs a lot more RAM.}
 
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
 only when \code{save_all_perms = TRUE}. For:
@@ -72,21 +72,21 @@ to find a significant value. More information can be found in
 the "\strong{Possible algorithms to use as optimizers}" section below.
 }
 \details{
-\code{find_MAP} can produce a warning when:
+\code{find_MAP()} can produce a warning when:
 \itemize{
 \item the optimizer "hill_climbing" gets to the end of
 its \code{max_iter} without converging.
 \item the optimizer will find the permutation with smaller \code{n0} than
 \code{number_of_observations} (for more information on what it means,
 see \strong{\eqn{C_\sigma} and \code{n0}} section
-in \code{vignette("Theory", package = "gips")} or in its
+in the \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 }
 \section{Possible algorithms to use as optimizers}{
 
 
-For a in-depth explanation, see in
+For an in-depth explanation, see in the
 \code{vignette("Optimizers", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 
@@ -98,7 +98,7 @@ space of a given size. This algorithm will find
 the actual Maximum A Posteriori Estimation, but it is
 very computationally expensive for bigger spaces.
 We recommend Brute Force only for \code{p <= 9}.
-For the time the Brute Force takes on our machines, see in
+For the time the Brute Force takes on our machines, see in the
 \code{vignette("Optimizers", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
 \item \code{"Metropolis_Hastings"}, \code{"MH"} - use
@@ -184,7 +184,7 @@ of \code{find_MAP()} tries to find the argmax of.
 \item \code{\link[=forget_perms]{forget_perms()}} - When the \code{gips} object was optimized
 with \code{find_MAP(save_all_perms = TRUE)}, it will be of
 considerable size in RAM. \code{forget_perms()} can make such an object
-lighter in memory by forgetting the permutations it considered.
+lighter in memory by forgetting the permutations it visited.
 \item \code{vignette("Optimizers", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page} -
 A place to learn more about

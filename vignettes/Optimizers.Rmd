@@ -1,8 +1,8 @@
 ---
-title: "Optimizers"
+title: "Available Optimizers: How to Find Maximum A Posteriori?"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Optimizers}
+  %\VignetteIndexEntry{Available Optimizers: How to Find Maximum A Posteriori?}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
