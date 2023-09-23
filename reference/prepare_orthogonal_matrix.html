@@ -29,8 +29,8 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a>
-    <a class="dropdown-item" href="../articles/Theory.html">Theory</a>
+    <a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a>
+    <a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a>
   </div>
 </li>
 <li class="nav-item">
@@ -139,12 +139,12 @@ and see more examples of <code>prepare_orthogonal_matrix()</code>.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">block_decomposition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">U_Gamma</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">U_Gamma</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">block_decomposition</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># the non-zeros only on diagonal and [1,2] and [2,1]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]    [,3]    [,4]    [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.19603 -0.10107 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.10107  0.71112 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.00000  0.00000 1.34938 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.00000  0.00000 0.00000 1.34938 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  0.00000  0.00000 0.00000 0.00000 1.57989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]    [,2]    [,3]    [,4]    [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.70833 0.34166 0.00000 0.00000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.34166 0.63004 0.00000 0.00000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.00000 0.00000 0.77504 0.00000 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.00000 0.00000 0.00000 0.77504 0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.00000 0.00000 0.00000 0.00000 1.46516</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

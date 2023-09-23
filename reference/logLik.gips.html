@@ -27,8 +27,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a>
-    <a class="dropdown-item" href="../articles/Theory.html">Theory</a>
+    <a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a>
+    <a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a>
   </div>
 </li>
 <li class="nav-item">
@@ -79,16 +79,14 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Log-Likelihood of the sample.</p>
+<p>Log-Likelihood of the sample. Object of class <code>logLik</code>.</p>
 
 
-<p>When the multivariate normal model does not exist
-(<code>number_of_observations &lt; n0</code>), it returns <code>NULL</code>.
-When the multivariate normal model cannot be reasonably approximated
-(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), it returns <code>-Inf</code>.</p>
-
-
-<p>In both failure situations, it shows a warning.
+<p>Possible failure situations:</p><ul><li><p>When the multivariate normal model does not exist
+(<code>number_of_observations &lt; n0</code>), it returns <code>NULL</code>.</p></li>
+<li><p>When the multivariate normal model cannot be reasonably approximated
+(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), it returns <code>-Inf</code>.</p></li>
+</ul><p>In both failure situations, it shows a warning.
 More information can be found in the <strong>Existence of likelihood</strong> section below.</p>
     </div>
     <div class="section level2">
@@ -107,6 +105,9 @@ is close to singular, the <code>NA</code> is returned.</p>
 In the <code>gips</code> context, such a model exists only when
 the number of observations is bigger or equal to <code>n0</code>. To get <code>n0</code>
 for the <code>gips</code> object <code>g</code>, call <code>summary(g)$n0</code>.</p>
+<p>See examples where the <code>g_n_too_small</code> had too small
+<code>number_of_observations</code> to have likelihood. After the optimization,
+the likelihood did exist.</p>
 <p>For more information, refer to <strong>\(C_\sigma\) and <code>n0</code></strong> section in
 <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p>
@@ -147,27 +148,30 @@ It is mentioned in the <strong>Calculation details</strong> section above.</p></
 <span class="r-in"><span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="co"># -32.67048</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -32.67048</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"nobs")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -32.67048 (df=10)</span>
 <span class="r-in"><span><span class="co"># For perm = "()", which is default, there is p + choose(p, 2) degrees of freedom</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -32.6722</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"nobs")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -32.6722 (df=3)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">g_n_too_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g_n_too_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, number_of_observations <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">g_n_too_small</span><span class="op">)</span> <span class="co"># NULL # the likelihood does not exists</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The likelihood is not defined for this `gips`.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> The n = 4 is smaller than the minimum required n0 = 5. For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_n_too_small</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># 5, but we set number_of_observations = 4, which is smaller</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">g_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_n_too_small</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> You used the default value of the 'optimizer' argument in `find_MAP()`.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> The 'optimizer = NA' was automatically changed to 'optimizer = "BF"'.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">g_MAP</span><span class="op">)</span> <span class="co"># -24.94048, this is no longer NULL</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -24.94048 (df=3)</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_MAP</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># 2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

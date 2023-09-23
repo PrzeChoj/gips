@@ -35,8 +35,8 @@ the "Possible algorithms to use as optimizers" section below.'><meta property="o
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a>
-    <a class="dropdown-item" href="../articles/Theory.html">Theory</a>
+    <a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a>
+    <a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a>
   </div>
 </li>
 <li class="nav-item">
@@ -118,7 +118,7 @@ when the probabilities are calculated.</p></li>
 <dt>save_all_perms</dt>
 <dd><p>A boolean. <code>TRUE</code> indicates saving
 a list of all permutations visited during optimization.
-This can be useful sometimes but need a lot more RAM.</p></dd>
+This can be useful sometimes but needs a lot more RAM.</p></dd>
 
 
 <dt>return_probabilities</dt>
@@ -141,12 +141,12 @@ call <code><a href="get_probabilities_from_gips.html">get_probabilities_from_gip
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>find_MAP</code> can produce a warning when:</p><ul><li><p>the optimizer "hill_climbing" gets to the end of
+    <p><code>find_MAP()</code> can produce a warning when:</p><ul><li><p>the optimizer "hill_climbing" gets to the end of
 its <code>max_iter</code> without converging.</p></li>
 <li><p>the optimizer will find the permutation with smaller <code>n0</code> than
 <code>number_of_observations</code> (for more information on what it means,
 see <strong>\(C_\sigma\) and <code>n0</code></strong> section
-in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
+in the <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p></li>
 </ul></div>
     <div class="section level2">
@@ -154,7 +154,7 @@ in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")<
     
 
 
-<p>For a in-depth explanation, see in
+<p>For an in-depth explanation, see in the
 <code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a>.</p>
 <p>For every algorithm, there are some aliases available.</p><ul><li><p><code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> - use
@@ -163,7 +163,7 @@ space of a given size. This algorithm will find
 the actual Maximum A Posteriori Estimation, but it is
 very computationally expensive for bigger spaces.
 We recommend Brute Force only for <code>p &lt;= 9</code>.
-For the time the Brute Force takes on our machines, see in
+For the time the Brute Force takes on our machines, see in the
 <code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a>.</p></li>
 <li><p><code>"Metropolis_Hastings"</code>, <code>"MH"</code> - use
@@ -216,7 +216,7 @@ of <code>find_MAP()</code> tries to find the argmax of.</p></li>
 <li><p><code><a href="forget_perms.html">forget_perms()</a></code> - When the <code>gips</code> object was optimized
 with <code>find_MAP(save_all_perms = TRUE)</code>, it will be of
 considerable size in RAM. <code><a href="forget_perms.html">forget_perms()</a></code> can make such an object
-lighter in memory by forgetting the permutations it considered.</p></li>
+lighter in memory by forgetting the permutations it visited.</p></li>
 <li><p><code><a href="../articles/Optimizers.html">vignette("Optimizers", package = "gips")</a></code> or its
 <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown page</a> -
 A place to learn more about
@@ -252,9 +252,9 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g_map</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,2)(3,5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The permutation (1,3)(4,5):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - was found after 5 posteriori calculations;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 864.94 times more likely than the () permutation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - is 43.506 times more likely than the () permutation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu">find_MAP</span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">5</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -271,10 +271,10 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (1,2,3,4,5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1.288413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -0.5869286</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Times more likely than starting permutation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6841.103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  591.895</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -293,10 +293,10 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  98.42951</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  103.9798</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AIC:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  96.73467</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  102.285</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization algorithm:</span>
@@ -306,7 +306,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1653266 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1842289 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
