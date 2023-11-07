@@ -10,7 +10,8 @@ find_MAP(
   optimizer = NA,
   show_progress_bar = TRUE,
   save_all_perms = FALSE,
-  return_probabilities = FALSE
+  return_probabilities = FALSE,
+  ...
 )
 }
 \arguments{
@@ -53,7 +54,10 @@ only when \code{save_all_perms = TRUE}. For:
 estimate posterior probabilities;
 \item \code{optimizer = "BF"} - use brute force results to
 calculate exact posterior probabilities.
-}
+\item \code{optimizer = "SA"} - EXPERMIENTAL.
+}}
+
+\item{...}{Additional params for optimizers. EXPERMIENTAL.
 
 These additional calculations are costly, so a second and third
 progress bar is shown (when \code{show_progress_bar = TRUE}).
