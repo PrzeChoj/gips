@@ -87,8 +87,8 @@
 #'       estimate posterior probabilities;
 #'   * `optimizer = "BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
-#'   * `optimizer = "SA"` - EXPERMIENTAL.
-#' @param ... Additional params for optimizers. EXPERMIENTAL.
+#'   * `optimizer = "SA"` - EXPERIMENTAL.
+#' @param ... Additional parameters for optimizers. EXPERIMENTAL.
 #'
 #' These additional calculations are costly, so a second and third
 #'     progress bar is shown (when `show_progress_bar = TRUE`).
@@ -583,6 +583,7 @@ Simulated_Annealing_optimizer <- function(S,
     
     if (is.nan(out_val) || is.infinite(out_val)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      # https://github.com/PrzeChoj/gips/issues/5
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
         "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),

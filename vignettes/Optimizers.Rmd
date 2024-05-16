@@ -176,7 +176,7 @@ g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 g_map
 ```
 
-After just a hundred and fifty iterations, the found permutation is unimaginably more likely than the $\sigma_0 = $ `()` permutation.
+After just a hundred and fifty iterations, the found permutation is unimaginably more likely than the $\sigma_{0}$, `()` permutation.
 
 ```{r Metropolis_Hastings_3}
 plot(g_map, type = "best", logarithmic_x = TRUE)

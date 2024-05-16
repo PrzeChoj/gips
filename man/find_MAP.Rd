@@ -54,10 +54,10 @@ only when \code{save_all_perms = TRUE}. For:
 estimate posterior probabilities;
 \item \code{optimizer = "BF"} - use brute force results to
 calculate exact posterior probabilities.
-\item \code{optimizer = "SA"} - EXPERMIENTAL.
+\item \code{optimizer = "SA"} - EXPERIMENTAL.
 }}
 
-\item{...}{Additional params for optimizers. EXPERMIENTAL.
+\item{...}{Additional parameters for optimizers. EXPERIMENTAL.
 
 These additional calculations are costly, so a second and third
 progress bar is shown (when \code{show_progress_bar = TRUE}).

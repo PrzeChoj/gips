@@ -1,6 +1,8 @@
 ---
 title: "The Theory Behind gips"
 output: rmarkdown::html_vignette
+header-includes:
+   - \usepackage{amsfonts}
 vignette: >
   %\VignetteIndexEntry{The Theory Behind gips}
   %\VignetteEngine{knitr::rmarkdown}

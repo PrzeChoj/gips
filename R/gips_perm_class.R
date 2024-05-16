@@ -291,13 +291,16 @@ as.character.gips_perm <- function(x, ...) {
   as.character(permutations::as.cycle(x), ...)
 }
 
-#' Compose permutation with transposition
+#' Compose permutation with transposition.
+#' 
+#' It is about 4 times faster than `permutations::permprod()`.
 #'
 #' @param gips_perm Object of a `gips_perm` class.
-#' @param transposition An integer vector of length 2. Transposition in a form of a
-#' cycle.
+#' @param transposition An integer vector of length 2.
+#'     Transposition in a form of a cycle.
 #'
-#' @returns An object of a `gips_perm` class. Composition of `gips_perm` parameter and `transposition`.
+#' @returns An object of a `gips_perm` class.
+#'     Composition of `gips_perm` parameter and `transposition`.
 #'
 #' @noRd
 #' @examples
@@ -309,7 +312,7 @@ as.character.gips_perm <- function(x, ...) {
 #' composed <- compose_with_transposition(gperm, tr)
 #' composed2 <- perm * tr_perm
 #'
-#' # composed and composed 2 refer to the same permutation
+#' # composed and composed2 refer to the same permutation
 compose_with_transposition <- function(gips_perm, transposition) {
   cycle_1_index <- which(sapply(gips_perm, function(cycle) {
     transposition[1] %in% cycle
