@@ -485,9 +485,9 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "brute_force"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
+    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "hill_climbing_fast", "brute_force"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
       abort_text <- c(abort_text,
-        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing' and 'brute_force'.",
+        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast' and 'brute_force'.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == (",
           paste(optimization_info[["optimization_algorithm_used"]], collapse = ", "),
@@ -536,10 +536,10 @@ validate_gips <- function(g) {
         )
       )
     }
-    if ((!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("hill_climbing", "brute_force"))) && # The last optimization_algorithm_used has to be hill_climbing or brute_force to make the convergence
+    if ((!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("hill_climbing", "hill_climbing_fast", "brute_force"))) && # The last optimization_algorithm_used has to be hill_climbing or brute_force to make the convergence
       !is.null(optimization_info[["did_converge"]])) {
       abort_text <- c(abort_text,
-        "i" = "`did_converge` can only be obtained with 'hill_climbing' or 'brute_force' optimization method.",
+        "i" = "`did_converge` can only be obtained with 'hill_climbing', 'hill_climbing_fast' or 'brute_force' optimization method.",
         "x" = paste0(
           "The last optimization method You used was `attr(g, 'optimization_info')[['optimization_algorithm_used']][length(attr(g, 'optimization_info')[['optimization_algorithm_used']])] == ",
           optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])],

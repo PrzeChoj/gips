@@ -176,6 +176,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
   possible_optimizers <- c(
     "MH", "Metropolis_Hastings", "HC", "hill_climbing",
+    "HCf", "hill_climbing_fast", # TODO(documentation for HCf)
     "BF", "brute_force", "full", "continue",
     "SA", "Simulated_Annealing" # TODO(Check correctness of arguments for SA - similar to MH)
   ) # TODO(documentation for SA)
@@ -342,6 +343,14 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     )
   } else if (optimizer %in% c("HC", "hill_climbing")) {
     gips_optimized <- hill_climbing_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter, start_perm = start_perm,
+      delta = delta, D_matrix = D_matrix,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
+  } else if (optimizer %in% c("HCf", "hill_climbing_fast")) {
+    gips_optimized <- hill_climbing_fast_optimizer(
       S = S, number_of_observations = edited_number_of_observations,
       max_iter = max_iter, start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
@@ -841,6 +850,173 @@ hill_climbing_optimizer <- function(S,
   )
 
 
+  new_gips(
+    list(last_perm), S, number_of_observations,
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
+  ) # was_mean_estimated will be changed in the `find_MAP` function
+}
+
+hill_climbing_fast_optimizer <- function(S,
+    number_of_observations, max_iter = 5,
+    start_perm = NULL, delta = 3, D_matrix = NULL,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
+  if (is.null(start_perm)) {
+    start_perm <- permutations::id
+  }
+  
+  check_correctness_of_arguments(
+    S = S, number_of_observations = number_of_observations,
+    max_iter = max_iter, start_perm = start_perm,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
+    return_probabilities = FALSE, save_all_perms = save_all_perms,
+    show_progress_bar = show_progress_bar
+  )
+  
+  if (!inherits(start_perm, "gips_perm")) {
+    start_perm <- gips_perm(start_perm, nrow(S)) # now we know the `S` is a matrix
+  }
+  
+  if (show_progress_bar && is.infinite(max_iter)) {
+    rlang::abort(c("There was a problem identified with the provided arguments:",
+                   "x" = "You tried to run `find_MAP(show_progress_bar=TRUE, max_iter=Inf)`.",
+                   "i" = "Progress bar is not yet supported for infinite max_iter.",
+                   "i" = "Do You want to use `show_progress_bar=FALSE` or a finite `max_iter`?",
+                   "i" = "For more information on progress bar see ISSUE#8."
+    ))
+  }
+  
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
+  }
+  
+  perm_size <- dim(S)[1]
+  
+  if (is.null(D_matrix)) {
+    D_matrix <- diag(nrow = perm_size)
+  }
+  
+  
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+        S = S, number_of_observations = number_of_observations,
+        delta = delta, D_matrix = D_matrix
+    )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for D_matrix with huge values. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
+  }
+  
+  goal_function_best_logvalues <- numeric(0)
+  log_posteriori_values <- numeric(0)
+  
+  # init
+  if (save_all_perms) {
+    rlang::abort("save_all_perms = TRUE is not supported yet for HCf") # TODO: Make support
+    visited_perms <- list()
+    visited_perms[[1]] <- start_perm
+  } else {
+    visited_perms <- NA
+  }
+  current_perm <- start_perm
+  
+  goal_function_best_logvalues[1] <- my_goal_function(current_perm, 0)
+  log_posteriori_values[1] <- goal_function_best_logvalues[1]
+  current_perm_value <- log_posteriori_values[1]
+  best_perm_value <- current_perm_value
+  
+  update_i_j <- function(i_j) {
+    i <- i_j[1]
+    j <- i_j[2]
+    out <- NULL
+    if (j < perm_size) {
+      out <- c(i, j+1)
+    } else if (i < perm_size - 1) {
+      out <- c(i+1, i+2)
+    } else {
+      out <- c(1, 2)
+    }
+    
+    out
+  }
+  
+  last_updated_i_j <- c(1, 2)
+  i_j <- c(1, 2)
+  
+  # mail loop
+  iteration <- 0
+  did_converge <- FALSE
+  
+  while (iteration <= max_iter - 1) {
+    iteration <- iteration + 1
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, iteration)
+    }
+    
+    neighbour <- compose_with_transposition(current_perm, i_j)
+    neighbour_value <- my_goal_function(neighbour, iteration)
+    log_posteriori_values[length(log_posteriori_values) + 1] <- neighbour_value
+    
+    if (neighbour_value > best_perm_value) {
+      best_perm_value <- neighbour_value
+      current_perm <- neighbour
+      last_updated_i_j <- i_j
+    }
+    
+    i_j <- update_i_j(i_j)
+    
+    if (all(last_updated_i_j == i_j)) {
+      did_converge <- TRUE
+      break # We checked all transposisions, this is local maximum
+    }
+  }
+  
+  last_perm <- current_perm
+  
+  if (show_progress_bar) {
+    close(progressBar)
+  }
+  
+  if (!did_converge) {
+    rlang::warn(c(paste0("Hill Climbing Fast algorithm did not converge in ", iteration, " iterations!"), # now, iteration == max_iter
+                  "i" = "We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output. (TODO: This is not yet possible)"
+    ))
+    iteration <- iteration + 1 # the very first was the starting perm
+  } else {
+    goal_function_best_logvalues <- goal_function_best_logvalues[1:iteration]
+    if (show_progress_bar) {
+      print(paste0("Algorithm did converge in ", iteration, " iterations"))
+    }
+  }
+  
+  function_calls <- length(log_posteriori_values)
+  
+  optimization_info <- list(
+    "acceptance_rate" = 1, # TODO: Wrong acceptance_rate
+    "log_posteriori_values" = log_posteriori_values,
+    "visited_perms" = visited_perms,
+    "start_perm" = start_perm,
+    "last_perm" = last_perm,
+    "last_perm_log_posteriori" = best_perm_value,
+    "iterations_performed" = iteration,
+    "optimization_algorithm_used" = "hill_climbing_fast",
+    "post_probabilities" = NULL,
+    "did_converge" = did_converge,
+    "best_perm_log_posteriori" = best_perm_value,
+    "optimization_time" = NA,
+    "whole_optimization_time" = NA
+  )
+  
+  
   new_gips(
     list(last_perm), S, number_of_observations,
     delta, D_matrix,
