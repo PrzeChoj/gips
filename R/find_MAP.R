@@ -1,3 +1,5 @@
+# TODO: When user gives HC and max_iter = NA, print an info, that he wants to put max_iter = Inf
+
 #' Find the Maximum A Posteriori Estimation
 #'
 #' Use one of the optimization algorithms to find the permutation that
@@ -175,8 +177,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   possible_optimizers <- c(
     "MH", "Metropolis_Hastings", "HC", "hill_climbing",
     "BF", "brute_force", "full", "continue",
-    "SA" # TODO(Check correctness of arguments for SA - similar to MH)
-  )
+    "SA", "Simulated_Annealing" # TODO(Check correctness of arguments for SA - similar to MH)
+  ) # TODO(documentation for SA)
 
   # check the correctness of the rest of arguments
   if (length(optimizer) > 1) {
@@ -248,7 +250,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
 
   continue_optimization <- (optimizer == "continue")
-  if (continue_optimization) {
+  if (continue_optimization) { # TODO: continue for SA
     if (is.null(attr(g, "optimization_info"))) {
       rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "`optimizer == 'continue'` can be provided only with an optimized gips object `g`.",
@@ -291,7 +293,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
 
   # inform that user can consider "BF"
-  if ((optimizer %in% c("MH", "Metropolis_Hastings")) &&
+  if ((optimizer %in% c("MH", "Metropolis_Hastings", "SA", "Simulated_Annealing")) &&
     (max_iter * 10 >= prod(1:ncol(attr(g, "S")))) &&
     is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
     rlang::inform(c(
@@ -324,6 +326,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   } else {
     edited_number_of_observations <- number_of_observations
   }
+  
+  args_passed <- list(...)
 
   start_time <- Sys.time()
 
@@ -352,15 +356,16 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar
     )
-  } else if (optimizer %in% c("SA")) {
+  } else if (optimizer %in% c("SA", "Simulated_Annealing")) {
     gips_optimized <- Simulated_Annealing_optimizer(
       S = S, number_of_observations = edited_number_of_observations,
-      max_iter = max_iter, start_perm = start_perm,
+      max_iter = max_iter,
+      cooling_schedule = args_passed[["cooling_schedule"]],
+      start_perm = start_perm,
       delta = delta, D_matrix = D_matrix,
       return_probabilities = return_probabilities,
       save_all_perms = save_all_perms,
-      show_progress_bar = show_progress_bar,
-      beta = c(1) # TODO(pass the argument in ...)
+      show_progress_bar = show_progress_bar
     )
   }
 
@@ -535,14 +540,15 @@ Metropolis_Hastings_optimizer <- function(S,
 }
 
 
-#' @param beta 
+#' @param cooling_schedule Can be a function or a string. TODO
 #' 
 #' @noRd
 Simulated_Annealing_optimizer <- function(S,
-    number_of_observations, max_iter, start_perm = NULL,
+    number_of_observations, max_iter,
+    cooling_schedule,
+    start_perm = NULL,
     delta = 3, D_matrix = NULL, return_probabilities = FALSE,
-    save_all_perms = FALSE, show_progress_bar = TRUE,
-    beta) { # TODO(The following is the MH code. Change to SA code)
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
     start_perm <- permutations::id
   }
@@ -621,13 +627,15 @@ Simulated_Annealing_optimizer <- function(S,
       utils::setTxtProgressBar(progressBar, i)
     }
     
+    temperature <- cooling_schedule(i)
+    
     e <- runif_transposition(perm_size)
     perm_proposal <- compose_with_transposition(current_perm, e)
     
     goal_function_perm_proposal <- my_goal_function(perm_proposal, i)
     
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
-    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i]) / temperature) {
       current_perm <- perm_proposal
       if (save_all_perms) {
         visited_perms[[i + 1]] <- current_perm
