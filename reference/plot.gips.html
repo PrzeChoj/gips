@@ -92,13 +92,15 @@ The plot depends on the <code>type</code> argument.</p>
 
 <dt>type</dt>
 <dd><p>A character vector of length 1. One of
-<code>c("heatmap", "MLE", "best", "all", "both", "block_heatmap")</code>:</p><ul><li><p><code>"heatmap"</code>, <code>"MLE"</code> - Plots a heatmap of the Maximum Likelihood
+<code>c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")</code>:</p><ul><li><p><code>"heatmap"</code>, <code>"MLE"</code> - Plots a heatmap of the Maximum Likelihood
 Estimator of the covariance matrix given the permutation.
 That is, the <code>S</code> matrix inside the <code>gips</code> object
 projected on the permutation in the <code>gips</code> object.</p></li>
 <li><p><code>"best"</code> - Plots the line of the biggest a posteriori found over time.</p></li>
 <li><p><code>"all"</code> - Plots the line of a posteriori for all visited states.</p></li>
 <li><p><code>"both"</code> - Plots both lines from "all" and "best".</p></li>
+<li><p><code>"n0"</code> - Plots the line of <code>n0</code>s that were spotted during optimization
+(only for "MH" optimization).</p></li>
 <li><p><code>"block_heatmap"</code> - Plots a heatmap of diagonally block representation of <code>S</code>.
 Non-block entries (equal to 0) are white for better clarity.
 For more information, see <strong>Block Decomposition - [1], Theorem 1</strong>
@@ -155,7 +157,7 @@ other various elements of the plot.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>When <code>type</code> is one of <code>"best"</code>, <code>"all"</code> or <code>"both"</code>,
+<p>When <code>type</code> is one of <code>"best"</code>, <code>"all"</code>, <code>"both"</code> or <code>"n0"</code>,
 returns an invisible <code>NULL</code>.
 When <code>type</code> is one of <code>"heatmap"</code>, <code>"MLE"</code> or <code>"block_heatmap"</code>,
 returns an object of class <code>ggplot</code>.</p>
@@ -210,6 +212,12 @@ The <code>gips</code> object is used as the <code>x</code> parameter.</p></li>
 <span class="r-plt img"><img src="plot.gips-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Now, the output is (most likely) different because the permutation</span></span></span>
 <span class="r-in"><span>  <span class="co"># `g_map[[1]]` is (most likely) not an identity permutation.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">g_map_MH</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">30</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"MH"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map_MH</span>, type <span class="op">=</span> <span class="st">"n0"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-plt img"><img src="plot.gips-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
