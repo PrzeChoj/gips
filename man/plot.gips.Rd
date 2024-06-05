@@ -23,7 +23,7 @@
 \item{x}{Object of a \code{gips} class.}
 
 \item{type}{A character vector of length 1. One of
-\code{c("heatmap", "MLE", "best", "all", "both", "block_heatmap")}:
+\code{c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")}:
 \itemize{
 \item \code{"heatmap"}, \code{"MLE"} - Plots a heatmap of the Maximum Likelihood
 Estimator of the covariance matrix given the permutation.
@@ -32,6 +32,8 @@ projected on the permutation in the \code{gips} object.
 \item \code{"best"} - Plots the line of the biggest a posteriori found over time.
 \item \code{"all"} - Plots the line of a posteriori for all visited states.
 \item \code{"both"} - Plots both lines from "all" and "best".
+\item \code{"n0"} - Plots the line of \code{n0}s that were spotted during optimization
+(only for "MH" optimization).
 \item \code{"block_heatmap"} - Plots a heatmap of diagonally block representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 For more information, see \strong{Block Decomposition - [1], Theorem 1}
@@ -68,7 +70,7 @@ the whole optimization process is shown.}
 other various elements of the plot.}
 }
 \value{
-When \code{type} is one of \code{"best"}, \code{"all"} or \code{"both"},
+When \code{type} is one of \code{"best"}, \code{"all"}, \code{"both"} or \code{"n0"},
 returns an invisible \code{NULL}.
 When \code{type} is one of \code{"heatmap"}, \code{"MLE"} or \code{"block_heatmap"},
 returns an object of class \code{ggplot}.
@@ -113,6 +115,11 @@ if (require("graphics")) {
 }
 # Now, the output is (most likely) different because the permutation
   # `g_map[[1]]` is (most likely) not an identity permutation.
+
+g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+if (require("graphics")) {
+  plot(g_map_MH, type = "n0")
+}
 }
 \seealso{
 \itemize{

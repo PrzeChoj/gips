@@ -1083,7 +1083,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'
 #' @param x Object of a `gips` class.
 #' @param type A character vector of length 1. One of
-#'     `c("heatmap", "MLE", "best", "all", "both", "block_heatmap")`:
+#'     `c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")`:
 #'   * `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
 #'       Estimator of the covariance matrix given the permutation.
 #'       That is, the `S` matrix inside the `gips` object
@@ -1091,6 +1091,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   * `"best"` - Plots the line of the biggest a posteriori found over time.
 #'   * `"all"` - Plots the line of a posteriori for all visited states.
 #'   * `"both"` - Plots both lines from "all" and "best".
+#'   * `"n0"` - Plots the line of `n0`s that were spotted during optimization
+#'       (only for "MH" optimization).
 #'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information, see **Block Decomposition - \[1\], Theorem 1**
@@ -1116,7 +1118,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' @param ... Additional arguments passed to
 #'     other various elements of the plot.
 #'
-#' @returns When `type` is one of `"best"`, `"all"` or `"both"`,
+#' @returns When `type` is one of `"best"`, `"all"`, `"both"` or `"n0"`,
 #'     returns an invisible `NULL`.
 #'     When `type` is one of `"heatmap"`, `"MLE"` or `"block_heatmap"`,
 #'     returns an object of class `ggplot`.
@@ -1165,6 +1167,11 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' }
 #' # Now, the output is (most likely) different because the permutation
 #'   # `g_map[[1]]` is (most likely) not an identity permutation.
+#' 
+#' g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+#' if (require("graphics")) {
+#'   plot(g_map_MH, type = "n0")
+#' }
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,
                       color = NULL,
@@ -1206,9 +1213,9 @@ plot.gips <- function(x, type = NA,
     type <- "heatmap"
   }
 
-  if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both"))) {
+  if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both", "n0"))) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
-      "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both').",
+      "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both', 'n0').",
       "x" = paste0("You provided `type == ", type, "`."),
       "i" = "Did You misspell the 'type' argument?"
     ))
@@ -1418,6 +1425,83 @@ plot.gips <- function(x, type = NA,
         col = color,
         lty = lty, lwd = lwd,
         cex = 0.7, box.lty = 0
+      )
+    }
+  }
+  if (type == "n0") {
+    if (is.null(ylabel)) {
+      ylabel <- ifelse(logarithmic_y,
+        "log n0",
+        "n0"
+      )
+    }
+    if (is.null(xlabel)) {
+      xlabel <- ifelse(logarithmic_x,
+        "log10 of number of function calls",
+        "number of function calls"
+      )
+    }
+    if (is.null(color)) {
+      color <- "red"
+    }
+    
+    if (logarithmic_y) {
+      y_values <- log(attr(x, "optimization_info")[["all_n0"]])
+    } else {
+      y_values <- attr(x, "optimization_info")[["all_n0"]]
+    }
+    
+    num_of_steps <- length(y_values)
+    
+    if (is.null(xlim)) {
+      xlim <- c(1, num_of_steps)
+    }
+    
+    if (is.null(ylim)) {
+      ylim_plot <- c(0, max(y_values))
+    } else {
+      ylim_plot <- ylim
+    }
+    
+    # make the plot stairs-like
+    x_points <- c(1, rep(2:num_of_steps, each = 2))
+    
+    if (logarithmic_x) {
+      x_points <- log10(x_points)
+      xlim <- log10(xlim)
+    }
+    
+    graphics::plot.new()
+    graphics::plot.window(xlim, ylim_plot)
+    
+    # make the plot stairs-like
+    y_points <- c(
+      rep(y_values[1:(length(y_values) - 1)], each = 2),
+      y_values[length(y_values)]
+    )
+    
+    graphics::lines.default(x_points, y_points,
+      type = "l", lwd = 3,
+      col = color[1], # the first color
+      ...
+    )
+    
+    graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
+    graphics::axis(1, ...)
+    graphics::axis(2, ...)
+    graphics::box(...)
+    
+    if (show_legend) {
+      legend_text <- "all perms n0"
+      lty <- c(1, 1)
+      lwd <- c(3, 3)
+      
+      graphics::legend("topright",
+                       inset = .002,
+                       legend = legend_text,
+                       col = color,
+                       lty = lty, lwd = lwd,
+                       cex = 0.7, box.lty = 0
       )
     }
   }
