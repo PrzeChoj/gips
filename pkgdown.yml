@@ -1,11 +1,11 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
+  gips: gips.html
   Optimizers: Optimizers.html
   Theory: Theory.html
-  gips: gips.html
-last_built: 2023-09-24T22:37Z
+last_built: 2024-06-05T08:11Z
 urls:
   reference: https://przechoj.github.io/gips/reference
   article: https://przechoj.github.io/gips/articles
