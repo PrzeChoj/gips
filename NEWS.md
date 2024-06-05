@@ -1,3 +1,10 @@
+# gips 1.2.2.9000
+
+### Update to functions
+
+-   `find_MAP(optimizer = "MH")` tracks the `n0` along the optimization.
+
+
 # gips 1.2.2
 
 ### Bugfix:
