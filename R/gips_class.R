@@ -1813,17 +1813,30 @@ print.summary.gips <- function(x, ...) {
 #' @noRd
 get_n0_and_edited_number_of_observations_from_gips <- function(g) {
   # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
-
-  structure_constants <- get_structure_constants(g[[1]])
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-
+  
+  n0 <- get_n0_from_perm(g[[1]], attr(g, "was_mean_estimated"))
+  
   edited_number_of_observations <- attr(g, "number_of_observations")
+  
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
-    n0 <- n0 + 1
     edited_number_of_observations <- edited_number_of_observations - 1
   }
-
+  
   c(n0, edited_number_of_observations)
+}
+
+#' Internal
+#' @return (integer) n0
+#' @noRd
+get_n0_from_perm <- function(g_perm, was_mean_estimated) {
+  structure_constants <- get_structure_constants(g_perm)
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+
+  if (was_mean_estimated) { # correction for estimating the mean
+    n0 <- n0 + 1
+  }
+
+  c(n0)
 }
 
 #' Extract the Log-Likelihood for `gips` class
