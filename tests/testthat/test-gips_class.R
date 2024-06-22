@@ -214,14 +214,14 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["non_existing"]] <- "test"
   expect_error(
     validate_gips(g_err),
-    "You have a list of 15 elements."
+    "You have a list of 16 elements."
   )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 13 elements."
+    "You have a list of 14 elements."
   )
 
   g_err <- g2
@@ -229,9 +229,9 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 14 elements."
+    "You have a list of 15 elements."
   )
-  # this one showed an error that one have the list of 13 elements, which is actually expected, but the names of the fields are not expected.
+  # this one showed an error that one have the list of proper number of elements, which is actually expected, but the names of the fields are not expected.
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
@@ -1202,7 +1202,8 @@ test_that("summary.gips() works", {
     optimization_algorithm_used = "Metropolis_Hastings", post_probabilities = NULL,
     did_converge = NULL, best_perm_log_posteriori = -16.0120977148862,
     optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
-    whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
+    whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
+    all_n0 = c(2, 3, 2)
   ), class = "gips")
 
   expect_equal(
