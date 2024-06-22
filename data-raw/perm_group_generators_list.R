@@ -73,15 +73,15 @@ get_perm_group_generators <- function(p) {
 }
 
 
-# Time it took on AMD EPYC 7413 Processor, single core
+# Time it took on Apple M2, single core
 
 perm_group_generators_3 <- get_perm_group_generators(3) # 0.03 secs
-perm_group_generators_4 <- get_perm_group_generators(4) # 0.1 secs
-perm_group_generators_5 <- get_perm_group_generators(5) # 0.4 secs
-perm_group_generators_6 <- get_perm_group_generators(6) # 2.2 secs
-perm_group_generators_7 <- get_perm_group_generators(7) # 11 secs
-perm_group_generators_8 <- get_perm_group_generators(8) # 2 minutes
-perm_group_generators_9 <- get_perm_group_generators(9) # 2 hours 6 minutes
+perm_group_generators_4 <- get_perm_group_generators(4) # 0.04 secs
+perm_group_generators_5 <- get_perm_group_generators(5) # 0.2 secs
+perm_group_generators_6 <- get_perm_group_generators(6) # 0.7 secs
+perm_group_generators_7 <- get_perm_group_generators(7) # 5.4 secs
+perm_group_generators_8 <- get_perm_group_generators(8) # 1 min
+perm_group_generators_9 <- get_perm_group_generators(9) # 1 hour 27 mins
 #perm_group_generators_10 <- get_perm_group_generators(10) # see ISSUE#21 **"BF" optimization**
 
 perm_group_generators_list <- list(
