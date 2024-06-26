@@ -131,12 +131,12 @@ perm_size <- 6
 mu <- runif(6, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -145,6 +145,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
+unclass(summary(g))
 
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 unclass(summary(g_map))

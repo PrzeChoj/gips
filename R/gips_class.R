@@ -1630,6 +1630,8 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       How often was the algorithm accepting the change of permutation
 #'       in an iteration.
 #' @export
+#' 
+#' @importFrom stats pchisq
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `summary.gips()`
@@ -1648,12 +1650,12 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
-#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'     1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.1
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -1662,6 +1664,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
+#' unclass(summary(g))
 #'
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #' unclass(summary(g_map))
@@ -1675,8 +1678,24 @@ summary.gips <- function(object, ...) {
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
-
+  
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
+  
+  # Likelihood-Ratio test:
+  if (edited_number_of_observations < n0 || !is.positive.definite.matrix(attr(object, "S"))) {
+    likelihood_ratio_test_statistics <- NULL
+    likelihood_ratio_test_p_value <- NULL
+  } else {
+    likelihood_ratio_test_statistics <- edited_number_of_observations*(determinant(project_matrix(attr(object, "S"), object[[1]]))$modulus - determinant(attr(object, "S"))$modulus)
+    attributes(likelihood_ratio_test_statistics) <- NULL
+    p <- attr(object[[1]], "size")
+    df_chisq <- p*(p+1)/2 - n_parameters
+    if (df_chisq == 0) {
+      likelihood_ratio_test_p_value <- NULL
+    } else {
+      likelihood_ratio_test_p_value <- pchisq(likelihood_ratio_test_statistics, df_chisq)
+    }
+  }
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
@@ -1691,6 +1710,8 @@ summary.gips <- function(object, ...) {
       start_permutation_log_posteriori = permutation_log_posteriori,
       times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
       log_times_more_likely_than_id = permutation_log_posteriori - log_posteriori_id,
+      likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+      likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1728,7 +1749,7 @@ summary.gips <- function(object, ...) {
       )
       start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
-
+    
     summary_list <- list(
       optimized = TRUE,
       found_permutation = object[[1]],
@@ -1737,6 +1758,8 @@ summary.gips <- function(object, ...) {
       start_permutation_log_posteriori = start_permutation_log_posteriori,
       times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
       log_times_more_likely_than_start = permutation_log_posteriori - start_permutation_log_posteriori,
+      likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+      likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),

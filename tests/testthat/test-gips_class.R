@@ -6,12 +6,12 @@ mu <- numeric(perm_size)
 # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 )
@@ -1103,10 +1103,11 @@ test_that("get_diagonalized_matrix_for_heatmap() works", {
 })
 
 test_that("summary.gips() works", {
-  custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
+  p <- 6
+  custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", p)
   g1 <- gips(S, number_of_observations,
     was_mean_estimated = FALSE, perm = custom_perm1,
-    D_matrix = diag(1, 6)
+    D_matrix = diag(1, p)
   )
 
   start_permutation_log_posteriori <- log_posteriori_of_gips(g1)
@@ -1115,6 +1116,10 @@ test_that("summary.gips() works", {
     number_of_observations = number_of_observations,
     delta = attr(g1, "delta"), D_matrix = attr(g1, "D_matrix")
   )
+  
+  likelihood_ratio_test_statistics <- 13*(determinant(project_matrix(S, custom_perm1))$modulus - determinant(S)$modulus)
+  attributes(likelihood_ratio_test_statistics) <- NULL
+  df_chisq <- p*(p+1)/2 - sum(get_structure_constants(custom_perm1)[["dim_omega"]])
 
   my_sum <- structure(list(
     optimized = FALSE, start_permutation = structure(list(
@@ -1123,6 +1128,8 @@ test_that("summary.gips() works", {
     start_permutation_log_posteriori = start_permutation_log_posteriori,
     times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
     log_times_more_likely_than_id = start_permutation_log_posteriori - log_posteriori_id,
+    likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+    likelihood_ratio_test_p_value = pchisq(likelihood_ratio_test_statistics, df_chisq),
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(
