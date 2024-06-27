@@ -59,6 +59,19 @@ is.positive.semi.definite.matrix <- function(matrix_of_interest, tolerance = 1e-
   return(all(eigenvalues >= -tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
 }
 
+#' Same as for is.positive.semi.definite.matrix
+#' 
+#' @noRd
+is.positive.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
+  eigenvalues <- eigen(
+    matrix_of_interest,
+    symmetric = TRUE,
+    only.values = TRUE
+  )[["values"]]
+  
+  return(all(eigenvalues >= tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
+}
+
 wrong_argument_abort <- function(i, x = "") {
   rlang::abort(c("There was a problem identified with provided argument",
     "i" = i,
