@@ -1693,7 +1693,8 @@ summary.gips <- function(object, ...) {
     if (df_chisq == 0) {
       likelihood_ratio_test_p_value <- NULL
     } else {
-      likelihood_ratio_test_p_value <- pchisq(likelihood_ratio_test_statistics, df_chisq)
+      # when likelihood_ratio_test_statistics is close to 0, the H_0
+      likelihood_ratio_test_p_value <- 1 - pchisq(likelihood_ratio_test_statistics, df_chisq)
     }
   }
 

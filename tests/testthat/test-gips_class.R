@@ -1120,6 +1120,7 @@ test_that("summary.gips() works", {
   likelihood_ratio_test_statistics <- 13*(determinant(project_matrix(S, custom_perm1))$modulus - determinant(S)$modulus)
   attributes(likelihood_ratio_test_statistics) <- NULL
   df_chisq <- p*(p+1)/2 - sum(get_structure_constants(custom_perm1)[["dim_omega"]])
+  likelihood_ratio_test_p_value <- 1 - pchisq(likelihood_ratio_test_statistics, df_chisq)
 
   my_sum <- structure(list(
     optimized = FALSE, start_permutation = structure(list(
@@ -1129,7 +1130,7 @@ test_that("summary.gips() works", {
     times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
     log_times_more_likely_than_id = start_permutation_log_posteriori - log_posteriori_id,
     likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
-    likelihood_ratio_test_p_value = pchisq(likelihood_ratio_test_statistics, df_chisq),
+    likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(
