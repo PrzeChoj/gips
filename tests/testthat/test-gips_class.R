@@ -1479,6 +1479,6 @@ test_that("print.summary.gips() will not compare with original the unoptimized g
   g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
   expect_output(print(summary(g_map)), "Times more likely than starting permutation", fixed = TRUE)
   
-  pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe number of observations"
+  pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe current permutation is id"
   expect_output(print(summary(g)), pattern) # The "Times more likely than starting permutation:" is skipped
 })

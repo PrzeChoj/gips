@@ -4,7 +4,7 @@
 
 -   `plot.gips()` can get `type = "n0"`, which will plot the change of `n0` along the "MH" optimization. Handy for deciding of burn-in time;
 -   `find_MAP(optimizer = "MH")` tracks the `n0` along the optimization;
--   `summary.gips()` calculates likelihood-ratio test (in development, TODO: `print.summary.gips()`, documentation, mention in vignette, LR for estimated mean);
+-   `summary.gips()` calculates Likelihood-Ratio test (in development, TODO: documentation, mention in vignette, LR for estimated mean);
 
 
 # gips 1.2.2
