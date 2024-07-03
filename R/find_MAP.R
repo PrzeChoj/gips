@@ -372,6 +372,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
+    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
   }
   if (n0 > number_of_observations) {
     rlang::warn(c(
@@ -446,6 +447,7 @@ Metropolis_Hastings_optimizer <- function(S,
 
   acceptance <- rep(FALSE, max_iter)
   log_posteriori_values <- rep(0, max_iter)
+  all_n0 <- rep(0, max_iter)
   if (save_all_perms) {
     visited_perms <- list()
     visited_perms[[1]] <- start_perm
@@ -453,6 +455,7 @@ Metropolis_Hastings_optimizer <- function(S,
     visited_perms <- NA
   }
   current_perm <- start_perm
+  all_n0[1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
 
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
@@ -483,6 +486,7 @@ Metropolis_Hastings_optimizer <- function(S,
       }
       log_posteriori_values[i + 1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
+      all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
 
       if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
         found_perm_log_posteriori <- log_posteriori_values[i + 1]
@@ -493,6 +497,7 @@ Metropolis_Hastings_optimizer <- function(S,
         visited_perms[[i + 1]] <- current_perm
       }
       log_posteriori_values[i + 1] <- log_posteriori_values[i]
+      all_n0[i+1] <- all_n0[i]
     }
   }
 
@@ -523,7 +528,8 @@ Metropolis_Hastings_optimizer <- function(S,
     "did_converge" = NULL,
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = all_n0
   )
 
 
@@ -829,7 +835,8 @@ hill_climbing_optimizer <- function(S,
     "did_converge" = did_converge,
     "best_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = NA
   )
 
 
@@ -882,7 +889,7 @@ brute_force_optimizer <- function(
   iterations_to_perform <-
     if ((3 <= perm_size) && (perm_size <= 9)) {
       # Only the generators are interesting for us:
-      # perm_group_generators are calculated only for up to perm_size = 9
+      # We precalculated perm_group_generators only for up to perm_size = 9
       # See ISSUE#21 for more information
       OEIS_A051625[perm_size]
     } else {
@@ -964,7 +971,8 @@ brute_force_optimizer <- function(
     "did_converge" = TRUE,
     "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = NA
   )
 
 
@@ -1036,7 +1044,8 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
     "did_converge" = optimization_info2[["did_converge"]],
     "best_perm_log_posteriori" = max(optimization_info1[["best_perm_log_posteriori"]], optimization_info2[["best_perm_log_posteriori"]]),
     "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
-    "whole_optimization_time" = optimization_info1[["whole_optimization_time"]] + optimization_info2[["whole_optimization_time"]]
+    "whole_optimization_time" = optimization_info1[["whole_optimization_time"]] + optimization_info2[["whole_optimization_time"]],
+    "all_n0" = c(optimization_info1[["all_n0"]], optimization_info2[["all_n0"]])
   )
 
   if (optimization_info1[["best_perm_log_posteriori"]] > optimization_info2[["best_perm_log_posteriori"]]) {

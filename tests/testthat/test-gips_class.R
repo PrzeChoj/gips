@@ -6,12 +6,12 @@ mu <- numeric(perm_size)
 # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 )
@@ -214,14 +214,14 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["non_existing"]] <- "test"
   expect_error(
     validate_gips(g_err),
-    "You have a list of 15 elements."
+    "You have a list of 16 elements."
   )
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 13 elements."
+    "You have a list of 14 elements."
   )
 
   g_err <- g2
@@ -229,9 +229,9 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- NULL
   expect_error(
     validate_gips(g_err),
-    "You have a list of 14 elements."
+    "You have a list of 15 elements."
   )
-  # this one showed an error that one have the list of 13 elements, which is actually expected, but the names of the fields are not expected.
+  # this one showed an error that one have the list of proper number of elements, which is actually expected, but the names of the fields are not expected.
 
   g_err <- g2
   attr(g_err, "optimization_info")[["acceptance_rate"]] <- -0.1
@@ -1103,10 +1103,11 @@ test_that("get_diagonalized_matrix_for_heatmap() works", {
 })
 
 test_that("summary.gips() works", {
-  custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
+  p <- 6
+  custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", p)
   g1 <- gips(S, number_of_observations,
     was_mean_estimated = FALSE, perm = custom_perm1,
-    D_matrix = diag(1, 6)
+    D_matrix = diag(1, p)
   )
 
   start_permutation_log_posteriori <- log_posteriori_of_gips(g1)
@@ -1115,6 +1116,11 @@ test_that("summary.gips() works", {
     number_of_observations = number_of_observations,
     delta = attr(g1, "delta"), D_matrix = attr(g1, "D_matrix")
   )
+  
+  likelihood_ratio_test_statistics <- 13*(determinant(project_matrix(S, custom_perm1))$modulus - determinant(S)$modulus)
+  attributes(likelihood_ratio_test_statistics) <- NULL
+  df_chisq <- p*(p+1)/2 - sum(get_structure_constants(custom_perm1)[["dim_omega"]])
+  likelihood_ratio_test_p_value <- 1 - pchisq(likelihood_ratio_test_statistics, df_chisq)
 
   my_sum <- structure(list(
     optimized = FALSE, start_permutation = structure(list(
@@ -1123,6 +1129,8 @@ test_that("summary.gips() works", {
     start_permutation_log_posteriori = start_permutation_log_posteriori,
     times_more_likely_than_id = exp(start_permutation_log_posteriori - log_posteriori_id),
     log_times_more_likely_than_id = start_permutation_log_posteriori - log_posteriori_id,
+    likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+    likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
     delta = 3, D_matrix = structure(c(
@@ -1202,7 +1210,8 @@ test_that("summary.gips() works", {
     optimization_algorithm_used = "Metropolis_Hastings", post_probabilities = NULL,
     did_converge = NULL, best_perm_log_posteriori = -16.0120977148862,
     optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
-    whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs")
+    whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
+    all_n0 = c(2, 3, 2)
   ), class = "gips")
 
   expect_equal(
@@ -1470,6 +1479,6 @@ test_that("print.summary.gips() will not compare with original the unoptimized g
   g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
   expect_output(print(summary(g_map)), "Times more likely than starting permutation", fixed = TRUE)
   
-  pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe number of observations"
+  pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe current permutation is id"
   expect_output(print(summary(g)), pattern) # The "Times more likely than starting permutation:" is skipped
 })

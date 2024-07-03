@@ -276,7 +276,7 @@ validate_gips <- function(g) {
   }
 
   if (is.list(optimization_info)) { # Validate the `optimization_info` after the optimization
-    legal_fields <- c("original_perm", "acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time")
+    legal_fields <- c("original_perm", "acceptance_rate", "log_posteriori_values", "visited_perms", "start_perm", "last_perm", "last_perm_log_posteriori", "iterations_performed", "optimization_algorithm_used", "post_probabilities", "did_converge", "best_perm_log_posteriori", "optimization_time", "whole_optimization_time", "all_n0")
 
     lacking_fields <- setdiff(legal_fields, names(optimization_info))
     illegal_fields <- setdiff(names(optimization_info), legal_fields)
@@ -1083,7 +1083,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'
 #' @param x Object of a `gips` class.
 #' @param type A character vector of length 1. One of
-#'     `c("heatmap", "MLE", "best", "all", "both", "block_heatmap")`:
+#'     `c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")`:
 #'   * `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
 #'       Estimator of the covariance matrix given the permutation.
 #'       That is, the `S` matrix inside the `gips` object
@@ -1091,6 +1091,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   * `"best"` - Plots the line of the biggest a posteriori found over time.
 #'   * `"all"` - Plots the line of a posteriori for all visited states.
 #'   * `"both"` - Plots both lines from "all" and "best".
+#'   * `"n0"` - Plots the line of `n0`s that were spotted during optimization
+#'       (only for "MH" optimization).
 #'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information, see **Block Decomposition - \[1\], Theorem 1**
@@ -1116,7 +1118,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' @param ... Additional arguments passed to
 #'     other various elements of the plot.
 #'
-#' @returns When `type` is one of `"best"`, `"all"` or `"both"`,
+#' @returns When `type` is one of `"best"`, `"all"`, `"both"` or `"n0"`,
 #'     returns an invisible `NULL`.
 #'     When `type` is one of `"heatmap"`, `"MLE"` or `"block_heatmap"`,
 #'     returns an object of class `ggplot`.
@@ -1165,6 +1167,11 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' }
 #' # Now, the output is (most likely) different because the permutation
 #'   # `g_map[[1]]` is (most likely) not an identity permutation.
+#' 
+#' g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+#' if (require("graphics")) {
+#'   plot(g_map_MH, type = "n0")
+#' }
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,
                       color = NULL,
@@ -1206,9 +1213,9 @@ plot.gips <- function(x, type = NA,
     type <- "heatmap"
   }
 
-  if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both"))) {
+  if (!(type %in% c("heatmap", "block_heatmap", "all", "best", "both", "n0"))) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
-      "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both').",
+      "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both', 'n0').",
       "x" = paste0("You provided `type == ", type, "`."),
       "i" = "Did You misspell the 'type' argument?"
     ))
@@ -1421,6 +1428,83 @@ plot.gips <- function(x, type = NA,
       )
     }
   }
+  if (type == "n0") {
+    if (is.null(ylabel)) {
+      ylabel <- ifelse(logarithmic_y,
+        "log n0",
+        "n0"
+      )
+    }
+    if (is.null(xlabel)) {
+      xlabel <- ifelse(logarithmic_x,
+        "log10 of number of function calls",
+        "number of function calls"
+      )
+    }
+    if (is.null(color)) {
+      color <- "red"
+    }
+    
+    if (logarithmic_y) {
+      y_values <- log(attr(x, "optimization_info")[["all_n0"]])
+    } else {
+      y_values <- attr(x, "optimization_info")[["all_n0"]]
+    }
+    
+    num_of_steps <- length(y_values)
+    
+    if (is.null(xlim)) {
+      xlim <- c(1, num_of_steps)
+    }
+    
+    if (is.null(ylim)) {
+      ylim_plot <- c(0, max(y_values))
+    } else {
+      ylim_plot <- ylim
+    }
+    
+    # make the plot stairs-like
+    x_points <- c(1, rep(2:num_of_steps, each = 2))
+    
+    if (logarithmic_x) {
+      x_points <- log10(x_points)
+      xlim <- log10(xlim)
+    }
+    
+    graphics::plot.new()
+    graphics::plot.window(xlim, ylim_plot)
+    
+    # make the plot stairs-like
+    y_points <- c(
+      rep(y_values[1:(length(y_values) - 1)], each = 2),
+      y_values[length(y_values)]
+    )
+    
+    graphics::lines.default(x_points, y_points,
+      type = "l", lwd = 3,
+      col = color[1], # the first color
+      ...
+    )
+    
+    graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
+    graphics::axis(1, ...)
+    graphics::axis(2, ...)
+    graphics::box(...)
+    
+    if (show_legend) {
+      legend_text <- "all perms n0"
+      lty <- c(1, 1)
+      lwd <- c(3, 3)
+      
+      graphics::legend("topright",
+                       inset = .002,
+                       legend = legend_text,
+                       col = color,
+                       lty = lty, lwd = lwd,
+                       cex = 0.7, box.lty = 0
+      )
+    }
+  }
 
   invisible(NULL)
 }
@@ -1546,6 +1630,8 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #'       How often was the algorithm accepting the change of permutation
 #'       in an iteration.
 #' @export
+#' 
+#' @importFrom stats pchisq
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `summary.gips()`
@@ -1564,12 +1650,12 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' mu <- runif(6, -10, 10) # Assume we don't know the mean
 #' sigma_matrix <- matrix(
 #'   data = c(
-#'     1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-#'     0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-#'     0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-#'     0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-#'     0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+#'     1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+#'     0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+#'     0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+#'     0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+#'     0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+#'     0.8, 0.6, 0.4, 0.6, 0.8, 1.1
 #'   ),
 #'   nrow = perm_size, byrow = TRUE
 #' ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -1578,6 +1664,7 @@ get_diagonalized_matrix_for_heatmap <- function(g) {
 #' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
+#' unclass(summary(g))
 #'
 #' g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #' unclass(summary(g_map))
@@ -1591,8 +1678,25 @@ summary.gips <- function(object, ...) {
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
-
+  
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
+  
+  # Likelihood-Ratio test:
+  if (edited_number_of_observations < n0 || !is.positive.definite.matrix(attr(object, "S"))) {
+    likelihood_ratio_test_statistics <- NULL
+    likelihood_ratio_test_p_value <- NULL
+  } else {
+    likelihood_ratio_test_statistics <- edited_number_of_observations*(determinant(project_matrix(attr(object, "S"), object[[1]]))$modulus - determinant(attr(object, "S"))$modulus)
+    attributes(likelihood_ratio_test_statistics) <- NULL
+    p <- attr(object[[1]], "size")
+    df_chisq <- p*(p+1)/2 - n_parameters
+    if (df_chisq == 0) {
+      likelihood_ratio_test_p_value <- NULL
+    } else {
+      # when likelihood_ratio_test_statistics is close to 0, the H_0
+      likelihood_ratio_test_p_value <- 1 - pchisq(likelihood_ratio_test_statistics, df_chisq)
+    }
+  }
 
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
@@ -1607,6 +1711,8 @@ summary.gips <- function(object, ...) {
       start_permutation_log_posteriori = permutation_log_posteriori,
       times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
       log_times_more_likely_than_id = permutation_log_posteriori - log_posteriori_id,
+      likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+      likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1644,7 +1750,7 @@ summary.gips <- function(object, ...) {
       )
       start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
-
+    
     summary_list <- list(
       optimized = TRUE,
       found_permutation = object[[1]],
@@ -1653,6 +1759,8 @@ summary.gips <- function(object, ...) {
       start_permutation_log_posteriori = start_permutation_log_posteriori,
       times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
       log_times_more_likely_than_start = permutation_log_posteriori - start_permutation_log_posteriori,
+      likelihood_ratio_test_statistics = likelihood_ratio_test_statistics,
+      likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
       n0 = n0,
       S_matrix = attr(object, "S"),
       number_of_observations = attr(object, "number_of_observations"),
@@ -1721,6 +1829,15 @@ print.summary.gips <- function(x, ...) {
         )
       )
     ),
+    ifelse(is.null(x[["likelihood_ratio_test_statistics"]]),
+      ifelse(is.positive.definite.matrix(x[["S_matrix"]]),
+        "\n\ndet(S) == 0, so Likelihood-Ratio test cannot be performed",
+        "\n\nn0 > number_of_observations, so Likelihood-Ratio test cannot be performed"
+      ),
+      ifelse(is.null(x[["likelihood_ratio_test_p_value"]]),
+        "\n\nThe current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)",
+        paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4)))
+      ),
     "\n\nThe number of observations:\n ", x[["number_of_observations"]],
     "\n\n", ifelse(x[["was_mean_estimated"]],
       paste0(
@@ -1813,17 +1930,30 @@ print.summary.gips <- function(x, ...) {
 #' @noRd
 get_n0_and_edited_number_of_observations_from_gips <- function(g) {
   # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
-
-  structure_constants <- get_structure_constants(g[[1]])
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-
+  
+  n0 <- get_n0_from_perm(g[[1]], attr(g, "was_mean_estimated"))
+  
   edited_number_of_observations <- attr(g, "number_of_observations")
+  
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
-    n0 <- n0 + 1
     edited_number_of_observations <- edited_number_of_observations - 1
   }
-
+  
   c(n0, edited_number_of_observations)
+}
+
+#' Internal
+#' @return (integer) n0
+#' @noRd
+get_n0_from_perm <- function(g_perm, was_mean_estimated) {
+  structure_constants <- get_structure_constants(g_perm)
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+
+  if (was_mean_estimated) { # correction for estimating the mean
+    n0 <- n0 + 1
+  }
+
+  c(n0)
 }
 
 #' Extract the Log-Likelihood for `gips` class
