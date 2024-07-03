@@ -1245,6 +1245,7 @@ RAND_optimizer <- function(S,
     
     rand_gips_perm_i <- gips_perm(all_rand_perms[i], perm_size)
     log_posteriori_values[i] <- my_goal_function(rand_gips_perm_i, i)
+    all_n0[i] <- get_n0_from_perm(rand_gips_perm_i, was_mean_estimated = FALSE)
     
     if (save_all_perms) {
       visited_perms[[i]] <- rand_gips_perm_i
@@ -1277,7 +1278,8 @@ RAND_optimizer <- function(S,
     "did_converge" = NULL,
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = all_n0
   )
   
   
