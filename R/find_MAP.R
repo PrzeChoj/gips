@@ -1224,6 +1224,7 @@ RAND_optimizer <- function(S,
   }
   
   log_posteriori_values <- rep(0, max_iter)
+  all_n0 <- rep(0, max_iter)
   if (save_all_perms) {
     visited_perms <- list()
   } else {
