@@ -155,8 +155,6 @@
 #'
 #' g <- gips(S, number_of_observations)
 #' 
-#' g_rand <- find_MAP(g, max_iter = 100, show_progress_bar = FALSE, optimizer = "RAND")
-#'
 #' g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #' g_map
 #'
@@ -874,6 +872,7 @@ hill_climbing_optimizer <- function(S,
   ) # was_mean_estimated will be changed in the `find_MAP` function
 }
 
+
 hill_climbing_fast_optimizer <- function(S,
     number_of_observations, max_iter = 5,
     start_perm = NULL, delta = 3, D_matrix = NULL,
@@ -1227,7 +1226,6 @@ RAND_optimizer <- function(S,
   log_posteriori_values <- rep(0, max_iter)
   if (save_all_perms) {
     visited_perms <- list()
-    visited_perms[[1]] <- start_perm
   } else {
     visited_perms <- NA
   }
@@ -1249,7 +1247,7 @@ RAND_optimizer <- function(S,
     log_posteriori_values[i] <- my_goal_function(rand_gips_perm_i, i)
     
     if (save_all_perms) {
-      visited_perms[[i + 1]] <- rand_gips_perm_i
+      visited_perms[[i]] <- rand_gips_perm_i
     }
     
     if (found_perm_log_posteriori < log_posteriori_values[i]) {
