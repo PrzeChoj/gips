@@ -323,7 +323,7 @@ validate_gips <- function(g) {
       (length(optimization_info[["acceptance_rate"]]) == 1) &&
       optimization_info[["acceptance_rate"]] >= 0 &&
       optimization_info[["acceptance_rate"]] <= 1) ||
-      optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] == "brute_force")) { # when brute_force, acceptance_rate is NULL
+      optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("brute_force", "RAND"))) { # when brute_force or RAND, acceptance_rate is NULL
       abort_text <- c(abort_text,
         "i" = "`attr(g, 'optimization_info')[['acceptance_rate']]` must be a number in range [0, 1].",
         "x" = paste0(
@@ -354,7 +354,7 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
+    if (!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] %in% c("brute_force", "RAND"))) { # brute_force and RAND have NULL
       if (!(all(is.na(optimization_info[["visited_perms"]])) || (is.list(optimization_info[["visited_perms"]])))) {
         abort_text <- c(abort_text,
           "i" = "`attr(g, 'optimization_info')[['visited_perms']]` must be a list or `NA`.",
@@ -485,9 +485,9 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "hill_climbing_fast", "brute_force"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
+    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "hill_climbing_fast", "brute_force", "RAND"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
       abort_text <- c(abort_text,
-        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast' and 'brute_force'.",
+        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast', 'brute_force' and 'RAND'.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == (",
           paste(optimization_info[["optimization_algorithm_used"]], collapse = ", "),

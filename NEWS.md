@@ -1,3 +1,9 @@
+# gips altOptimizers
+
+-   `RAND`
+-   `SA`
+
+
 # gips 1.2.2.9000
 
 ### Update to functions

@@ -154,6 +154,8 @@
 #' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
+#' 
+#' g_rand <- find_MAP(g, max_iter = 100, show_progress_bar = FALSE, optimizer = "RAND")
 #'
 #' g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 #' g_map
@@ -178,7 +180,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     "MH", "Metropolis_Hastings", "HC", "hill_climbing",
     "HCf", "hill_climbing_fast", # TODO(documentation for HCf)
     "BF", "brute_force", "full", "continue",
-    "SA", "Simulated_Annealing" # TODO(Check correctness of arguments for SA - similar to MH)
+    "SA", "Simulated_Annealing", # TODO(Check correctness of arguments for SA - similar to MH)
+    "RAND"
   ) # TODO(documentation for SA)
 
   # check the correctness of the rest of arguments
@@ -376,6 +379,13 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar
     )
+  } else if (optimizer == "RAND") {
+    gips_optimized <- RAND_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter,
+      delta = delta, D_matrix = D_matrix,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar)
   }
 
   end_time <- Sys.time()
@@ -1167,6 +1177,118 @@ brute_force_optimizer <- function(
   ) # was_mean_estimated will be changed in the `find_MAP` function
 }
 
+
+RAND_optimizer <- function(S,
+    number_of_observations, max_iter,
+    delta = 3, D_matrix = NULL,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
+  check_correctness_of_arguments(
+    S = S, number_of_observations = number_of_observations,
+    max_iter = max_iter, start_perm = permutations::id,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
+    return_probabilities = FALSE,
+    save_all_perms = save_all_perms,
+    show_progress_bar = show_progress_bar
+  )
+  
+  if (is.infinite(max_iter)) {
+    rlang::abort(c("There was a problem identified with the provided arguments:",
+      "i" = "`max_iter` in `Metropolis_Hastings_optimizer` must be finite.",
+      "x" = paste0("You provided `max_iter == ", max_iter, "`.")
+    ))
+  }
+  
+  perm_size <- dim(S)[1]
+  if (is.null(D_matrix)) {
+    D_matrix <- diag(nrow = perm_size)
+  }
+  
+  all_rand_perms <- permutations::rperm(max_iter, perm_size)
+  
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
+       S = S, number_of_observations = number_of_observations,
+       delta = delta, D_matrix = D_matrix
+    )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
+  }
+  
+  log_posteriori_values <- rep(0, max_iter)
+  if (save_all_perms) {
+    visited_perms <- list()
+    visited_perms[[1]] <- start_perm
+  } else {
+    visited_perms <- NA
+  }
+  
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
+  }
+  
+  found_perm <- NA
+  found_perm_log_posteriori <- -Inf
+  
+  # main loop
+  for (i in 1:max_iter) {
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, i)
+    }
+    
+    rand_gips_perm_i <- gips_perm(all_rand_perms[i], perm_size)
+    log_posteriori_values[i] <- my_goal_function(rand_gips_perm_i, i)
+    
+    if (save_all_perms) {
+      visited_perms[[i + 1]] <- rand_gips_perm_i
+    }
+    
+    if (found_perm_log_posteriori < log_posteriori_values[i]) {
+      found_perm_log_posteriori <- log_posteriori_values[i]
+      found_perm <- rand_gips_perm_i
+    }
+  }
+  
+  if (show_progress_bar) {
+    close(progressBar)
+  }
+  
+  function_calls <- length(log_posteriori_values)
+  
+  # visited_perms are already either a list of things or a `NULL` object
+  
+  optimization_info <- list(
+    "acceptance_rate" = NULL,
+    "log_posteriori_values" = log_posteriori_values,
+    "visited_perms" = visited_perms,
+    "start_perm" = NULL,
+    "last_perm" = NULL,
+    "last_perm_log_posteriori" = NULL,
+    "iterations_performed" = i,
+    "optimization_algorithm_used" = "RAND",
+    "post_probabilities" = NULL,
+    "did_converge" = NULL,
+    "best_perm_log_posteriori" = found_perm_log_posteriori,
+    "optimization_time" = NA,
+    "whole_optimization_time" = NA
+  )
+  
+  
+  new_gips(
+    list(found_perm), S, number_of_observations,
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
+  ) # was_mean_estimated will be changed in the `find_MAP` function
+}
 
 
 #' Combining 2 gips objects
