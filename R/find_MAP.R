@@ -626,6 +626,7 @@ Simulated_Annealing_optimizer <- function(S,
   
   acceptance <- rep(FALSE, max_iter)
   log_posteriori_values <- rep(0, max_iter)
+  all_n0 <- rep(0, max_iter)
   if (save_all_perms) {
     visited_perms <- list()
     visited_perms[[1]] <- start_perm
@@ -633,6 +634,7 @@ Simulated_Annealing_optimizer <- function(S,
     visited_perms <- NA
   }
   current_perm <- start_perm
+  all_n0[1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
   
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
@@ -665,6 +667,7 @@ Simulated_Annealing_optimizer <- function(S,
       }
       log_posteriori_values[i + 1] <- goal_function_perm_proposal
       acceptance[i] <- TRUE
+      all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
       
       if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
         found_perm_log_posteriori <- log_posteriori_values[i + 1]
@@ -675,6 +678,7 @@ Simulated_Annealing_optimizer <- function(S,
         visited_perms[[i + 1]] <- current_perm
       }
       log_posteriori_values[i + 1] <- log_posteriori_values[i]
+      all_n0[i+1] <- all_n0[i]
     }
   }
   
@@ -705,7 +709,8 @@ Simulated_Annealing_optimizer <- function(S,
     "did_converge" = NULL,
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = all_n0
   )
   
   
