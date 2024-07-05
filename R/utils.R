@@ -122,10 +122,15 @@ shuffle_g_perm <- function(g_perm) {
     return(NULL) # no shuffle is possible
   }
   
-  len_u_g_perm <- sapply(u_g_perm, length)
+  if (length(index_cicle_at_least_three) == 1) {
+    cycle_to_shuffle <- index_cicle_at_least_three
+  } else {
+    len_u_g_perm <- sapply(u_g_perm, length)
+    
+    my_prob <- choose(len_u_g_perm[index_cicle_at_least_three] - 1, 2)
+    cycle_to_shuffle <- sample(index_cicle_at_least_three, size = 1, prob = my_prob)
+  }
   
-  my_prob <- choose(len_u_g_perm[index_cicle_at_least_three] - 1, 2)
-  cycle_to_shuffle <- sample(index_cicle_at_least_three, size = 1, prob = my_prob)
   
   u_g_perm[[cycle_to_shuffle]]
   to_shuffle <- sample(2:length(u_g_perm[[cycle_to_shuffle]]), 2)
