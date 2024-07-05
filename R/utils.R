@@ -112,31 +112,21 @@ OEIS_A000142 <- c(1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
 
 shuffle_g_perm <- function(g_perm) {
   u_g_perm <- unclass(g_perm)
-  index_cicle_at_least_three <- numeric(0)
-  for (i in 1:length(u_g_perm)) {
-    if (length(u_g_perm[[i]]) >= 3) {
-      index_cicle_at_least_three[[length(index_cicle_at_least_three) + 1]] <- i
-    }
-  }
+  
+  len_u_g_perm <- sapply(u_g_perm, length)
+  index_cicle_at_least_three <- which(len_u_g_perm >= 3)
   if (length(index_cicle_at_least_three) == 0) {
     return(NULL) # no shuffle is possible
   }
-  
   if (length(index_cicle_at_least_three) == 1) {
     cycle_to_shuffle <- index_cicle_at_least_three
   } else {
-    len_u_g_perm <- sapply(u_g_perm, length)
-    
     my_prob <- choose(len_u_g_perm[index_cicle_at_least_three] - 1, 2)
     cycle_to_shuffle <- sample(index_cicle_at_least_three, size = 1, prob = my_prob)
   }
   
-  
-  u_g_perm[[cycle_to_shuffle]]
   to_shuffle <- sample(2:length(u_g_perm[[cycle_to_shuffle]]), 2)
-  
   u_g_perm[[cycle_to_shuffle]][to_shuffle] <- u_g_perm[[cycle_to_shuffle]][rev(to_shuffle)]
-  
   class(u_g_perm) <- "gips_perm"
   
   u_g_perm
