@@ -109,3 +109,30 @@ get_block_ends <- function(structure_constants) {
 
 OEIS_A051625 <- c(1, 2, 5, 17, 67, 362, 2039, 14170, 109694, 976412, 8921002, 101134244, 1104940280, 13914013024, 191754490412, 2824047042632, 41304021782824, 708492417746000, 11629404776897384, 222093818836736752, 4351196253952132832, 88481681599705382144)
 OEIS_A000142 <- c(1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600, 6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000, 6402373705728000, 121645100408832000, 2432902008176640000, 51090942171709440000, 1124000727777607680000)
+
+shuffle_g_perm <- function(g_perm) {
+  u_g_perm <- unclass(g_perm)
+  index_cicle_at_least_three <- numeric(0)
+  for (i in 1:length(u_g_perm)) {
+    if (length(u_g_perm[[i]]) >= 3) {
+      index_cicle_at_least_three[[length(index_cicle_at_least_three) + 1]] <- i
+    }
+  }
+  if (length(index_cicle_at_least_three) == 0) {
+    return(NULL) # no shuffle is possible
+  }
+  
+  len_u_g_perm <- sapply(u_g_perm, length)
+  
+  my_prob <- choose(len_u_g_perm[index_cicle_at_least_three] - 1, 2)
+  cycle_to_shuffle <- sample(index_cicle_at_least_three, size = 1, prob = my_prob)
+  
+  u_g_perm[[cycle_to_shuffle]]
+  to_shuffle <- sample(2:length(u_g_perm[[cycle_to_shuffle]]), 2)
+  
+  u_g_perm[[cycle_to_shuffle]][to_shuffle] <- u_g_perm[[cycle_to_shuffle]][rev(to_shuffle)]
+  
+  class(u_g_perm) <- "gips_perm"
+  
+  u_g_perm
+}

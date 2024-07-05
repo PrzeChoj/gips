@@ -120,7 +120,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
     )
   }
   g3 <- find_MAP(g1,
-    max_iter = 3, show_progress_bar = FALSE,
+    max_iter = 10, show_progress_bar = FALSE,
     optimizer = "HC", return_probabilities = FALSE
   )
 

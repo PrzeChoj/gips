@@ -154,9 +154,9 @@ test_that("find_MAP() can gues the correct optimizer and message the user", {
   expect_message(
     find_MAP(g,
       max_iter = 2, show_progress_bar = FALSE,
-      optimizer = "Me"
+      optimizer = "Si", cooling_schedule = function(i) {1}
     ),
-    "is will be changed to `optimizer == 'Metropolis_Hastings'`"
+    "is will be changed to `optimizer == 'Simulated_Annealing'`"
   )
 
   # cannot guess, can be "MH" or "Metropolis_Hastings":

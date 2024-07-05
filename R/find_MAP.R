@@ -179,7 +179,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     "HCf", "hill_climbing_fast", # TODO(documentation for HCf)
     "BF", "brute_force", "full", "continue",
     "SA", "Simulated_Annealing", # TODO(Check correctness of arguments for SA - similar to MH)
-    "RAND"
+    "RAND",
+    "MH_S", "Metropolis_Hastings_with_shuffle"
   ) # TODO(documentation for SA)
 
   # check the correctness of the rest of arguments
@@ -271,7 +272,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     }
   }
 
-  if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BF", "brute_force", "full")) && return_probabilities) {
+  if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BF", "brute_force", "full", "MH_S", "Metropolis_Hastings_with_shuffle")) && return_probabilities) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`",
       "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
@@ -279,7 +280,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     ))
   }
 
-  if (return_probabilities && optimizer %in% c("MH", "Metropolis_Hastings")) {
+  if (return_probabilities && optimizer %in% c("MH", "Metropolis_Hastings", "MH_S", "Metropolis_Hastings_with_shuffle")) {
     rlang::check_installed("stringi",
       reason = "to return probabilities in `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
     )
@@ -295,12 +296,12 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
 
   # inform that user can consider "BF"
-  if ((optimizer %in% c("MH", "Metropolis_Hastings", "SA", "Simulated_Annealing")) &&
+  if ((optimizer %in% c("MH", "Metropolis_Hastings", "SA", "Simulated_Annealing", "MH_S", "Metropolis_Hastings_with_shuffle")) &&
     (max_iter * 10 >= prod(1:ncol(attr(g, "S")))) &&
     is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
     rlang::inform(c(
       paste0(
-        "You called optimization with Metropolis_Hastings algorith with ",
+        "You called optimization with Metropolis_Hastings or Simulated_Annealing algorith with ",
         max_iter, " iterations."
       ),
       "i" = paste0(
@@ -384,6 +385,15 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       delta = delta, D_matrix = D_matrix,
       save_all_perms = save_all_perms,
       show_progress_bar = show_progress_bar)
+  } else if (optimizer %in% c("MH_S", "Metropolis_Hastings_with_shuffle")) {
+    gips_optimized <- Metropolis_Hastings_with_shuffle_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter, theta = args_passed[["theta"]], start_perm = start_perm,
+      delta = delta, D_matrix = D_matrix,
+      return_probabilities = return_probabilities,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
   }
 
   end_time <- Sys.time()
@@ -1281,6 +1291,171 @@ RAND_optimizer <- function(S,
     "iterations_performed" = i,
     "optimization_algorithm_used" = "RAND",
     "post_probabilities" = NULL,
+    "did_converge" = NULL,
+    "best_perm_log_posteriori" = found_perm_log_posteriori,
+    "optimization_time" = NA,
+    "whole_optimization_time" = NA,
+    "all_n0" = all_n0
+  )
+  
+  
+  new_gips(
+    list(found_perm), S, number_of_observations,
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
+  ) # was_mean_estimated will be changed in the `find_MAP` function
+}
+
+
+# theta is probability of doing shuffle
+Metropolis_Hastings_with_shuffle_optimizer <- function(S,
+    number_of_observations, max_iter, theta, start_perm = NULL,
+    delta = 3, D_matrix = NULL, return_probabilities = FALSE,
+    save_all_perms = FALSE, show_progress_bar = TRUE) {
+  stopifnot(length(theta) == 1)
+  stopifnot(0 <= theta && theta <= 1)
+  
+  if (is.null(start_perm)) {
+    start_perm <- permutations::id
+  }
+  
+  check_correctness_of_arguments(
+    S = S, number_of_observations = number_of_observations,
+    max_iter = max_iter, start_perm = start_perm,
+    delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
+    return_probabilities = return_probabilities,
+    save_all_perms = save_all_perms,
+    show_progress_bar = show_progress_bar
+  )
+  
+  if (!inherits(start_perm, "gips_perm")) {
+    start_perm <- gips_perm(start_perm, nrow(S)) # now we know the `S` is a matrix
+  }
+  
+  if (is.infinite(max_iter)) {
+    rlang::abort(c("There was a problem identified with the provided arguments:",
+       "i" = "`max_iter` in `Metropolis_Hastings_optimizer` must be finite.",
+       "x" = paste0("You provided `max_iter == ", max_iter, "`.")
+    ))
+  }
+  
+  perm_size <- dim(S)[1]
+  if (permutations::is.cycle(start_perm)) {
+    start_perm <- gips_perm(start_perm, perm_size)
+  }
+  if (is.null(D_matrix)) {
+    D_matrix <- diag(nrow = perm_size)
+  }
+  
+  my_goal_function <- function(perm, i) {
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
+       S = S, number_of_observations = number_of_observations,
+       delta = delta, D_matrix = D_matrix
+    )
+    
+    if (is.nan(out_val) || is.infinite(out_val)) {
+      # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
+      rlang::abort(c(
+        "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
+        "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
+      ))
+    }
+    
+    out_val
+  }
+  
+  acceptance <- rep(FALSE, max_iter)
+  log_posteriori_values <- rep(0, max_iter)
+  all_n0 <- rep(0, max_iter)
+  if (save_all_perms) {
+    visited_perms <- list()
+    visited_perms[[1]] <- start_perm
+  } else {
+    visited_perms <- NA
+  }
+  current_perm <- start_perm
+  all_n0[1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
+  
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
+  }
+  log_posteriori_values[1] <- my_goal_function(current_perm, 0)
+  
+  found_perm <- start_perm
+  found_perm_log_posteriori <- log_posteriori_values[1]
+  
+  Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
+  do_shuffle <- stats::runif(max_iter, min = 0, max = 1) < theta
+  
+  # main loop
+  for (i in 1:(max_iter - 1)) {
+    if (show_progress_bar) {
+      utils::setTxtProgressBar(progressBar, i)
+    }
+    
+    if (do_shuffle[[i]]) {
+      perm_proposal <- shuffle_g_perm(current_perm)
+      
+      if (is.null(perm_proposal)) { # shuffle is impossible
+        e <- runif_transposition(perm_size)
+        perm_proposal <- compose_with_transposition(current_perm, e)
+      }
+    } else {
+      e <- runif_transposition(perm_size)
+      perm_proposal <- compose_with_transposition(current_perm, e)
+    }
+    
+    goal_function_perm_proposal <- my_goal_function(perm_proposal, i)
+    
+    # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
+    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+      current_perm <- perm_proposal
+      if (save_all_perms) {
+        visited_perms[[i + 1]] <- current_perm
+      }
+      log_posteriori_values[i + 1] <- goal_function_perm_proposal
+      acceptance[i] <- TRUE
+      all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
+      
+      if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
+        found_perm_log_posteriori <- log_posteriori_values[i + 1]
+        found_perm <- current_perm
+      }
+    } else {
+      if (save_all_perms) {
+        visited_perms[[i + 1]] <- current_perm
+      }
+      log_posteriori_values[i + 1] <- log_posteriori_values[i]
+      all_n0[i+1] <- all_n0[i]
+    }
+  }
+  
+  if (show_progress_bar) {
+    close(progressBar)
+  }
+  
+  function_calls <- length(log_posteriori_values)
+  
+  # visited_perms are already either a list of things or a `NULL` object
+  
+  if (return_probabilities) {
+    probabilities <- estimate_probabilities(visited_perms, show_progress_bar)
+  } else {
+    probabilities <- NULL
+  }
+  
+  optimization_info <- list(
+    "acceptance_rate" = mean(acceptance),
+    "log_posteriori_values" = log_posteriori_values,
+    "visited_perms" = visited_perms,
+    "start_perm" = start_perm,
+    "last_perm" = current_perm,
+    "last_perm_log_posteriori" = log_posteriori_values[function_calls],
+    "iterations_performed" = i,
+    "optimization_algorithm_used" = "Metropolis_Hastings",
+    "post_probabilities" = probabilities,
     "did_converge" = NULL,
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
