@@ -1308,12 +1308,13 @@ RAND_optimizer <- function(S,
 
 
 # theta is probability of doing shuffle
+# theta can be a list of length max_iter
 Metropolis_Hastings_with_shuffle_optimizer <- function(S,
     number_of_observations, max_iter, theta, start_perm = NULL,
     delta = 3, D_matrix = NULL, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
-  stopifnot(length(theta) == 1)
-  stopifnot(0 <= theta && theta <= 1)
+  stopifnot(length(theta) %in% c(1, max_iter))
+  stopifnot(all(0 <= theta && theta <= 1))
   
   if (is.null(start_perm)) {
     start_perm <- permutations::id
