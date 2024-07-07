@@ -1314,7 +1314,7 @@ Metropolis_Hastings_with_shuffle_optimizer <- function(S,
     delta = 3, D_matrix = NULL, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
   stopifnot(length(theta) %in% c(1, max_iter))
-  stopifnot(all(0 <= theta && theta <= 1))
+  stopifnot(all((0 <= theta) & (theta <= 1)))
   
   if (is.null(start_perm)) {
     start_perm <- permutations::id
