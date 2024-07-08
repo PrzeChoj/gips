@@ -10,8 +10,8 @@
 #' g_perm_sq <- gips_perm(p_perm_sq, 12)
 #' is_perm_square(g_perm_sq) # TRUE
 #' 
-#' p_perm <- permutations::as.cycle("(2,3,4,5)(6,7,8,9)(10,11,12,13)(14,15,16,17)")
-#' g_perm <- gips_perm(p_perm, 17)
+#' p_perm <- permutations::as.cycle("(2,3,4,5)(6,7,8,9)(10,11,12,13)(14,15,16,17)(18,19)(20,21)")
+#' g_perm <- gips_perm(p_perm, 22)
 is_perm_square <- function(g_perm) {
   cycle_lengths <- sapply(g_perm, length)
   even_cycle_lengths <- cycle_lengths[(cycle_lengths %% 2) == 0]
@@ -20,6 +20,7 @@ is_perm_square <- function(g_perm) {
 
 # https://math.stackexchange.com/questions/266569/how-to-find-the-square-root-of-a-permutation
 random_root_of_perm <- function(g_perm) {
+  num_of_cycles <- length(g_perm) # including all cycles of length 1
   cycle_lengths <- sapply(g_perm, length)
   
   # odd cycles:
@@ -33,9 +34,8 @@ random_root_of_perm <- function(g_perm) {
   )
   
   # even cycles:
-  sq_even_cycles <- list()
+  sq_even_cycles_unordered <- list()
   if (!all(odd_cycles)) {
-    even_cycles <- !odd_cycles
     table_of_even_cycles <- table(cycle_lengths[even_cycles])
     for (k in as.integer(names(table_of_even_cycles))) {
       all_even_of_length_k <- which(cycle_lengths == k)
@@ -48,7 +48,7 @@ random_root_of_perm <- function(g_perm) {
           all_even_of_length_k[-1]
         }
         
-        sq_even_cycles[[length(sq_even_cycles) + 1]] <- even_cycle_sqrt(
+        sq_even_cycles_unordered[[length(sq_even_cycles_unordered) + 1]] <- even_cycle_sqrt(
           g_perm[[first_cycle_index]],
           g_perm[[second_cycle_index]]
         )
@@ -59,6 +59,19 @@ random_root_of_perm <- function(g_perm) {
         )
       }
     }
+  }
+  # sq_even_cycles_unordered is unsorted:
+  sq_even_cycles_unordered_first_elements <- sapply(
+    sq_even_cycles_unordered,
+    function(single_cycle) {
+      single_cycle[1]
+    }
+  )
+  order_of_sq_even_cycles <- order(sq_even_cycles_unordered_first_elements)
+  
+  sq_even_cycles <- vector('list', length(sq_even_cycles_unordered))
+  for (i in 1:length(sq_even_cycles_unordered)) {
+    sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]]
   }
   
   # combine even and odd cycle:
