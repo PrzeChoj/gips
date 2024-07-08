@@ -485,9 +485,9 @@ validate_gips <- function(g) {
         )
       )
     }
-    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "hill_climbing_fast", "brute_force", "RAND"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
+    if (!all(optimization_info[["optimization_algorithm_used"]] %in% c("Metropolis_Hastings", "hill_climbing", "hill_climbing_fast", "brute_force", "RAND", "Metropolis_Hastings_with_shuffle", "Metropolis_Hastings_with_sqrt"))) { # Even if MH was used, it would produce the text "Metropolis_Hastings"
       abort_text <- c(abort_text,
-        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast', 'brute_force' and 'RAND'.",
+        "i" = "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast', 'brute_force', 'RAND', 'Metropolis_Hastings_with_shuffle' and 'Metropolis_Hastings_with_sqrt'.",
         "x" = paste0(
           "You have `attr(g, 'optimization_info')[['optimization_algorithm_used']] == (",
           paste(optimization_info[["optimization_algorithm_used"]], collapse = ", "),
