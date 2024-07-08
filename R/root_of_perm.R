@@ -34,6 +34,7 @@ random_root_of_perm <- function(g_perm) {
   )
   
   # even cycles:
+  even_cycles <- !odd_cycles
   sq_even_cycles <- list()
   sq_even_cycles_unordered <- list()
   if (!all(odd_cycles)) {
