@@ -70,7 +70,7 @@ random_root_of_perm <- function(g_perm) {
   order_of_sq_even_cycles <- order(sq_even_cycles_unordered_first_elements)
   
   sq_even_cycles <- vector('list', length(sq_even_cycles_unordered))
-  for (i in 1:length(sq_even_cycles_unordered)) {
+  for (i in 1:length(order_of_sq_even_cycles)) {
     sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]]
   }
   
