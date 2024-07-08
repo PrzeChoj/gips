@@ -59,27 +59,20 @@ random_root_of_perm <- function(g_perm) {
         )
       }
     }
-  }
-  # sq_even_cycles_unordered is unsorted:
-  sq_even_cycles_unordered_first_elements <- sapply(
-    sq_even_cycles_unordered,
-    function(single_cycle) {
-      single_cycle[1]
-    }
-  )
-  order_of_sq_even_cycles <- order(sq_even_cycles_unordered_first_elements)
-  
-  sq_even_cycles <- vector('list', length(sq_even_cycles_unordered))
-  for (i in 1:length(order_of_sq_even_cycles)) {
-    tryCatch(
-      sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]],
-      error = function(e) {
-        print(i)
-        print(order_of_sq_even_cycles)
-        print(sq_even_cycles_unordered)
-        print(sq_even_cycles)
+    
+    # sq_even_cycles_unordered is unsorted:
+    sq_even_cycles_unordered_first_elements <- sapply(
+      sq_even_cycles_unordered,
+      function(single_cycle) {
+        single_cycle[1]
       }
     )
+    order_of_sq_even_cycles <- order(sq_even_cycles_unordered_first_elements)
+    
+    sq_even_cycles <- vector('list', length(sq_even_cycles_unordered))
+    for (i in 1:length(order_of_sq_even_cycles)) {
+      sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]]
+    }
   }
   
   # combine even and odd cycle:
