@@ -71,7 +71,15 @@ random_root_of_perm <- function(g_perm) {
   
   sq_even_cycles <- vector('list', length(sq_even_cycles_unordered))
   for (i in 1:length(order_of_sq_even_cycles)) {
-    sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]]
+    tryCatch(
+      sq_even_cycles[[i]] <- sq_even_cycles_unordered[[order_of_sq_even_cycles[i]]],
+      error = function(e) {
+        print(i)
+        print(order_of_sq_even_cycles)
+        print(sq_even_cycles_unordered)
+        print(sq_even_cycles)
+      }
+    )
   }
   
   # combine even and odd cycle:
