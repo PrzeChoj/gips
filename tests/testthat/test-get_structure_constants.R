@@ -27,10 +27,10 @@ test_that("get_structure_constants for examples from paper", {
 })
 
 # Example 6 from the paper
-test_that("calculate_r works for example from paper", {
+test_that("calculate_r works for example from paper (without 0 values)", {
   expect_equal(
     calculate_r(c(3, 2, 1), 6),
-    c(3, 0, 1, 1)
+    c(3, 1, 1)
   )
 })
 
@@ -42,18 +42,18 @@ test_that("calculate_r works for identity", {
 })
 
 test_that("calculate_d works for even perm_order", {
-  expect_equal(calculate_d(6), c(1, 2, 2, 1))
-  expect_equal(calculate_d(4), c(1, 2, 1))
-  expect_equal(calculate_d(2), c(1, 1))
+  expect_equal(calculate_d(4, 6), c(1, 2, 2, 1))
+  expect_equal(calculate_d(3, 4), c(1, 2, 1))
+  expect_equal(calculate_d(2, 2), c(1, 1))
 })
 
 test_that("calculate_d works for odd perm_order", {
-  expect_equal(calculate_d(5), c(1, 2, 2))
-  expect_equal(calculate_d(3), c(1, 2))
+  expect_equal(calculate_d(3, 5), c(1, 2, 2))
+  expect_equal(calculate_d(2, 3), c(1, 2))
 })
 
 test_that("calculate_d works for identity", {
-  expect_equal(calculate_d(1), 1)
+  expect_equal(calculate_d(1, 1), 1)
 })
 
 test_that("get_structure_constants checks for proper argument", {

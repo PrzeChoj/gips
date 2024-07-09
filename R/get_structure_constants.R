@@ -55,11 +55,9 @@ get_structure_constants <- function(perm) {
   )
 
   r <- calculate_r(cycle_lengths, perm_order)
-  d <- calculate_d(perm_order)
+  L <- length(r)
+  d <- calculate_d(L, perm_order)
 
-  L <- sum(r > 0)
-  d <- d[r > 0]
-  r <- r[r > 0]
   k <- d
   dim_omega <- r + r * (r - 1) * d / 2
 
@@ -93,8 +91,11 @@ get_cycle_representatives_and_lengths <- function(perm) {
 }
 
 #' Calculate structure constant r
+#' Utilizes the sparsity for the `r_alfa` to speed up the computation.
+#' The vector `r_alfa` is sorted by the value of the `alpha`.
+#' Meaning the first element is the `r_alpha` for `alpha` = 0.
 #'
-#' @returns An integer vector. Structure constant r WITH elements equal to 0.
+#' @returns An integer vector. Structure constant r already without 0 elements.
 #' @noRd
 calculate_r <- function(cycle_lengths, perm_order) {
   M <- floor(perm_order / 2)
@@ -105,7 +106,7 @@ calculate_r <- function(cycle_lengths, perm_order) {
   # for a in 0,1,...,floor(perm_order/2)
   # r_a = #{1:C such that a*p_c is a multiple of N}
   # AKA a*p_c %% N == 0
-
+  
   # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
   multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
 
@@ -113,25 +114,23 @@ calculate_r <- function(cycle_lengths, perm_order) {
   # 1) some alphas are too large
   # 2) some alphas are so small, that we can include their multiples
   #   (if a*p_c %% N == 0, then for any natural k  k*a*p_c %% N == 0)
-  alphas <- unlist(lapply(multiples, function(cycle_multiple) {
-    max_multiple <- floor(M / cycle_multiple)
-    cycle_multiple * 0:max_multiple
-  }))
+  max_order <- max(cycle_lengths)
+  alpha_matrix <- multiples %*% t(0:max_order)
+  possible_alphas <- unique(sort(alpha_matrix[alpha_matrix <= M]))
 
-  alpha_count <- table(alphas)
-  r <- rep(0, M + 1)
-  r[as.double(names(alpha_count)) + 1] <- as.double(alpha_count)
-  r
+  r_alfa <- sapply(possible_alphas, function(alpha) sum(alpha %% multiples == 0))
+  as.double(r_alfa)
 }
 
-#' Calculate structure constant d
+#' Calculate structure constant d.
+#' Utilizing the structure of `r_alfa` vector.
 #'
 #' @noRd
-calculate_d <- function(perm_order) {
-  M <- floor(perm_order / 2)
-  d <- c(1, rep(2, M))
+calculate_d <- function(r_len, perm_order) {
+  d <- rep(2, r_len)
+  d[1] <- 1
   if (perm_order %% 2 == 0) {
-    d[M + 1] <- 1
+    d[r_len] <- 1
   }
   d
 }
