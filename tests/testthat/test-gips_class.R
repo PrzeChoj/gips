@@ -351,7 +351,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attr(g_err, "optimization_info")[["optimization_algorithm_used"]] <- "MH" # Even if MH was used, it would produce the text "Metropolis_Hastings"
   expect_error(
     validate_gips(g_err),
-    "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast', 'brute_force' and 'RAND'."
+    "The available optimization algorithms are 'Metropolis_Hastings', 'hill_climbing', 'hill_climbing_fast', 'brute_force', 'RAND', 'Metropolis_Hastings_with_shuffle' and 'Metropolis_Hastings_with_sqrt'."
   )
 
   g_err <- g2
