@@ -103,9 +103,17 @@ calculate_r <- function(cycle_lengths, perm_order) {
     # identity function
     return(length(cycle_lengths))
   }
-
+  # for a in 0,1,...,floor(perm_order/2)
+  # r_a = #{1:C such that a*p_c is a multiple of N}
+  # AKA a*p_c %% N == 0
+  
+  # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
   multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
 
+  # Now we have to adjust for 2 cases:
+  # 1) some alphas are too large
+  # 2) some alphas are so small, that we can include their multiples
+  #   (if a*p_c %% N == 0, then for any natural k  k*a*p_c %% N == 0)
   max_order <- max(cycle_lengths)
   alpha_matrix <- multiples %*% t(0:max_order)
   possible_alphas <- unique(sort(alpha_matrix[alpha_matrix <= M]))
