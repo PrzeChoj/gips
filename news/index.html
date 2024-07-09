@@ -40,6 +40,28 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.2.9000" id="gips-1229000">gips 1.2.2.9000<a class="anchor" aria-label="anchor" href="#gips-1229000"></a></h2>
 <div class="section level4">
+<h4 id="performance-gain-1-2-2-9000">Performance gain<a class="anchor" aria-label="anchor" href="#performance-gain-1-2-2-9000"></a></h4>
+<p>There was a significant improvement in the speed of calculation. Details in the table below for 1000 random permutations of a given size:</p>
+<table style="width:100%;" class="table"><colgroup><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"></colgroup><thead><tr class="header"><th>permutation size</th>
+<th>30</th>
+<th>50</th>
+<th>100</th>
+<th>200</th>
+<th>300</th>
+</tr></thead><tbody><tr class="odd"><td>old computation time</td>
+<td>0.09 s</td>
+<td>0.10 s</td>
+<td>0.25 s</td>
+<td>~10 s</td>
+<td>~25 s</td>
+</tr><tr class="even"><td>new computation time</td>
+<td>0.07 s</td>
+<td>0.08 s</td>
+<td>0.10 s</td>
+<td>0.17 s</td>
+<td>~0.20 s</td>
+</tr></tbody></table></div>
+<div class="section level4">
 <h4 id="update-to-functions-1-2-2-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-2-2-9000"></a></h4>
 <ul><li>
 <code><a href="../reference/plot.gips.html">plot.gips()</a></code> can get <code>type = "n0"</code>, which will plot the change of <code>n0</code> along the “MH” optimization. Handy for deciding of burn-in time.</li>
