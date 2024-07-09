@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="gips">
 <title>Available Optimizers: How to Find Maximum A Posteriori? • gips</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,65 +14,47 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Available Optimizers: How to Find Maximum A Posteriori?">
-<meta property="og:description" content="gips">
-<meta property="og:image" content="https://przechoj.github.io/gips/logo.svg">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Available Optimizers: How to Find Maximum A Posteriori?">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/gips.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/gips.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a>
-    <a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a></li>
+    <li><a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/PrzeChoj/gips/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/PrzeChoj/gips/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -85,7 +66,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Available Optimizers: How to Find Maximum A Posteriori?</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/HEAD/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
       <div class="d-none name"><code>Optimizers.Rmd</code></div>
     </div>
 
@@ -99,32 +80,42 @@
 <h2 id="what-are-we-optimizing">What are we optimizing?<a class="anchor" aria-label="anchor" href="#what-are-we-optimizing"></a>
 </h2>
 <p>The goal of the <code><a href="../reference/find_MAP.html">find_MAP()</a></code> is to find the permutation
-<span class="math inline">\(\sigma\)</span> that maximizes the a
-posteriori probability (MAP - Maximum A Posteriori). Such a permutation
-represents the most plausible symmetry given the data.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+that maximizes the a posteriori probability (MAP - Maximum A
+Posteriori). Such a permutation represents the most plausible symmetry
+given the data.</p>
 <p>This a posteriori probability function is described in-depth in the
 <strong>Bayesian model selection</strong> section of the
 <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code>, also available as a <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>. <code>gips</code> can calculate the logarithm of it by the
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> function. In the following
 paragraphs, we will refer to this a posteriori probability function as
-<span class="math inline">\(f(\sigma)\)</span>. We have <span class="math inline">\(f(\sigma) &gt; 0\)</span>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>.
+We have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(\sigma) &gt; 0</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="available-optimizers">Available optimizers<a class="anchor" aria-label="anchor" href="#available-optimizers"></a>
 </h2>
 <p>The space of permutations is enormous - for the permutation of size
-<span class="math inline">\(p\)</span>, the space of all permutations is
-of size <span class="math inline">\(p!\)</span> (<span class="math inline">\(p\)</span> factorial). Even for <span class="math inline">\(p=12\)</span>, this space is practically
-impossible to browse. This is why <code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements
-multiple (3) optimizers to choose from:</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+the space of all permutations is of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>!</mi></mrow><annotation encoding="application/x-tex">p!</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+factorial). Even for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">p=12</annotation></semantics></math>,
+this space is practically impossible to browse. This is why
+<code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements multiple (3) optimizers to choose
+from:</p>
 <ul>
 <li>
 <code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> |
-recommend for <span class="math inline">\(p\le 9\)</span>.</li>
+recommend for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">p\le 9</annotation></semantics></math>.</li>
 <li>
 <code>"Metropolis_Hastings"</code>, <code>"MH"</code> | recommend
-for <span class="math inline">\(p\ge 10\)</span>.</li>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\ge 10</annotation></semantics></math>.</li>
 <li>
 <code>"hill_climbing"</code>, <code>"HC"</code>
 </li>
@@ -136,10 +127,14 @@ for <span class="math inline">\(p\ge 10\)</span>.</li>
 Metropolis-Hastings and hill climbing.</p>
 <p>For Metropolis-Hastings, it computes a posteriori of
 <code>max_iter</code> permutations, whereas for hill climbing, it
-computes <span class="math inline">\({p\choose 2} \cdot\)</span>
-<code>max_iter</code> of them.</p>
-<p>In the case of the Brute Force optimizer, it computes all <span class="math inline">\(f(\sigma)\)</span> values. The number of all
-different <span class="math inline">\(\sigma\)</span>s follows <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a>.</p>
+computes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>p</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo></mrow><annotation encoding="application/x-tex">{p\choose 2} \cdot</annotation></semantics></math><code>max_iter</code> of them.</p>
+<p>In the case of the Brute Force optimizer, it computes all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>
+values. The number of all different
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>s
+follows <a href="https://oeis.org/A051625" class="external-link">OEIS sequence
+A051625</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
@@ -148,10 +143,11 @@ different <span class="math inline">\(\sigma\)</span>s follows <a href="https://
 <p>This is the only optimizer that will certainly find the actual MAP
 Estimator.</p>
 <p>Brute Force is <strong>only recommended</strong> for small spaces
-(<span class="math inline">\(p \le 9\)</span>). It can also browse
-bigger spaces, but the required time is probably too long. We tested how
-much time it takes to browse with Brute Force (AMD EPYC 7413 Processor,
-single core), and we show the time in the table below:</p>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">p \le 9</annotation></semantics></math>).
+It can also browse bigger spaces, but the required time is probably too
+long. We tested how much time it takes to browse with Brute Force (AMD
+EPYC 7413 Processor, single core), and we show the time in the table
+below:</p>
 <table class="table">
 <colgroup>
 <col width="12%">
@@ -219,22 +215,21 @@ Show/hide data preparation
 process:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 13  6</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 13</span></span>
+<span><span class="co">#&gt; [1] 13  6</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 13</span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 6</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
 <span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 28979.967 times more likely than the () permutation.</span></span></code></pre></div>
-<p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for <span class="math inline">\(p = 6\)</span>.</p>
+<p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p = 6</annotation></semantics></math>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -248,23 +243,34 @@ Wikipedia</a>.</p>
 <div class="section level4">
 <h4 id="short-description">Short description<a class="anchor" aria-label="anchor" href="#short-description"></a>
 </h4>
-<p>In every iteration <span class="math inline">\(i\)</span>, an
-algorithm considers a permutation, say, <span class="math inline">\(\sigma_i\)</span>. Then a random transposition is
-drawn uniformly <span class="math inline">\(t_i = (j,k)\)</span>, and
-the value of <span class="math inline">\(f(\sigma_i \circ t_i)\)</span>
+<p>In every iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+an algorithm considers a permutation, say,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
+Then a random transposition is drawn uniformly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t_i = (j,k)</annotation></semantics></math>,
+and the value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i)</annotation></semantics></math>
 is computed.</p>
 <ul>
-<li>If a new value is bigger than the previous one (i.e., <span class="math inline">\(f(\sigma_i \circ t_i) \ge f(\sigma_i)\)</span>),
-then we set <span class="math inline">\(\sigma_{i+1} = \sigma_i \circ
-t_i\)</span>.</li>
-<li>If a new value is smaller (<span class="math inline">\(f(\sigma_i
-\circ t_i) &lt; f(\sigma_i)\)</span>), then we will choose <span class="math inline">\(\sigma_{i+1} = \sigma_i \circ t_i\)</span> with
-probability <span class="math inline">\(\frac{f(\sigma_i \circ
-t_i)}{f(\sigma_i)}\)</span>. Otherwise, we set <span class="math inline">\(\sigma_{i+1} = \sigma_i\)</span> with
-complementary probability <span class="math inline">\(1 -
-\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}\)</span>.</li>
+<li>If a new value is bigger than the previous one (i.e.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) \ge f(\sigma_i)</annotation></semantics></math>),
+then we set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>.</li>
+<li>If a new value is smaller
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) &lt; f(\sigma_i)</annotation></semantics></math>),
+then we will choose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>
+with probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><annotation encoding="application/x-tex">\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.
+Otherwise, we set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i</annotation></semantics></math>
+with complementary probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.</li>
 </ul>
-<p>The final value is the best <span class="math inline">\(\sigma\)</span> ever computed.</p>
+<p>The final value is the best
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+ever computed.</p>
 </div>
 <div class="section level4">
 <h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
@@ -281,8 +287,8 @@ plotting the convergence plot with a logarithmic OX scale:
 <code>plot(g_map, type = "best", logarithmic_x = TRUE)</code>, then
 decide if the line has flattened already. Keep in mind that the OY scale
 is also logarithmic. For example, a marginal change on the OY scale
-could mean <span class="math inline">\(10000\)</span>
-<strong>times</strong> the change in A Posteriori.</p>
+could mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10000</mn><annotation encoding="application/x-tex">10000</annotation></semantics></math><strong>times</strong> the change in A Posteriori.</p>
 <p>For more information about continuing the optimization, see the
 <strong>Continuing the optimization</strong> section below.</p>
 <p>This algorithm has been analyzed extensively by statisticians. Thanks
@@ -297,7 +303,7 @@ obtain estimates of posterior probabilities by setting
 <h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h4>
 <div id="spoiler1" style="display:none">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
@@ -316,11 +322,10 @@ Show/hide data preparation
 </button>
 <p>Let’s say we have the data <code>Z</code> from the unknown
 process:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 50 70</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
+<span><span class="co">#&gt; [1] 50 70</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
 <span></span>
@@ -331,18 +336,17 @@ process:</p>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">60</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_2-1.png" width="700"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ===============================================================================</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; ===============================================================================</span></span>
+<span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (1,34,48,6,9,4,46,17,2,58,32,69,54,42,57,38,16,23,18,53,20,10,59,35,31,8,49,14,66,65,52,40,26,70,61,15,47,33,19,44,55,13,62,22,11,41,21,7,67)(3,63,43,37,45,50,51,68,29,64,27,60,24,30,36,56,25,39,5):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 4.164e+646 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After just a hundred and fifty iterations, the found permutation is
 unimaginably more likely than the $_0 = $ <code>()</code>
 permutation.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" width="700"></p>
 </div>
@@ -356,15 +360,20 @@ Wikipedia</a>.</p>
 <div class="section level4">
 <h4 id="short-description-1">Short description<a class="anchor" aria-label="anchor" href="#short-description-1"></a>
 </h4>
-<p>In every iteration <span class="math inline">\(i\)</span>, an
-algorithm considers a permutation; call it <span class="math inline">\(\sigma_i\)</span>. Then, all the values of <span class="math inline">\(f(\sigma_i \circ t)\)</span> are computed for
-every possible transposition <span class="math inline">\(t =
-(j,k)\)</span>. Then the next <span class="math inline">\(\sigma_{i+1}\)</span> will be the one with the
-biggest value:</p>
-<p><span class="math display">\[\sigma_{i+1} = argmax_{\text{perm} \in
-\text{neighbors}(\sigma_{i})}\{f(perm)\}\]</span></p>
-<p>Where: <span class="math display">\[\text{neighbors}(\sigma) =
-\{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}\]</span></p>
+<p>In every iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+an algorithm considers a permutation; call it
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
+Then, all the values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t)</annotation></semantics></math>
+are computed for every possible transposition
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t = (j,k)</annotation></semantics></math>.
+Then the next
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\sigma_{i+1}</annotation></semantics></math>
+will be the one with the biggest value:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>a</mi><mi>r</mi><mi>g</mi><mi>m</mi><mi>a</mi><msub><mi>x</mi><mrow><mtext mathvariant="normal">perm</mtext><mo>∈</mo><mtext mathvariant="normal">neighbors</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\}</annotation></semantics></math></p>
+<p>Where:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">neighbors</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>σ</mi><mo>∘</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mn>1</mn><mo>≤</mo><mi>j</mi><mo>&lt;</mo><mi>k</mi><mo>≤</mo><mtext mathvariant="normal">p</mtext><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}</annotation></semantics></math></p>
 <p>The algorithm ends when all neighbors are less likely, or the
 <code>max_iter</code> is achieved. In the first case, the algorithm will
 finish at a local maximum, but there is no guarantee that this is also
@@ -374,7 +383,7 @@ the global maximum.</p>
 <h4 id="pseudocode">Pseudocode<a class="anchor" aria-label="anchor" href="#pseudocode"></a>
 </h4>
 <div id="spoiler2" style="display:none">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hill_climb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">g</span>, <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">perm</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span>  <span class="va">perm_log_f</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
@@ -427,7 +436,7 @@ Show/hide pseudocode
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h4>
 <div id="spoiler3" style="display:none">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
@@ -446,32 +455,29 @@ Show/hide data preparation
 </button>
 <p>Let’s say we have the data <code>Z</code> from the unknown
 process:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 20 25</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 20</span></span>
+<span><span class="co">#&gt; [1] 20 25</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 20</span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 25</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-1.png" width="700"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">2</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; Warning: Hill Climbing algorithm did not converge in 2 iterations!</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output.</span></span>
 <span><span class="co">#&gt; Warning: The found permutation has n0 = 24, which is bigger than the number_of_observations = 20.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
+<span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (6,8)(22,23):</span></span>
 <span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.419e+11 times more likely than the () permutation.</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 1.419e+11 times more likely than the () permutation.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" width="700"></p>
 <p>The above warnings are expected.</p>
 </div>
@@ -485,7 +491,7 @@ hill climbing, the optimization stops and returns the result. Users are
 encouraged to plot the result and determine if it has converged. If
 necessary, users can continue the optimization, as shown below.</p>
 <div id="spoiler5" style="display:none">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># the same code as for generating example for Metripolis-Hastings above</span></span>
 <span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
@@ -500,9 +506,8 @@ necessary, users can continue the optimization, as shown below.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 50 70</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
+<span><span class="co">#&gt; [1] 50 70</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span></code></pre></div>
 </div>
@@ -511,25 +516,25 @@ necessary, users can continue the optimization, as shown below.</p>
             else{document.getElementById('spoiler5') .style.display='none'}">
 Show/hide data preparation
 </button>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">50</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ==============================================================================</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; ==============================================================================</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/continuing_2-1.png" width="700"></p>
 <p>The algorithm was still significantly improving the permutation. It
 is reasonable to continue it:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">100</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ===============================================================================</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; ===============================================================================</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/continuing_3-1.png" width="700"></p>
 <p>The improvement has slowed down significantly. It is fair to stop the
 algorithm here. Keep in mind the y scale is logarithmic. The visually
-“small” improvement between 100 and 150 iterations was huge, <span class="math inline">\(10^{52}\)</span> times the posteriori.</p>
+“small” improvement between 100 and 150 iterations was huge,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>52</mn></msup><annotation encoding="application/x-tex">10^{52}</annotation></semantics></math>
+times the posteriori.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
@@ -544,9 +549,10 @@ second progress bar will indicate the calculation of the probabilities
 after optimization.</p>
 <p>The <code>save_all_perms = TRUE</code> will save all visited
 permutations in the outputted object, which significantly increases the
-required RAM. For instance, with <span class="math inline">\(p=150\)</span> and <code>max_perm = 150000</code>,
-we needed 400 MB to store it, whereas
-<code>save_all_perms = FALSE</code> only required 2 MB. However,
+required RAM. For instance, with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>150</mn></mrow><annotation encoding="application/x-tex">p=150</annotation></semantics></math>
+and <code>max_perm = 150000</code>, we needed 400 MB to store it,
+whereas <code>save_all_perms = FALSE</code> only required 2 MB. However,
 <code>save_all_perms = TRUE</code> is necessary for
 <code>return_probabilities = TRUE</code> or more complex path
 analysis.</p>
@@ -573,7 +579,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/
 <code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
 Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -584,15 +590,15 @@ Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="ext
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
