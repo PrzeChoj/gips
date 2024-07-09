@@ -11,6 +11,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 status](https://www.r-pkg.org/badges/version/gips)](https://CRAN.R-project.org/package=gips)
 [![R-CMD-check](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PrzeChoj/gips/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://codecov.io/gh/PrzeChoj/gips/branch/main/graph/badge.svg)](https://app.codecov.io/gh/PrzeChoj/gips?branch=main)
+![RStudio CRAN mirror
+downloads](http://cranlogs.r-pkg.org/badges/last-month/gips)
 
 <!-- badges: end -->
 

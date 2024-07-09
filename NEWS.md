@@ -1,5 +1,14 @@
 # gips 1.2.2.9000
 
+### Performance gain
+
+There was a significant improvement in the speed of calculation. Details in the table below for 1000 random permutations of a given size:
+
+|  permutation size  |  30  |  50  |  100  |  200  | 300 |
+|---|---|---|---|---|---|
+|  old computation time  |  0.09 s  |  0.10 s  |  0.25 s  |  ~10 s  |  ~25 s  |
+|  new computation time  |  0.07 s  |  0.08 s  |  0.10 s  |  0.17 s  |  ~0.20 s |
+
 ### Update to functions
 
 -   `plot.gips()` can get `type = "n0"`, which will plot the change of `n0` along the "MH" optimization. Handy for deciding of burn-in time;
