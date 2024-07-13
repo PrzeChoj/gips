@@ -103,21 +103,31 @@ calculate_r <- function(cycle_lengths, perm_order) {
     # identity function
     return(length(cycle_lengths))
   }
-  # for a in 0,1,...,floor(perm_order/2)
-  # r_a = #{1:C such that a*p_c is a multiple of N}
-  # AKA a*p_c %% N == 0
-  
-  # Corollary: N %% p_c == 0 for each p_c, cause N is LCM of all p_c
+  # for alpha in 0,1,...,floor(perm_order/2)
+  # r_{alpha} = #{1:C such that alpha*p_c is a multiple of N}
+  # alpha*p_c is a multiple of N iff alpha*p_c %% N == 0
+  # Now, N is the Least Common Multiplier of all p_c
+  # Which means, that N %% p_c == 0 for every p_c
+  # In other words, N / p_c is an integer
   multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
 
-  # Now we have to adjust for 2 cases:
-  # 1) some alphas are too large
-  # 2) some alphas are so small, that we can include their multiples
-  #   (if a*p_c %% N == 0, then for any natural k  k*a*p_c %% N == 0)
+  # Since N/p_c is an integer, alpha*p_c %% N == 0 iff alpha %% (N/p_c) == 0
+  # In other words, alpha must be a multiple of (N/p_1, N/p_2,...,N/p_C)
+  # (alpha = k*(N/p_1) or k*(N/p_2) or ... or k*(N/p_C) for some integer k (including 0))
+  # However, alpha must be at most M, and a valid bound from above for integer k is max(p_1,...,p_C).
   max_order <- max(cycle_lengths)
+  
+  # Here we create all possible alpha values. 
+  # The `multiples` corresponds to N/p_1,...,N/p_C, and `0:max_order` are possible integers k.
+  # Use the outer product to get all pairwise multiplications
   alpha_matrix <- multiples %*% t(0:max_order)
+
+  # sort is in ascending order, which means smallest alphas go to start.
+  # The end result is as if we iterated over each alpha value (in ascending order),
+  # and then deleted entries with 0s.
   possible_alphas <- unique(sort(alpha_matrix[alpha_matrix <= M]))
 
+  # Recalculate the r_alpha vector using its definition directly.
   r_alfa <- sapply(possible_alphas, function(alpha) sum(alpha %% multiples == 0))
   as.double(r_alfa)
 }
