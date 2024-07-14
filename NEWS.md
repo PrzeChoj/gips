@@ -11,8 +11,9 @@ There was a significant improvement in the speed of calculation. Details in the 
 
 ### Update to functions
 
--   `plot.gips()` can get `type = "n0"`, which will plot the change of `n0` along the "MH" optimization. Handy for deciding of burn-in time.
--   `find_MAP(optimizer = "MH")` tracks the `n0` along the optimization.
+-   `plot.gips()` can get `type = "n0"`, which will plot the change of `n0` along the "MH" optimization. Handy for deciding of burn-in time;
+-   `find_MAP(optimizer = "MH")` tracks the `n0` along the optimization;
+-   `summary.gips()` calculates Likelihood-Ratio test;
 
 
 # gips 1.2.2

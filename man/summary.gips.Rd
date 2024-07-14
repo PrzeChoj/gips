@@ -31,6 +31,13 @@ the \code{start_permutation} is over the identity permutation, \verb{()}.
 It can be less than 1, meaning the identity permutation
 is more likely. Remember that this number can big and
 overflow to \code{Inf} or small and underflow to 0.
+\item \code{log_times_more_likely_than_id} - log of \code{times_more_likely_than_id}.
+\item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
+statistics and p-value of Likelihood Ratio test, where
+the H_0 is that the data was drawn from the normal distribution
+with Covariance matrix invariant under the given permutation.
+The p-value is calculated from the asymptotic distribution.
+Note that this is sensibly defined only for \eqn{n \ge p}.
 \item \code{n0} - the minimum number of observations needed for
 the covariance matrix's maximum likelihood estimator
 (corresponding to a MAP) to exist. See \strong{\eqn{C\sigma} and \code{n0}}
@@ -51,8 +58,8 @@ the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_g
 }
 \item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
 See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.
-\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
 \item \code{n_parameters} - number of free parameters in the covariance matrix.
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
 }
 \item For optimized \code{gips} object:
 \enumerate{
@@ -69,6 +76,14 @@ value the start permutation has.
 the \code{found_permutation} is over the \code{start_permutation}.
 It cannot be a number less than 1.
 Remember that this number can big and overflow to \code{Inf}.
+\item \code{log_times_more_likely_than_start} - log of
+\code{times_more_likely_than_start}.
+\item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
+statistics and p-value of Likelihood Ratio test, where
+the H_0 is that the data was drawn from the normal distribution
+with Covariance matrix invariant under \code{found_permutation}.
+The p-value is calculated from the asymptotic distribution.
+Note that this is sensibly defined only for \eqn{n \ge p}.
 \item \code{n0} - the minimal number of observations needed for the existence of
 the maximum likelihood estimator (corresponding to a MAP) of
 the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
@@ -89,8 +104,8 @@ the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_g
 }
 \item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
 See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.
-\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
 \item \code{n_parameters} - number of free parameters in the covariance matrix.
+\item \code{AIC}, \code{BIC} - output of \code{\link[=AIC.gips]{AIC.gips()}} and \code{\link[=BIC.gips]{BIC.gips()}} functions.
 \item \code{optimization_algorithm_used} - all used optimization algorithms
 in order (one could start optimization with "MH", and then
 do an "HC").
@@ -131,12 +146,12 @@ perm_size <- 6
 mu <- runif(6, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -145,6 +160,7 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
+unclass(summary(g))
 
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 unclass(summary(g_map))
