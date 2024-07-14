@@ -54,11 +54,11 @@ It searches through the whole space at once.
 
 This is the only optimizer that will certainly find the actual MAP Estimator. 
 
-Brute Force is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (AMD EPYC 7413 Processor, single core), and we show the time in the table below:
+Brute Force is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (Apple M2, single core), and we show the time in the table below:
 
 | p=2       | p=3       | p=4      | p=5     | p=6   | p=7     | p=8    | p=9   | p=10          |
 |-----------|-----------|----------|---------|-------|---------|--------|-------|---------------|
-| 0.007 sec | 0.015 sec | 0.04 sec | 0.2 sec | 1 sec | 4.5 sec | 30 sec | 4 min | 1 hour 45 min |
+| 0.005 sec 1 | 0.010 sec | 0.025 sec | 0.075 sec | 0.3 sec | 1.8 sec | 13 sec | 1.8 min | 47 min |
 
 
 
