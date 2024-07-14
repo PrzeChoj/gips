@@ -319,7 +319,8 @@ validate_gips <- function(g) {
     
     # original_perm is not validated :<
     
-    if (!((is.numeric(optimization_info[["acceptance_rate"]]) &&
+    if (!is.na(optimization_info[["acceptance_rate"]]) &&
+      !((is.numeric(optimization_info[["acceptance_rate"]]) &&
       (length(optimization_info[["acceptance_rate"]]) == 1) &&
       optimization_info[["acceptance_rate"]] >= 0 &&
       optimization_info[["acceptance_rate"]] <= 1) ||

@@ -416,7 +416,11 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
-    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
+    attr(gips_optimized, "optimization_info")[["all_n0"]] <- if (any(is.na(attr(gips_optimized, "optimization_info")[["all_n0"]]) | is.null(attr(gips_optimized, "optimization_info")[["all_n0"]]))) {
+      NA
+    } else {
+      attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
+    }
   }
   if (n0 > number_of_observations) {
     rlang::warn(c(
@@ -1056,7 +1060,8 @@ hill_climbing_fast_optimizer <- function(S,
     "did_converge" = did_converge,
     "best_perm_log_posteriori" = best_perm_value,
     "optimization_time" = NA,
-    "whole_optimization_time" = NA
+    "whole_optimization_time" = NA,
+    "all_n0" = NA
   )
   
   
@@ -1179,7 +1184,7 @@ brute_force_optimizer <- function(
   }
 
   optimization_info <- list(
-    "acceptance_rate" = NULL,
+    "acceptance_rate" = NA,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "start_perm" = permutations::id,
@@ -1294,7 +1299,7 @@ RAND_optimizer <- function(S,
   # visited_perms are already either a list of things or a `NULL` object
   
   optimization_info <- list(
-    "acceptance_rate" = NULL,
+    "acceptance_rate" = NA,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "start_perm" = NULL,
@@ -1703,10 +1708,18 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   } else {
     post_probabilities <- NULL
   }
+  
+  acceptance_rate <- if (
+    is.null(optimization_info1[["acceptance_rate"]]) | is.null(optimization_info2[["acceptance_rate"]]) | 
+    is.na(optimization_info1[["acceptance_rate"]]) | is.na(optimization_info2[["acceptance_rate"]])) {
+    NA
+  } else {
+    (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2)
+  }
 
   optimization_info_new <- list(
     "original_perm" = optimization_info1[["original_perm"]],
-    "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
+    "acceptance_rate" = acceptance_rate,
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
     "start_perm" = optimization_info1[["start_perm"]],
