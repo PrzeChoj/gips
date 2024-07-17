@@ -335,9 +335,9 @@ validate_gips <- function(g) {
       )
     }
     if (!(optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force" ||
-      is.null(optimization_info[["acceptance_rate"]]))) {
+      (is.null(optimization_info[["acceptance_rate"]]) || is.na(optimization_info[["acceptance_rate"]])))) {
       abort_text <- c(abort_text,
-        "i" = "When brute force algorithm was used for optimization, `attr(g, 'optimization_info')[['acceptance_rate']]` must be a `NULL`.",
+        "i" = "When brute force algorithm was used for optimization, `attr(g, 'optimization_info')[['acceptance_rate']]` must be a `NULL` or `NA`.",
         "x" = paste0(
           "You have used brute force algorithm, but `attr(g, 'optimization_info')[['acceptance_rate']] == (",
           paste(optimization_info[["acceptance_rate"]], collapse = ", "),
