@@ -26,27 +26,32 @@ is_perm_square <- function(g_perm) {
 #' random_root_of_perm(g_perm) # 20 different possible sqrts.
 #' g_perm <- gips_perm("(1,2)(3,4,5,6)(7,8,9,10,11)(12,13,14,15,16)(17,18,19)(20,21,22)(23,24)(25,26,27,28)", 28)
 #' random_root_of_perm(g_perm)
+#' g_perm <- gips_perm("(1,2)(3,4,5,6)(7,8)(9,10,11,12)", 12)
+#' random_root_of_perm(g_perm)
 random_root_of_perm <- function(g_perm) {
   num_of_cycles <- length(g_perm) # including all cycles of length 1
   cycle_lengths <- sapply(g_perm, length)
   
   # odd cycles:
   odd_cycles <- ((cycle_lengths %% 2) == 1)
-  which_odd_cycles <- which(odd_cycles)
-  odd_cycles_lengths <- sapply(
-    which_odd_cycles,
-    function(which_odd_cycle) {
-      length(g_perm[[which_odd_cycle]])
-    }
-  )
-  odd_cycles_lengths_unique <- unique(odd_cycles_lengths)
-  
-  sq_odd_cycles <- lapply(odd_cycles_lengths_unique, function(length_of_odd_cycle) {
-    sqrt_for_odd_cycle_length(g_perm[cycle_lengths == length_of_odd_cycle])
-  })
-  sq_odd_cycles <- unlist(sq_odd_cycles, recursive = FALSE)
-  # sq_odd_cycles is unsorted:
-  sq_odd_cycles <- sort_cicles(sq_odd_cycles)
+  sq_odd_cycles <- list()
+  if (any(odd_cycles)) {
+    which_odd_cycles <- which(odd_cycles)
+    odd_cycles_lengths <- sapply(
+      which_odd_cycles,
+      function(which_odd_cycle) {
+        length(g_perm[[which_odd_cycle]])
+      }
+    )
+    odd_cycles_lengths_unique <- unique(odd_cycles_lengths)
+    
+    sq_odd_cycles <- lapply(odd_cycles_lengths_unique, function(length_of_odd_cycle) {
+      sqrt_for_odd_cycle_length(g_perm[cycle_lengths == length_of_odd_cycle])
+    })
+    sq_odd_cycles <- unlist(sq_odd_cycles, recursive = FALSE)
+    # sq_odd_cycles is unsorted:
+    sq_odd_cycles <- sort_cicles(sq_odd_cycles)
+  }
   
   # even cycles:
   even_cycles <- !odd_cycles
@@ -109,6 +114,10 @@ random_root_of_perm <- function(g_perm) {
 }
 
 sort_cicles <- function(unsorted_cicles) {
+  if (length(unsorted_cicles) < 2) {
+    return(unsorted_cicles)
+  }
+  
   cycles_unordered_first_elements <- sapply(
     unsorted_cicles,
     function(single_cycle) {
