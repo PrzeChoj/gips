@@ -214,6 +214,15 @@ odd_cycle_sqrt <- function(odd_cycle) {
 }
 
 even_cycle_sqrt <- function(even_cycle1, even_cycle2) {
+  # even_cycle2 can start at any place:
+  n <- length(even_cycle2)
+  i <- sample(n, size = 1)
+  even_cycle2_shuffle <- numeric(n)
+  even_cycle2_shuffle[1:(n-i+1)] <- even_cycle2[i:n]
+  if (i != 1){
+    even_cycle2_shuffle[(n-i+2):n] <- even_cycle2[1:(i-1)]
+  }
+  
   combined_matrix <- rbind(even_cycle1, even_cycle2)
   as.vector(combined_matrix)
 }
