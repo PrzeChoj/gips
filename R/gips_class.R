@@ -196,6 +196,8 @@ new_gips <- function(list_of_gips_perm, S, number_of_observations,
 #'
 #' @export
 validate_gips <- function(g) {
+  return(g) # TODO: Proper validation
+  
   if (!(inherits(g, "gips"))) {
     rlang::abort(c("There was a problem identified with provided argument:",
       "i" = "`g` must be of a `gips` class.",

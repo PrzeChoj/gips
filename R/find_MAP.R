@@ -181,7 +181,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     "SA", "Simulated_Annealing", # TODO(Check correctness of arguments for SA - similar to MH)
     "RAND",
     "MH_S", "Metropolis_Hastings_with_shuffle",
-    "MH_sq", "Metropolis_Hastings_with_sqrt"
+    "MH_sq", "Metropolis_Hastings_with_sqrt",
+    "EA"
   ) # TODO(documentation for SA)
 
   # check the correctness of the rest of arguments
@@ -404,6 +405,20 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       delta = delta, D_matrix = D_matrix,
       return_probabilities = return_probabilities,
       save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
+  } else if (optimizer == "EA") {
+    gips_optimized <- Evolutional_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter,
+      pop_size = args_passed[["pop_size"]],
+      success_treshold = args_passed[["success_treshold"]],
+      p_0 = args_passed[["p_0"]], a = args_passed[["a"]],
+      k_max = args_passed[["k_max"]],
+      tournament_part = args_passed[["tournament_part"]],
+      init = args_passed[["init"]],
+      delta = delta, D_matrix = D_matrix,
+      return_probabilities = return_probabilities,
       show_progress_bar = show_progress_bar
     )
   }
@@ -1658,6 +1673,62 @@ Metropolis_Hastings_with_sqrt_optimizer <- function(S,
   
   new_gips(
     list(found_perm), S, number_of_observations,
+    delta, D_matrix,
+    was_mean_estimated = FALSE, optimization_info
+  ) # was_mean_estimated will be changed in the `find_MAP` function
+}
+
+Evolutional_optimizer <- function(S,
+    number_of_observations, max_iter,
+    pop_size, success_treshold, p_0, a, k_max, tournament_part, init,
+    delta = 3, D_matrix = NULL, return_probabilities = FALSE,
+    show_progress_bar = TRUE) {
+  p <- dim(S)[1]
+  n <- number_of_observations
+  
+  if (is.null(D_matrix)) {
+    D_matrix <- diag(p)
+  }
+  
+  my_goal_function <- function(perm) {
+    log_posteriori_of_perm(perm,
+       S = S, number_of_observations = number_of_observations,
+       delta = delta, D_matrix = D_matrix
+    )
+  }
+  attr(my_goal_function, "U") <- S * n
+  attr(my_goal_function, "n") <- n
+  
+  evolution_result <- evolutional_optimization(
+    my_goal_function, max_iter = ceiling(max_iter / pop_size),
+    pop_size = pop_size, success_treshold = success_treshold, p_0 = p_0,
+    a = a, k_max = k_max, tournament_part = tournament_part,
+    max_f_calls = max_iter, init = "random", show_progress_bar = TRUE
+  )
+  
+  
+  optimization_info <- list(
+    "acceptance_rate" = NA,
+    "log_posteriori_values" = evolution_result$goal_function_logvalues,
+    "visited_perms" = lapply(1:length(evolution_result$goal_function_logvalues), function(x){gips_perm(permutations::id, p)}),
+    "start_perm" = gips_perm(permutations::id, p),
+    "last_perm" = gips_perm(permutations::id, p),
+    "last_perm_log_posteriori" = evolution_result$goal_function_logvalues[1],
+    "iterations_performed" = length(evolution_result$goal_function_logvalues),
+    "optimization_algorithm_used" = "Evolution",
+    "post_probabilities" = NA,
+    "did_converge" = NULL,
+    "best_perm_log_posteriori" = evolution_result$best_f_value,
+    "optimization_time" = NA,
+    "whole_optimization_time" = NA,
+    "all_n0" = NA,
+    "original_perm" = gips_perm(permutations::id, p)
+   )
+  
+  
+  new_gips(
+    list(gips_perm(evolution_result$best_permutation, p)),
+    S, number_of_observations,
     delta, D_matrix,
     was_mean_estimated = FALSE, optimization_info
   ) # was_mean_estimated will be changed in the `find_MAP` function
