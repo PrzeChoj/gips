@@ -1710,7 +1710,7 @@ Evolutional_optimizer <- function(S,
   optimization_info <- list(
     "acceptance_rate" = NA,
     "log_posteriori_values" = evolution_result$goal_function_logvalues,
-    "visited_perms" = lapply(1:length(evolution_result$goal_function_logvalues), function(x){gips_perm(permutations::id, p)}),
+    "visited_perms" = NA,
     "start_perm" = gips_perm(permutations::id, p),
     "last_perm" = gips_perm(permutations::id, p),
     "last_perm_log_posteriori" = evolution_result$goal_function_logvalues[1],
