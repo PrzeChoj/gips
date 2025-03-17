@@ -228,7 +228,7 @@ Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` 
 
 For more examples and introduction, see `vignette("gips", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/gips.html).
 
-For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
+For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](<doi:10.18637/jss.v112.i07>).
 
 
 # Acknowledgment

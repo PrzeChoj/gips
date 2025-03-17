@@ -58,7 +58,7 @@ We propose creating a set of constraints on the covariance matrix to use the max
 
 This package provides a way to find a *reasonable* permutation to be used as a constraint in covariance matrix estimation. In this case, *reasonable* means maximizing the Bayesian posterior distribution when using a Wishart-like distribution on symmetric, positive definite matrices as a prior. The idea, exact formulas, and algorithm sketch are explored in another vignette that can be accessed by `vignette("Theory", package="gips")` or on its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 
-For an in-depth analysis of the package performance, capabilities, and comparison with other packages, see the article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
+For an in-depth analysis of the package performance, capabilities, and comparison with other packages, see the article "Learning permutation symmetries with gips in R" by `gips`' developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](<doi:10.18637/jss.v112.i07>).
 
 
 # Practical example
@@ -239,7 +239,7 @@ Now, the estimated covariance matrix is of full rank (5).
 
 1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
 2. To learn more about the math and theory behind the `gips` package, see `vignette("Theory", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
-3. For an in-depth analysis of the package performance, capabilities, and comparison with other packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
+3. For an in-depth analysis of the package performance, capabilities, and comparison with other packages, see the article "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](<doi:10.18637/jss.v112.i07>).
 
 ```{r options_back, include = FALSE}
 options(old_options) # back to the original options
