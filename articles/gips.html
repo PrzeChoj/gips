@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="A Gentle Introduction to Modeling with gips">
 </head>
 <body>
@@ -126,7 +126,8 @@ page</a>.</p>
 <p>For an in-depth analysis of the package performance, capabilities,
 and comparison with other packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code>’ developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
+Software</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="practical-example">Practical example<a class="anchor" aria-label="anchor" href="#practical-example"></a>
@@ -233,10 +234,10 @@ Show/hide data preparation
 <span></span>
 <span><span class="va">toy_example_data</span></span>
 <span><span class="co">#&gt;            [,1]     [,2]     [,3]      [,4]       [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -5.554883 7.466693 2.324991 -5.801443  -9.211315</span></span>
-<span><span class="co">#&gt; [2,] -11.330708 1.700968 3.137654 -5.483651  -9.081096</span></span>
-<span><span class="co">#&gt; [3,] -10.579451 3.914784 1.935623 -7.228929  -9.580281</span></span>
-<span><span class="co">#&gt; [4,] -12.634411 4.881232 0.905630 -8.193076 -10.645947</span></span>
+<span><span class="co">#&gt; [1,]  -5.554883 7.466693 2.444659 -5.757642  -9.374783</span></span>
+<span><span class="co">#&gt; [2,] -11.330708 1.700968 2.756588 -5.623130  -8.560550</span></span>
+<span><span class="co">#&gt; [3,] -10.579451 3.914784 2.327188 -7.085606 -10.115170</span></span>
+<span><span class="co">#&gt; [4,] -12.634411 4.881232 1.248641 -8.067525 -11.114509</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -287,30 +288,30 @@ assumption. Let’s examine how reasonable are other possible
 assumptions:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      (3,4,5)      (2,3,4) (1,2)(3,4,5)   (2,4)(3,5)        (3,5)    (2,4,3,5) </span></span>
-<span><span class="co">#&gt;  0.061233769  0.056285386  0.047886230  0.042459957  0.038498214  0.038097095 </span></span>
-<span><span class="co">#&gt;        (4,5)        (3,4)    (2,3,4,5)    (2,3,5,4)      (2,4,5)        (2,4) </span></span>
-<span><span class="co">#&gt;  0.035713782  0.035376935  0.035079406  0.033534538  0.032464343  0.028844728 </span></span>
-<span><span class="co">#&gt;   (1,2)(4,5)   (1,2)(3,5) (1,2,4)(3,5)   (1,2)(3,4)      (2,3,5)   (2,3)(4,5) </span></span>
-<span><span class="co">#&gt;  0.026728904  0.025823947  0.025640854  0.024985519  0.021788116  0.020410689 </span></span>
-<span><span class="co">#&gt;    (1,2,3,4)    (1,3,2,4)        (2,3)           ()  (1,2,5,3,4)   (2,5)(3,4) </span></span>
-<span><span class="co">#&gt;  0.019325581  0.018057943  0.016981780  0.016870968  0.016855239  0.015854360 </span></span>
-<span><span class="co">#&gt;        (1,2)      (1,2,4) (1,2,3)(4,5)    (1,2,5,4)        (2,5)    (1,2,4,3) </span></span>
-<span><span class="co">#&gt;  0.013061398  0.012166118  0.011961669  0.011399950  0.011233039  0.011038089 </span></span>
-<span><span class="co">#&gt; (1,4)(2,3,5)  (1,2,3,5,4)   (1,4)(2,3) (1,5)(2,3,4)  (1,2,5,4,3)  (1,2,4,3,5) </span></span>
-<span><span class="co">#&gt;  0.010966672  0.010548412  0.010337578  0.010092854  0.009972182  0.009928594 </span></span>
-<span><span class="co">#&gt; (1,2,5)(3,4) (1,3)(2,4,5)  (1,2,3,4,5)    (1,4,2,5)  (1,2,4,5,3)   (1,4)(3,5) </span></span>
-<span><span class="co">#&gt;  0.009796212  0.008973144  0.008841130  0.008480339  0.008123637  0.006676127 </span></span>
-<span><span class="co">#&gt;      (1,2,3)    (1,3,2,5)    (1,2,5,3)    (1,2,4,5)   (1,4)(2,5)   (1,3)(2,4) </span></span>
-<span><span class="co">#&gt;  0.006278100  0.006260892  0.005571993  0.005315637  0.004947114  0.004942267 </span></span>
-<span><span class="co">#&gt;      (1,2,5)    (1,2,3,5)   (1,5)(3,4)        (1,4)   (1,3)(4,5) (1,4,5)(2,3) </span></span>
-<span><span class="co">#&gt;  0.004663477  0.004333746  0.003979393  0.003587180  0.003166527  0.003002236 </span></span>
-<span><span class="co">#&gt; (1,3,5)(2,4)   (1,3)(2,5)   (1,5)(2,3)   (1,5)(2,4)        (1,3)        (1,5) </span></span>
-<span><span class="co">#&gt;  0.002802721  0.002661763  0.002549461  0.002534069  0.002273572  0.002229518 </span></span>
-<span><span class="co">#&gt;      (1,4,5)      (1,3,4) (1,3,4)(2,5)      (1,3,5)    (1,4,3,5)    (1,3,5,4) </span></span>
-<span><span class="co">#&gt;  0.002079561  0.001939171  0.001750655  0.001408897  0.001234218  0.001058299 </span></span>
+<span><span class="co">#&gt;      (3,4,5)      (2,4,5) (1,2)(3,4,5)    (2,3,5,4)        (4,5)        (3,5) </span></span>
+<span><span class="co">#&gt;  0.061991931  0.056959514  0.048479131  0.040410788  0.038027185  0.037829891 </span></span>
+<span><span class="co">#&gt;        (3,4)    (2,3,4,5)    (2,4,3,5)   (2,4)(3,5)      (2,3,5)   (1,2)(3,5) </span></span>
+<span><span class="co">#&gt;  0.035085538  0.034415530  0.033895061  0.031448291  0.029438098  0.026938644 </span></span>
+<span><span class="co">#&gt;   (1,2)(3,4)   (2,5)(3,4)   (1,2)(4,5)      (2,3,4)        (2,5)        (2,4) </span></span>
+<span><span class="co">#&gt;  0.026167559  0.025906388  0.025384163  0.024145834  0.024081717  0.020399181 </span></span>
+<span><span class="co">#&gt; (1,2,4)(3,5)    (1,4,2,5)   (2,3)(4,5)           ()  (1,2,3,5,4)    (1,2,5,4) </span></span>
+<span><span class="co">#&gt;  0.019323499  0.018904417  0.018141398  0.017079855  0.016588093  0.016298998 </span></span>
+<span><span class="co">#&gt; (1,2,5)(3,4)    (1,2,4,5)        (1,2) (1,4)(2,3,5)        (2,3)  (1,2,3,4,5) </span></span>
+<span><span class="co">#&gt;  0.015996810  0.013635218  0.013223117  0.012292494  0.011350938  0.010572077 </span></span>
+<span><span class="co">#&gt;  (1,2,5,3,4) (1,2,3)(4,5)  (1,2,4,5,3)   (1,4)(2,5) (1,3)(2,4,5)  (1,2,4,3,5) </span></span>
+<span><span class="co">#&gt;  0.010280022  0.010147160  0.009968266  0.009810562  0.009448103  0.009398996 </span></span>
+<span><span class="co">#&gt;    (1,2,3,5)      (1,2,4)      (1,2,5) (1,5)(2,3,4)    (1,3,2,5)    (1,2,3,4) </span></span>
+<span><span class="co">#&gt;  0.009168309  0.009011297  0.008941143  0.008833158  0.008315048  0.008279742 </span></span>
+<span><span class="co">#&gt;  (1,2,5,4,3)    (1,3,2,4)   (1,4)(3,5)   (1,5)(2,4)    (1,2,5,3)      (1,2,3) </span></span>
+<span><span class="co">#&gt;  0.008007561  0.006254947  0.005565898  0.005389584  0.004968273  0.004515910 </span></span>
+<span><span class="co">#&gt;   (1,4)(2,3)   (1,5)(2,3)    (1,2,4,3)   (1,3)(4,5)   (1,5)(3,4) (1,3,4)(2,5) </span></span>
+<span><span class="co">#&gt;  0.004287814  0.004249572  0.003919107  0.003875914  0.003868923  0.003383014 </span></span>
+<span><span class="co">#&gt;        (1,4)   (1,3)(2,5)        (1,5) (1,3,5)(2,4)        (1,3)      (1,4,5) </span></span>
+<span><span class="co">#&gt;  0.003272443  0.002762345  0.002701743  0.002404967  0.002143353  0.002045112 </span></span>
+<span><span class="co">#&gt; (1,4,5)(2,3)      (1,3,4)   (1,3)(2,4)      (1,3,5)    (1,3,5,4)    (1,4,3,5) </span></span>
+<span><span class="co">#&gt;  0.001893502  0.001828460  0.001732156  0.001582799  0.001166460  0.001118505 </span></span>
 <span><span class="co">#&gt;    (1,3,4,5) </span></span>
-<span><span class="co">#&gt;  0.001034102</span></span></code></pre></div>
+<span><span class="co">#&gt;  0.001048474</span></span></code></pre></div>
 <p>We see that assumption
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
 is the most likely with a
@@ -356,7 +357,8 @@ page</a>.</li>
 <li>For an in-depth analysis of the package performance, capabilities,
 and comparison with other packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code> developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</li>
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
+Software</a>.</li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -370,7 +372,7 @@ Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on <a href="ht
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
