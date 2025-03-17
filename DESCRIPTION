@@ -16,7 +16,10 @@ Description: Find the permutation symmetry group such that the covariance
     the covariance matrix found with 'gips' approximates the actual
     covariance with less statistical error. The methods implemented in
     this package are described in Graczyk et al. (2022)
-    <doi:10.1214/22-AOS2174>.
+    <doi:10.1214/22-AOS2174>. Documentation about 'gips' is
+    provided via its website at <https://przechoj.github.io/gips/> and
+    the paper by Chojecki, Morgen, Kołodziejek
+    (2025, <doi:10.18637/jss.v112.i07>).
 License: GPL (>= 3)
 URL: https://github.com/PrzeChoj/gips, https://przechoj.github.io/gips/
 BugReports: https://github.com/PrzeChoj/gips/issues

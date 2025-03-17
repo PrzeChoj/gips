@@ -137,7 +137,7 @@ section in \code{vignette("Theory", package = "gips")} or in its
 For analysis of the Hyperparameters influence, see \strong{Section 3.2.}
 of "Learning permutation symmetries with gips in R"
 by \code{gips} developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
-available on \href{https://arxiv.org/abs/2307.00790}{arXiv:2307.00790}.
+\href{https://doi.org/10.18637/jss.v112.i07}{Journal of Statistical Software}.
 }
 
 \examples{

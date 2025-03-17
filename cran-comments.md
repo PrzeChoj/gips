@@ -14,3 +14,8 @@ Testing with `devtools::check_rhub()` - no Errors, no Warnings, only technical N
 0 errors | 0 warnings | 0 notes
 
 R CMD check succeeded
+
+
+## Citation Information
+
+The DOI in the CITATION is for a new JSS publication that will be registered after publication on CRAN.

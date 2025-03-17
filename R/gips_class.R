@@ -68,7 +68,7 @@
 #' For analysis of the Hyperparameters influence, see **Section 3.2.**
 #' of "Learning permutation symmetries with gips in R"
 #' by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
-#' available on [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+#' [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
 #'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.
