@@ -6,7 +6,7 @@ GitHub Actions using `usethis::use_github_actions_check_standard()`
 * Windows-latest (release)
 * Ubuntu-latest (oldrel-1, release, devel)
 
-Testing with `devtools::check_rhub()` - no Errors, no Warnings, only technical Notes (package 'V8' unavailable; files/directories: ''NULL'', 'lastMiKTeXException')
+Testing with `devtools::check_win_devel()` - no Errors, no Warnings, one Note (possibly invalid DOI -- for a new JSS publication that will be registered after publication on CRAN.)
 
 
 ## R CMD check results
