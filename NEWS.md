@@ -1,4 +1,4 @@
-# gips 1.2.2.9000
+# gips 1.2.3
 
 ### Performance gain
 
