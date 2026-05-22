@@ -422,7 +422,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     perm2 <- gips_perm(perm2, perm_size)
   }
 
-  check_correctness_of_arguments(S,
+  check_find_MAP_arguments(S,
     edited_number_of_observations,
     max_iter = 5,
     start_perm = perm1, delta = delta, D_matrix = D_matrix,

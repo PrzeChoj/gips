@@ -275,14 +275,14 @@ test_that("Properly validate the gips class after multiple optimizations", {
   expect_error(validate_gips(g_err))
 })
 
-test_that("Process proper parameters", {
-  expect_silent(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+test_that("Process proper parameters with check_find_MAP_arguments()", {
+  expect_silent(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_silent(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+  expect_silent(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = number_of_observations, max_iter = 10,
     start_perm = gips_perm(example_perm, 6), delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
@@ -290,25 +290,25 @@ test_that("Process proper parameters", {
   ))
 })
 
-test_that("check_correctness_of_arguments() properly validates arguments", {
-  expect_silent(check_correctness_of_arguments(
+test_that("check_find_MAP_arguments() properly validates arguments", {
+  expect_silent(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
 
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     6, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     matrix(1:30, ncol = 5),
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     matrix(c(LETTERS, LETTERS)[1:36], ncol = 6),
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
@@ -317,7 +317,7 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
 
   S_nonsymetric <- S
   S_nonsymetric[1, 2] <- S[1, 2] - 1
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S_nonsymetric,
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
@@ -325,124 +325,124 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
   ))
 
   S_non_positive_semi_definite <- S - diag(ncol(S)) * eigen(S, symmetric = TRUE, only.values = TRUE)[["values"]][2]
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S_non_positive_semi_definite,
     number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, NULL, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, 0, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations + 0.1, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30.1,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 1,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     "(1,3)(2,4)(5,6)",
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     gips_perm("(1,3)(2,4)(5,6)", 7),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     NULL, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_silent(check_correctness_of_arguments(
+  expect_silent(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     1.1, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     0.9, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     1, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S) + 1), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, 7, FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), "FALSE", FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, "FALSE", FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, "FALSE", FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, "FALSE"
   ))
 
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, TRUE, FALSE, FALSE
   )) # return_probabilities can be TRUE only when save_all_perms is also TRUE
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, matrix(1:30, nrow = ncol(S)), NA, FALSE, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, matrix(1:30, nrow = ncol(S)), FALSE, NA, FALSE, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, NA, FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, matrix(1:30, nrow = ncol(S)), FALSE, FALSE, FALSE, NA
@@ -450,7 +450,7 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
 
 
   # A lot of problems at once
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S, number_of_observations + 0.1, 1,
     "(1,3)(2,4)(5,6)",
     1, diag(nrow = ncol(S)), "FALSE", "FALSE", "FALSE", "FALSE"
@@ -458,131 +458,131 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
 
   # old tests:
   # A single problem at the same time:
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S = NULL, number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(
+  expect_error(check_find_MAP_arguments(
     S = matrix(c(1:30), nrow = 6),
     number_of_observations, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = NULL, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = 0, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = 15.5, max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10.5,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 0,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 1,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = NULL, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = NULL, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 1, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = 7,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = matrix(c(1:30), nrow = 6),
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = NULL,
     was_mean_estimated = "FALSE", return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3,
     D_matrix = NULL,
     was_mean_estimated = NA, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = 7,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = NULL,
     save_all_perms = FALSE, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = "FALSE", show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = NA, show_progress_bar = FALSE
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = 7
   ))
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm, number_of_observations,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm, number_of_observations,
     max_iter = 10,
     start_perm = example_perm, delta = 3, D_matrix = NULL,
     was_mean_estimated = FALSE, return_probabilities = FALSE,
@@ -591,7 +591,7 @@ test_that("check_correctness_of_arguments() properly validates arguments", {
 
 
   # A number of problems at the same time. Not all are printed:
-  expect_error(check_correctness_of_arguments(matrix_invariant_by_example_perm,
+  expect_error(check_find_MAP_arguments(matrix_invariant_by_example_perm,
     number_of_observations = -1, max_iter = 1,
     start_perm = example_perm, delta = 1, D_matrix = 7,
     was_mean_estimated = NA, return_probabilities = "FALSE",

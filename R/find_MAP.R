@@ -384,7 +384,7 @@ Metropolis_Hastings_optimizer <- function(S,
     start_perm <- permutations::id
   }
 
-  check_correctness_of_arguments(
+  check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = max_iter, start_perm = start_perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
@@ -535,7 +535,7 @@ hill_climbing_optimizer <- function(S,
     start_perm <- permutations::id
   }
 
-  check_correctness_of_arguments(
+  check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = max_iter, start_perm = start_perm,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
@@ -689,9 +689,9 @@ brute_force_optimizer <- function(
     delta = 3, D_matrix = NULL,
     return_probabilities = return_probabilities,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
-  check_correctness_of_arguments(
+  check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
-    max_iter = 5, start_perm = permutations::id, # max_iter, was_mean_estimated and start_perm are not important for optimization with brute_force
+    max_iter = 5, start_perm = permutations::id,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = FALSE,
     return_probabilities = return_probabilities, save_all_perms = save_all_perms,
     show_progress_bar = show_progress_bar
