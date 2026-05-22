@@ -234,29 +234,32 @@ validate_gips <- function(g) {
   optimization_info <- attr(g, "optimization_info")
 
   if (!inherits(perm, "gips_perm")) {
-    rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "The `g[[1]]` must be an object of a `gips_perm` class.",
+    rlang::abort(c(
+      "There was a problem identified with provided argument:",
+      "i" = "The `g[[1]]` must be an object of class `gips_perm`.",
       "x" = paste0(
         "You provided `g[[1]]` with `class(g[[1]]) == (",
         paste(class(perm), collapse = ", "),
         ")`."
       )
     ))
-  } else {
-    tryCatch(
-      {
-        validate_gips_perm(perm)
-      },
-      error = function(cond) {
-        rlang::abort(c("There was a problem identified with provided argument:",
-          "i" = "The `g[[1]]` must be an object of a `gips_perm` class.",
-          "x" = paste0(
-            "You provided `g[[1]]` with `class(g[[1]]) == 'gips_perm'`, but your g[[1]] does not pass `validate_gips_perm(g[[1]])`."
-          )
-        ))
-      }
-    )
   }
+  
+  tryCatch(
+    {
+      validate_gips_perm(perm)
+    },
+    error = function(cond) {
+      rlang::abort(c(
+        "There was a problem identified with provided argument:",
+        "i" = "The `g[[1]]` must be a valid object of class `gips_perm`.",
+        "x" = paste0(
+          "You provided `g[[1]]` with class `gips_perm`, ",
+          "but it does not pass `validate_gips_perm(g[[1]])`."
+        )
+      ))
+    }
+  )
 
   check_correctness_of_arguments( # max_iter, return_probabilities and show_progress_bar are to be checked here, but some value has to be passed
     S = S, number_of_observations = number_of_observations,
@@ -1553,7 +1556,7 @@ print.summary.gips <- function(x, ...) {
 #' @return a vector of length 2 with n0 and edited_number_of_observations
 #' @noRd
 get_n0_and_edited_number_of_observations_from_gips <- function(g) {
-  # validate_gips(g) # TODO(Make sure all uses of `get_n0_and_edited_number_of_observations_from_gips()` are on already validated g)
+  validate_gips(g)
   
   n0 <- get_n0_from_perm(g[[1]], attr(g, "was_mean_estimated"))
   

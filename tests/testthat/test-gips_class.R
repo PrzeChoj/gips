@@ -176,7 +176,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   class(g_err[[1]]) <- "test"
   expect_error(
     validate_gips(g_err),
-    "must be an object of a `gips_perm` class."
+    "must be an object of class `gips_perm`."
   )
 
   g_err <- g2
@@ -198,7 +198,7 @@ test_that("Properly validate the gips class with no optimization or after a sing
   attributes(g_err) <- attributes(g2)
   expect_error(
     validate_gips(g_err),
-    "You provided `g\\[\\[1\\]\\]` with `class\\(g\\[\\[1\\]\\]\\) == 'gips_perm'`, but your g\\[\\[1\\]\\] does not pass `validate_gips_perm\\(g\\[\\[1\\]\\]\\)`."
+    "You provided `g\\[\\[1\\]\\]` with class `gips_perm`, but it does not pass `validate_gips_perm\\(g\\[\\[1\\]\\]\\)`."
   )
 
   g_err <- g2
