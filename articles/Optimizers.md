@@ -218,9 +218,9 @@ suppressMessages( # message from ggplot2
 g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 #> ===============================================================================
 g_map
-#> The permutation (1,34,64,27,60,24,30,46,57,38,16,23,18,20,10,59,35,66,52,40,26,70,69,54,58,49,37,45,50,51,4,36,56,25,39,5,67,32,29,48,6,61,15,47,33,2,42,17,41,21,7,68,3,63,43,9,14,8,31,11,19,44,55,13,53,62,22):
+#> The permutation (1,34,64,27,60,40,26,14,13,53,62,22,11,41,21,7,29,48,24,30,46,57,38,16,23,18,20,10,59,35,32,69,54,17,2,58,31,8,49,66,52,15,47,37,45,50,51,3,63,43,68,33,19,44,55,6,9,4,36,56,25,39,61,70,42,5,67):
 #>  - was found after 150 posteriori calculations;
-#>  - is 1.75e+646 times more likely than the () permutation.
+#>  - is 5.34e+648 times more likely than the () permutation.
 ```
 
 After just a hundred and fifty iterations, the found permutation is
@@ -353,9 +353,9 @@ g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 #> ℹ The covariance matrix invariant under the found permutation does not have the likelihood properly defined.
 #> ℹ For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.
 g_map
-#> The permutation (5,6)(19,25):
+#> The permutation (11,15)(13,24):
 #>  - was found after 601 posteriori calculations;
-#>  - is 8.334e+9 times more likely than the () permutation.
+#>  - is 2.132e+8 times more likely than the () permutation.
 plot(g_map, type = "best")
 ```
 
