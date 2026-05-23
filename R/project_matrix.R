@@ -120,21 +120,31 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
     ), class = "not_positive_semi_definite_matrix")
   }
 
+  perm_size <- ncol(S)
+  if (!inherits(perm, "gips_perm")) {
+    perm <- gips_perm(perm, perm_size)
+  } else if (attr(perm, "size") != ncol(S)) {
+    rlang::abort(c("There was a problem identified with the provided arguments:",
+      "i" = "Size of `perm` must be equal to number of columns and rows of `S`.",
+      "x" = paste0(
+        "You provided `perm` with `size == ",
+        attr(perm, "size"),
+        "`, but the `S` matrix has ",
+        ncol(S), " columns."
+      )
+    ))
+  }
+
+  # Fast path for diagonal matrices: off-diagonal groups all average to 0,
+  # so only the diagonal entries (one per cycle) need to be averaged.
+  if (is_diagonal_matrix_(S)) {
+    projected_matrix <- project_diagonal_matrix_(S, perm)
+    colnames(projected_matrix) <- colnames(S)
+    rownames(projected_matrix) <- rownames(S)
+    return(projected_matrix)
+  }
+
   if (is.null(precomputed_equal_indices)) {
-    perm_size <- ncol(S)
-    if (!inherits(perm, "gips_perm")) {
-      perm <- gips_perm(perm, perm_size)
-    } else if (attr(perm, "size") != ncol(S)) {
-      rlang::abort(c("There was a problem identified with the provided arguments:",
-        "i" = "Size of `perm` must be equal to number of columns and rows of `S`.",
-        "x" = paste0(
-          "You provided `perm` with `size == ",
-          attr(perm, "size"),
-          "`, but the `S` matrix has ",
-          ncol(S), " columns."
-        )
-      ))
-    }
     equal_indices_by_perm <- get_equal_indices_by_perm(perm)
   } else {
     equal_indices_by_perm <- precomputed_equal_indices
@@ -263,4 +273,31 @@ get_double_from_single_indices <- function(indices, matrix_size) {
 
 get_single_from_double_indices <- function(indices, matrix_size) {
   (indices[, 2] - 1) * matrix_size + indices[, 1]
+}
+
+#' Check whether a matrix is diagonal (all off-diagonal entries are zero)
+#' @noRd
+is_diagonal_matrix_ <- function(S) {
+  p <- nrow(S)
+  if (p == 1L) return(TRUE)
+  if (S[1, 2] != 0) return(FALSE) # fast check
+  all(S[lower.tri(S) | upper.tri(S)] == 0)
+}
+
+#' Project a diagonal matrix onto the symmetry space of `perm`
+#'
+#' For each cycle of `perm`, replace all diagonal entries in that cycle with
+#' their mean. Off-diagonal entries remain zero.
+#'
+#' @param S A diagonal matrix.
+#' @param perm A `gips_perm` object.
+#' @noRd
+project_diagonal_matrix_ <- function(S, perm) {
+  d <- diag(S)
+  d_out <- numeric(length(d))
+  for (i in seq_along(perm)) {
+    idx <- perm[[i]]
+    d_out[idx] <- mean(d[idx])
+  }
+  diag(d_out)
 }
