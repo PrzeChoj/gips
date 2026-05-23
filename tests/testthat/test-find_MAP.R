@@ -97,7 +97,7 @@ test_that("Handle proper parameters", {
   g_small <- gips(matrix(c(1, 0.5, 0.5, 5), ncol = 2), 13, was_mean_estimated = FALSE)
   expect_message(
     find_MAP(g_small, max_iter = 10, optimizer = "MH", show_progress_bar = FALSE),
-    "Consider using `optimizer = 'brute_force'`, because it will use 2! \\(factorial\\) = 2 iterations and will browse all permutations, therefore it will definitely find the maximum a posteriori estimator."
+    "Consider using `optimizer = 'brute_force'`, because it will check only 2 permutations and will definitely find the maximum a posteriori estimator."
   )
 
   expect_silent(g_MAP_small <- find_MAP(g_small,

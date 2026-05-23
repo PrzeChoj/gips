@@ -287,20 +287,22 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   }
 
   # inform that user can consider "BF"
-  if ((optimizer %in% c("MH", "Metropolis_Hastings")) &&
-    (max_iter * 10 >= prod(1:ncol(attr(g, "S")))) &&
-    is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
-    rlang::inform(c(
-      paste0(
-        "You called optimization with Metropolis_Hastings algorith with ",
-        max_iter, " iterations."
-      ),
-      "i" = paste0(
-        "Consider using `optimizer = 'brute_force'`, because it will use ",
-        ncol(attr(g, "S")), "! (factorial) = ", prod(1:ncol(attr(g, "S"))),
-        " iterations and will browse all permutations, therefore it will definitely find the maximum a posteriori estimator."
-      )
-    ))
+  if ((optimizer %in% c("MH", "Metropolis_Hastings")) && is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
+    p <- ncol(attr(g, "S"))
+    bf_iters <- if (3 <= p && p <= 9) OEIS_A051625[p] else prod(1:p)
+    if (max_iter * 10 >= bf_iters) {
+      rlang::inform(c(
+        paste0(
+          "You called optimization with Metropolis_Hastings algorithm with ",
+          max_iter, " iterations."
+        ),
+        "i" = paste0(
+          "Consider using `optimizer = 'brute_force'`, because it will check only ",
+          bf_iters,
+          " permutations and will definitely find the maximum a posteriori estimator."
+        )
+      ))
+    }
   }
 
   # extract parameters
@@ -710,7 +712,7 @@ brute_force_optimizer <- function(
     ))
   }
 
-  if (perm_size > 9) { # I don't know how to test this without running the optimization...
+  if (perm_size > 9) {
     rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutational space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
