@@ -125,7 +125,7 @@
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_unknown2-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example_mean_unknown2-1.png" alt="" width="100%"></p>
 <p>Remember, we analyze the covariance matrix. We can see some nearly identical colors in the estimated covariance matrix. E.g., variances of columns 1 and 2 are very similar (<code>S[1,1]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,2]</code>), and variances of columns 3 and 4 are very similar (<code>S[3,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[4,4]</code>). What is more, Covariances are also similar (<code>S[1,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[1,4]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,4]</code>). Are those approximate equalities coincidental? Or do they reflect some underlying data properties? It is hard to decide purely by looking at the matrix.</p>
 <p><code><a href="reference/find_MAP.html">find_MAP()</a></code> will use the Bayesian model to quantify if the approximate equalities are coincidental. Let’s see if it will find this relationship:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -147,7 +147,7 @@
 <span><span class="co">#&gt; [4,] 1744545 1746602 8844312 8856368</span></span>
 <span></span>
 <span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_MAP</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_unknown4-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example_mean_unknown4-1.png" alt="" width="100%"></p>
 <p>This <code>S_projected</code> matrix can now be interpreted as a more stable covariance matrix estimator.</p>
 <p>We can also interpret the output as suggesting that there is no change in covariance for treatment with Aspirin.</p>
 </div>
@@ -178,7 +178,7 @@
 <span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">n</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># End of prepare model</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known1_1-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example_mean_known1_1-1.png" alt="" width="100%"></p>
 <p>Suppose we do not know the actual covariance matrix <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math> and we want to estimate it. We cannot use the standard MLE because it does not exists (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>&lt;</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">4 &lt; 6</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>&lt;</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n &lt; p</annotation></semantics></math>).</p>
 <p>We will assume it was generated from the normal distribution with the mean <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -196,7 +196,7 @@
 <p>We can see the standard estimator of the covariance matrix: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><msubsup><mi mathvariant="normal">Σ</mi><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)</annotation></semantics></math> It is not MLE (again, because MLE does not exist for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>&lt;</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n &lt; p</annotation></semantics></math>):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Covariance estimated in standard way"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known3_1-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example_mean_known3_1-1.png" alt="" width="100%"></p>
 <p>Let’s find the Maximum A Posteriori Estimator for the permutation. Space is small (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mi>!</mi><mo>=</mo><mn>720</mn></mrow><annotation encoding="application/x-tex">6! = 720</annotation></semantics></math>), so it is reasonable to browse the whole of it:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
@@ -226,7 +226,7 @@
 <span></span>
 <span><span class="co"># Plot the found matrix:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Covariance estimated with `gips`"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known6-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example_mean_known6-1.png" alt="" width="100%"></p>
 <p>We see <code>gips</code> found the data’s structure, and we could estimate the covariance matrix with huge accuracy only with a small amount of data and additional reasonable assumptions.</p>
 <p>Note that the rank of the <code>S</code> matrix was 4, while the rank of the <code>S_projected</code> matrix was 6 (full rank).</p>
 </div>
@@ -236,7 +236,7 @@
 <h1 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h1>
 <p>For more examples and introduction, see <code><a href="articles/gips.html">vignette("gips", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/gips.html">pkgdown page</a>.</p>
-<p>For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article “Learning permutation symmetries with gips in R” by <code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="doi:10.18637/jss.v112.i07">Journal of Statistical Software</a>.</p>
+<p>For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article “Learning permutation symmetries with gips in R” by <code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical Software</a>.</p>
 </div>
 <div class="section level1">
 <h1 id="acknowledgment">Acknowledgment<a class="anchor" aria-label="anchor" href="#acknowledgment"></a>
