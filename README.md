@@ -89,7 +89,7 @@ g <- gips(S, number_of_observations)
 plot_cosmetic_modifications(plot(g, type = "heatmap"))
 ```
 
-<img src="man/figures/README-example_mean_unknown2-1.png" width="100%" />
+<img src="man/figures/README-example_mean_unknown2-1.png" alt="" width="100%" />
 
 Remember, we analyze the covariance matrix. We can see some nearly
 identical colors in the estimated covariance matrix. E.g., variances of
@@ -132,7 +132,7 @@ round(S_projected)
 plot_cosmetic_modifications(plot(g_MAP, type = "heatmap"))
 ```
 
-<img src="man/figures/README-example_mean_unknown4-1.png" width="100%" />
+<img src="man/figures/README-example_mean_unknown4-1.png" alt="" width="100%" />
 
 This `S_projected` matrix can now be interpreted as a more stable
 covariance matrix estimator.
@@ -169,7 +169,7 @@ Z <- withr::with_seed(2022,
 # End of prepare model
 ```
 
-<img src="man/figures/README-example_mean_known1_1-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known1_1-1.png" alt="" width="100%" />
 
 Suppose we do not know the actual covariance matrix $\Sigma$ and we want
 to estimate it. We cannot use the standard MLE because it does not
@@ -203,7 +203,7 @@ It is not MLE (again, because MLE does not exist for $n < p$):
 plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
 ```
 
-<img src="man/figures/README-example_mean_known3_1-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known3_1-1.png" alt="" width="100%" />
 
 Let’s find the Maximum A Posteriori Estimator for the permutation. Space
 is small ($6! = 720$), so it is reasonable to browse the whole of it:
@@ -248,7 +248,7 @@ S_projected
 plot(g_map, type = "heatmap") + ggplot2::ggtitle("Covariance estimated with `gips`")
 ```
 
-<img src="man/figures/README-example_mean_known6-1.png" width="100%" />
+<img src="man/figures/README-example_mean_known6-1.png" alt="" width="100%" />
 
 We see `gips` found the data’s structure, and we could estimate the
 covariance matrix with huge accuracy only with a small amount of data
@@ -267,7 +267,7 @@ For an in-depth analysis of the package performance, capabilities, and
 comparison with similar packages, see the article “Learning permutation
 symmetries with gips in R” by `gips` developers Adam Chojecki, Paweł
 Morgen, and Bartosz Kołodziejek, [Journal of Statistical
-Software](doi:10.18637/jss.v112.i07).
+Software](https://doi.org/10.18637/jss.v112.i07).
 
 # Acknowledgment
 
