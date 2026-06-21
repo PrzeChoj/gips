@@ -43,6 +43,11 @@
 #' @param ... Additional arguments passed to
 #'     other various elements of the plot.
 #'
+#' @section Multi-sample:
+#' Plotting is not yet implemented for multi-sample `gips` objects
+#' (created with a list of matrices). Calling `plot()` on such an object
+#' raises an informative error. This feature is planned for a future release.
+#'
 #' @returns When `type` is one of `"best"`, `"all"`, `"both"` or `"n0"`,
 #'     returns an invisible `NULL`.
 #'     When `type` is one of `"heatmap"`, `"MLE"` or `"block_heatmap"`,

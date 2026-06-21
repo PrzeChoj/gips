@@ -34,6 +34,13 @@
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about the math behind the `gips` package.
 #'
+#' @section Multi-sample:
+#' When `g` is a multi-sample `gips` object (created with a list of matrices,
+#' e.g. `gips(list(S1, S2), c(n1, n2))`), the log-posterior is the sum of
+#' the independent single-sample log-posteriors across all G groups:
+#'
+#' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{g=1}^{G} \log P(\Gamma | S_g)}
+#'
 #' @returns Returns a value of
 #'     the logarithm of an unnormalized A Posteriori.
 #'

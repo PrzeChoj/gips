@@ -25,6 +25,11 @@
 #'     the compared posteriories between any two permutations,
 #'     not only compared to the starting one or id.
 #'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the number of observations is shown as a
+#' vector `n = c(n1, n2, ...)` and the comparison to the starting permutation
+#' uses the combined log-posterior (sum across groups).
+#'
 #' @returns Returns an invisible `NULL`.
 #' @export
 #'
@@ -272,6 +277,13 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       in an iteration.
 #' @export
 #' 
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the summary includes the number of groups G,
+#' the full vector of per-group sample sizes, and the total `n_parameters`
+#' (which equals `G * dim_omega(sigma)`). The n0 existence check uses
+#' `min(n_g)`. The Likelihood-Ratio test is not available for multi-sample
+#' objects and is reported as `NULL`.
+#'
 #' @importFrom stats pchisq
 #'
 #' @seealso
@@ -739,6 +751,13 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #' `number_of_observations` to have likelihood. After the optimization,
 #' the likelihood did exist.
 #'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the log-likelihood is the sum of the
+#' per-group log-likelihoods. The existence condition becomes
+#' `min(n_g) >= n0`. The `df` attribute equals `G * dim_omega(sigma)`
+#' (each group has its own free covariance parameters), and `nobs` equals
+#' `sum(n_g)`.
+#'
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
@@ -903,6 +922,12 @@ logLik.gips <- function(object, ...) {
 #' the **Information Criterion - AIC and BIC** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects, `AIC.gips()` and `BIC.gips()` are based on
+#' the combined log-likelihood (sum across G groups). The penalty term uses
+#' `G * dim_omega(sigma)` parameters, and the BIC sample size is `sum(n_g)`.
+#' See [logLik.gips()] for details.
 #'
 #' @method AIC gips
 #'

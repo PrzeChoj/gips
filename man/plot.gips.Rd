@@ -80,6 +80,13 @@ Plot the heatmap of the MAP covariance matrix estimator
 or the convergence of the optimization method.
 The plot depends on the \code{type} argument.
 }
+\section{Multi-sample}{
+
+Plotting is not yet implemented for multi-sample \code{gips} objects
+(created with a list of matrices). Calling \code{plot()} on such an object
+raises an informative error. This feature is planned for a future release.
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 

@@ -1,4 +1,4 @@
-# gips (development version)
+# gips 1.2.3.9000
 
 ### Multi-sample support
 
