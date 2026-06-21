@@ -192,7 +192,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   if (is.na(optimizer)) {
     optimizer <- ifelse(!is.null(attr(g, "optimization_info")),
       "continue",
-      ifelse(ncol(attr(g, "S")) <= 9,
+      ifelse(ncol(if (is.list(attr(g, "S"))) attr(g, "S")[[1]] else attr(g, "S")) <= 9,
         "BF",
         "MH"
       )
@@ -288,7 +288,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
   # inform that user can consider "BF"
   if ((optimizer %in% c("MH", "Metropolis_Hastings")) && is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
-    p <- ncol(attr(g, "S"))
+    p <- ncol(if (is.list(attr(g, "S"))) attr(g, "S")[[1]] else attr(g, "S"))
     bf_iters <- if (3 <= p && p <= 9) OEIS_A051625[p] else prod(1:p)
     if (max_iter * 10 >= bf_iters) {
       rlang::inform(c(
@@ -362,13 +362,24 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     n0 <- n0 + 1
     attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
   }
-  if (n0 > number_of_observations) {
-    rlang::warn(c(
-      paste0(
+  if (n0 > min(number_of_observations)) {
+    if (length(number_of_observations) == 1) {
+      # Single-sample case
+      msg_main <- paste0(
         "The found permutation has n0 = ", n0,
         ", which is bigger than the number_of_observations = ",
         number_of_observations, "."
-      ),
+      )
+    } else {
+      # Multi-sample case
+      msg_main <- paste0(
+        "The found permutation has n0 = ", n0,
+        ", which is bigger than the minimum number_of_observations = ",
+        min(number_of_observations), " (group ", which.min(number_of_observations), ")."
+      )
+    }
+    rlang::warn(c(
+      msg_main,
       "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
       "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
@@ -406,7 +417,7 @@ Metropolis_Hastings_optimizer <- function(S,
     ))
   }
 
-  perm_size <- dim(S)[1]
+  perm_size <- nrow(if (is.list(S)) S[[1]] else S)
   if (permutations::is.cycle(start_perm)) {
     start_perm <- gips_perm(start_perm, perm_size)
   }
@@ -562,7 +573,7 @@ hill_climbing_optimizer <- function(S,
     progressBar <- utils::txtProgressBar(min = 0, max = max_iter, initial = 1)
   }
 
-  perm_size <- dim(S)[1]
+  perm_size <- nrow(if (is.list(S)) S[[1]] else S)
 
   if (is.null(D_matrix)) {
     D_matrix <- diag(nrow = perm_size)
@@ -699,7 +710,7 @@ brute_force_optimizer <- function(
     show_progress_bar = show_progress_bar
   )
 
-  perm_size <- dim(S)[1]
+  perm_size <- nrow(if (is.list(S)) S[[1]] else S)
 
   if (perm_size > 18) {
     rlang::abort(c("Optimizer 'brute_force' cannot browse such a big permutational space.",

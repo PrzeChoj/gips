@@ -92,6 +92,11 @@
 #' S_MAP
 #' plot(g_MAP, type = "heatmap")
 project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
+  # Multi-sample: project each group's matrix and return a list
+  if (is.list(S)) {
+    return(lapply(S, function(S_g) project_matrix(S_g, perm, precomputed_equal_indices)))
+  }
+
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`S` must be a matrix.",

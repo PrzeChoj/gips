@@ -114,6 +114,13 @@ plot.gips <- function(x, type = NA,
 
   validate_gips(x)
 
+  if (is.list(attr(x, "S"))) {
+    rlang::abort(c(
+      "Plotting is not yet implemented for multi-sample `gips` objects.",
+      "i" = "This feature is planned for a future release."
+    ))
+  }
+
   if (length(type) != 1) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`type` must be an character vector of length 1.",

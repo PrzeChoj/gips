@@ -127,6 +127,30 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     perm <- permutations::permutation(perm)
   }
 
+  if (is.list(S)) {
+    # Multi-sample path
+    G <- length(S)
+    p <- ncol(S[[1]])
+
+    check_gips_mult_arguments(
+      Ss = S, numbers_of_observations = number_of_observations,
+      delta = delta, D_matrices = D_matrix,
+      was_mean_estimated = was_mean_estimated, perm = perm
+    )
+
+    if (is.null(D_matrix)) {
+      D_matrix <- lapply(S, function(y) diag(x = mean(diag(y)), nrow = ncol(y)))
+    }
+
+    gips_perm_object <- if (inherits(perm, "gips_perm")) perm else gips_perm(perm, p)
+
+    return(validate_gips(new_gips(
+      list(gips_perm_object), S, number_of_observations,
+      delta = delta, D_matrix = D_matrix,
+      was_mean_estimated = was_mean_estimated, optimization_info = NULL
+    )))
+  }
+
   check_gips_arguments(
     S = S, number_of_observations = number_of_observations,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
@@ -165,12 +189,16 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations,
                      delta, D_matrix, was_mean_estimated, optimization_info) {
+  valid_S <- is.matrix(S) || (is.list(S) && list_of_matrices_check(S))
+  valid_n <- is.numeric(number_of_observations) && all(sapply(number_of_observations, is.wholenumber))
+  valid_D <- is.matrix(D_matrix) || (is.list(D_matrix) && list_of_matrices_check(D_matrix))
+
   if (!is.list(list_of_gips_perm) ||
     !inherits(list_of_gips_perm[[1]], "gips_perm") ||
-    !is.matrix(S) ||
-    !is.wholenumber(number_of_observations) ||
+    !valid_S ||
+    !valid_n ||
     !is.numeric(delta) ||
-    !is.matrix(D_matrix) ||
+    !valid_D ||
     !is.logical(was_mean_estimated) ||
     !(is.null(optimization_info) || is.list(optimization_info))) {
     rlang::abort(c("x" = "`gips` object cannot be created from those arguments."))
@@ -261,11 +289,19 @@ validate_gips <- function(g) {
     }
   )
 
-  check_gips_arguments(
-    S = S, number_of_observations = number_of_observations,
-    delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
-    perm = perm
-  )
+  if (is.list(S)) {
+    check_gips_mult_arguments(
+      Ss = S, numbers_of_observations = number_of_observations,
+      delta = delta, D_matrices = D_matrix,
+      was_mean_estimated = was_mean_estimated, perm = perm
+    )
+  } else {
+    check_gips_arguments(
+      S = S, number_of_observations = number_of_observations,
+      delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
+      perm = perm
+    )
+  }
 
   if (!(is.null(optimization_info) || is.list(optimization_info))) {
     rlang::abort(c("There was a problem identified with provided argument:",
@@ -509,7 +545,7 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
 check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_perm,
                                     delta, D_matrix, was_mean_estimated,
                                     return_probabilities, save_all_perms, show_progress_bar) {
-  if (!is.matrix(S)) {
+  if (!is.matrix(S) && !is.list(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",
       "x" = paste0(
@@ -518,6 +554,27 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
       )
     ))
   }
+
+  # For multi-sample (list S), the detailed validation was done in gips().
+  if (is.list(S)) {
+    abort_text <- character(0)
+    abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+    abort_text <- c(abort_text, check_logical_flag(return_probabilities, "return_probabilities"))
+    abort_text <- c(abort_text, check_logical_flag(save_all_perms, "save_all_perms"))
+    abort_text <- c(abort_text, check_logical_flag(show_progress_bar, "show_progress_bar"))
+    if (length(abort_text) > 0) {
+      rlang::abort(c("There were problems identified with the provided arguments:", abort_text))
+    }
+    if (return_probabilities && !save_all_perms) {
+      rlang::abort(c("There was a problem identified with the provided arguments:",
+        "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
+        "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
+        "i" = "Did You want to set `save_all_perms = TRUE`?"
+      ))
+    }
+    return(invisible(NULL))
+  }
+
   abort_text <- character(0)
   additional_info <- 0
   
@@ -699,5 +756,109 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
     ))
   }
   
+  invisible(NULL)
+}
+
+
+# ---- Multi-sample helpers ---------------------------------------------------
+
+#' Check whether x is a list of matrices
+#'
+#' @noRd
+list_of_matrices_check <- function(x) {
+  if (!is.list(x)) {
+    return(FALSE)
+  }
+  for (y in x) {
+    if (!is.matrix(y)) {
+      return(FALSE)
+    }
+  }
+  return(TRUE)
+}
+
+
+#' Check that Ss, D_matrices, and numbers_of_observations are compatible
+#'
+#' All three must have the same length G, and each D_matrix element must be
+#' the same dimension as the corresponding S element.
+#'
+#' @noRd
+SDN_compatibility_check <- function(Ss, D_matrices, numbers_of_observations) {
+  n <- length(numbers_of_observations)
+  if (length(Ss) != n || length(D_matrices) != n) {
+    return(FALSE)
+  }
+  if (!all(dim(D_matrices[[1]]) == dim(Ss[[1]]))) {
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
+
+#' Validate arguments for the multi-sample gips constructor and validator
+#'
+#' @noRd
+check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
+                                       D_matrices, was_mean_estimated, perm) {
+  if (!list_of_matrices_check(Ss)) {
+    rlang::abort(c(
+      "There was a problem identified with the provided S argument:",
+      "i" = "For multi-sample `gips`, `S` must be a list of matrices.",
+      "x" = "Not all elements of `S` are valid matrices."
+    ))
+  }
+
+  G <- length(Ss)
+  p <- ncol(Ss[[1]])
+
+  if (!all(sapply(Ss, ncol) == p) || !all(sapply(Ss, nrow) == p)) {
+    rlang::abort(c(
+      "There was a problem identified with the provided S argument:",
+      "i" = "All matrices in `S` must have the same dimensions.",
+      "x" = "Not all matrices in `S` have the same number of rows and columns."
+    ))
+  }
+
+  if (!is.numeric(numbers_of_observations) || length(numbers_of_observations) != G) {
+    rlang::abort(c(
+      "There was a problem identified with the provided arguments:",
+      "i" = "`number_of_observations` must have one whole-number entry per matrix in `S`.",
+      "x" = paste0(
+        "You provided `S` with ", G, " matrices but `number_of_observations` has length ",
+        length(numbers_of_observations), "."
+      )
+    ))
+  }
+
+  if (!is.null(D_matrices)) {
+    if (!list_of_matrices_check(D_matrices)) {
+      rlang::abort(c(
+        "There was a problem identified with the provided D_matrix argument:",
+        "i" = "For multi-sample `gips`, `D_matrix` must be a list of matrices.",
+        "x" = "Not all elements of `D_matrix` are valid matrices."
+      ))
+    }
+    if (!SDN_compatibility_check(Ss, D_matrices, numbers_of_observations)) {
+      rlang::abort(c(
+        "There was a problem identified with the provided arguments:",
+        "i" = "The lists `S`, `D_matrix`, and `number_of_observations` must all have the same length and consistent dimensions.",
+        "x" = "Incompatible lengths or dimensions detected."
+      ))
+    }
+  }
+
+  # Validate each group using the single-sample validator
+  for (i in seq_len(G)) {
+    check_gips_arguments(
+      S = Ss[[i]],
+      number_of_observations = numbers_of_observations[i],
+      delta = delta,
+      D_matrix = if (is.null(D_matrices)) NULL else D_matrices[[i]],
+      was_mean_estimated = was_mean_estimated,
+      perm = perm
+    )
+  }
+
   invisible(NULL)
 }
