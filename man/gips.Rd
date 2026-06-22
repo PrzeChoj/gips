@@ -141,6 +141,21 @@ by \code{gips} developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek
 \doi{10.18637/jss.v112.i07}.
 }
 
+\section{Multi-sample}{
+
+\code{gips()} supports G groups of samples sharing the same permutation symmetry.
+Pass a list of G covariance matrices as \code{S} and a numeric vector of length G
+as \code{number_of_observations}:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+}\if{html}{\out{</div>}}
+
+\code{D_matrix} should then be a list of G positive-definite matrices
+(defaulting to \code{diag(mean(diag(S_g)), p)} for each group).
+\code{delta} can be a scalar (broadcast to all groups) or a vector of length G
+(one value per group); it defaults to \code{rep(3, G)}.
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 

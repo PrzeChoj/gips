@@ -105,13 +105,14 @@ log_posteriori_of_gips <- function(g) {
 #' @noRd
 log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
                                    delta, D_matrix) {
-  # Multi-sample: sum single-sample log-posteriors across groups
+  # Multi-sample: sum single-sample log-posteriors across groups.
+  # delta and D_matrix are both vectors/lists of length G.
   if (is.list(S)) {
     log_values <- mapply(
-      function(S_g, n_g, D_g) {
-        log_posteriori_of_perm(perm_proposal, S_g, n_g, delta, D_g)
+      function(S_g, n_g, delta_g, D_g) {
+        log_posteriori_of_perm(perm_proposal, S_g, n_g, delta_g, D_g)
       },
-      S, number_of_observations, D_matrix
+      S, number_of_observations, delta, D_matrix
     )
     return(sum(log_values))
   }

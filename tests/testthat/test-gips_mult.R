@@ -35,6 +35,55 @@ test_that("gips() multi-sample errors when S list contains non-matrices", {
 })
 
 
+test_that("gips() multi-sample accepts per-group delta vector", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  g <- gips(list(S1, S2), c(10L, 12L), delta = c(3, 5))
+  expect_equal(attr(g, "delta"), c(3, 5))
+})
+
+
+test_that("gips() multi-sample broadcasts scalar delta to all groups", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  g <- gips(list(S1, S2), c(10L, 12L), delta = 4)
+  expect_equal(attr(g, "delta"), c(4, 4))
+})
+
+
+test_that("gips() multi-sample errors on wrong-length delta vector", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  expect_error(gips(list(S1, S2), c(10L, 12L), delta = c(3, 4, 5)))
+})
+
+
+test_that("log_posteriori_of_gips() respects per-group delta", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+  n1 <- 15L; n2 <- 18L
+  delta1 <- 3; delta2 <- 5
+
+  g_mult <- gips(list(S1, S2), c(n1, n2), delta = c(delta1, delta2),
+                 was_mean_estimated = FALSE)
+
+  D1 <- attr(g_mult, "D_matrix")[[1]]
+  D2 <- attr(g_mult, "D_matrix")[[2]]
+
+  g1 <- gips(S1, n1, delta = delta1, D_matrix = D1, was_mean_estimated = FALSE)
+  g2 <- gips(S2, n2, delta = delta2, D_matrix = D2, was_mean_estimated = FALSE)
+
+  expect_equal(
+    log_posteriori_of_gips(g_mult),
+    log_posteriori_of_gips(g1) + log_posteriori_of_gips(g2),
+    tolerance = 1e-10
+  )
+})
+
+
 test_that("gips() multi-sample accepts a custom D_matrix list", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
@@ -54,10 +103,10 @@ test_that("log_posteriori_of_gips() on multi-sample equals sum of single-sample 
 
   D1 <- attr(g_mult, "D_matrix")[[1]]
   D2 <- attr(g_mult, "D_matrix")[[2]]
-  delta <- attr(g_mult, "delta")
+  deltas <- attr(g_mult, "delta") # c(3, 3) after broadcasting
 
-  g1 <- gips(S1, n1, delta = delta, D_matrix = D1, was_mean_estimated = FALSE)
-  g2 <- gips(S2, n2, delta = delta, D_matrix = D2, was_mean_estimated = FALSE)
+  g1 <- gips(S1, n1, delta = deltas[1], D_matrix = D1, was_mean_estimated = FALSE)
+  g2 <- gips(S2, n2, delta = deltas[2], D_matrix = D2, was_mean_estimated = FALSE)
 
   expect_equal(
     log_posteriori_of_gips(g_mult),

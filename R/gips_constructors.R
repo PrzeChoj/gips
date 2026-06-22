@@ -71,6 +71,20 @@
 #' [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07);
 #' \doi{10.18637/jss.v112.i07}.
 #'
+#' @section Multi-sample:
+#' `gips()` supports G groups of samples sharing the same permutation symmetry.
+#' Pass a list of G covariance matrices as `S` and a numeric vector of length G
+#' as `number_of_observations`:
+#'
+#' ```r
+#' g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+#' ```
+#'
+#' `D_matrix` should then be a list of G positive-definite matrices
+#' (defaulting to `diag(mean(diag(S_g)), p)` for each group).
+#' `delta` can be a scalar (broadcast to all groups) or a vector of length G
+#' (one value per group); it defaults to `rep(3, G)`.
+#'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.
 #'
@@ -131,6 +145,9 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     # Multi-sample path
     G <- length(S)
     p <- ncol(S[[1]])
+
+    # Normalize delta: a scalar is broadcast to a per-group vector of length G
+    if (length(delta) == 1) delta <- rep(delta, G)
 
     check_gips_mult_arguments(
       Ss = S, numbers_of_observations = number_of_observations,
@@ -831,6 +848,20 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
     ))
   }
 
+  # delta must be either a scalar or a vector of length G; validate length
+  if (!is.numeric(delta) || !(length(delta) == 1 || length(delta) == G)) {
+    rlang::abort(c(
+      "There was a problem identified with the provided delta argument:",
+      "i" = "`delta` must be a single number or a numeric vector with one entry per matrix in `S`.",
+      "x" = paste0(
+        "You provided `S` with ", G, " matrices but `delta` has length ",
+        length(delta), "."
+      )
+    ))
+  }
+  # Broadcast scalar to vector before per-group validation
+  if (length(delta) == 1) delta <- rep(delta, G)
+
   if (!is.null(D_matrices)) {
     if (!list_of_matrices_check(D_matrices)) {
       rlang::abort(c(
@@ -853,7 +884,7 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
     check_gips_arguments(
       S = Ss[[i]],
       number_of_observations = numbers_of_observations[i],
-      delta = delta,
+      delta = delta[i],
       D_matrix = if (is.null(D_matrices)) NULL else D_matrices[[i]],
       was_mean_estimated = was_mean_estimated,
       perm = perm
