@@ -242,6 +242,28 @@ test_that("plot() errors with a not-yet-implemented message on multi-sample gips
 })
 
 
+test_that("compare_log_posteriories_of_perms() works on multi-sample gips", {
+  p <- 5
+  Sigma <- diag(p)
+  S1 <- rWishart(1, df = 100, Sigma = Sigma)[, , 1] / 100
+  S2 <- rWishart(1, df = 120, Sigma = Sigma)[, , 1] / 120
+
+  g_1 <- gips(list(S1, S2), c(10L, 12L), perm = "(1,2,3)")
+  g_2 <- gips(list(S1, S2), c(10L, 12L), perm = "(1,2,5)")
+
+  # The function should work without error
+  expect_output(expect_no_error(compare_log_posteriories_of_perms(g_1, g_2)))
+
+  # Manually check the ratio matches the log-posterior difference
+  log_post_1 <- log_posteriori_of_gips(g_1)
+  log_post_2 <- log_posteriori_of_gips(g_2)
+  expected_ratio <- log_post_1 - log_post_2
+
+  expect_output(result <- compare_log_posteriories_of_perms(g_1, g_2))
+  expect_equal(result, expected_ratio, tolerance = 1e-10)
+})
+
+
 test_that("single-sample gips() is unaffected by multi-sample changes", {
   S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   g <- gips(S, 10L)
