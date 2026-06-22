@@ -70,11 +70,9 @@ test_that("log_posteriori_of_gips() respects per-group delta", {
   g_mult <- gips(list(S1, S2), c(n1, n2), delta = c(delta1, delta2),
                  was_mean_estimated = FALSE)
 
-  D1 <- attr(g_mult, "D_matrix")[[1]]
-  D2 <- attr(g_mult, "D_matrix")[[2]]
-
-  g1 <- gips(S1, n1, delta = delta1, D_matrix = D1, was_mean_estimated = FALSE)
-  g2 <- gips(S2, n2, delta = delta2, D_matrix = D2, was_mean_estimated = FALSE)
+  # Test there is also the same default for D_matrix:
+  g1 <- gips(S1, n1, delta = delta1, was_mean_estimated = FALSE)
+  g2 <- gips(S2, n2, delta = delta2, was_mean_estimated = FALSE)
 
   expect_equal(
     log_posteriori_of_gips(g_mult),
@@ -88,7 +86,7 @@ test_that("gips() multi-sample accepts a custom D_matrix list", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
 
-  g <- gips(list(S1, S2), c(10L, 12L), D_matrix = list(diag(2), diag(2)))
+  g <- gips(list(S1, S2), c(10L, 12L), D_matrix = list(diag(2), 2*diag(2)))
   expect_s3_class(g, "gips")
 })
 
@@ -117,7 +115,6 @@ test_that("log_posteriori_of_gips() on multi-sample equals sum of single-sample 
 
 
 test_that("find_MAP() with BF optimizer works on multi-sample gips (p=3, G=2)", {
-  set.seed(7531)
   p <- 3
   Sigma <- diag(p)
   S1 <- rWishart(1, df = 10, Sigma = Sigma)[, , 1] / 10
@@ -129,6 +126,31 @@ test_that("find_MAP() with BF optimizer works on multi-sample gips (p=3, G=2)", 
   expect_s3_class(g_map, "gips")
   expect_true(is.list(attr(g_map, "S")))
   expect_false(is.null(attr(g_map, "optimization_info")))
+})
+
+
+test_that("find_MAP() with MH optimizer and continue works on larger multi-sample gips (p=30, G=2)", {
+  p <- 30
+  Sigma <- diag(p)
+  S1 <- rWishart(1, df = 100, Sigma = Sigma)[, , 1] / 100
+  S2 <- rWishart(1, df = 120, Sigma = Sigma)[, , 1] / 120
+  
+  g <- gips(list(S1, S2), c(10L, 12L), perm = "(1,2,3,4,5,6,7,8,9,10,11,12,13,14)")
+  
+  g_map <- find_MAP(g, optimizer = "MH", max_iter = 20, show_progress_bar = FALSE)
+  g_map_2 <- find_MAP(g_map, optimizer = "continue", max_iter = 20, show_progress_bar = FALSE)
+  
+  expect_s3_class(g_map, "gips")
+  expect_s3_class(g_map_2, "gips")
+  expect_true(is.list(attr(g_map, "S")))
+  expect_true(is.list(attr(g_map_2, "S")))
+  expect_false(is.null(attr(g_map, "optimization_info")))
+  expect_false(is.null(attr(g_map_2, "optimization_info")))
+  # The continued optimization should have more log_posteriori_values
+  expect_gt(
+    length(attr(g_map_2, "optimization_info")[["log_posteriori_values"]]),
+    length(attr(g_map, "optimization_info")[["log_posteriori_values"]])
+  )
 })
 
 
