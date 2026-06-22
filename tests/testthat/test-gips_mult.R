@@ -233,6 +233,31 @@ test_that("summary() does not error on multi-sample gips and returns correct fie
 })
 
 
+test_that("summary() displays correct degrees of freedom for multi-sample with different group sizes", {
+  # Regression test for bug where degrees of freedom only considered first group
+  S1 <- diag(3)
+  S2 <- diag(3)
+  n1 <- 15L
+  n2 <- 18L
+
+  # Test with mean estimated (default)
+  g_est <- gips(list(S1, S2), c(n1, n2), was_mean_estimated = TRUE)
+  s_est <- summary(g_est)
+  output_est <- capture.output(print(s_est))
+  
+  # Should show degrees of freedom for each group (n - 1)
+  expect_match(paste(output_est, collapse = "\n"), "Degrees of freedom left \\(per group\\): 14, 17")
+
+  # Test with mean not estimated
+  g_not_est <- gips(list(S1, S2), c(n1, n2), was_mean_estimated = FALSE)
+  s_not_est <- summary(g_not_est)
+  output_not_est <- capture.output(print(s_not_est))
+  
+  # Should show actual sample sizes (15, 18)
+  expect_match(paste(output_not_est, collapse = "\n"), "all degrees of freedom were preserved \\(15, 18\\)")
+})
+
+
 test_that("plot() errors with a not-yet-implemented message on multi-sample gips", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)

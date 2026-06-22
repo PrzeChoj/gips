@@ -457,9 +457,8 @@ summary.gips <- function(object, ...) {
 #' g <- gips(S, 10)
 #' print(summary(g))
 print.summary.gips <- function(x, ...) {
-  # For multi-sample objects, number_of_observations is a vector; use min() for n0 comparisons.
-  n_obs_scalar <- if (isTRUE(x[["is_multi_sample"]])) min(x[["number_of_observations"]]) else x[["number_of_observations"]]
-  model_exists <- x[["n0"]] <= n_obs_scalar
+  # The MLE exists if n >= n0
+  MLE_exists <- x[["n0"]] <= min(x[["number_of_observations"]])
 
   cat(
     ifelse(x[["optimized"]],
@@ -498,7 +497,7 @@ print.summary.gips <- function(x, ...) {
       "\n\nLikelihood-Ratio test: not available for multi-sample `gips` objects"
     } else {
       ifelse(is.null(x[["likelihood_ratio_test_statistics"]]),
-        ifelse(is.positive.definite.matrix(x[["S_matrix"]]),
+        ifelse(!is.positive.definite.matrix(x[["S_matrix"]]),
           "\n\ndet(S) == 0, so Likelihood-Ratio test cannot be performed",
           "\n\nn0 > number_of_observations, so Likelihood-Ratio test cannot be performed"
         ),
@@ -515,35 +514,58 @@ print.summary.gips <- function(x, ...) {
       x[["number_of_observations"]]
     },
     "\n\n", ifelse(x[["was_mean_estimated"]],
-      paste0(
-        "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
-        n_obs_scalar - 1, " degrees of freedom left",
-        if (isTRUE(x[["is_multi_sample"]])) " (per group)" else "", "."
-      ),
-      paste0(
-        "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
-        n_obs_scalar, if (isTRUE(x[["is_multi_sample"]])) " per group" else "", ")."
-      )
+      if (isTRUE(x[["is_multi_sample"]])) {
+        df_per_group <- x[["number_of_observations"]] - 1
+        paste0(
+          "The mean in the `S` matrices was estimated.\nTherefore, one degree of freedom was lost per group.\nDegrees of freedom left (per group): ",
+          paste(df_per_group, collapse = ", "), "."
+        )
+      } else {
+        paste0(
+          "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
+          x[["number_of_observations"]] - 1, " degrees of freedom left."
+        )
+      },
+      if (isTRUE(x[["is_multi_sample"]])) {
+        paste0(
+          "The mean in the `S` matrices was not estimated.\nTherefore, all degrees of freedom were preserved (",
+          paste(x[["number_of_observations"]], collapse = ", "), ")."
+        )
+      } else {
+        paste0(
+          "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
+          x[["number_of_observations"]], ")."
+        )
+      }
     ),
-    "\n\nn0:\n ", x[["n0"]],
-    "\n\nThe ",
-    if (isTRUE(x[["is_multi_sample"]])) "minimum number of observations (across groups)" else "number of observations",
-    " is ",
-    ifelse(x[["n0"]] > n_obs_scalar,
-      "smaller",
-      ifelse(x[["n0"]] == n_obs_scalar,
-        "equal",
-        "bigger"
+    "\n\nn0 = number of cycles in a permutation",
+    if(isTRUE(x[["was_mean_estimated"]])){" + 1 (as the mean was estimated)"},
+    ":\n ", x[["n0"]],
+    "\n\n",
+    if (!MLE_exists) {
+      paste0(
+        "The MLE estimator based on the found permutation does not exist,\n",
+        "since the", if(isTRUE(x[["is_multi_sample"]])){" minimum"},
+        " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"}, " (",
+        min(x[["number_of_observations"]]),
+        ") is smaller than n0 (", x[["n0"]], ")."
       )
-    ),
-    " than n0 for this permutation,\nso the gips model based on the found permutation does ",
-    ifelse(!model_exists, "not ", ""), "exist.",
+    } else {
+      paste0(
+        "The MLE estimator based on the found permutation does exist,\n",
+        "since the", if(isTRUE(x[["is_multi_sample"]])){" minimum"},
+        " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"},
+        " (", min(x[["number_of_observations"]]), ") is ",
+        if (x[["n0"]] == min(x[["number_of_observations"]])) {"equal to"} else {"bigger than"},
+        " n0 (", x[["n0"]], ")."
+      )
+    },
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
     if (isTRUE(x[["is_multi_sample"]])) paste0(" (", x[["n_parameters"]] / x[["G"]], " per group x ", x[["G"]], " groups)") else "",
-    "\n\nBIC:\n ", ifelse(!model_exists,
+    "\n\nBIC:\n ", ifelse(!MLE_exists,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
     ),
-    "\n\nAIC:\n ", ifelse(!model_exists,
+    "\n\nAIC:\n ", ifelse(!MLE_exists,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
     ),
     sep = ""
