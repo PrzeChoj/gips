@@ -164,7 +164,7 @@ plot.gips <- function(x, type = NA,
 
   # dispatch to the appropriate internal plotting function
   if (type == "heatmap" || type == "block_heatmap") {
-    return(plot_gips_heatmap(x, type = type, color = color, ...))
+    return(plot_gips_heatmap(x, type = type))
   }
   if (type %in% c("all", "best", "both")) {
     plot_gips_convergence(
@@ -203,15 +203,13 @@ plot.gips <- function(x, type = NA,
 #'
 #' @param x A `gips` object.
 #' @param type One of `"heatmap"` or `"block_heatmap"`.
-#' @param color Vector of colors passed to [stats::heatmap()] (base fallback only).
-#' @param ... Additional arguments passed to [stats::heatmap()].
 #'
-#' @returns A `ggplot` object, or `NULL` invisibly when falling back to base graphics.
+#' @returns A `ggplot` object.
 #'
 #' @noRd
-plot_gips_heatmap <- function(x, type, color, ...) {
+plot_gips_heatmap <- function(x, type) {
   rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
-    reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`; without those packages, the `stats::heatmap()` will be used"
+    reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`"
   )
 
   if (type == "block_heatmap") {
@@ -220,66 +218,51 @@ plot_gips_heatmap <- function(x, type, color, ...) {
     my_projected_matrix <- project_matrix(attr(x, "S"), x[[1]])
   }
 
-  if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
-    p <- ncol(my_projected_matrix)
+  p <- ncol(my_projected_matrix)
 
-    if (is.null(colnames(my_projected_matrix))) {
-      colnames(my_projected_matrix) <- paste0(seq(1, p))
-    }
-    if (is.null(rownames(my_projected_matrix))) {
-      rownames(my_projected_matrix) <- paste0(seq(1, p))
-    }
-
-    my_rownames <- rownames(my_projected_matrix)
-    my_colnames <- colnames(my_projected_matrix)
-    rownames(my_projected_matrix) <- as.character(1:p)
-    colnames(my_projected_matrix) <- as.character(1:p)
-
-    # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
-    col_id <- covariance <- row_id <- NULL
-
-    # Life would be easier with pipes (%>%)
-    my_transformed_matrix <- tibble::rownames_to_column(
-      as.data.frame(my_projected_matrix),
-      "row_id"
-    )
-    my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
-      -c(row_id),
-      names_to = "col_id",
-      values_to = "covariance"
-    )
-    my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
-      col_id = as.numeric(col_id),
-      row_id = as.numeric(row_id)
-    )
-    g_plot <- ggplot2::ggplot(
-      my_transformed_matrix,
-      ggplot2::aes(x = col_id, y = row_id, fill = covariance)
-    ) +
-      ggplot2::geom_raster() +
-      ggplot2::scale_fill_viridis_c(na.value = "white") +
-      ggplot2::scale_x_continuous(breaks = 1:p, labels = my_rownames) +
-      ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
-      ggplot2::theme_bw() +
-      ggplot2::labs(
-        title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
-        x = "", y = ""
-      )
-
-    return(g_plot)
-  } else { # use the basic plot in R, package `graphics`
-    if (is.null(color)) { # Setting col = NA or col = NULL turns off the whole plot.
-      stats::heatmap(my_projected_matrix,
-        symm = TRUE,
-        Rowv = NA, Colv = NA, ...
-      )
-    } else {
-      stats::heatmap(my_projected_matrix,
-        symm = TRUE,
-        Rowv = NA, Colv = NA, col = color, ...
-      )
-    }
+  if (is.null(colnames(my_projected_matrix))) {
+    colnames(my_projected_matrix) <- as.character(seq_len(p))
   }
+  if (is.null(rownames(my_projected_matrix))) {
+    rownames(my_projected_matrix) <- as.character(seq_len(p))
+  }
+
+  my_rownames <- rownames(my_projected_matrix)
+  my_colnames <- colnames(my_projected_matrix)
+  rownames(my_projected_matrix) <- as.character(seq_len(p))
+  colnames(my_projected_matrix) <- as.character(seq_len(p))
+
+  # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
+  col_id <- covariance <- row_id <- NULL
+
+  # Life would be easier with pipes (%>%)
+  my_transformed_matrix <- tibble::rownames_to_column(
+    as.data.frame(my_projected_matrix),
+    "row_id"
+  )
+  my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
+    -c(row_id),
+    names_to = "col_id",
+    values_to = "covariance"
+  )
+  my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
+    col_id = as.numeric(col_id),
+    row_id = as.numeric(row_id)
+  )
+
+  ggplot2::ggplot(
+    my_transformed_matrix,
+    ggplot2::aes(x = col_id, y = row_id, fill = covariance)
+  ) +
+    ggplot2::geom_raster() +
+    ggplot2::scale_fill_viridis_c(na.value = "white") +
+    ggplot2::scale_x_continuous(breaks = seq_len(p), labels = my_rownames) +
+    ggplot2::scale_y_reverse(breaks = seq_len(p), labels = my_colnames) +
+    ggplot2::theme_bw() +
+    ggplot2::labs(
+      title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
+      x = "", y = ""
+    )
 }
 
 
