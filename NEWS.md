@@ -1,5 +1,9 @@
 # gips 1.2.3.9000
 
+### Update to functions
+
+- `plot.gips()` now uses `ggplot2` for all plot types.
+
 ### Bugfix:
 
 - Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.
