@@ -258,15 +258,6 @@ test_that("summary() displays correct degrees of freedom for multi-sample with d
 })
 
 
-test_that("plot() errors with a not-yet-implemented message on multi-sample gips", {
-  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
-  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
-
-  g <- gips(list(S1, S2), c(10L, 12L))
-  expect_error(plot(g, type = "heatmap"), regexp = "not yet implemented")
-})
-
-
 test_that("compare_log_posteriories_of_perms() works on multi-sample gips", {
   p <- 5
   Sigma <- diag(p)

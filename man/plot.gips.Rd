@@ -29,6 +29,7 @@
 Estimator of the covariance matrix given the permutation.
 That is, the \code{S} matrix inside the \code{gips} object
 projected on the permutation in the \code{gips} object.
+For multi-sample objects, produces faceted heatmaps (one panel per group).
 \item \code{"best"} - Shows the maximum A Posteriori value found over time.
 \item \code{"all"} - Shows the A Posteriori values for all visited states.
 \item \code{"both"} - Shows both trajectories from "all" and "best".
@@ -39,11 +40,16 @@ Non-block entries (equal to 0) are white for better clarity.
 For more information, see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
+For multi-sample objects, produces faceted block heatmaps.
 }
 
 The default value is \code{NA}, which will be changed to "heatmap" for
 non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
+
+\strong{Multi-sample note:} Heatmap types produce one facet per group.
+When there are more than 10 groups, the function warns the user
+(or prompts for confirmation in interactive sessions) before plotting.
 
 Arguments \code{logarithmic_y}, \code{logarithmic_x}, \code{color}, \code{title_text},
 \code{xlabel}, \code{ylabel}, \code{show_legend}, \code{ylim}, and \code{xlim} are only used for
@@ -84,13 +90,6 @@ Plot the heatmap of the MAP covariance matrix estimator
 or the convergence of the optimization method.
 The plot depends on the \code{type} argument.
 }
-\section{Multi-sample}{
-
-Plotting is not yet implemented for multi-sample \code{gips} objects
-(created with a list of matrices). Calling \code{plot()} on such an object
-raises an informative error. This feature is planned for a future release.
-}
-
 \examples{
 require("MASS") # for mvrnorm()
 
