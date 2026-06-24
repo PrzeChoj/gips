@@ -18,8 +18,7 @@ forget_perms(g)
 
 ## Value
 
-Returns the same object `g` as given, but without the visited
-permutation list.
+The same object `g` as given, but without the visited permutation list.
 
 ## Details
 

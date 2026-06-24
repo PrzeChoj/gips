@@ -1,7 +1,7 @@
 # Find the Maximum A Posteriori Estimation
 
 Use one of the optimization algorithms to find the permutation that
-maximizes a posteriori probability based on observed data. Not all
+maximizes A Posteriori probability based on observed data. Not all
 optimization algorithms will always find the MAP, but they try to find a
 significant value. More information can be found in the "**Possible
 algorithms to use as optimizers**" section below.
@@ -66,8 +66,8 @@ find_MAP(
 
 - return_probabilities:
 
-  A boolean. `TRUE` can only be provided only when
-  `save_all_perms = TRUE`. For:
+  A boolean. `TRUE` can only be provided when `save_all_perms = TRUE`.
+  For:
 
   - `optimizer = "MH"` - use Metropolis-Hastings results to estimate
     posterior probabilities;
@@ -76,14 +76,14 @@ find_MAP(
     posterior probabilities.
 
   These additional calculations are costly, so a second and third
-  progress bar is shown (when `show_progress_bar = TRUE`).
+  progress bars are shown (when `show_progress_bar = TRUE`).
 
   To examine probabilities after optimization, call
   [`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md).
 
 ## Value
 
-Returns an optimized object of a `gips` class.
+An optimized object of a `gips` class.
 
 ## Details
 
@@ -133,8 +133,8 @@ For every algorithm, there are some aliases available.
 - `"hill_climbing"`, `"HC"` - use the **hill climbing** algorithm; [see
   Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing). The algorithm
   will check all transpositions in every iteration and go to the one
-  with the biggest a posteriori value. The optimization ends when all
-  *neighbors* will have a smaller a posteriori value. If the `max_iter`
+  with the biggest A Posteriori value. The optimization ends when all
+  *neighbors* will have a smaller A Posteriori value. If the `max_iter`
   is reached before the end, then the warning is shown, and it is
   recommended to continue the optimization on the output of the
   `find_MAP()` with `optimizer = "continue"`; see examples. Remember
@@ -216,9 +216,9 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 g_map
-#> The permutation ():
+#> The permutation (1,2):
 #>  - was found after 5 posteriori calculations;
-#>  - is 1 times more likely than the () permutation.
+#>  - is 2.337 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
 
@@ -273,5 +273,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.11339 secs
+#>  0.1078231 secs
 ```

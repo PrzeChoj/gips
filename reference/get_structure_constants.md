@@ -19,7 +19,7 @@ get_structure_constants(perm)
 
 ## Value
 
-Returns a list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of
+A list with 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of
 constants from [Theorem 1 from
 references](https://arxiv.org/abs/2004.03503) and the beginning of
 [section 3.1. from references](https://arxiv.org/abs/2004.03503).

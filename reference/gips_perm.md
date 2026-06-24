@@ -25,8 +25,8 @@ validate_gips_perm(g)
 
 - size:
 
-  An integer. Size of a permutation (AKA cardinality of a set, on which
-  permutation is defined. See examples).
+  An integer. Size of a permutation (AKA the cardinality of the set on
+  which the permutation is defined. See examples).
 
 - rearranged_cycles:
 
@@ -35,7 +35,7 @@ validate_gips_perm(g)
 
 - g:
 
-  Object to be checked whether it is a proper object of a `gips_perm`
+  An object to be checked whether it is a proper object of a `gips_perm`
   class.
 
 ## Value

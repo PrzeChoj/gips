@@ -19,8 +19,8 @@ get_probabilities_from_gips(g)
 
 ## Value
 
-Returns a numeric vector, calculated values of probabilities. Names
-contain permutations this probabilities represent. For `gips` object
+A numeric vector of calculated probability values. Names contain the
+permutations that these probabilities represent. For `gips` object
 optimized with `find_MAP(return_probabilities = FALSE)`, it returns a
 `NULL` object. It is sorted according to the probability.
 

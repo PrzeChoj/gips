@@ -39,8 +39,7 @@ found in the **Existence of likelihood** section below.
 
 ## Details
 
-This will always be the biggest for `perm = "()"` (provided that
-`p <= n`).
+This will always be largest for `perm = "()"` (provided that `p <= n`).
 
 If the found permutation still requires more parameters than `n`, the
 likelihood does not exist; thus the function returns `NULL`.

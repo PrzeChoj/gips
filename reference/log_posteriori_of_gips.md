@@ -1,6 +1,6 @@
-# A log of a posteriori that the covariance matrix is invariant under permutation
+# Log of the A Posteriori of the permutation that the covariance matrix is invariant under
 
-More precisely, it is the logarithm of an unnormalized posterior
+More precisely, this is the logarithm of an unnormalized posterior
 probability. It is the goal function for optimization algorithms in the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
 function. The `perm_proposal` that maximizes this function is the
@@ -20,7 +20,7 @@ log_posteriori_of_gips(g)
 
 ## Value
 
-Returns a value of the logarithm of an unnormalized A Posteriori.
+The logarithm of an unnormalized A Posteriori.
 
 ## Details
 
@@ -51,7 +51,7 @@ link](https://arxiv.org/abs/2004.03503);
   The function that optimizes the `log_posteriori_of_gips` function.
 
 - [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md) -
-  Uses `log_posteriori_of_gips()` to compare a posteriori of two
+  Uses `log_posteriori_of_gips()` to compare A Posteriori of two
   permutations.
 
 - [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)

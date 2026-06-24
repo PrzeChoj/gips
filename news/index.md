@@ -1,5 +1,12 @@
 # Changelog
 
+## gips 1.2.3.9000
+
+#### Bugfix:
+
+- Documentation improvements: grammar and style corrections in roxygen
+  comments, vignettes, and error messages.
+
 ## gips 1.2.3
 
 CRAN release: 2025-03-18

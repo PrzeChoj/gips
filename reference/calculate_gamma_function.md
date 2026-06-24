@@ -1,7 +1,7 @@
 # Calculate Gamma function
 
-It calculates the value of the integral defined in [Definition 11 from
-references](https://arxiv.org/abs/2004.03503). It implements [Theorem 8
+Calculates the integral defined in [Definition 11 from
+references](https://arxiv.org/abs/2004.03503). Implements [Theorem 8
 from references](https://arxiv.org/abs/2004.03503) and uses the [formula
 (19) from references](https://arxiv.org/abs/2004.03503).
 
@@ -24,8 +24,8 @@ calculate_gamma_function(perm, lambda)
 
 ## Value
 
-Returns the value of the Gamma function of the colored cone (for the
-definition of the colored cone, see the **Basic definitions** section in
+The value of the Gamma function of the colored cone (for the definition
+of the colored cone, see the **Basic definitions** section in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or in its [pkgdown
 page](https://przechoj.github.io/gips/articles/Theory.html)).

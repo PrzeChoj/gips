@@ -94,8 +94,8 @@ Functions for pleasant work in `gips`.
 Functions for internal calculations
 
 - [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
-  : A log of a posteriori that the covariance matrix is invariant under
-  permutation
+  : Log of the A Posteriori of the permutation that the covariance
+  matrix is invariant under
 - [`prepare_orthogonal_matrix()`](https://przechoj.github.io/gips/reference/prepare_orthogonal_matrix.md)
   : Prepare orthogonal matrix
 - [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md)
