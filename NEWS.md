@@ -11,18 +11,11 @@ g <- gips(list(S1, S2, S3), c(n1, n2, n3))
 g_MAP <- find_MAP(g, optimizer = "BF")
 ```
 
-Each group has its own covariance matrix `Sigma_g` and its own prior
+Each group has its own covariance matrix `Sigma_g` and can have its own prior
 hyperparameters `D_matrix_g` and `delta_g`, but all share the same symmetry
 group Gamma.
-The MLE exists when `min(n_g) >= n0`. All existing single-sample usage is
-fully unchanged.
-
-Functions updated to support multi-sample `gips` objects:
-`log_posteriori_of_gips()`, `find_MAP()`, `project_matrix()`, `logLik()`,
-`AIC()`, `BIC()`, `print()`, `summary()`.
-
-Plotting for multi-sample objects is not yet implemented and will raise an
-informative error.
+The MLE exists when `min(n_g) >= n0`. **All existing single-sample usage is
+fully unchanged**.
 
 ### Update to functions
 
