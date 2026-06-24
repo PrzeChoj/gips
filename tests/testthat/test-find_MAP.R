@@ -120,8 +120,8 @@ test_that("Handle proper parameters", {
   
   
   
-  g2 <- gips(matrix_invariant_by_example_perm[1:4,1:4], 13, was_mean_estimated = FALSE)
   
+  g2 <- gips(matrix_invariant_by_example_perm[1:4, 1:4], 13, was_mean_estimated = FALSE)
   expect_message(
     g_map <- find_MAP(g2, show_progress_bar = FALSE),
     "The 'optimizer = NA' was automatically changed to 'optimizer = \"BF\"."

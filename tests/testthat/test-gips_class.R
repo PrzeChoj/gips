@@ -672,7 +672,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
   expect_error(plot(g1, type = c("du", "pa")))
   expect_message(
     plot(g1),
-    "`type = NA` was automatically changed to `type = 'heatmap'`"
+    "`type` was automatically set to `type = 'heatmap'`"
   )
   expect_silent(my_ggplot1 <- plot(g1, type = "heatmap"))
   expect_silent(my_ggplot2 <- plot(g1, type = "MLE"))
@@ -681,7 +681,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
   g1_found <- find_MAP(g1, 3, show_progress_bar = FALSE, optimizer = "MH")
   expect_message(
     plot(g1_found),
-    "`type = NA` was automatically changed to `type = 'both'`"
+    "`type` was automatically set to `type = 'both'`"
   )
   expect_silent(plot(g1_found, type = "both"))
   expect_silent(plot(g1_found, type = "all", logarithmic_y = FALSE))
@@ -695,6 +695,23 @@ test_that("plot.gips() works or abords for wrong arguments", {
     plot.gips(g1_found, type = "non_existing"),
     "Did You misspell the 'type' argument?"
   )
+  
+  # n0 only for M-H
+  g1 <- gips(diag(5), 10)
+  expect_error(
+    plot(g1, type = "n0"),
+    "For non-optimized `gips` objects only the `type = 'heatmap', 'MLE' or 'block_heatmap'` can be used."
+  )
+  g_MAP <- find_MAP(g1, optimizer = "BF", show_progress_bar = FALSE)
+  expect_error(
+    plot(g_MAP, type = "n0"),
+    "`type = 'n0'` can only be used with `gips` objects optimized using the Metropolis-Hastings algorithm"
+  )
+  
+  g_MAP_MH <- find_MAP(g1, optimizer = "MH", max_iter = 2, show_progress_bar = FALSE)
+  expect_silent(plot(g_MAP_MH, type = "n0"))
+  g_MAP_MH_2 <- find_MAP(g_MAP_MH, optimizer = "MH", max_iter = 2, show_progress_bar = FALSE)
+  expect_silent(plot(g_MAP_MH_2, type = "n0"))
 })
 
 test_that("plot.gips() works for books example", {

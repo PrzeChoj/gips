@@ -371,8 +371,8 @@ check_logical_flag <- function(value, name) {
 #' @keywords internal
 #' 
 #' @noRd
-check_gips_arguments <- function(S, number_of_observations, delta, D_matrix, 
-                                was_mean_estimated, perm) {
+check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
+                                 was_mean_estimated, perm) {
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",
@@ -560,8 +560,8 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
 #' 
 #' @noRd
 check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_perm,
-                                    delta, D_matrix, was_mean_estimated,
-                                    return_probabilities, save_all_perms, show_progress_bar) {
+                                     delta, D_matrix, was_mean_estimated,
+                                     return_probabilities, save_all_perms, show_progress_bar) {
   if (!is.matrix(S) && !is.list(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",

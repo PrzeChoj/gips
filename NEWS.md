@@ -24,6 +24,10 @@ Functions updated to support multi-sample `gips` objects:
 Plotting for multi-sample objects is not yet implemented and will raise an
 informative error.
 
+### Update to functions
+
+- `plot.gips()` now uses `ggplot2` for all plot types.
+
 ### Bugfix:
 
 - Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.
