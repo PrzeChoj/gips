@@ -25,26 +25,30 @@
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
-#'     All other arguments are ignored for
-#'     the `type = "heatmap"`, `type = "MLE"`, or `type = "block_heatmap"`.
+#'     
+#' Arguments `logarithmic_y`, `logarithmic_x`, `color`, `title_text`,
+#'     `xlabel`, `ylabel`, `show_legend`, `ylim`, and `xlim` are only used for
+#'     `type %in% c("all", "best", "both", "n0")` and ignored for heatmap types.
 #' @param logarithmic_y,logarithmic_x A boolean.
 #'     Sets the axis of the plot in logarithmic scale.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param color Vector of colors to be used to plot lines.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param title_text Text to be in the title of the plot.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param xlabel Text to be on the bottom of the plot.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param ylabel Text to be on the left of the plot.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param show_legend A boolean. Whether or not to show a legend.
-#' @param ylim Limits of the y axis. When `NULL`,
-#'     the minimum, and maximum of the [log_posteriori_of_gips()] are taken.
-#' @param xlim Limits of the x axis. When `NULL`,
-#'     the whole optimization process is shown.
-#' @param ... Additional arguments passed to
-#'     other various elements of the plot.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
+#' @param ylim Limits of the y axis. When `NULL`, uses the data range.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
+#' @param xlim Limits of the x axis. When `NULL`, uses the data range.
+#'     Only used for `type %in% c("all", "best", "both", "n0")`.
+#' @param ... Ignored.
 #'
-#' @returns When `type` is one of `"best"`, `"all"`, `"both"` or `"n0"`,
-#'     returns an invisible `NULL`.
-#'     When `type` is one of `"heatmap"`, `"MLE"` or `"block_heatmap"`,
-#'     returns an object of class `ggplot`.
+#' @returns An object of class `ggplot`.
 #'
 #' @seealso
 #' * [find_MAP()] - Usually, the `plot.gips()`
@@ -76,25 +80,17 @@
 #' S <- cov(Z) # Assume we have to estimate the mean
 #'
 #' g <- gips(S, number_of_observations)
-#' if (require("graphics")) {
-#'   plot(g, type = "MLE")
-#' }
+#' plot(g, type = "MLE")
 #'
 #' g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
-#' if (require("graphics")) {
-#'   plot(g_map, type = "both", logarithmic_x = TRUE)
-#' }
+#' plot(g_map, type = "both", logarithmic_x = TRUE)
 #'
-#' if (require("graphics")) {
-#'   plot(g_map, type = "MLE")
-#' }
+#' plot(g_map, type = "MLE")
 #' # Now, the output is (most likely) different because the permutation
 #'   # `g_map[[1]]` is (most likely) not an identity permutation.
-#' 
+#'
 #' g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
-#' if (require("graphics")) {
-#'   plot(g_map_MH, type = "n0")
-#' }
+#' plot(g_map_MH, type = "n0", logarithmic_y = FALSE)
 plot.gips <- function(x, type = NA,
                       logarithmic_y = TRUE, logarithmic_x = FALSE,
                       color = NULL,
@@ -102,13 +98,6 @@ plot.gips <- function(x, type = NA,
                       xlabel = NULL, ylabel = NULL,
                       show_legend = TRUE,
                       ylim = NULL, xlim = NULL, ...) {
-  if (!requireNamespace("graphics", quietly = TRUE)) {
-    rlang::abort(c("There was a problem identified with the provided arguments:",
-      "i" = "Package 'graphics' must be installed to use this function.",
-      "x" = "Package 'graphics' seems to be unavailable."
-    ))
-  }
-
   validate_gips(x)
 
   if (length(type) != 1) {
@@ -162,12 +151,17 @@ plot.gips <- function(x, type = NA,
     )
   }
 
+  # Check for required plotting packages
+  rlang::check_installed(c("ggplot2", "dplyr", "tidyr", "tibble"),
+    reason = "to use `plot.gips()`"
+  )
+
   # dispatch to the appropriate internal plotting function
-  if (type == "heatmap" || type == "block_heatmap") {
+  if (type %in% c("heatmap", "block_heatmap")) {
     return(plot_gips_heatmap(x, type = type))
   }
   if (type %in% c("all", "best", "both")) {
-    plot_gips_convergence(
+    return(plot_gips_convergence(
       x,
       type = type,
       logarithmic_y = logarithmic_y, logarithmic_x = logarithmic_x,
@@ -175,24 +169,40 @@ plot.gips <- function(x, type = NA,
       title_text = title_text,
       xlabel = xlabel, ylabel = ylabel,
       show_legend = show_legend,
-      ylim = ylim, xlim = xlim,
-      ...
-    )
+      ylim = ylim, xlim = xlim
+    ))
   }
   if (type == "n0") {
-    plot_gips_n0(
+    # Check that optimization was done with MH
+    opt_algo <- attr(x, "optimization_info")$optimization_algorithm_used
+    is_mh <- if (length(opt_algo) == 1) {
+      opt_algo == "Metropolis_Hastings"
+    } else {
+      opt_algo[-1] == "Metropolis_Hastings"
+    }
+    
+    if (!is_mh) {
+      rlang::abort(c(
+        "There was a problem identified with the provided arguments:",
+        "i" = "`type = 'n0'` can only be used with `gips` objects optimized using the Metropolis-Hastings algorithm.",
+        "x" = paste0(
+          "Your `gips` object was optimized using: ",
+          paste(opt_algo, collapse = " -> "), "."
+        ),
+        "i" = "Did you mean to use `type = 'all'`, `type = 'best'`, or `type = 'both'` instead?"
+      ))
+    }
+    
+    return(plot_gips_n0(
       x,
       logarithmic_y = logarithmic_y, logarithmic_x = logarithmic_x,
       color = color,
       title_text = title_text,
       xlabel = xlabel, ylabel = ylabel,
       show_legend = show_legend,
-      ylim = ylim, xlim = xlim,
-      ...
-    )
+      ylim = ylim, xlim = xlim
+    ))
   }
-
-  invisible(NULL)
 }
 
 
@@ -208,10 +218,6 @@ plot.gips <- function(x, type = NA,
 #'
 #' @noRd
 plot_gips_heatmap <- function(x, type) {
-  rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
-    reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`"
-  )
-
   if (type == "block_heatmap") {
     my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
   } else {
@@ -279,9 +285,8 @@ plot_gips_heatmap <- function(x, type) {
 #' @param xlabel,ylabel Axis labels.
 #' @param show_legend Boolean. Whether to draw the legend.
 #' @param ylim,xlim Axis limits; `NULL` uses data range.
-#' @param ... Additional arguments passed to base graphics functions.
 #'
-#' @returns `NULL` invisibly.
+#' @returns A `ggplot` object.
 #'
 #' @noRd
 plot_gips_convergence <- function(x, type,
@@ -290,12 +295,9 @@ plot_gips_convergence <- function(x, type,
                                   title_text,
                                   xlabel, ylabel,
                                   show_legend,
-                                  ylim, xlim, ...) {
+                                  ylim, xlim) {
   if (is.null(ylabel)) {
-    ylabel <- ifelse(logarithmic_y,
-      "log posteriori",
-      "posteriori"
-    )
+    ylabel <- ifelse(logarithmic_y, "log posteriori", "posteriori")
   }
   if (is.null(xlabel)) {
     xlabel <- ifelse(logarithmic_x,
@@ -303,108 +305,58 @@ plot_gips_convergence <- function(x, type,
       "number of function calls"
     )
   }
+
+  log_post <- attr(x, "optimization_info")[["log_posteriori_values"]] # stored in log scale
+  y_values_from <- if (logarithmic_y) log_post else exp(log_post)
+  y_values_max  <- cummax(y_values_from)
+  num_of_steps  <- length(y_values_from)
+
+  all_label  <- "All calculated a posteriori"
+  best_label <- "Maximum a posteriori calculated"
+
+  # R CMD check: no visible binding for global variable
+  step <- value <- series <- NULL
+
+  df_all  <- data.frame(step = seq_len(num_of_steps), value = y_values_from, series = all_label)
+  df_best <- data.frame(step = seq_len(num_of_steps), value = y_values_max,  series = best_label)
+
+  df <- switch(type,
+    "all"  = df_all,
+    "best" = df_best,
+    "both" = rbind(df_all, df_best)
+  )
+
   if (is.null(color)) {
-    if (type == "both") {
-      color <- c("red", "blue")
-    } else {
-      color <- "red"
-    }
+    color <- if (type == "both") c("red", "blue") else "red"
   }
-  if (logarithmic_y) {
-    y_values_from <- attr(x, "optimization_info")[["log_posteriori_values"]] # values of log_posteriori are logarithmic by default
-  } else {
-    y_values_from <- exp(attr(x, "optimization_info")[["log_posteriori_values"]])
-  }
+  color_map <- switch(type,
+    "all"  = stats::setNames(color[1],              all_label),
+    "best" = stats::setNames(color[1],              best_label),
+    "both" = stats::setNames(c(color[1], color[2]), c(all_label, best_label))
+  )
 
-  y_values_max <- cummax(y_values_from)
-  y_values_all <- y_values_from
-
-  num_of_steps <- length(y_values_max)
-
-  if (is.null(xlim)) {
-    xlim <- c(1, num_of_steps)
-  }
-
+  if (is.null(xlim)) xlim <- c(1, num_of_steps)
   if (is.null(ylim)) {
-    ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
-    if (type == "best") {
-      ylim_plot[1] <- y_values_from[1] # for the "best" type this is the smallest point of the graph
-    }
-  } else {
-    ylim_plot <- ylim
+    y_min <- if (type == "best") y_values_from[1] else min(y_values_from)
+    ylim  <- c(y_min, y_values_max[num_of_steps])
   }
 
-  # make the plot stairs-like
-  x_points <- c(1, rep(2:num_of_steps, each = 2))
+  g_plot <- ggplot2::ggplot(df, ggplot2::aes(x = step, y = value, color = series)) +
+    ggplot2::geom_step(linewidth = 1) +
+    ggplot2::scale_color_manual(values = color_map) +
+    ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) +
+    ggplot2::labs(title = title_text, x = xlabel, y = ylabel, color = NULL) +
+    ggplot2::theme_bw()
 
   if (logarithmic_x) {
-    x_points <- log10(x_points)
-    xlim <- log10(xlim)
+    g_plot <- g_plot + ggplot2::scale_x_log10()
   }
 
-  graphics::plot.new()
-  graphics::plot.window(xlim, ylim_plot)
-
-  if (type != "best") {
-    # make the plot stairs-like
-    y_points <- c(
-      rep(y_values_all[1:(length(y_values_all) - 1)], each = 2),
-      y_values_all[length(y_values_all)]
-    )
-
-    graphics::lines.default(x_points, y_points,
-      type = "l", lwd = 3,
-      col = color[1], # the first color
-      ...
-    )
-  }
-  if (type != "all") {
-    # make the plot stairs-like
-    y_points <- c(
-      rep(y_values_max[1:(length(y_values_max) - 1)], each = 2),
-      y_values_max[length(y_values_max)]
-    )
-
-    graphics::lines.default(x_points, y_points,
-      lwd = 3, lty = 1,
-      col = color[length(color)], # the last color
-      ...
-    )
+  if (!show_legend) {
+    g_plot <- g_plot + ggplot2::theme(legend.position = "none")
   }
 
-  graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
-  graphics::axis(1, ...)
-  graphics::axis(2, ...)
-  graphics::box(...)
-
-  if (show_legend) {
-    if (type == "both") {
-      legend_text <- c(
-        "All calculated a posteriori",
-        "Maximum a posteriori calculated"
-      )
-      lty <- c(1, 1)
-      lwd <- c(3, 3)
-    } else if (type == "all") {
-      legend_text <- c("All calculated function values")
-      lty <- 1
-      lwd <- 3
-    } else if (type == "best") {
-      legend_text <- c("Maximum function values calculated")
-      lty <- 1
-      lwd <- 3
-    }
-
-    graphics::legend("bottomright",
-      inset = .002,
-      legend = legend_text,
-      col = color,
-      lty = lty, lwd = lwd,
-      cex = 0.7, box.lty = 0
-    )
-  }
-
-  invisible(NULL)
+  g_plot
 }
 
 
@@ -419,9 +371,8 @@ plot_gips_convergence <- function(x, type,
 #' @param xlabel,ylabel Axis labels.
 #' @param show_legend Boolean. Whether to draw the legend.
 #' @param ylim,xlim Axis limits; `NULL` uses data range.
-#' @param ... Additional arguments passed to base graphics functions.
 #'
-#' @returns `NULL` invisibly.
+#' @returns A `ggplot` object.
 #'
 #' @noRd
 plot_gips_n0 <- function(x,
@@ -430,12 +381,9 @@ plot_gips_n0 <- function(x,
                          title_text,
                          xlabel, ylabel,
                          show_legend,
-                         ylim, xlim, ...) {
+                         ylim, xlim) {
   if (is.null(ylabel)) {
-    ylabel <- ifelse(logarithmic_y,
-      "log n0",
-      "n0"
-    )
+    ylabel <- ifelse(logarithmic_y, "log n0", "n0")
   }
   if (is.null(xlabel)) {
     xlabel <- ifelse(logarithmic_x,
@@ -443,71 +391,38 @@ plot_gips_n0 <- function(x,
       "number of function calls"
     )
   }
-  if (is.null(color)) {
-    color <- "red"
-  }
+  if (is.null(color)) color <- "red"
 
-  if (logarithmic_y) {
-    y_values <- log(attr(x, "optimization_info")[["all_n0"]])
-  } else {
-    y_values <- attr(x, "optimization_info")[["all_n0"]]
-  }
-
+  raw_n0 <- attr(x, "optimization_info")[["all_n0"]]
+  y_values <- if (logarithmic_y) log(raw_n0) else raw_n0
   num_of_steps <- length(y_values)
 
-  if (is.null(xlim)) {
-    xlim <- c(1, num_of_steps)
-  }
+  if (is.null(xlim)) xlim <- c(1, num_of_steps)
+  if (is.null(ylim)) ylim <- c(1, max(y_values))
 
-  if (is.null(ylim)) {
-    ylim_plot <- c(0, max(y_values))
-  } else {
-    ylim_plot <- ylim
-  }
+  n0_label <- "all perms n0"
 
-  # make the plot stairs-like
-  x_points <- c(1, rep(2:num_of_steps, each = 2))
+  # R CMD check: no visible binding for global variable
+  step <- value <- label <- NULL
+
+  df <- data.frame(step = seq_len(num_of_steps), value = y_values, label = n0_label)
+
+  g_plot <- ggplot2::ggplot(df, ggplot2::aes(x = step, y = value, color = label)) +
+    ggplot2::geom_step(linewidth = 1) +
+    ggplot2::scale_color_manual(values = stats::setNames(color[1], n0_label)) +
+    ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) +
+    ggplot2::labs(title = title_text, x = xlabel, y = ylabel, color = NULL) +
+    ggplot2::theme_bw()
 
   if (logarithmic_x) {
-    x_points <- log10(x_points)
-    xlim <- log10(xlim)
+    g_plot <- g_plot + ggplot2::scale_x_log10()
   }
 
-  graphics::plot.new()
-  graphics::plot.window(xlim, ylim_plot)
-
-  # make the plot stairs-like
-  y_points <- c(
-    rep(y_values[1:(length(y_values) - 1)], each = 2),
-    y_values[length(y_values)]
-  )
-
-  graphics::lines.default(x_points, y_points,
-    type = "l", lwd = 3,
-    col = color[1], # the first color
-    ...
-  )
-
-  graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
-  graphics::axis(1, ...)
-  graphics::axis(2, ...)
-  graphics::box(...)
-
-  if (show_legend) {
-    legend_text <- "all perms n0"
-    lty <- c(1, 1)
-    lwd <- c(3, 3)
-
-    graphics::legend("topright",
-      inset = .002,
-      legend = legend_text,
-      col = color,
-      lty = lty, lwd = lwd,
-      cex = 0.7, box.lty = 0
-    )
+  if (!show_legend) {
+    g_plot <- g_plot + ggplot2::theme(legend.position = "none")
   }
 
-  invisible(NULL)
+  g_plot
 }
 
 

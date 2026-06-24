@@ -44,36 +44,40 @@ section in \code{vignette("Theory", package = "gips")} or in its
 The default value is \code{NA}, which will be changed to "heatmap" for
 non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
-All other arguments are ignored for
-the \code{type = "heatmap"}, \code{type = "MLE"}, or \code{type = "block_heatmap"}.}
+
+Arguments \code{logarithmic_y}, \code{logarithmic_x}, \code{color}, \code{title_text},
+\code{xlabel}, \code{ylabel}, \code{show_legend}, \code{ylim}, and \code{xlim} are only used for
+\code{type \%in\% c("all", "best", "both", "n0")} and ignored for heatmap types.}
 
 \item{logarithmic_y, logarithmic_x}{A boolean.
-Sets the axis of the plot in logarithmic scale.}
+Sets the axis of the plot in logarithmic scale.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{color}{Vector of colors to be used to plot lines.}
+\item{color}{Vector of colors to be used to plot lines.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{title_text}{Text to be in the title of the plot.}
+\item{title_text}{Text to be in the title of the plot.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{xlabel}{Text to be on the bottom of the plot.}
+\item{xlabel}{Text to be on the bottom of the plot.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{ylabel}{Text to be on the left of the plot.}
+\item{ylabel}{Text to be on the left of the plot.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{show_legend}{A boolean. Whether or not to show a legend.}
+\item{show_legend}{A boolean. Whether or not to show a legend.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{ylim}{Limits of the y axis. When \code{NULL},
-the minimum, and maximum of the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} are taken.}
+\item{ylim}{Limits of the y axis. When \code{NULL}, uses the data range.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{xlim}{Limits of the x axis. When \code{NULL},
-the whole optimization process is shown.}
+\item{xlim}{Limits of the x axis. When \code{NULL}, uses the data range.
+Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
-\item{...}{Additional arguments passed to
-other various elements of the plot.}
+\item{...}{Ignored.}
 }
 \value{
-When \code{type} is one of \code{"best"}, \code{"all"}, \code{"both"} or \code{"n0"},
-returns an invisible \code{NULL}.
-When \code{type} is one of \code{"heatmap"}, \code{"MLE"} or \code{"block_heatmap"},
-returns an object of class \code{ggplot}.
+An object of class \code{ggplot}.
 }
 \description{
 Plot the heatmap of the MAP covariance matrix estimator
@@ -101,25 +105,17 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-if (require("graphics")) {
-  plot(g, type = "MLE")
-}
+plot(g, type = "MLE")
 
 g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
-if (require("graphics")) {
-  plot(g_map, type = "both", logarithmic_x = TRUE)
-}
+plot(g_map, type = "both", logarithmic_x = TRUE)
 
-if (require("graphics")) {
-  plot(g_map, type = "MLE")
-}
+plot(g_map, type = "MLE")
 # Now, the output is (most likely) different because the permutation
   # `g_map[[1]]` is (most likely) not an identity permutation.
 
 g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
-if (require("graphics")) {
-  plot(g_map_MH, type = "n0")
-}
+plot(g_map_MH, type = "n0", logarithmic_y = FALSE)
 }
 \seealso{
 \itemize{
