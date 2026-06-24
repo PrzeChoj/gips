@@ -44,11 +44,11 @@ implements multiple (3) optimizers to choose from:
 
 #### Note on computation time
 
-The `max_iter` parameter functions differently in Metropolis-Hastings
-and hill climbing.
+The `max_iter` parameter works differently in Metropolis-Hastings and
+hill climbing.
 
-For Metropolis-Hastings, it computes a posteriori of `max_iter`
-permutations, whereas for hill climbing, it computes
+For Metropolis-Hastings, it computes the a posteriori probability for
+`max_iter` permutations, whereas for hill climbing, it computes
 $`{p\choose 2} \cdot`$`max_iter` of them.
 
 In the case of the Brute Force optimizer, it computes all $`f(\sigma)`$
@@ -59,8 +59,8 @@ A051625](https://oeis.org/A051625).
 
 It searches through the whole space at once.
 
-This is the only optimizer that will certainly find the actual MAP
-Estimator.
+This is the only optimizer that will certainly find the true MAP
+estimator.
 
 Brute Force is **only recommended** for small spaces ($`p \le 9`$). It
 can also browse bigger spaces, but the required time is probably too
@@ -149,16 +149,16 @@ The final value is the best $`\sigma`$ ever computed.
 
 #### Notes
 
-This algorithm was tested in multiple settings and turned out to be an
-outstanding optimizer for this problem. Especially given it does not
-need any hyperparameters tuned.
+This algorithm was tested in multiple settings and turned out to be a
+good optimizer for this problem. Especially given it does not need any
+hyperparameters tuned.
 
 The only parameter it depends on is `max_iter`, which determines the
 number of steps described above. One should choose this number
-rationally. When decided too small, there is a missed opportunity to
-find a much better permutation. When decided too big, there is a lost
-time and computational power that does not lead to growth. We recommend
-plotting the convergence plot with a logarithmic OX scale:
+rationally. When set too small, there is a missed opportunity to find a
+much better permutation. When set too big, there is a lost time and
+computational power that does not lead to growth. We recommend plotting
+the convergence plot with a logarithmic OX scale:
 `plot(g_map, type = "best", logarithmic_x = TRUE)`, then decide if the
 line has flattened already. Keep in mind that the OY scale is also
 logarithmic. For example, a marginal change on the OY scale could mean
@@ -218,13 +218,13 @@ suppressMessages( # message from ggplot2
 g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 #> ===============================================================================
 g_map
-#> The permutation (1,34,64,27,60,40,26,14,13,53,62,22,11,41,21,7,29,48,24,30,46,57,38,16,23,18,20,10,59,35,32,69,54,17,2,58,31,8,49,66,52,15,47,37,45,50,51,3,63,43,68,33,19,44,55,6,9,4,36,56,25,39,61,70,42,5,67):
+#> The permutation (1,34,64,27,60,24,30,46,57,38,16,23,18,20,10,59,35,66,52,40,26,70,69,54,58,49,37,45,50,51,4,36,56,25,39,5,67,32,29,48,6,61,15,47,33,2,42,17,41,21,7,68,3,63,43,9,14,8,31,11,19,44,55,13,53,62,22):
 #>  - was found after 150 posteriori calculations;
-#>  - is 5.34e+648 times more likely than the () permutation.
+#>  - is 1.75e+646 times more likely than the () permutation.
 ```
 
-After just a hundred and fifty iterations, the found permutation is
-unimaginably more likely than the \$\_0 = \$ `()` permutation.
+After just 150 iterations, the found permutation is unimaginably more
+likely than the \$\_0 = \$ `()` permutation.
 
 ``` r
 
@@ -353,9 +353,9 @@ g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 #> ℹ The covariance matrix invariant under the found permutation does not have the likelihood properly defined.
 #> ℹ For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.
 g_map
-#> The permutation (11,15)(13,24):
+#> The permutation (5,6)(19,25):
 #>  - was found after 601 posteriori calculations;
-#>  - is 2.132e+8 times more likely than the () permutation.
+#>  - is 8.334e+9 times more likely than the () permutation.
 plot(g_map, type = "best")
 ```
 
@@ -372,7 +372,7 @@ can continue the optimization, as shown below.
 
 ``` r
 
-# the same code as for generating example for Metripolis-Hastings above
+# the same code as for generating example for Metropolis-Hastings above
 
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
@@ -442,10 +442,6 @@ store it, whereas `save_all_perms = FALSE` only required 2 MB. However,
 or more complex path analysis.
 
 ## Discussion
-
-We are also considering implementing the **First approach** from \[1\]
-in the future. The Markov chain travels along cyclic groups rather than
-permutations in this approach.
 
 We encourage everyone to discuss on available and potential new
 optimizers on [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21).

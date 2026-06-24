@@ -6,10 +6,9 @@ The package is based on the article
 [\[1\]](https://arxiv.org/abs/2004.03503). There the math behind the
 package is precisely demonstrated, and all the theorems are proven.
 
-In this vignette, we would like to give a gentle introduction. We want
-to point out all the most important results from this work from the
-user’s point of view. We will also show examples of those results in the
-`gips` package.
+In this vignette, we present a gentle introduction. We want to point out
+all the most important results from this work from the user’s point of
+view. We will also show examples of those results in the `gips` package.
 
 ``` r
 
@@ -67,9 +66,9 @@ $`U_\Gamma`$ such that all the symmetric matrices
 $`S\in\mathcal{Z}_\Gamma`$ can be transformed into block-diagonal form.
 
 The exact form of blocks depends on so-called *structure constants*
-$`(k_i,d_i,r_i)_{i=1}^L`$. It is worth pointing out that constants
-$`k = d`$ for cyclic group $`\Gamma = \left<\sigma\right>`$ and that
-`gips` searches within cyclic subgroups only.
+$`(k_i,d_i,r_i)_{i=1}^L`$. It is worth noting that $`k = d`$ for cyclic
+groups $`\Gamma = \langle\sigma\rangle`$. Because gips searches only
+within cyclic subgroups, this simplifies the theory.
 
 #### Examples
 
@@ -111,9 +110,9 @@ round(block_decomposition, 5)
 
 The transformed matrix is in the block-diagonal form of
 [\[1\]](https://arxiv.org/abs/2004.03503), Theorem 1. Blank entries are
-off-block entries and equal to 0. Notice that, for example, the \[2,3\]
-is not blank regardless of being 0. This is because it is a part of the
-block-diagonal form but happens to have a value of 0.
+off-block entries and equal to 0. Notice that, for example, position
+\[2,3\] is not blank even though its value is 0. This is because it is a
+part of the block-diagonal form but happens to have a value of 0.
 
 The result was rounded to the 5th place after the decimal to hide the
 inaccuracies of floating point arithmetic.
@@ -245,10 +244,10 @@ permutation $`\sigma`$, then the sample size $`n`$ required for the MLE
 to exist is lower than $`p`$. It is equal to the number of cycles,
 denoted hereafter by $`C_\sigma`$.
 
-For example, if the permutation $`\sigma = (1,2,3,4,5,6)`$ is discovered
-by the
+For example, when $`p=6`$ and the permutation $`\sigma = (1,2,3,4,5,6)`$
+is discovered by the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
-function, then there is a single cycle in it $`C_\sigma = 1`$. Therefore
+function, it consists of a single cycle, so $`C_\sigma = 1`$. Therefore
 a single observation would be enough to estimate a covariance matrix
 with
 [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md).
@@ -285,9 +284,9 @@ summary(g2)$n0
 
 ## Bayesian model selection
 
-When one has the data matrix `Z`, one would like to know if it has a
-hidden structure of dependencies between features. Luckily, the paper
-demonstrates a way how to find it.
+Given data matrix Z, we would like to discover any hidden structure of
+dependencies between features. Luckily, the paper demonstrates a way how
+to find it.
 
 #### General workflow
 
@@ -310,10 +309,10 @@ The considered prior distribution of $`\Gamma`$ and $`K=\Sigma^{-1}`$:
     matrix of the same size as `S`), see
     [\[1\]](https://arxiv.org/abs/2004.03503), Sec. 3.4.
 
-Footnote: Actually, for $`\Gamma = \{id\}`$, $`\delta > 0`$ parameters
-are theoretically correct. In `gips`, we want this to be defined for all
-cyclic groups $`\Gamma`$, so we restrict $`\delta > 1`$. Refer to the
-[\[1\]](https://arxiv.org/abs/2004.03503).
+Footnote: Actually, for the special case of $`\Gamma = \{\text{id}\}`$,
+the parameter $`\delta > 0`$ is theoretically correct. In `gips`, we
+want this to be defined for all cyclic groups $`\Gamma`$, so we restrict
+$`\delta > 1`$. Refer to the [\[1\]](https://arxiv.org/abs/2004.03503).
 
 #### `gips` technical details
 
@@ -333,7 +332,7 @@ When all assumptions are met, the formula (30) puts a number on each
 permutation’s cyclic group. The bigger its value, the more likely the
 data was drawn from that model.
 
-When one finds the permutations group $`c_{\text{max}}`$ that maximizes
+When one finds the permutation group $`c_{\text{max}}`$ that maximizes
 (30),
 ``` math
 c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)
@@ -353,7 +352,7 @@ In such a case, we call $`c_{\text{map}}`$ the Maximum A Posteriori
 
 The space of all permutations is enormous for bigger $`p`$ (in our
 experiments, $`p\ge 10`$ is too big). In such a big space, estimating
-the MAP is more reasonable than calculating it precisely.
+the MAP is more practical than calculating it exactly.
 
 Metropolis-Hastings algorithm suggested by the authors of
 [\[1\]](https://arxiv.org/abs/2004.03503) is a natural way to do it. To

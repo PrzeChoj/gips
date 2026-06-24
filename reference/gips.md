@@ -247,7 +247,7 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.1063719 secs
+#>  0.1152906 secs
 
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)

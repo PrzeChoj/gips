@@ -2,21 +2,21 @@
 
 ## The problem
 
-Quite often, we have too little data to perform valid inferences.
-Consider the situation with multivariate Gaussian distribution, where we
-have few observations compared to the number of variables. For example,
-that’s the case for graphical models used in biology or medicine. In
-such a setting, the usual way of finding the covariance matrix (the
-maximum likelihood method) isn’t statistically applicable. What now?
+Often, we have too little data to perform valid inferences. Consider the
+situation with multivariate Gaussian distribution, where we have few
+observations compared to the number of variables. For example, that’s
+the case for graphical models used in biology or medicine. In such a
+setting, the usual way of finding the covariance matrix (the maximum
+likelihood method) isn’t statistically applicable. What now?
 
 ## Invariance by permutation
 
 Sometimes, the interchange of variables in the vector does not change
-its distribution. In the multivariate Gaussian case, it would mean that
-they have the same variances and covariances with other respective
-variables. For instance, in the following covariance matrix, variables
-X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and
-(X3, X2, X1) have the same distribution.
+its distribution. In the multivariate Gaussian case, it means they have
+the same variances and covariances with other respective variables. For
+instance, in the following covariance matrix, variables X1 and X3 are
+interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have
+the same distribution.
 
 ![](gips_files/figure-html/symvariant_matrix-1.png)
 
@@ -57,7 +57,7 @@ Software](doi:10.18637/jss.v112.i07).
 
 ## Practical example
 
-Let’s examine 12 books’ thick, height, and breadth data:
+Let’s examine thickness, height, and breadth data from 12 books:
 
 ``` r
 
@@ -124,7 +124,8 @@ get_probabilities_from_gips(g_map)
 #> 0.566078057717 0.433908667868 0.000006728772 0.000004683290 0.000001862353
 ```
 
-`find_MAP` found the symmetry represented by permutation (2,3).
+[`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
+found the symmetry represented by permutation (2,3).
 
 ``` r
 
