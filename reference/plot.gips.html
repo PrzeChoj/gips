@@ -93,57 +93,60 @@ section in <code><a href="../articles/Theory.html">vignette("Theory", package = 
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 </ul><p>The default value is <code>NA</code>, which will be changed to "heatmap" for
 non-optimized <code>gips</code> objects and to "both" for optimized ones.
-Using the default produces a warning.
-All other arguments are ignored for
-the <code>type = "heatmap"</code>, <code>type = "MLE"</code>, or <code>type = "block_heatmap"</code>.</p></dd>
+Using the default produces a warning.</p>
+<p>Arguments <code>logarithmic_y</code>, <code>logarithmic_x</code>, <code>color</code>, <code>title_text</code>,
+<code>xlabel</code>, <code>ylabel</code>, <code>show_legend</code>, <code>ylim</code>, and <code>xlim</code> are only used for
+<code>type %in% c("all", "best", "both", "n0")</code> and ignored for heatmap types.</p></dd>
 
 
 <dt id="arg-logarithmic-y-logarithmic-x">logarithmic_y, logarithmic_x<a class="anchor" aria-label="anchor" href="#arg-logarithmic-y-logarithmic-x"></a></dt>
 <dd><p>A boolean.
-Sets the axis of the plot in logarithmic scale.</p></dd>
+Sets the axis of the plot in logarithmic scale.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-color">color<a class="anchor" aria-label="anchor" href="#arg-color"></a></dt>
-<dd><p>Vector of colors to be used to plot lines.</p></dd>
+<dd><p>Vector of colors to be used to plot lines.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-title-text">title_text<a class="anchor" aria-label="anchor" href="#arg-title-text"></a></dt>
-<dd><p>Text to be in the title of the plot.</p></dd>
+<dd><p>Text to be in the title of the plot.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-xlabel">xlabel<a class="anchor" aria-label="anchor" href="#arg-xlabel"></a></dt>
-<dd><p>Text to be on the bottom of the plot.</p></dd>
+<dd><p>Text to be on the bottom of the plot.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-ylabel">ylabel<a class="anchor" aria-label="anchor" href="#arg-ylabel"></a></dt>
-<dd><p>Text to be on the left of the plot.</p></dd>
+<dd><p>Text to be on the left of the plot.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-show-legend">show_legend<a class="anchor" aria-label="anchor" href="#arg-show-legend"></a></dt>
-<dd><p>A boolean. Whether or not to show a legend.</p></dd>
+<dd><p>A boolean. Whether or not to show a legend.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
-<dd><p>Limits of the y axis. When <code>NULL</code>,
-the minimum, and maximum of the <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> are taken.</p></dd>
+<dd><p>Limits of the y axis. When <code>NULL</code>, uses the data range.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
-<dd><p>Limits of the x axis. When <code>NULL</code>,
-the whole optimization process is shown.</p></dd>
+<dd><p>Limits of the x axis. When <code>NULL</code>, uses the data range.
+Only used for <code>type %in% c("all", "best", "both", "n0")</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to
-other various elements of the plot.</p></dd>
+<dd><p>Ignored.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>When <code>type</code> is one of <code>"best"</code>, <code>"all"</code>, <code>"both"</code> or <code>"n0"</code>,
-returns an invisible <code>NULL</code>.
-When <code>type</code> is one of <code>"heatmap"</code>, <code>"MLE"</code> or <code>"block_heatmap"</code>,
-returns an object of class <code>ggplot</code>.</p>
+    <p>An object of class <code>ggplot</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -178,28 +181,20 @@ The <code>gips</code> object is used as the <code>x</code> parameter.</p></li>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gips-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">30</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gips-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gips-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Now, the output is (most likely) different because the permutation</span></span></span>
 <span class="r-in"><span>  <span class="co"># `g_map[[1]]` is (most likely) not an identity permutation.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g_map_MH</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">30</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span>, optimizer <span class="op">=</span> <span class="st">"MH"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"graphics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map_MH</span>, type <span class="op">=</span> <span class="st">"n0"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map_MH</span>, type <span class="op">=</span> <span class="st">"n0"</span>, logarithmic_y <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gips-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
