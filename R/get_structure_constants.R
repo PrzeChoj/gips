@@ -10,7 +10,7 @@
 #'     It can also be of a `gips` class, but
 #'     it will be interpreted as the underlying `gips_perm`.
 #'
-#' @returns Returns a list of 5 items:
+#' @returns A list with 5 items:
 #'     `r`, `d`, `k`, `L`, `dim_omega` - vectors of constants from
 #'     [Theorem 1 from references](https://arxiv.org/abs/2004.03503)
 #'     and the beginning of

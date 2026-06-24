@@ -20,12 +20,12 @@ It can also be of a \code{gips} class but
 it will be interpreted as the underlying \code{gips_perm}.}
 
 \item{size}{An integer. Size of a permutation
-(AKA cardinality of a set, on which permutation is defined. See examples).}
+(AKA the cardinality of the set on which the permutation is defined. See examples).}
 
 \item{rearranged_cycles}{A list of rearranged integer vectors.
 Each vector corresponds to a single cycle of a permutation.}
 
-\item{g}{Object to be checked whether it is
+\item{g}{An object to be checked whether it is
 a proper object of a \code{gips_perm} class.}
 }
 \value{

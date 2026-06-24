@@ -24,13 +24,13 @@ statistics of the given \code{gips} object. Those are:
 \enumerate{
 \item \code{optimized} - \code{FALSE}.
 \item \code{start_permutation} - the permutation this \code{gips} represents.
-\item \code{start_permutation_log_posteriori} - the log of the a posteriori
+\item \code{start_permutation_log_posteriori} - the log of the A Posteriori
 value the start permutation has.
-\item \code{times_more_likely_than_id} - how many more likely
+\item \code{times_more_likely_than_id} - how many times more likely
 the \code{start_permutation} is over the identity permutation, \verb{()}.
 It can be less than 1, meaning the identity permutation
-is more likely. Remember that this number can big and
-overflow to \code{Inf} or small and underflow to 0.
+is more likely. Remember that this number can become
+very large and overflow to \code{Inf} or small and underflow to 0.
 \item \code{log_times_more_likely_than_id} - log of \code{times_more_likely_than_id}.
 \item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
 statistics and p-value of Likelihood Ratio test, where
@@ -65,12 +65,12 @@ See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} document
 \enumerate{
 \item \code{optimized} - \code{TRUE}.
 \item \code{found_permutation} - the permutation this \code{gips} represents.
-The visited permutation with the biggest a posteriori value.
-\item \code{found_permutation_log_posteriori} - the log of the a posteriori
+The visited permutation with the biggest A Posteriori value.
+\item \code{found_permutation_log_posteriori} - the log of the A Posteriori
 value the found permutation has.
 \item \code{start_permutation} - the original permutation this \code{gips}
 represented before optimization. It is the first visited permutation.
-\item \code{start_permutation_log_posteriori} - the log of the a posteriori
+\item \code{start_permutation_log_posteriori} - the log of the A Posteriori
 value the start permutation has.
 \item \code{times_more_likely_than_start} - how many more likely
 the \code{found_permutation} is over the \code{start_permutation}.

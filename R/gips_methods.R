@@ -1,15 +1,13 @@
-
-
 #' Printing `gips` object
 #'
 #' Printing function for a `gips` class.
 #'
 #' @param x An object of a `gips` class.
-#' @param digits The number of digits after the comma
-#'     for a posteriori to be presented. It can be negative.
+#' @param digits The number of decimal places for
+#'     the posterior probability. It can be negative.
 #'     By default, `Inf`. It is passed to [base::round()].
 #' @param compare_to_original A logical. Whether to print how many
-#'     times more likely is the current permutation compared to:
+#'     times more likely the current permutation is compared to:
 #' * the identity permutation `()` (for unoptimized `gips` object);
 #' * the starting permutation (for optimized `gips` object).
 #' @param log_value A logical. Whether to print the logarithmic value.
@@ -25,7 +23,7 @@
 #'     the compared posteriories between any two permutations,
 #'     not only compared to the starting one or id.
 #'
-#' @returns Returns an invisible `NULL`.
+#' @returns An invisible `NULL`.
 #' @export
 #'
 #' @examples
@@ -43,7 +41,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -78,7 +76,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -175,13 +173,13 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' * For unoptimized `gips` object:
 #'   1. `optimized` - `FALSE`.
 #'   2. `start_permutation` - the permutation this `gips` represents.
-#'   3. `start_permutation_log_posteriori` - the log of the a posteriori
+#'   3. `start_permutation_log_posteriori` - the log of the A Posteriori
 #'       value the start permutation has.
-#'   4. `times_more_likely_than_id` - how many more likely
+#'   4. `times_more_likely_than_id` - how many times more likely
 #'       the `start_permutation` is over the identity permutation, `()`.
 #'       It can be less than 1, meaning the identity permutation
-#'       is more likely. Remember that this number can big and
-#'       overflow to `Inf` or small and underflow to 0.
+#'       is more likely. Remember that this number can become
+#'       very large and overflow to `Inf` or small and underflow to 0.
 #'   5. `log_times_more_likely_than_id` - log of `times_more_likely_than_id`.
 #'   6. `likelihood_ratio_test_statistics`, `likelihood_ratio_test_p_value` - 
 #'       statistics and p-value of Likelihood Ratio test, where
@@ -212,12 +210,12 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' * For optimized `gips` object:
 #'   1. `optimized` - `TRUE`.
 #'   2. `found_permutation` - the permutation this `gips` represents.
-#'       The visited permutation with the biggest a posteriori value.
-#'   3. `found_permutation_log_posteriori` - the log of the a posteriori
+#'       The visited permutation with the biggest A Posteriori value.
+#'   3. `found_permutation_log_posteriori` - the log of the A Posteriori
 #'       value the found permutation has.
 #'   4. `start_permutation` - the original permutation this `gips`
 #'       represented before optimization. It is the first visited permutation.
-#'   5. `start_permutation_log_posteriori` - the log of the a posteriori
+#'   5. `start_permutation_log_posteriori` - the log of the A Posteriori
 #'       value the start permutation has.
 #'   6. `times_more_likely_than_start` - how many more likely
 #'       the `found_permutation` is over the `start_permutation`.
@@ -368,7 +366,7 @@ summary.gips <- function(object, ...) {
     optimization_info <- attr(object, "optimization_info")
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enought; this is the first generator of the group
+      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enough; this is the first generator of the group
       log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
       start_permutation <- optimization_info[["start_perm"]]
       start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
@@ -601,7 +599,7 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #'
 #' Calculates Log-Likelihood of the sample based on the `gips` object.
 #'
-#' This will always be the biggest for `perm = "()"` (provided that `p <= n`).
+#' This will always be largest for `perm = "()"` (provided that `p <= n`).
 #'
 #' If the found permutation still requires more parameters than `n`,
 #'     the likelihood does not exist; thus the function returns `NULL`.
@@ -832,8 +830,8 @@ BIC.gips <- function(object, ...) {
 #' @param g An object of class `gips`.
 #'     A result of a `find_MAP(return_probabilities = TRUE)`.
 #'
-#' @returns Returns a numeric vector, calculated values of probabilities.
-#' Names contain permutations this probabilities represent.
+#' @returns A numeric vector of calculated probability values.
+#' Names contain the permutations that these probabilities represent.
 #' For `gips` object optimized with `find_MAP(return_probabilities = FALSE)`,
 #' it returns a `NULL` object.
 #' It is sorted according to the probability.
@@ -861,8 +859,8 @@ get_probabilities_from_gips <- function(g) {
 
   if (is.null(attr(g, "optimization_info"))) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
-      "i" = "`gips` objects has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
-      "x" = "You did not optimized `g`.",
+      "i" = "`gips` object has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
+      "x" = "You did not optimize `g`.",
       "i" = "Did You use the wrong `g` as an argument for this function?",
       "i" = "Did You forget to optimize `g`?"
     ))
@@ -891,7 +889,7 @@ get_probabilities_from_gips <- function(g) {
 #' @param g An object of class `gips`.
 #'     A result of a `find_MAP(save_all_perms = TRUE)`.
 #'
-#' @returns Returns the same object `g` as given,
+#' @returns The same object `g` as given,
 #'     but without the visited permutation list.
 #'
 #' @export
@@ -945,7 +943,7 @@ forget_perms <- function(g) {
 #'
 #' @method as.character gips
 #'
-#' @returns Returns an object of a `character` type.
+#' @returns An object of a `character` type.
 #'
 #' @seealso
 #' * [as.character.gips_perm()] - The underlying `gips_perm` of

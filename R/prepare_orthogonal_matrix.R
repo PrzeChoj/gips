@@ -3,10 +3,11 @@
 #' Calculate the orthogonal matrix `U_Gamma` for decomposition in
 #' [Theorem 1 from references](https://arxiv.org/abs/2004.03503).
 #'
-#' Given X - a matrix invariant under the permutation `perm`. Call Gamma
-#' the permutations cyclic group: \eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}.
+#' Let \eqn{X} be a matrix invariant under the permutation `perm`.
+#' Let the permutations cyclic group for it be called Gamma:
+#' \eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}.
 #'
-#' Then, \eqn{U_\Gamma} is such an orthogonal matrix, which block-diagonalizes X.
+#' Then \eqn{U_\Gamma} is an orthogonal matrix that block-diagonalizes \eqn{X}.
 #'
 #' To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a
 #' block-diagonal structure, which is ensured by
@@ -24,7 +25,7 @@
 #'     but it will be interpreted as the underlying `gips_perm`.
 #' @param perm_size Size of a permutation.
 #'     Required if `perm` is neither `gips_perm` nor `gips`.
-#' @param basis A matrix with basis vectors in COLUMNS. Identity by default.
+#' @param basis A matrix with basis vectors in COLUMNS; identity by default.
 #' @returns A square matrix of size `perm_size` by `perm_size` with
 #'     columns from vector elements \eqn{v_k^{(c)}} according to
 #'     [Theorem 6 from references](https://arxiv.org/abs/2004.03503).

@@ -9,7 +9,7 @@
 #'     It can also be of a `gips` class but
 #'     it will be interpreted as the underlying `gips_perm`.
 #' @param size An integer. Size of a permutation
-#'     (AKA cardinality of a set, on which permutation is defined. See examples).
+#'     (AKA the cardinality of the set on which the permutation is defined. See examples).
 #'
 #' @section Methods for a `gips` class:
 #' * [as.character.gips_perm()]
@@ -171,7 +171,7 @@ new_gips_perm <- function(rearranged_cycles, size) {
 
 #' @describeIn gips_perm Validator. Only intended for low-level use.
 #'
-#' @param g Object to be checked whether it is
+#' @param g An object to be checked whether it is
 #'     a proper object of a `gips_perm` class.
 #'
 #' @returns `validate_gips_perm()` returns its argument unchanged.
@@ -248,7 +248,7 @@ validate_gips_perm <- function(g) {
 #' @param x An object of a `gips_perm` class.
 #' @param ... Further arguments (currently ignored).
 #'
-#' @returns Returns an invisible `NULL`.
+#' @returns An invisible `NULL`.
 #'
 #' @export
 #'
@@ -272,7 +272,7 @@ print.gips_perm <- function(x, ...) {
 #'
 #' @method as.character gips_perm
 #'
-#' @returns Returns an object of a `character` type.
+#' @returns An object of a `character` type.
 #'
 #' @seealso
 #' * [as.character.gips()] - The underlying `gips_perm` of

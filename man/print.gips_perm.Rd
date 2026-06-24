@@ -12,7 +12,7 @@
 \item{...}{Further arguments (currently ignored).}
 }
 \value{
-Returns an invisible \code{NULL}.
+An invisible \code{NULL}.
 }
 \description{
 Printing function for a \code{gips_perm} class.

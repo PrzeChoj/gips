@@ -3,7 +3,7 @@
 #' Create a `gips` object.
 #' This object will contain initial data and all other information
 #' needed to find the most likely invariant permutation.
-#' It will not perform optimization. One must call
+#' It will not perform optimization; one must call
 #' the [find_MAP()] function to do it. See the examples below.
 #'
 #' @param S A matrix; empirical covariance matrix.
@@ -11,7 +11,7 @@
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`,
 #'     and leave parameter `was_mean_estimated = TRUE` as default;
-#' * if one know the theoretical mean is 0, use
+#' * if one knows the theoretical mean is 0, use
 #'     `S = (t(Z) %*% Z) / number_of_observations`, and set
 #'     parameter `was_mean_estimated = FALSE`.
 #' @param number_of_observations A number of data points
@@ -26,7 +26,7 @@
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
-#' * Set FALSE when your `S` parameter is a result of
+#' * Set `FALSE` when your `S` parameter is a result of
 #'     a `(t(Z) %*% Z) / number_of_observations` calculation.
 #' @param perm An optional permutation to be the base for the `gips` object.
 #'     It can be of a `gips_perm` or a `permutation` class, or anything
@@ -44,8 +44,8 @@
 #' * [as.character.gips()]
 #'
 #' @section Hyperparameters:
-#' We encourage the user to try `D_matrix = d * I`, where `I` is an identity matrix of a size
-#' `p x p` and `d > 0` for some different `d`.
+#' We encourage you to try `D_matrix = d * I`, where `I` is a `p` \eqn{\times}
+#'     `p` identity matrix and `d > 0` for some different `d`.
 #' When `d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
 #'     bigger structures will be found.
 #' When `d` is big compared to the data (e.g., `d=100 * mean(diag(S))`),
@@ -160,7 +160,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
 #'     information about the optimization process.
 #'
 #' @returns `new_gips()` returns an object of
-#'     a `gips` class without the safety checks.
+#'     a `gips` class without safety checks.
 #'
 #' @export
 new_gips <- function(list_of_gips_perm, S, number_of_observations,
@@ -313,7 +313,7 @@ check_logical_flag <- function(value, name) {
 #' @param was_mean_estimated Whether the mean was estimated
 #' @param perm Starting or provided permutation
 #'
-#' @returns Returns invisibly. Throws an error if validation fails.
+#' @returns Invisibly. Throws an error if validation fails.
 #'
 #' @keywords internal
 #' 
@@ -501,7 +501,7 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
 #' @param save_all_perms Whether to save all permutations
 #' @param show_progress_bar Whether to show a progress bar
 #'
-#' @returns Returns invisibly. Throws an error if validation fails.
+#' @returns Invisibly. Throws an error if validation fails.
 #'
 #' @keywords internal
 #' 
