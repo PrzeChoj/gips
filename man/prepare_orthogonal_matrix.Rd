@@ -14,7 +14,7 @@ but it will be interpreted as the underlying \code{gips_perm}.}
 \item{perm_size}{Size of a permutation.
 Required if \code{perm} is neither \code{gips_perm} nor \code{gips}.}
 
-\item{basis}{A matrix with basis vectors in COLUMNS. Identity by default.}
+\item{basis}{A matrix with basis vectors in COLUMNS; identity by default.}
 }
 \value{
 A square matrix of size \code{perm_size} by \code{perm_size} with
@@ -26,10 +26,11 @@ Calculate the orthogonal matrix \code{U_Gamma} for decomposition in
 \href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}.
 }
 \details{
-Given X - a matrix invariant under the permutation \code{perm}. Call Gamma
-the permutations cyclic group: \eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}.
+Let \eqn{X} be a matrix invariant under the permutation \code{perm}.
+Let the permutations cyclic group for it be called Gamma:
+\eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}.
 
-Then, \eqn{U_\Gamma} is such an orthogonal matrix, which block-diagonalizes X.
+Then \eqn{U_\Gamma} is an orthogonal matrix that block-diagonalizes \eqn{X}.
 
 To be more precise, the matrix \code{t(U_Gamma) \%*\% X \%*\% U_Gamma} has a
 block-diagonal structure, which is ensured by

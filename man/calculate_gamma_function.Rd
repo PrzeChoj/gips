@@ -14,15 +14,15 @@ it will be interpreted as the underlying \code{gips_perm}.}
 \item{lambda}{A positive real number.}
 }
 \value{
-Returns the value of the Gamma function of the colored cone
+The value of the Gamma function of the colored cone
 (for the definition of the colored cone, see the \strong{Basic definitions}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
 }
 \description{
-It calculates the value of the integral defined in
+Calculates the integral defined in
 \href{https://arxiv.org/abs/2004.03503}{Definition 11 from references}.
-It implements
+Implements
 \href{https://arxiv.org/abs/2004.03503}{Theorem 8 from references}
 and uses the
 \href{https://arxiv.org/abs/2004.03503}{formula (19) from references}.

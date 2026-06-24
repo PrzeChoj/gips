@@ -1,7 +1,7 @@
 #' Find the Maximum A Posteriori Estimation
 #'
 #' Use one of the optimization algorithms to find the permutation that
-#' maximizes a posteriori probability based on observed data.
+#' maximizes A Posteriori probability based on observed data.
 #' Not all optimization algorithms will always find the MAP, but they try
 #' to find a significant value. More information can be found in
 #' the "**Possible algorithms to use as optimizers**" section below.
@@ -49,9 +49,9 @@
 #'     the **hill climbing** algorithm;
 #'     [see Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing).
 #'     The algorithm will check all transpositions in every iteration and
-#'     go to the one with the biggest a posteriori value.
+#'     go to the one with the biggest A Posteriori value.
 #'     The optimization ends when all *neighbors* will have a smaller
-#'     a posteriori value. If the `max_iter` is reached before the end,
+#'     A Posteriori value. If the `max_iter` is reached before the end,
 #'     then the warning is shown, and it is recommended to continue
 #'     the optimization on the output of the `find_MAP()` with
 #'     `optimizer = "continue"`; see examples.
@@ -82,19 +82,19 @@
 #'     a list of all permutations visited during optimization.
 #'     This can be useful sometimes but needs a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
-#'     only when `save_all_perms = TRUE`. For:
+#'     when `save_all_perms = TRUE`. For:
 #'   * `optimizer = "MH"` - use Metropolis-Hastings results to
 #'       estimate posterior probabilities;
 #'   * `optimizer = "BF"` - use brute force results to
 #'       calculate exact posterior probabilities.
 #'
 #' These additional calculations are costly, so a second and third
-#'     progress bar is shown (when `show_progress_bar = TRUE`).
+#'     progress bars are shown (when `show_progress_bar = TRUE`).
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
 #'
-#' @returns Returns an optimized object of a `gips` class.
+#' @returns An optimized object of a `gips` class.
 #'
 #' @export
 #'
@@ -267,7 +267,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`",
       "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
-      "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FLASE`?"
+      "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FALSE`?"
     ))
   }
 
@@ -435,7 +435,7 @@ Metropolis_Hastings_optimizer <- function(S,
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
       ))
@@ -478,7 +478,7 @@ Metropolis_Hastings_optimizer <- function(S,
     goal_function_perm_proposal <- my_goal_function(perm_proposal, i)
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
-    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessary Metropolis-Hastings.
+    if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessarily Metropolis-Hastings.
       current_perm <- perm_proposal
       if (save_all_perms) {
         visited_perms[[i + 1]] <- current_perm
@@ -590,7 +590,7 @@ hill_climbing_optimizer <- function(S,
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for D_matrix with huge values. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
       ))
@@ -762,7 +762,7 @@ brute_force_optimizer <- function(
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occured!"),
+        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
       ))
@@ -861,7 +861,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
 
   if (all(is.na(optimization_info1[["visited_perms"]])) || all(is.na(optimization_info2[["visited_perms"]]))) {
     if (!all(is.na(optimization_info1[["visited_perms"]])) || !all(is.na(optimization_info2[["visited_perms"]]))) {
-      rlang::warn("You wanted to save visited_perms on one of the optimized `gips` objects but forget it for the other. This is not possible, so both will be forgotten.")
+      rlang::warn("You wanted to save visited_perms on one of the optimized `gips` objects but forgot it for the other. This is not possible, so both will be forgotten.")
       optimization_info2[["post_probabilities"]] <- NULL
       optimization_info1[["post_probabilities"]] <- NULL
     }

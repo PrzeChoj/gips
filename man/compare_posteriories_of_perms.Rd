@@ -31,7 +31,7 @@ compare_log_posteriories_of_perms(
 }
 \arguments{
 \item{perm1, perm2}{Permutations to compare.
-How many times \code{perm1} is more likely than \code{perm2}?
+How many times is \code{perm1} more likely than \code{perm2}?
 Those can be provided as the \code{gips} objects,
 the \code{gips_perm} objects, or anything that can be used as
 the \code{x} parameter in the \code{\link[=gips_perm]{gips_perm()}} function.

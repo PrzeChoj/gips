@@ -11,8 +11,8 @@ get_probabilities_from_gips(g)
 A result of a \code{find_MAP(return_probabilities = TRUE)}.}
 }
 \value{
-Returns a numeric vector, calculated values of probabilities.
-Names contain permutations this probabilities represent.
+A numeric vector of calculated probability values.
+Names contain the permutations that these probabilities represent.
 For \code{gips} object optimized with \code{find_MAP(return_probabilities = FALSE)},
 it returns a \code{NULL} object.
 It is sorted according to the probability.

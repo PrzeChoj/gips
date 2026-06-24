@@ -34,7 +34,7 @@ When \code{Z} is the observed data:
 \item if one does not know the theoretical mean and has to
 estimate it with the observed mean, use \code{S = cov(Z)},
 and leave parameter \code{was_mean_estimated = TRUE} as default;
-\item if one know the theoretical mean is 0, use
+\item if one knows the theoretical mean is 0, use
 \code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
 parameter \code{was_mean_estimated = FALSE}.
 }}
@@ -55,7 +55,7 @@ For more details, see the \strong{Hyperparameters} section below.}
 \itemize{
 \item Set \code{TRUE} (default) when your \code{S} parameter is a result of
 a \code{\link[stats:cor]{stats::cov()}} function.
-\item Set FALSE when your \code{S} parameter is a result of
+\item Set \code{FALSE} when your \code{S} parameter is a result of
 a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
 }}
 
@@ -78,7 +78,7 @@ information about the optimization process.}
 a \code{gips} class after the safety checks.
 
 \code{new_gips()} returns an object of
-a \code{gips} class without the safety checks.
+a \code{gips} class without safety checks.
 
 \code{validate_gips()} returns its argument unchanged.
 If the argument is not a proper element of a \code{gips} class,
@@ -88,7 +88,7 @@ it produces an error.
 Create a \code{gips} object.
 This object will contain initial data and all other information
 needed to find the most likely invariant permutation.
-It will not perform optimization. One must call
+It will not perform optimization; one must call
 the \code{\link[=find_MAP]{find_MAP()}} function to do it. See the examples below.
 }
 \section{Functions}{
@@ -113,8 +113,8 @@ the \code{\link[=find_MAP]{find_MAP()}} function to do it. See the examples belo
 
 \section{Hyperparameters}{
 
-We encourage the user to try \code{D_matrix = d * I}, where \code{I} is an identity matrix of a size
-\verb{p x p} and \code{d > 0} for some different \code{d}.
+We encourage you to try \code{D_matrix = d * I}, where \code{I} is a \code{p} \eqn{\times}
+\code{p} identity matrix and \code{d > 0} for some different \code{d}.
 When \code{d} is small compared to the data (e.g., \code{d=0.1 * mean(diag(S))}),
 bigger structures will be found.
 When \code{d} is big compared to the data (e.g., \code{d=100 * mean(diag(S))}),

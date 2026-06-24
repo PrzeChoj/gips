@@ -12,7 +12,7 @@ It can also be of a \code{gips} class, but
 it will be interpreted as the underlying \code{gips_perm}.}
 }
 \value{
-Returns a list of 5 items:
+A list with 5 items:
 \code{r}, \code{d}, \code{k}, \code{L}, \code{dim_omega} - vectors of constants from
 \href{https://arxiv.org/abs/2004.03503}{Theorem 1 from references}
 and the beginning of

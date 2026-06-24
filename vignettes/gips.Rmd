@@ -20,7 +20,7 @@ old_options <- options(scipen = 999) # turn off scientific notation
 
 # The problem
 
-Quite often, we have too little data to perform valid inferences. Consider the 
+Often, we have too little data to perform valid inferences. Consider the 
 situation with multivariate Gaussian distribution, where we have few observations 
 compared to the number of variables. For example, that's the case for
 graphical models used in biology or medicine. In such a setting, the usual way
@@ -31,7 +31,7 @@ statistically applicable. What now?
 # Invariance by permutation
 
 Sometimes, the interchange of variables in the vector does not change its distribution.
-In the multivariate Gaussian case, it would mean that they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
+In the multivariate Gaussian case, it means they have the same variances and covariances with other respective variables. For instance, in the following covariance matrix, variables X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have the same distribution.
 
 ```{r symvariant_matrix, echo=FALSE}
 X <- matrix(c(
@@ -63,7 +63,7 @@ For an in-depth analysis of the package performance, capabilities, and compariso
 
 # Practical example
 
-Let's examine 12 books' thick, height, and breadth data:
+Let's examine thickness, height, and breadth data from 12 books:
 ```{r change_D_matrix_example0, include=FALSE}
 plot_cosmetic_modifications <- function(gg_plot_object) {
   my_col_names <- names(DAAG::oddbooks[, c(1, 2, 3)])
@@ -135,7 +135,7 @@ g_map <- find_MAP(g,
 g_map
 get_probabilities_from_gips(g_map)
 ```
-`find_MAP` found the symmetry represented by permutation (2,3).
+`find_MAP()` found the symmetry represented by permutation (2,3).
 
 ```{r change_D_matrix_example4}
 plot_cosmetic_modifications(plot(g_map, type = "heatmap"))

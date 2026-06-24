@@ -11,7 +11,7 @@ forget_perms(g)
 A result of a \code{find_MAP(save_all_perms = TRUE)}.}
 }
 \value{
-Returns the same object \code{g} as given,
+The same object \code{g} as given,
 but without the visited permutation list.
 }
 \description{

@@ -1,5 +1,3 @@
-
-
 #' Plot optimized matrix or optimization `gips` object
 #'
 #' Plot the heatmap of the MAP covariance matrix estimator
@@ -13,10 +11,10 @@
 #'       Estimator of the covariance matrix given the permutation.
 #'       That is, the `S` matrix inside the `gips` object
 #'       projected on the permutation in the `gips` object.
-#'   * `"best"` - Plots the line of the biggest a posteriori found over time.
-#'   * `"all"` - Plots the line of a posteriori for all visited states.
-#'   * `"both"` - Plots both lines from "all" and "best".
-#'   * `"n0"` - Plots the line of `n0`s that were spotted during optimization
+#'   * `"best"` - Shows the maximum A Posteriori value found over time.
+#'   * `"all"` - Shows the A Posteriori values for all visited states.
+#'   * `"both"` - Shows both trajectories from "all" and "best".
+#'   * `"n0"` - Plots the `n0` values observed during optimization
 #'       (only for "MH" optimization).
 #'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.

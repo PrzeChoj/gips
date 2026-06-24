@@ -16,12 +16,12 @@
 \arguments{
 \item{x}{An object of a \code{gips} class.}
 
-\item{digits}{The number of digits after the comma
-for a posteriori to be presented. It can be negative.
+\item{digits}{The number of decimal places for
+the posterior probability. It can be negative.
 By default, \code{Inf}. It is passed to \code{\link[base:Round]{base::round()}}.}
 
 \item{compare_to_original}{A logical. Whether to print how many
-times more likely is the current permutation compared to:
+times more likely the current permutation is compared to:
 \itemize{
 \item the identity permutation \verb{()} (for unoptimized \code{gips} object);
 \item the starting permutation (for optimized \code{gips} object).
@@ -36,7 +36,7 @@ one or multiple lines. Default to \code{FALSE}.}
 \item{...}{The additional arguments passed to \code{\link[base:cat]{base::cat()}}.}
 }
 \value{
-Returns an invisible \code{NULL}.
+An invisible \code{NULL}.
 }
 \description{
 Printing function for a \code{gips} class.

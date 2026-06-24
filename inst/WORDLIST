@@ -53,6 +53,7 @@ ge
 iter
 iteratively
 jss
+langle
 ldots
 le
 mapsto
@@ -71,11 +72,12 @@ pkgdown
 posteriori
 posteriories
 programme
+rangle
 rescaling
 rnorm
+roxygen
 runif
 th
 underflows
 unoptimized
-validator
 withr

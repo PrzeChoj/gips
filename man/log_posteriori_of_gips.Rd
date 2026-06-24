@@ -2,7 +2,7 @@
 % Please edit documentation in R/log_posteriori_of_gips.R
 \name{log_posteriori_of_gips}
 \alias{log_posteriori_of_gips}
-\title{A log of a posteriori that the covariance matrix is invariant under permutation}
+\title{Log of the A Posteriori of the permutation that the covariance matrix is invariant under}
 \usage{
 log_posteriori_of_gips(g)
 }
@@ -10,11 +10,10 @@ log_posteriori_of_gips(g)
 \item{g}{An object of a \code{gips} class.}
 }
 \value{
-Returns a value of
-the logarithm of an unnormalized A Posteriori.
+The logarithm of an unnormalized A Posteriori.
 }
 \description{
-More precisely, it is the logarithm of an unnormalized
+More precisely, this is the logarithm of an unnormalized
 posterior probability. It is the goal function for
 optimization algorithms in the \code{find_MAP()} function.
 The \code{perm_proposal} that maximizes this function is
@@ -83,7 +82,7 @@ the structure constants needed for \code{log_posteriori_of_gips()}.
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that optimizes
 the \code{log_posteriori_of_gips} function.
 \item \code{\link[=compare_posteriories_of_perms]{compare_posteriories_of_perms()}} - Uses \code{log_posteriori_of_gips()}
-to compare a posteriori of two permutations.
+to compare A Posteriori of two permutations.
 \item \code{vignette("Theory", package = "gips")} or its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page} -
 A place to learn more about the math behind the \code{gips} package.

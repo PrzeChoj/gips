@@ -47,7 +47,7 @@ a list of all permutations visited during optimization.
 This can be useful sometimes but needs a lot more RAM.}
 
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
-only when \code{save_all_perms = TRUE}. For:
+when \code{save_all_perms = TRUE}. For:
 \itemize{
 \item \code{optimizer = "MH"} - use Metropolis-Hastings results to
 estimate posterior probabilities;
@@ -56,17 +56,17 @@ calculate exact posterior probabilities.
 }
 
 These additional calculations are costly, so a second and third
-progress bar is shown (when \code{show_progress_bar = TRUE}).
+progress bars are shown (when \code{show_progress_bar = TRUE}).
 
 To examine probabilities after optimization,
 call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}
 }
 \value{
-Returns an optimized object of a \code{gips} class.
+An optimized object of a \code{gips} class.
 }
 \description{
 Use one of the optimization algorithms to find the permutation that
-maximizes a posteriori probability based on observed data.
+maximizes A Posteriori probability based on observed data.
 Not all optimization algorithms will always find the MAP, but they try
 to find a significant value. More information can be found in
 the "\strong{Possible algorithms to use as optimizers}" section below.
@@ -116,9 +116,9 @@ This algorithm used in this context is a special case of the
 the \strong{hill climbing} algorithm;
 \href{https://en.wikipedia.org/wiki/Hill_climbing}{see Wikipedia}.
 The algorithm will check all transpositions in every iteration and
-go to the one with the biggest a posteriori value.
+go to the one with the biggest A Posteriori value.
 The optimization ends when all \emph{neighbors} will have a smaller
-a posteriori value. If the \code{max_iter} is reached before the end,
+A Posteriori value. If the \code{max_iter} is reached before the end,
 then the warning is shown, and it is recommended to continue
 the optimization on the output of the \code{find_MAP()} with
 \code{optimizer = "continue"}; see examples.

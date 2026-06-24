@@ -1,6 +1,6 @@
-#' A log of a posteriori that the covariance matrix is invariant under permutation
+#' Log of the A Posteriori of the permutation that the covariance matrix is invariant under
 #'
-#' More precisely, it is the logarithm of an unnormalized
+#' More precisely, this is the logarithm of an unnormalized
 #' posterior probability. It is the goal function for
 #' optimization algorithms in the `find_MAP()` function.
 #' The `perm_proposal` that maximizes this function is
@@ -29,7 +29,7 @@
 #' * [find_MAP()] - The function that optimizes
 #'     the `log_posteriori_of_gips` function.
 #' * [compare_posteriories_of_perms()] - Uses `log_posteriori_of_gips()`
-#'     to compare a posteriori of two permutations.
+#'     to compare A Posteriori of two permutations.
 #' * `vignette("Theory", package = "gips")` or its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about the math behind the `gips` package.
@@ -41,8 +41,7 @@
 #'
 #' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{g=1}^{G} \log P(\Gamma | S_g)}
 #'
-#' @returns Returns a value of
-#'     the logarithm of an unnormalized A Posteriori.
+#' @returns The logarithm of an unnormalized A Posteriori.
 #'
 #' @examples
 #' # In the space with p = 2, there is only 2 permutations:
@@ -237,7 +236,7 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' Check which permutation is more likely and how much more likely.
 #'
 #' @param perm1,perm2 Permutations to compare.
-#'     How many times `perm1` is more likely than `perm2`?
+#'     How many times is `perm1` more likely than `perm2`?
 #'     Those can be provided as the `gips` objects,
 #'     the `gips_perm` objects, or anything that can be used as
 #'     the `x` parameter in the [gips_perm()] function.

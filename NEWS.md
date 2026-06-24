@@ -24,6 +24,10 @@ Functions updated to support multi-sample `gips` objects:
 Plotting for multi-sample objects is not yet implemented and will raise an
 informative error.
 
+### Bugfix:
+
+- Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.
+
 
 # gips 1.2.3
 

@@ -12,7 +12,7 @@
 \item{...}{Further arguments (currently ignored).}
 }
 \value{
-Returns an object of a \code{character} type.
+An object of a \code{character} type.
 }
 \description{
 Implementation of the S3 method.

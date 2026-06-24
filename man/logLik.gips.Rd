@@ -29,7 +29,7 @@ More information can be found in the \strong{Existence of likelihood} section be
 Calculates Log-Likelihood of the sample based on the \code{gips} object.
 }
 \details{
-This will always be the biggest for \code{perm = "()"} (provided that \code{p <= n}).
+This will always be largest for \code{perm = "()"} (provided that \code{p <= n}).
 
 If the found permutation still requires more parameters than \code{n},
 the likelihood does not exist; thus the function returns \code{NULL}.
