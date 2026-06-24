@@ -475,8 +475,9 @@ print.summary.gips <- function(x, ...) {
       ),
       ifelse(is.null(x[["likelihood_ratio_test_p_value"]]),
         "\n\nThe current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)",
-        paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4)))
-      ),
+        paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4))
+      )
+    ),
     "\n\nThe number of observations:\n ", x[["number_of_observations"]],
     "\n\n", ifelse(x[["was_mean_estimated"]],
       paste0(

@@ -378,8 +378,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 }
 
 
-Metropolis_Hastings_optimizer <- function(S,
-    number_of_observations, max_iter, start_perm = NULL,
+Metropolis_Hastings_optimizer <- function(
+    S, number_of_observations, max_iter, start_perm = NULL,
     delta = 3, D_matrix = NULL, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {
@@ -529,8 +529,8 @@ Metropolis_Hastings_optimizer <- function(S,
 }
 
 
-hill_climbing_optimizer <- function(S,
-    number_of_observations, max_iter = 5,
+hill_climbing_optimizer <- function(
+    S, number_of_observations, max_iter = 5,
     start_perm = NULL, delta = 3, D_matrix = NULL,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
   if (is.null(start_perm)) {

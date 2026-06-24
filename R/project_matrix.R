@@ -279,8 +279,12 @@ get_single_from_double_indices <- function(indices, matrix_size) {
 #' @noRd
 is_diagonal_matrix_ <- function(S) {
   p <- nrow(S)
-  if (p == 1L) return(TRUE)
-  if (S[1, 2] != 0) return(FALSE) # fast check
+  if (p == 1L) {
+    return(TRUE)
+  }
+  if (S[1, 2] != 0) {
+    return(FALSE)
+  } # fast check
   all(S[lower.tri(S) | upper.tri(S)] == 0)
 }
 
