@@ -102,7 +102,6 @@ plot.gips <- function(x, type = NA,
                       xlabel = NULL, ylabel = NULL,
                       show_legend = TRUE,
                       ylim = NULL, xlim = NULL, ...) {
-  # checking the correctness of the arguments:
   if (!requireNamespace("graphics", quietly = TRUE)) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Package 'graphics' must be installed to use this function.",
@@ -126,7 +125,7 @@ plot.gips <- function(x, type = NA,
 
     rlang::inform(c("You used the default value of the 'type' argument in `plot()` for gips object.",
       "i" = paste0(
-        "The `type = NA` was automatically changed to `type = '",
+        "The `type` was automatically set to `type = '",
         type, "'`."
       )
     ))
@@ -163,274 +162,371 @@ plot.gips <- function(x, type = NA,
     )
   }
 
-  # plotting:
+  # dispatch to the appropriate internal plotting function
   if (type == "heatmap" || type == "block_heatmap") {
-    rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
-      reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`; without those packages, the `stats::heatmap()` will be used"
-    )
-    if (type == "block_heatmap") {
-      my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
-    } else {
-      my_projected_matrix <- project_matrix(attr(x, "S"), x[[1]])
-    }
-
-    if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
-      p <- ncol(my_projected_matrix)
-
-      if (is.null(colnames(my_projected_matrix))) {
-        colnames(my_projected_matrix) <- paste0(seq(1, p))
-      }
-      if (is.null(rownames(my_projected_matrix))) {
-        rownames(my_projected_matrix) <- paste0(seq(1, p))
-      }
-
-      my_rownames <- rownames(my_projected_matrix)
-      my_colnames <- colnames(my_projected_matrix)
-      rownames(my_projected_matrix) <- as.character(1:p)
-      colnames(my_projected_matrix) <- as.character(1:p)
-
-      # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
-      col_id <- covariance <- row_id <- NULL
-
-      # Life would be easier with pipes (%>%)
-      my_transformed_matrix <- tibble::rownames_to_column(
-        as.data.frame(my_projected_matrix),
-        "row_id"
-      )
-      my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
-        -c(row_id),
-        names_to = "col_id",
-        values_to = "covariance"
-      )
-      my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
-        col_id = as.numeric(col_id)
-      )
-      my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
-        row_id = as.numeric(row_id)
-      )
-      g_plot <- ggplot2::ggplot(
-        my_transformed_matrix,
-        ggplot2::aes(x = col_id, y = row_id, fill = covariance)
-      ) +
-        ggplot2::geom_raster() +
-        ggplot2::scale_fill_viridis_c(na.value = "white") +
-        ggplot2::scale_x_continuous(breaks = 1:p, labels = my_rownames) +
-        ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
-        ggplot2::theme_bw() +
-        ggplot2::labs(
-          title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
-          x = "", y = ""
-        )
-
-      return(g_plot)
-    } else { # use the basic plot in R, package `graphics`
-      if (is.null(color)) { # Setting col = NA or col = NULL turns off the whole plot.
-        stats::heatmap(my_projected_matrix,
-          symm = TRUE,
-          Rowv = NA, Colv = NA, ...
-        )
-      } else {
-        stats::heatmap(my_projected_matrix,
-          symm = TRUE,
-          Rowv = NA, Colv = NA, col = color, ...
-        )
-      }
-    }
+    return(plot_gips_heatmap(x, type = type, color = color, ...))
   }
   if (type %in% c("all", "best", "both")) {
-    if (is.null(ylabel)) {
-      ylabel <- ifelse(logarithmic_y,
-        "log posteriori",
-        "posteriori"
+    plot_gips_convergence(
+      x,
+      type = type,
+      logarithmic_y = logarithmic_y, logarithmic_x = logarithmic_x,
+      color = color,
+      title_text = title_text,
+      xlabel = xlabel, ylabel = ylabel,
+      show_legend = show_legend,
+      ylim = ylim, xlim = xlim,
+      ...
+    )
+  }
+  if (type == "n0") {
+    plot_gips_n0(
+      x,
+      logarithmic_y = logarithmic_y, logarithmic_x = logarithmic_x,
+      color = color,
+      title_text = title_text,
+      xlabel = xlabel, ylabel = ylabel,
+      show_legend = show_legend,
+      ylim = ylim, xlim = xlim,
+      ...
+    )
+  }
+
+  invisible(NULL)
+}
+
+
+#' Plot a heatmap of the projected covariance matrix
+#'
+#' Internal function called by [plot.gips()] for
+#' `type = "heatmap"` or `type = "block_heatmap"`.
+#'
+#' @param x A `gips` object.
+#' @param type One of `"heatmap"` or `"block_heatmap"`.
+#' @param color Vector of colors passed to [stats::heatmap()] (base fallback only).
+#' @param ... Additional arguments passed to [stats::heatmap()].
+#'
+#' @returns A `ggplot` object, or `NULL` invisibly when falling back to base graphics.
+#'
+#' @noRd
+plot_gips_heatmap <- function(x, type, color, ...) {
+  rlang::check_installed(c("dplyr", "tidyr", "tibble", "ggplot2"),
+    reason = "to use `plot.gips()` with `type %in% c('heatmap', 'MLE', 'block_heatmap')`; without those packages, the `stats::heatmap()` will be used"
+  )
+
+  if (type == "block_heatmap") {
+    my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
+  } else {
+    my_projected_matrix <- project_matrix(attr(x, "S"), x[[1]])
+  }
+
+  if (rlang::is_installed(c("dplyr", "tidyr", "tibble", "ggplot2"))) {
+    p <- ncol(my_projected_matrix)
+
+    if (is.null(colnames(my_projected_matrix))) {
+      colnames(my_projected_matrix) <- paste0(seq(1, p))
+    }
+    if (is.null(rownames(my_projected_matrix))) {
+      rownames(my_projected_matrix) <- paste0(seq(1, p))
+    }
+
+    my_rownames <- rownames(my_projected_matrix)
+    my_colnames <- colnames(my_projected_matrix)
+    rownames(my_projected_matrix) <- as.character(1:p)
+    colnames(my_projected_matrix) <- as.character(1:p)
+
+    # With this line, the R CMD check's "no visible binding for global variable" warning will not occur:
+    col_id <- covariance <- row_id <- NULL
+
+    # Life would be easier with pipes (%>%)
+    my_transformed_matrix <- tibble::rownames_to_column(
+      as.data.frame(my_projected_matrix),
+      "row_id"
+    )
+    my_transformed_matrix <- tidyr::pivot_longer(my_transformed_matrix,
+      -c(row_id),
+      names_to = "col_id",
+      values_to = "covariance"
+    )
+    my_transformed_matrix <- dplyr::mutate(my_transformed_matrix,
+      col_id = as.numeric(col_id),
+      row_id = as.numeric(row_id)
+    )
+    g_plot <- ggplot2::ggplot(
+      my_transformed_matrix,
+      ggplot2::aes(x = col_id, y = row_id, fill = covariance)
+    ) +
+      ggplot2::geom_raster() +
+      ggplot2::scale_fill_viridis_c(na.value = "white") +
+      ggplot2::scale_x_continuous(breaks = 1:p, labels = my_rownames) +
+      ggplot2::scale_y_reverse(breaks = 1:p, labels = my_colnames) +
+      ggplot2::theme_bw() +
+      ggplot2::labs(
+        title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
+        x = "", y = ""
       )
-    }
-    if (is.null(xlabel)) {
-      xlabel <- ifelse(logarithmic_x,
-        "log10 of number of function calls",
-        "number of function calls"
+
+    return(g_plot)
+  } else { # use the basic plot in R, package `graphics`
+    if (is.null(color)) { # Setting col = NA or col = NULL turns off the whole plot.
+      stats::heatmap(my_projected_matrix,
+        symm = TRUE,
+        Rowv = NA, Colv = NA, ...
       )
-    }
-    if (is.null(color)) {
-      if (type == "both") {
-        color <- c("red", "blue")
-      } else {
-        color <- "red"
-      }
-    }
-    if (logarithmic_y) {
-      y_values_from <- attr(x, "optimization_info")[["log_posteriori_values"]] # values of log_posteriori are logarithmic by default
     } else {
-      y_values_from <- exp(attr(x, "optimization_info")[["log_posteriori_values"]])
-    }
-
-    y_values_max <- cummax(y_values_from)
-    y_values_all <- y_values_from
-
-    num_of_steps <- length(y_values_max)
-
-    if (is.null(xlim)) {
-      xlim <- c(1, num_of_steps)
-    }
-
-    if (is.null(ylim)) {
-      ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
-      if (type == "best") {
-        ylim_plot[1] <- y_values_from[1] # for the "best" type this is the smallest point of the graph
-      }
-    } else {
-      ylim_plot <- ylim
-    }
-
-    # make the plot stairs-like
-    x_points <- c(1, rep(2:num_of_steps, each = 2))
-
-    if (logarithmic_x) {
-      x_points <- log10(x_points)
-      xlim <- log10(xlim)
-    }
-
-    graphics::plot.new()
-    graphics::plot.window(xlim, ylim_plot)
-
-    if (type != "best") {
-      # make the plot stairs-like
-      y_points <- c(
-        rep(y_values_all[1:(length(y_values_all) - 1)], each = 2),
-        y_values_all[length(y_values_all)]
-      )
-
-      graphics::lines.default(x_points, y_points,
-        type = "l", lwd = 3,
-        col = color[1], # the first color
-        ...
-      )
-    }
-    if (type != "all") {
-      # make the plot stairs-like
-      y_points <- c(
-        rep(y_values_max[1:(length(y_values_max) - 1)], each = 2),
-        y_values_max[length(y_values_max)]
-      )
-
-      graphics::lines.default(x_points, y_points,
-        lwd = 3, lty = 1,
-        col = color[length(color)], # the last color
-        ...
-      )
-    }
-
-    graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
-    graphics::axis(1, ...)
-    graphics::axis(2, ...)
-    graphics::box(...)
-
-    if (show_legend) {
-      if (type == "both") {
-        legend_text <- c(
-          "All calculated a posteriori",
-          "Maximum a posteriori calculated"
-        )
-        lty <- c(1, 1)
-        lwd <- c(3, 3)
-      } else if (type == "all") {
-        legend_text <- c("All calculated function values")
-        lty <- 1
-        lwd <- 3
-      } else if (type == "best") {
-        legend_text <- c("Maximum function values calculated")
-        lty <- 1
-        lwd <- 3
-      }
-
-      graphics::legend("bottomright",
-        inset = .002,
-        legend = legend_text,
-        col = color,
-        lty = lty, lwd = lwd,
-        cex = 0.7, box.lty = 0
+      stats::heatmap(my_projected_matrix,
+        symm = TRUE,
+        Rowv = NA, Colv = NA, col = color, ...
       )
     }
   }
-  if (type == "n0") {
-    if (is.null(ylabel)) {
-      ylabel <- ifelse(logarithmic_y,
-        "log n0",
-        "n0"
-      )
-    }
-    if (is.null(xlabel)) {
-      xlabel <- ifelse(logarithmic_x,
-        "log10 of number of function calls",
-        "number of function calls"
-      )
-    }
-    if (is.null(color)) {
+}
+
+
+#' Plot the optimizer posterior trajectory
+#'
+#' Internal function called by [plot.gips()] for
+#' `type %in% c("all", "best", "both")`.
+#'
+#' @param x A `gips` object (must be optimized).
+#' @param type One of `"all"`, `"best"`, or `"both"`.
+#' @param logarithmic_y,logarithmic_x Booleans. Sets axes to log scale.
+#' @param color Vector of line colors.
+#' @param title_text Plot title.
+#' @param xlabel,ylabel Axis labels.
+#' @param show_legend Boolean. Whether to draw the legend.
+#' @param ylim,xlim Axis limits; `NULL` uses data range.
+#' @param ... Additional arguments passed to base graphics functions.
+#'
+#' @returns `NULL` invisibly.
+#'
+#' @noRd
+plot_gips_convergence <- function(x, type,
+                                  logarithmic_y, logarithmic_x,
+                                  color,
+                                  title_text,
+                                  xlabel, ylabel,
+                                  show_legend,
+                                  ylim, xlim, ...) {
+  if (is.null(ylabel)) {
+    ylabel <- ifelse(logarithmic_y,
+      "log posteriori",
+      "posteriori"
+    )
+  }
+  if (is.null(xlabel)) {
+    xlabel <- ifelse(logarithmic_x,
+      "log10 of number of function calls",
+      "number of function calls"
+    )
+  }
+  if (is.null(color)) {
+    if (type == "both") {
+      color <- c("red", "blue")
+    } else {
       color <- "red"
     }
-    
-    if (logarithmic_y) {
-      y_values <- log(attr(x, "optimization_info")[["all_n0"]])
-    } else {
-      y_values <- attr(x, "optimization_info")[["all_n0"]]
+  }
+  if (logarithmic_y) {
+    y_values_from <- attr(x, "optimization_info")[["log_posteriori_values"]] # values of log_posteriori are logarithmic by default
+  } else {
+    y_values_from <- exp(attr(x, "optimization_info")[["log_posteriori_values"]])
+  }
+
+  y_values_max <- cummax(y_values_from)
+  y_values_all <- y_values_from
+
+  num_of_steps <- length(y_values_max)
+
+  if (is.null(xlim)) {
+    xlim <- c(1, num_of_steps)
+  }
+
+  if (is.null(ylim)) {
+    ylim_plot <- c(min(y_values_from), y_values_max[num_of_steps])
+    if (type == "best") {
+      ylim_plot[1] <- y_values_from[1] # for the "best" type this is the smallest point of the graph
     }
-    
-    num_of_steps <- length(y_values)
-    
-    if (is.null(xlim)) {
-      xlim <- c(1, num_of_steps)
-    }
-    
-    if (is.null(ylim)) {
-      ylim_plot <- c(0, max(y_values))
-    } else {
-      ylim_plot <- ylim
-    }
-    
-    # make the plot stairs-like
-    x_points <- c(1, rep(2:num_of_steps, each = 2))
-    
-    if (logarithmic_x) {
-      x_points <- log10(x_points)
-      xlim <- log10(xlim)
-    }
-    
-    graphics::plot.new()
-    graphics::plot.window(xlim, ylim_plot)
-    
+  } else {
+    ylim_plot <- ylim
+  }
+
+  # make the plot stairs-like
+  x_points <- c(1, rep(2:num_of_steps, each = 2))
+
+  if (logarithmic_x) {
+    x_points <- log10(x_points)
+    xlim <- log10(xlim)
+  }
+
+  graphics::plot.new()
+  graphics::plot.window(xlim, ylim_plot)
+
+  if (type != "best") {
     # make the plot stairs-like
     y_points <- c(
-      rep(y_values[1:(length(y_values) - 1)], each = 2),
-      y_values[length(y_values)]
+      rep(y_values_all[1:(length(y_values_all) - 1)], each = 2),
+      y_values_all[length(y_values_all)]
     )
-    
+
     graphics::lines.default(x_points, y_points,
       type = "l", lwd = 3,
       col = color[1], # the first color
       ...
     )
-    
-    graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
-    graphics::axis(1, ...)
-    graphics::axis(2, ...)
-    graphics::box(...)
-    
-    if (show_legend) {
-      legend_text <- "all perms n0"
+  }
+  if (type != "all") {
+    # make the plot stairs-like
+    y_points <- c(
+      rep(y_values_max[1:(length(y_values_max) - 1)], each = 2),
+      y_values_max[length(y_values_max)]
+    )
+
+    graphics::lines.default(x_points, y_points,
+      lwd = 3, lty = 1,
+      col = color[length(color)], # the last color
+      ...
+    )
+  }
+
+  graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
+  graphics::axis(1, ...)
+  graphics::axis(2, ...)
+  graphics::box(...)
+
+  if (show_legend) {
+    if (type == "both") {
+      legend_text <- c(
+        "All calculated a posteriori",
+        "Maximum a posteriori calculated"
+      )
       lty <- c(1, 1)
       lwd <- c(3, 3)
-      
-      graphics::legend("topright",
-                       inset = .002,
-                       legend = legend_text,
-                       col = color,
-                       lty = lty, lwd = lwd,
-                       cex = 0.7, box.lty = 0
-      )
+    } else if (type == "all") {
+      legend_text <- c("All calculated function values")
+      lty <- 1
+      lwd <- 3
+    } else if (type == "best") {
+      legend_text <- c("Maximum function values calculated")
+      lty <- 1
+      lwd <- 3
     }
+
+    graphics::legend("bottomright",
+      inset = .002,
+      legend = legend_text,
+      col = color,
+      lty = lty, lwd = lwd,
+      cex = 0.7, box.lty = 0
+    )
   }
 
   invisible(NULL)
 }
+
+
+#' Plot the n0 trajectory from MH optimization
+#'
+#' Internal function called by [plot.gips()] for `type = "n0"`.
+#'
+#' @param x A `gips` object (must be optimized with MH).
+#' @param logarithmic_y,logarithmic_x Booleans. Sets axes to log scale.
+#' @param color Line color.
+#' @param title_text Plot title.
+#' @param xlabel,ylabel Axis labels.
+#' @param show_legend Boolean. Whether to draw the legend.
+#' @param ylim,xlim Axis limits; `NULL` uses data range.
+#' @param ... Additional arguments passed to base graphics functions.
+#'
+#' @returns `NULL` invisibly.
+#'
+#' @noRd
+plot_gips_n0 <- function(x,
+                         logarithmic_y, logarithmic_x,
+                         color,
+                         title_text,
+                         xlabel, ylabel,
+                         show_legend,
+                         ylim, xlim, ...) {
+  if (is.null(ylabel)) {
+    ylabel <- ifelse(logarithmic_y,
+      "log n0",
+      "n0"
+    )
+  }
+  if (is.null(xlabel)) {
+    xlabel <- ifelse(logarithmic_x,
+      "log10 of number of function calls",
+      "number of function calls"
+    )
+  }
+  if (is.null(color)) {
+    color <- "red"
+  }
+
+  if (logarithmic_y) {
+    y_values <- log(attr(x, "optimization_info")[["all_n0"]])
+  } else {
+    y_values <- attr(x, "optimization_info")[["all_n0"]]
+  }
+
+  num_of_steps <- length(y_values)
+
+  if (is.null(xlim)) {
+    xlim <- c(1, num_of_steps)
+  }
+
+  if (is.null(ylim)) {
+    ylim_plot <- c(0, max(y_values))
+  } else {
+    ylim_plot <- ylim
+  }
+
+  # make the plot stairs-like
+  x_points <- c(1, rep(2:num_of_steps, each = 2))
+
+  if (logarithmic_x) {
+    x_points <- log10(x_points)
+    xlim <- log10(xlim)
+  }
+
+  graphics::plot.new()
+  graphics::plot.window(xlim, ylim_plot)
+
+  # make the plot stairs-like
+  y_points <- c(
+    rep(y_values[1:(length(y_values) - 1)], each = 2),
+    y_values[length(y_values)]
+  )
+
+  graphics::lines.default(x_points, y_points,
+    type = "l", lwd = 3,
+    col = color[1], # the first color
+    ...
+  )
+
+  graphics::title(main = title_text, xlab = xlabel, ylab = ylabel, ...)
+  graphics::axis(1, ...)
+  graphics::axis(2, ...)
+  graphics::box(...)
+
+  if (show_legend) {
+    legend_text <- "all perms n0"
+    lty <- c(1, 1)
+    lwd <- c(3, 3)
+
+    graphics::legend("topright",
+      inset = .002,
+      legend = legend_text,
+      col = color,
+      lty = lty, lwd = lwd,
+      cex = 0.7, box.lty = 0
+    )
+  }
+
+  invisible(NULL)
+}
+
 
 #' Replace all non-block entries with NA
 #'
