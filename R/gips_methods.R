@@ -23,6 +23,11 @@
 #'     the compared posteriories between any two permutations,
 #'     not only compared to the starting one or id.
 #'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the number of observations is shown as a
+#' vector `n = c(n1, n2, ...)` and the comparison to the starting permutation
+#' uses the combined log-posterior (sum across groups).
+#'
 #' @returns An invisible `NULL`.
 #' @export
 #'
@@ -270,6 +275,13 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       in an iteration.
 #' @export
 #' 
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the summary includes the number of groups G,
+#' the full vector of per-group sample sizes, and the total `n_parameters`
+#' (which equals `G * dim_omega(sigma)`). The n0 existence check uses
+#' `min(n_g)`. The Likelihood-Ratio test is not available for multi-sample
+#' objects and is reported as `NULL`.
+#'
 #' @importFrom stats pchisq
 #'
 #' @seealso
@@ -312,6 +324,12 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' summary(g_map2)
 summary.gips <- function(object, ...) {
   # validate_gips(object) # validation is done in `log_posteriori_of_gips()`
+
+  # Multi-sample: simplified summary (no LR test, n0 uses min(n_g))
+  if (is.list(attr(object, "S"))) {
+    return(summary_gips_mult(object))
+  }
+
   permutation_log_posteriori <- log_posteriori_of_gips(object)
 
   tmp <- get_n0_and_edited_number_of_observations_from_gips(object)
@@ -437,12 +455,17 @@ summary.gips <- function(object, ...) {
 #' g <- gips(S, 10)
 #' print(summary(g))
 print.summary.gips <- function(x, ...) {
+  # The MLE exists if n >= n0
+  MLE_exists <- x[["n0"]] <= min(x[["number_of_observations"]])
+
   cat(
     ifelse(x[["optimized"]],
       "The optimized",
       "The unoptimized"
     ),
-    " `gips` object.\n\nPermutation:\n ",
+    " `gips` object",
+    if (isTRUE(x[["is_multi_sample"]])) paste0(" (multi-sample, G = ", x[["G"]], " groups)") else "",
+    ".\n\nPermutation:\n ",
     ifelse(x[["optimized"]],
       as.character(x[["found_permutation"]]),
       as.character(x[["start_permutation"]])
@@ -468,45 +491,79 @@ print.summary.gips <- function(x, ...) {
         )
       )
     ),
-    ifelse(is.null(x[["likelihood_ratio_test_statistics"]]),
-      ifelse(is.positive.definite.matrix(x[["S_matrix"]]),
-        "\n\ndet(S) == 0, so Likelihood-Ratio test cannot be performed",
-        "\n\nn0 > number_of_observations, so Likelihood-Ratio test cannot be performed"
-      ),
-      ifelse(is.null(x[["likelihood_ratio_test_p_value"]]),
-        "\n\nThe current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)",
-        paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4))
+    if (isTRUE(x[["is_multi_sample"]])) {
+      "\n\nLikelihood-Ratio test: not available for multi-sample `gips` objects"
+    } else {
+      ifelse(is.null(x[["likelihood_ratio_test_statistics"]]),
+        ifelse(!is.positive.definite.matrix(x[["S_matrix"]]),
+          "\n\ndet(S) == 0, so Likelihood-Ratio test cannot be performed",
+          "\n\nn0 > number_of_observations, so Likelihood-Ratio test cannot be performed"
+        ),
+        ifelse(is.null(x[["likelihood_ratio_test_p_value"]]),
+          "\n\nThe current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)",
+          paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4)))
       )
-    ),
-    "\n\nThe number of observations:\n ", x[["number_of_observations"]],
+    },
+    "\n\nThe number of observations:\n ",
+    if (isTRUE(x[["is_multi_sample"]])) {
+      paste0(paste(x[["number_of_observations"]], collapse = ", "),
+             " (G = ", x[["G"]], " groups, total = ", sum(x[["number_of_observations"]]), ")")
+    } else {
+      x[["number_of_observations"]]
+    },
     "\n\n", ifelse(x[["was_mean_estimated"]],
-      paste0(
-        "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
-        x[["number_of_observations"]] - 1, " degrees of freedom left."
-      ),
-      paste0(
-        "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
-        x[["number_of_observations"]], ")."
-      )
+      if (isTRUE(x[["is_multi_sample"]])) {
+        df_per_group <- x[["number_of_observations"]] - 1
+        paste0(
+          "The mean in the `S` matrices was estimated.\nTherefore, one degree of freedom was lost per group.\nDegrees of freedom left (per group): ",
+          paste(df_per_group, collapse = ", "), "."
+        )
+      } else {
+        paste0(
+          "The mean in the `S` matrix was estimated.\nTherefore, one degree of freedom was lost.\nThere are ",
+          x[["number_of_observations"]] - 1, " degrees of freedom left."
+        )
+      },
+      if (isTRUE(x[["is_multi_sample"]])) {
+        paste0(
+          "The mean in the `S` matrices was not estimated.\nTherefore, all degrees of freedom were preserved (",
+          paste(x[["number_of_observations"]], collapse = ", "), ")."
+        )
+      } else {
+        paste0(
+          "The mean in the `S` matrix was not estimated.\nTherefore, all degrees of freedom were preserved (",
+          x[["number_of_observations"]], ")."
+        )
+      }
     ),
-    "\n\nn0:\n ", x[["n0"]],
-    "\n\nThe number of observations is ",
-    ifelse(x[["n0"]] > x[["number_of_observations"]],
-      "smaller",
-      ifelse(x[["n0"]] == x[["number_of_observations"]],
-        "equal",
-        "bigger"
+    "\n\nn0 = number of cycles in a permutation",
+    if(isTRUE(x[["was_mean_estimated"]])){" + 1 (as the mean was estimated)"},
+    ":\n ", x[["n0"]],
+    "\n\n",
+    if (!MLE_exists) {
+      paste0(
+        "The MLE estimator based on the found permutation does not exist,\n",
+        "since the", if(isTRUE(x[["is_multi_sample"]])){" minimum"},
+        " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"}, " (",
+        min(x[["number_of_observations"]]),
+        ") is smaller than n0 (", x[["n0"]], ")."
       )
-    ),
-    " than n0 for this permutation,\nso the gips model based on the found permutation does ",
-    ifelse(x[["n0"]] > x[["number_of_observations"]],
-      "not ", ""
-    ), "exist.",
+    } else {
+      paste0(
+        "The MLE estimator based on the found permutation does exist,\n",
+        "since the", if(isTRUE(x[["is_multi_sample"]])){" minimum"},
+        " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"},
+        " (", min(x[["number_of_observations"]]), ") is ",
+        if (x[["n0"]] == min(x[["number_of_observations"]])) {"equal to"} else {"bigger than"},
+        " n0 (", x[["n0"]], ")."
+      )
+    },
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
-    "\n\nBIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+    if (isTRUE(x[["is_multi_sample"]])) paste0(" (", x[["n_parameters"]] / x[["G"]], " per group x ", x[["G"]], " groups)") else "",
+    "\n\nBIC:\n ", ifelse(!MLE_exists,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
     ),
-    "\n\nAIC:\n ", ifelse(x[["n0"]] > x[["number_of_observations"]],
+    "\n\nAIC:\n ", ifelse(!MLE_exists,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
     ),
     sep = ""
@@ -565,6 +622,99 @@ print.summary.gips <- function(x, ...) {
   invisible(NULL)
 }
 
+#' Internal summary for multi-sample gips objects
+#' @noRd
+summary_gips_mult <- function(object) {
+  permutation_log_posteriori <- log_posteriori_of_gips(object)
+  n0 <- get_n0_from_perm(object[[1]], attr(object, "was_mean_estimated"))
+  ns <- attr(object, "number_of_observations")
+  G <- length(ns)
+  n_parameters <- G * sum(get_structure_constants(object[[1]])[["dim_omega"]])
+
+  if (is.null(attr(object, "optimization_info"))) {
+    log_posteriori_id <- log_posteriori_of_perm(
+      perm_proposal = "", S = attr(object, "S"),
+      number_of_observations = if (attr(object, "was_mean_estimated")) ns - 1L else ns,
+      delta = attr(object, "delta"), D_matrix = attr(object, "D_matrix")
+    )
+
+    summary_list <- list(
+      optimized = FALSE,
+      start_permutation = object[[1]],
+      start_permutation_log_posteriori = permutation_log_posteriori,
+      times_more_likely_than_id = exp(permutation_log_posteriori - log_posteriori_id),
+      log_times_more_likely_than_id = permutation_log_posteriori - log_posteriori_id,
+      likelihood_ratio_test_statistics = NULL,
+      likelihood_ratio_test_p_value = NULL,
+      n0 = n0,
+      S_matrix = attr(object, "S"),
+      number_of_observations = ns,
+      was_mean_estimated = attr(object, "was_mean_estimated"),
+      delta = attr(object, "delta"),
+      D_matrix = attr(object, "D_matrix"),
+      n_parameters = n_parameters,
+      AIC = suppressWarnings(AIC(object)),
+      BIC = suppressWarnings(BIC(object)),
+      is_multi_sample = TRUE,
+      G = G
+    )
+  } else {
+    optimization_info <- attr(object, "optimization_info")
+
+    if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
+      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001)
+      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
+      start_permutation <- optimization_info[["start_perm"]]
+      start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
+    } else {
+      when_was_best <- NULL
+      log_posteriori_calls_after_best <- NULL
+      start_permutation <- optimization_info[["original_perm"]]
+      gips_start <- gips(
+        S = attr(object, "S"),
+        number_of_observations = attr(object, "number_of_observations"),
+        delta = attr(object, "delta"),
+        D_matrix = attr(object, "D_matrix"),
+        was_mean_estimated = attr(object, "was_mean_estimated"),
+        perm = start_permutation
+      )
+      start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
+    }
+
+    summary_list <- list(
+      optimized = TRUE,
+      found_permutation = object[[1]],
+      found_permutation_log_posteriori = permutation_log_posteriori,
+      start_permutation = start_permutation,
+      start_permutation_log_posteriori = start_permutation_log_posteriori,
+      times_more_likely_than_start = exp(permutation_log_posteriori - start_permutation_log_posteriori),
+      log_times_more_likely_than_start = permutation_log_posteriori - start_permutation_log_posteriori,
+      likelihood_ratio_test_statistics = NULL,
+      likelihood_ratio_test_p_value = NULL,
+      n0 = n0,
+      S_matrix = attr(object, "S"),
+      number_of_observations = ns,
+      was_mean_estimated = attr(object, "was_mean_estimated"),
+      delta = attr(object, "delta"),
+      D_matrix = attr(object, "D_matrix"),
+      n_parameters = n_parameters,
+      AIC = suppressWarnings(AIC(object)),
+      BIC = suppressWarnings(BIC(object)),
+      optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
+      did_converge = optimization_info[["did_converge"]],
+      number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
+      whole_optimization_time = optimization_info[["whole_optimization_time"]],
+      log_posteriori_calls_after_best = log_posteriori_calls_after_best,
+      acceptance_rate = optimization_info[["acceptance_rate"]],
+      is_multi_sample = TRUE,
+      G = G
+    )
+  }
+
+  structure(summary_list, class = "summary.gips")
+}
+
+
 #' Internal
 #' @return a vector of length 2 with n0 and edited_number_of_observations
 #' @noRd
@@ -620,6 +770,13 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #' See examples where the `g_n_too_small` had too small
 #' `number_of_observations` to have likelihood. After the optimization,
 #' the likelihood did exist.
+#'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects the log-likelihood is the sum of the
+#' per-group log-likelihoods. The existence condition becomes
+#' `min(n_g) >= n0`. The `df` attribute equals `G * dim_omega(sigma)`
+#' (each group has its own free covariance parameters), and `nobs` equals
+#' `sum(n_g)`.
 #'
 #' For more information, refer to **\eqn{C_\sigma} and `n0`** section in
 #' `vignette("Theory", package = "gips")` or its
@@ -684,6 +841,53 @@ logLik.gips <- function(object, ...) {
   validate_gips(object)
 
   original_cov <- attributes(object)[["S"]]
+
+  # Multi-sample branch
+  if (is.list(original_cov)) {
+    ns <- attr(object, "number_of_observations")
+    G <- length(ns)
+    p <- ncol(original_cov[[1]])
+    n0 <- get_n0_from_perm(object[[1]], attr(object, "was_mean_estimated"))
+    min_n <- min(ns)
+
+    if (min_n < n0) {
+      rlang::warn(c(
+        "The likelihood is not defined for this multi-sample `gips`.",
+        "x" = paste0(
+          "The minimum n_g = ", min_n,
+          " is smaller than the required n0 = ", n0, "."
+        )
+      ), class = "likelihood_does_not_exists")
+      return(NULL)
+    }
+
+    edited_ns <- if (attr(object, "was_mean_estimated")) ns - 1L else ns
+    projected_covs <- project_matrix(original_cov, object[[1]])
+
+    log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303
+
+    log_L_S <- 0
+    for (i in seq_len(G)) {
+      log_det_i <- determinant(projected_covs[[i]], logarithm = TRUE)[["modulus"]]
+      attributes(log_det_i) <- NULL
+      if (is.infinite(log_det_i)) {
+        rlang::warn(c(
+          "A projected matrix for one of the groups is computationally singular.",
+          "x" = paste0("Group ", i, ": reciprocal condition number = ",
+                       rcond(projected_covs[[i]]), ".")
+        ), class = "singular_matrix")
+        return(-Inf)
+      }
+      log_L_S <- log_L_S + (-edited_ns[i] * (p * log_2pi_plus_1 + log_det_i) / 2)
+    }
+
+    n_parameters <- G * sum(get_structure_constants(object[[1]])[["dim_omega"]])
+    attr(log_L_S, "df") <- n_parameters
+    attr(log_L_S, "nobs") <- sum(ns)
+    class(log_L_S) <- "logLik"
+    return(log_L_S)
+  }
+
   projected_cov <- project_matrix(original_cov, object[[1]])
   p <- ncol(original_cov)
   n <- attr(object, "number_of_observations")
@@ -738,6 +942,12 @@ logLik.gips <- function(object, ...) {
 #' the **Information Criterion - AIC and BIC** section in
 #' `vignette("Theory", package = "gips")` or its
 #' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects, `AIC.gips()` and `BIC.gips()` are based on
+#' the combined log-likelihood (sum across G groups). The penalty term uses
+#' `G * dim_omega(sigma)` parameters, and the BIC sample size is `sum(n_g)`.
+#' See [logLik.gips()] for details.
 #'
 #' @method AIC gips
 #'

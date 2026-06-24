@@ -11,6 +11,7 @@
 #'       Estimator of the covariance matrix given the permutation.
 #'       That is, the `S` matrix inside the `gips` object
 #'       projected on the permutation in the `gips` object.
+#'       For multi-sample objects, produces faceted heatmaps (one panel per group).
 #'   * `"best"` - Shows the maximum A Posteriori value found over time.
 #'   * `"all"` - Shows the A Posteriori values for all visited states.
 #'   * `"both"` - Shows both trajectories from "all" and "best".
@@ -21,10 +22,15 @@
 #'       For more information, see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
+#'       For multi-sample objects, produces faceted block heatmaps.
 #'
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
+#' 
+#' **Multi-sample note:** Heatmap types produce one facet per group. 
+#'     When there are more than 10 groups, the function warns the user 
+#'     (or prompts for confirmation in interactive sessions) before plotting.
 #'     
 #' Arguments `logarithmic_y`, `logarithmic_x`, `color`, `title_text`,
 #'     `xlabel`, `ylabel`, `show_legend`, `ylim`, and `xlim` are only used for
@@ -218,6 +224,10 @@ plot.gips <- function(x, type = NA,
 #'
 #' @noRd
 plot_gips_heatmap <- function(x, type) {
+  if (is.list(attr(x, "S"))) {
+    return(plot_gips_heatmap_multi(x, type))
+  }
+
   if (type == "block_heatmap") {
     my_projected_matrix <- get_diagonalized_matrix_for_heatmap(x)
   } else {
@@ -267,6 +277,95 @@ plot_gips_heatmap <- function(x, type) {
     ggplot2::theme_bw() +
     ggplot2::labs(
       title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
+      x = "", y = ""
+    )
+}
+
+
+#' Plot faceted heatmaps for multi-sample gips objects
+#'
+#' Internal function called by `plot_gips_heatmap()` when the `gips`
+#' object was constructed from a list of matrices.
+#' Produces one heatmap facet per group.
+#' When there are more than 10 groups and the session is interactive,
+#' the user is asked to confirm before plotting.
+#'
+#' @param x A multi-sample `gips` object.
+#' @param type One of `"heatmap"` or `"block_heatmap"`.
+#'
+#' @returns A `ggplot` object, or `invisible(NULL)` if the user declines.
+#'
+#' @noRd
+plot_gips_heatmap_multi <- function(x, type) {
+  S_list <- attr(x, "S")
+  G <- length(S_list)
+  perm <- x[[1]]
+
+  if (G > 10) {
+    if (rlang::is_interactive()) {
+      answer <- readline(paste0(
+        "Your gips object has ", G, " groups. Plotting ", G,
+        " facets may result in a cluttered plot.\n",
+        "Do you want to continue? (y/n): "
+      ))
+      if (!tolower(trimws(answer)) %in% c("y", "yes")) {
+        rlang::inform("Plotting cancelled.")
+        return(invisible(NULL))
+      }
+    } else {
+      rlang::warn(paste0(
+        "Plotting ", G, " groups as heatmap facets. This may look cluttered. ",
+        "In an interactive session you would be asked to confirm first."
+      ))
+    }
+  }
+
+  # Compute the projected matrix for each group
+  if (type == "block_heatmap") {
+    matrices <- lapply(S_list, function(S_g) get_block_matrix_for_S_perm(S_g, perm))
+  } else {
+    matrices <- lapply(S_list, function(S_g) project_matrix(S_g, perm))
+  }
+
+  p <- ncol(matrices[[1]])
+
+  # Axis labels from the first matrix (or numeric fallback)
+  col_labels <- if (!is.null(colnames(matrices[[1]]))) colnames(matrices[[1]]) else as.character(seq_len(p))
+  row_labels <- if (!is.null(rownames(matrices[[1]]))) rownames(matrices[[1]]) else as.character(seq_len(p))
+
+  # Facet labels
+  group_labels <- if (!is.null(names(S_list))) names(S_list) else paste0("Group ", seq_len(G))
+
+  # R CMD check: no visible binding for global variable
+  col_id <- covariance <- row_id <- group <- NULL
+
+  # Build a single long data frame with a group column
+  df_list <- lapply(seq_len(G), function(g_idx) {
+    mat <- matrices[[g_idx]]
+    rownames(mat) <- as.character(seq_len(p))
+    colnames(mat) <- as.character(seq_len(p))
+    df <- tibble::rownames_to_column(as.data.frame(mat), "row_id")
+    df <- tidyr::pivot_longer(df, -row_id, names_to = "col_id", values_to = "covariance")
+    df <- dplyr::mutate(df, col_id = as.numeric(col_id), row_id = as.numeric(row_id))
+    df[["group"]] <- group_labels[g_idx]
+    df
+  })
+
+  combined_df <- do.call(rbind, df_list)
+  combined_df[["group"]] <- factor(combined_df[["group"]], levels = group_labels)
+
+  ggplot2::ggplot(
+    combined_df,
+    ggplot2::aes(x = col_id, y = row_id, fill = covariance)
+  ) +
+    ggplot2::geom_raster() +
+    ggplot2::scale_fill_viridis_c(na.value = "white") +
+    ggplot2::scale_x_continuous(breaks = seq_len(p), labels = col_labels) +
+    ggplot2::scale_y_reverse(breaks = seq_len(p), labels = row_labels) +
+    ggplot2::facet_wrap(ggplot2::vars(group)) +
+    ggplot2::theme_bw() +
+    ggplot2::labs(
+      title = paste0("Estimated covariance matrices\nprojected on permutation ", perm),
       x = "", y = ""
     )
 }
@@ -426,6 +525,32 @@ plot_gips_n0 <- function(x,
 }
 
 
+#' Compute the block-diagonal matrix for a given S and permutation
+#'
+#' Projects `S` onto `perm`, block-diagonalizes it, and replaces all
+#' off-block entries with `NA` (shown as white in the heatmap).
+#'
+#' @param S A p×p matrix.
+#' @param perm A `gips_perm` object.
+#' @noRd
+get_block_matrix_for_S_perm <- function(S, perm) {
+  projected_matrix <- project_matrix(S, perm)
+  diagonalising_matrix <- prepare_orthogonal_matrix(perm)
+  full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
+  block_ends <- get_block_ends(get_structure_constants(perm))
+  block_starts <- c(1, block_ends[-length(block_ends)] + 1)
+  block_matrix <- matrix(
+    nrow = nrow(full_block_matrix),
+    ncol = ncol(full_block_matrix)
+  )
+  for (i in seq_along(block_starts)) {
+    slice <- block_starts[i]:block_ends[i]
+    block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop = FALSE]
+  }
+  block_matrix
+}
+
+
 #' Replace all non-block entries with NA
 #'
 #' Diagonalize matrix using found permutation and
@@ -436,19 +561,5 @@ plot_gips_n0 <- function(x,
 #' @param g `gips` object.
 #' @noRd
 get_diagonalized_matrix_for_heatmap <- function(g) {
-  perm <- g[[1]]
-  projected_matrix <- project_matrix(attr(g, "S"), perm)
-  diagonalising_matrix <- prepare_orthogonal_matrix(perm)
-  full_block_matrix <- t(diagonalising_matrix) %*% projected_matrix %*% diagonalising_matrix
-  block_ends <- get_block_ends(get_structure_constants(perm))
-  block_starts <- c(1, block_ends[-length(block_ends)] + 1)
-  block_matrix <- matrix(
-    nrow = nrow(full_block_matrix),
-    ncol = ncol(full_block_matrix)
-  )
-  for (i in 1:length(block_starts)) {
-    slice <- block_starts[i]:block_ends[i]
-    block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop = FALSE]
-  }
-  block_matrix
+  get_block_matrix_for_S_perm(attr(g, "S"), g[[1]])
 }

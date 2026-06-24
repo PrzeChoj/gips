@@ -1,5 +1,22 @@
 # gips 1.2.3.9000
 
+### Multi-sample support
+
+`gips()` now accepts a **list of covariance matrices** and a vector of sample
+sizes, enabling Bayesian model selection with a shared permutation symmetry
+across G independent groups:
+
+```r
+g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+g_MAP <- find_MAP(g, optimizer = "BF")
+```
+
+Each group has its own covariance matrix `Sigma_g` and can have its own prior
+hyperparameters `D_matrix_g` and `delta_g`, but all share the same symmetry
+group Gamma.
+The MLE exists when `min(n_g) >= n0`. **All existing single-sample usage is
+fully unchanged**.
+
 ### Update to functions
 
 - `plot.gips()` now uses `ggplot2` for all plot types.

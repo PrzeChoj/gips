@@ -783,7 +783,7 @@ test_that("summary.gips() works", {
 
   expect_output(
     print(summary(g1)),
-    "The number of observations is bigger than n0 for this permutation,\nso "
+    "The MLE estimator based on the found permutation does exist"
   )
 
   expect_output(
@@ -1114,4 +1114,17 @@ test_that("print.summary.gips() will not compare with original the unoptimized g
   
   pattern <- "Log_posteriori:\\s*(-?\\d+\\.\\d+)\\s\\sThe current permutation is id"
   expect_output(print(summary(g)), pattern) # The "Times more likely than starting permutation:" is skipped
+})
+
+
+test_that("summary() correctly identifies when model does not exist due to mean estimation", {
+  g <- gips(diag(4), 3, perm = "(1,2,3)")
+  s <- summary(g)
+  output <- capture.output(print(s))
+  
+  # The model should exist
+  expect_true(
+    any(grepl("The MLE estimator based on the found permutation does exist", output)),
+    info = "Model should exist as n >= n0"
+  )
 })
