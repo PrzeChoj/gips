@@ -13,6 +13,20 @@ test_that("gips() accepts a list of matrices (multi-sample construction)", {
 })
 
 
+test_that("gips() warns when S is a list with a single element", {
+  # Passing S as list(S) instead of S is likely a user error
+  expect_warning(
+    g <- gips(list(diag(3)), 10L),
+    regexp = "single element"
+  )
+
+  # The gips object should still be valid (multi-sample with G=1)
+  expect_s3_class(g, "gips")
+  expect_true(is.list(attr(g, "S")))
+  expect_equal(length(attr(g, "S")), 1)
+})
+
+
 test_that("gips() multi-sample errors on mismatched matrix dimensions", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- diag(3)

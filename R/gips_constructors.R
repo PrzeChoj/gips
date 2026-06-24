@@ -144,6 +144,16 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
   if (is.list(S)) {
     # Multi-sample path
     G <- length(S)
+    
+    # Warn if S is a list with a single element
+    if (G == 1) {
+      rlang::warn(
+        c("x" = "You passed `S` as a list with a single element.",
+          "i" = "Did you mean to pass the matrix directly (instead of a list)? ",
+          "i" = "If you intended multi-sample inference with one group, you can ignore this warning.")
+      )
+    }
+    
     p <- ncol(S[[1]])
 
     # Normalize delta: a scalar is broadcast to a per-group vector of length G
