@@ -135,12 +135,24 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
     ))
   }
 
+  project_matrix_unchecked_(S, perm, precomputed_equal_indices, TRUE)
+}
+
+#' Project matrix without argument validation
+#'
+#' Internal helper for callers that have already checked `S` and `perm`.
+#'
+#' @noRd
+project_matrix_unchecked_ <- function(
+    S, perm, precomputed_equal_indices = NULL, keep_dimnames = FALSE) {
   # Fast path for diagonal matrices: off-diagonal groups all average to 0,
   # so only the diagonal entries (one per cycle) need to be averaged.
   if (is_diagonal_matrix_(S)) {
     projected_matrix <- project_diagonal_matrix_(S, perm)
-    colnames(projected_matrix) <- colnames(S)
-    rownames(projected_matrix) <- rownames(S)
+    if (keep_dimnames) {
+      colnames(projected_matrix) <- colnames(S)
+      rownames(projected_matrix) <- rownames(S)
+    }
     return(projected_matrix)
   }
 
@@ -156,8 +168,10 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   projected_matrix <- matrix(nrow = nrow(S), ncol = ncol(S))
   projected_matrix[unlist(equal_indices_by_perm)] <- means
 
-  colnames(projected_matrix) <- colnames(S)
-  rownames(projected_matrix) <- rownames(S)
+  if (keep_dimnames) {
+    colnames(projected_matrix) <- colnames(S)
+    rownames(projected_matrix) <- rownames(S)
+  }
 
   projected_matrix
 }
