@@ -53,25 +53,44 @@
 <h2 class="pkg-version" data-toc-text="1.2.3" id="gips-123">gips 1.2.3<a class="anchor" aria-label="anchor" href="#gips-123"></a></h2><p class="text-muted">CRAN release: 2025-03-18</p>
 <div class="section level4">
 <h4 id="performance-gain-1-2-3">Performance gain<a class="anchor" aria-label="anchor" href="#performance-gain-1-2-3"></a></h4>
-<p>There was a significant improvement in the speed of calculation. Details in the table below for 1000 random permutations of a given size:</p>
-<table style="width:100%;" class="table"><colgroup><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"></colgroup><thead><tr><th>permutation size</th>
-<th>30</th>
-<th>50</th>
-<th>100</th>
-<th>200</th>
-<th>300</th>
-</tr></thead><tbody><tr><td>old computation time</td>
-<td>0.09 s</td>
-<td>0.10 s</td>
-<td>0.25 s</td>
-<td>~10 s</td>
-<td>~25 s</td>
-</tr><tr><td>new computation time</td>
-<td>0.07 s</td>
-<td>0.08 s</td>
-<td>0.10 s</td>
-<td>0.17 s</td>
-<td>~0.20 s</td>
+<p>There was a significant speed improvement in <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code>, which is used internally by posterior calculations. For 1000 random permutations of a given size:</p>
+<table class="table"><thead><tr><th>permutation size</th>
+<th align="right">30</th>
+<th align="right">50</th>
+<th align="right">100</th>
+<th align="right">200</th>
+<th align="right">300</th>
+</tr></thead><tbody><tr><td>v1.2.2</td>
+<td align="right">0.09 s</td>
+<td align="right">0.10 s</td>
+<td align="right">0.25 s</td>
+<td align="right">~10 s</td>
+<td align="right">~25 s</td>
+</tr><tr><td>v1.2.3</td>
+<td align="right">0.07 s</td>
+<td align="right">0.08 s</td>
+<td align="right">0.10 s</td>
+<td align="right">0.17 s</td>
+<td align="right">~0.20 s</td>
+</tr></tbody></table><p>This improved <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> as a consequent:</p>
+<table class="table"><thead><tr><th>permutation size</th>
+<th align="right">30</th>
+<th align="right">50</th>
+<th align="right">100</th>
+<th align="right">200</th>
+<th align="right">300</th>
+</tr></thead><tbody><tr><td>v1.2.2</td>
+<td align="right">1.50 s</td>
+<td align="right">2.49 s</td>
+<td align="right">7.08 s</td>
+<td align="right">55.25 s</td>
+<td align="right">169.77 s</td>
+</tr><tr><td>v1.2.3</td>
+<td align="right">1.29 s</td>
+<td align="right">2.24 s</td>
+<td align="right">6.84 s</td>
+<td align="right">31.73 s</td>
+<td align="right">85.10 s</td>
 </tr></tbody></table></div>
 <div class="section level4">
 <h4 id="update-to-functions-1-2-3">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-2-3"></a></h4>
