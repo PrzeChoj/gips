@@ -123,7 +123,7 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 #' perm <- permutations::as.cycle(permutations::as.word(c(2, 3, 1, 5, 4, 6)))
 #' my_gips_perm <- gips_perm(perm, perm_size)
 #' structure_constants <- get_structure_constants(my_gips_perm)
-#' gips:::G_function(structure_constants, 3)
+#' G_function(structure_constants, 3)
 #'
 #' @noRd
 G_function <- function(structure_constants, delta = 3) {

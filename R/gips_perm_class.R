@@ -309,7 +309,7 @@ as.character.gips_perm <- function(x, ...) {
 #' composed <- compose_with_transposition(gperm, tr)
 #' composed2 <- perm * tr_perm
 #'
-#' # composed and composed 2 refer to the same permutation
+#' # composed and composed2 refer to the same permutation
 compose_with_transposition <- function(gips_perm, transposition) {
   cycle_1_index <- which(sapply(gips_perm, function(cycle) {
     transposition[1] %in% cycle
