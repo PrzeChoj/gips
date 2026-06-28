@@ -28,10 +28,6 @@ test_that("projected matrix is invariant by example_perm", {
   # other ways of computing the same outcome
   projected2 <- project_matrix(S, "(1,2,3)(4,5)")
   expect_identical(projected, projected2)
-
-  precomputed_equal_indices <- get_equal_indices_by_perm(gips_perm(example_perm, 6))
-  projected3 <- project_matrix(S, example_perm, precomputed_equal_indices)
-  expect_identical(projected, projected3)
 })
 
 test_that("project_matrix gives errors", {
@@ -80,75 +76,30 @@ test_that("project_matrix does not forget colnames or rownames", {
   expect_equal(colnames(S_proj), colnames(S))
 })
 
-test_that("get_equal_indices_by_perm works for example_perm", {
-  values <- unique(as.integer(matrix_invariant_by_example_perm))
-  expected_equal_indices_by_example_perm <- lapply(values, function(v) {
-    which(as.integer(matrix_invariant_by_example_perm) == v)
-  })
-  gips_example_perm <- gips_perm(example_perm, 6)
+test_that("project_matrix handles identity, transpositions, long cycles, and fixed points", {
+  S <- matrix(seq_len(36), nrow = 6)
+  S <- S + t(S) + diag(6) * 100
 
-  actual_l <- lapply(
-    get_equal_indices_by_perm(gips_example_perm),
-    sort
-  )
-  expected_l <- lapply(
-    expected_equal_indices_by_example_perm,
-    sort
-  )
-  expect_setequal(actual_l, expected_l)
-})
+  identity_projected <- project_matrix(S, "()")
+  expect_equal(identity_projected, S)
 
-test_that("get_equal_indices_by_perm works for identity", {
-  expect_setequal(
-    get_equal_indices_by_perm(gips_perm(to_perm(1:3), 3)),
-    list(1, c(2, 4), c(3, 7), 5, c(6, 8), 9)
-  )
-})
+  transposition_projected <- project_matrix(S, "(1,2)")
+  expect_equal(transposition_projected[1, 1], transposition_projected[2, 2])
+  expect_equal(transposition_projected[1, 3], transposition_projected[2, 3])
+  expect_equal(transposition_projected[3, 1], transposition_projected[3, 2])
 
-test_that("get_single_from_double_indices works", {
-  full_double_indices <- matrix(
-    c(
-      rep(1:4, times = 4),
-      rep(1:4, each = 4)
-    ),
-    ncol = 2
-  )
+  long_cycle_projected <- project_matrix(S, "(1,2,3,4,5,6)")
+  for (i in 1:6) {
+    for (j in 1:6) {
+      expect_equal(
+        long_cycle_projected[i, j],
+        long_cycle_projected[ifelse(i == 6, 1, i + 1), ifelse(j == 6, 1, j + 1)]
+      )
+    }
+  }
 
-  expect_equal(
-    get_single_from_double_indices(full_double_indices, 4),
-    1:16
-  )
-})
-
-test_that("get_single_from_double_indices works for 0 input", {
-  expect_equal(
-    get_single_from_double_indices(matrix(numeric(0), ncol = 2), 4),
-    numeric(0)
-  )
-})
-
-test_that("get_double_from_single_indices works", {
-  full_double_indices <- matrix(
-    c(
-      rep(1:4, times = 4),
-      rep(1:4, each = 4)
-    ),
-    ncol = 2
-  )
-
-  expect_equal(
-    get_double_from_single_indices(1:16, 4),
-    full_double_indices
-  )
-  expect_equal(
-    get_double_from_single_indices(as.vector(matrix(1:16, ncol = 4)), 4),
-    full_double_indices
-  )
-})
-
-test_that("get_double_from_single_indices works for 0 input", {
-  expect_equal(
-    get_double_from_single_indices(numeric(0), 4),
-    matrix(numeric(0), ncol = 2)
-  )
+  fixed_point_projected <- project_matrix(S, "(1,2,3)")
+  expect_equal(fixed_point_projected[4, 4], S[4, 4])
+  expect_equal(fixed_point_projected[5, 5], S[5, 5])
+  expect_equal(fixed_point_projected[6, 6], S[6, 6])
 })

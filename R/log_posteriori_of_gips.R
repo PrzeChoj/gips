@@ -152,13 +152,8 @@ runif_transposition <- function(perm_size) {
 calculate_phi_part <- function(perm_proposal, number_of_observations, U,
                                delta, D_matrix, structure_constants) {
   # projection of matrices on perm_proposal
-  equal_indices <- get_equal_indices_by_perm(perm_proposal)
-  Dc <- project_matrix_unchecked_(D_matrix, perm_proposal,
-    precomputed_equal_indices = equal_indices
-  )
-  Uc <- project_matrix_unchecked_(U, perm_proposal,
-    precomputed_equal_indices = equal_indices
-  )
+  Dc <- project_matrix_cpp_(D_matrix, perm_proposal)
+  Uc <- project_matrix_cpp_(U, perm_proposal)
 
   # divide by 2 - refer to newest version of the paper
   Dc <- Dc / 2
