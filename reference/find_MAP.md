@@ -216,15 +216,12 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 g_map
-#> The permutation (1,2):
+#> The permutation ():
 #>  - was found after 5 posteriori calculations;
-#>  - is 2.337 times more likely than the () permutation.
+#>  - is 1 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
-
-if (require("graphics")) {
-  plot(g_map2, type = "both", logarithmic_x = TRUE)
-}
+plot(g_map2, type = "both", logarithmic_x = TRUE)
 
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
@@ -273,5 +270,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.1832893 secs
+#>  0.133441 secs
 ```
