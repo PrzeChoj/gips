@@ -180,8 +180,11 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
 #'   3, 3, 3, 6, 5, 7,
 #'   4, 4, 4, 7, 7, 8
 #' ), byrow = TRUE, ncol = 6)
-#' out <- get_equal_indices_by_perm(perm, 6)
-#' all(sapply(out, function(v) all.equal(matrix_symvariant[v]))) # TRUE
+#' out <- get_equal_indices_by_perm(perm)
+#' all(sapply(out, function(v) {
+#'   w <- matrix_symvariant[v]
+#'   isTRUE(all.equal(w, rep(w[1], length(w))))
+#' })) # TRUE
 #' @noRd
 get_equal_indices_by_perm <- function(perm) {
   perm_size <- attr(perm, "size")
