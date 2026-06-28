@@ -155,10 +155,7 @@
 #' g_map
 #'
 #' g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
-#'
-#' if (require("graphics")) {
-#'   plot(g_map2, type = "both", logarithmic_x = TRUE)
-#' }
+#' plot(g_map2, type = "both", logarithmic_x = TRUE)
 #'
 #' g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 #' summary(g_map_BF)

@@ -113,10 +113,7 @@
 #' g_map
 #'
 #' summary(g_map)
-#'
-#' if (require("graphics")) {
-#'   plot(g_map, type = "both", logarithmic_x = TRUE)
-#' }
+#' plot(g_map, type = "both", logarithmic_x = TRUE)
 gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
                  was_mean_estimated = TRUE, perm = "") {
   if (inherits(perm, "gips")) {
