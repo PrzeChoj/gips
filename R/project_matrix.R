@@ -139,10 +139,20 @@ project_matrix <- function(S, perm) {
 
 #' @noRd
 project_matrix_cpp_ <- function(S, perm) {
-  projected_matrix <- project_matrix_cpp_impl_(S, perm_to_sigma_(perm))
-  colnames(projected_matrix) <- colnames(S)
-  rownames(projected_matrix) <- rownames(S)
-  projected_matrix
+  project_matrices_cpp_(list(S), perm)[[1]]
+}
+
+#' @noRd
+project_matrices_cpp_ <- function(matrices, perm) {
+  projected_matrices <- project_matrices_cpp_impl_(matrices, perm_to_sigma_(perm))
+  names(projected_matrices) <- names(matrices)
+
+  for (i in seq_along(projected_matrices)) {
+    colnames(projected_matrices[[i]]) <- colnames(matrices[[i]])
+    rownames(projected_matrices[[i]]) <- rownames(matrices[[i]])
+  }
+
+  projected_matrices
 }
 
 #' Convert a `gips_perm` object to a 1-based permutation vector

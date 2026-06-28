@@ -76,6 +76,26 @@ test_that("project_matrix does not forget colnames or rownames", {
   expect_equal(colnames(S_proj), colnames(S))
 })
 
+test_that("project_matrices_cpp_ projects a list of matrices", {
+  p <- 6
+  S1 <- matrix(rnorm(p * p), nrow = p)
+  S1 <- S1 %*% t(S1)
+  S2 <- matrix(rnorm(p * p), nrow = p)
+  S2 <- S2 %*% t(S2)
+  rownames(S1) <- rownames(S2) <- LETTERS[1:p]
+  colnames(S1) <- colnames(S2) <- letters[1:p]
+  perm <- gips_perm("(1,2,3)(4,5)", p)
+
+  projected_list <- project_matrices_cpp_(list(first = S1, second = S2), perm)
+
+  expect_type(projected_list, "list")
+  expect_named(projected_list, c("first", "second"))
+  expect_equal(projected_list[[1]], project_matrix(S1, perm))
+  expect_equal(projected_list[[2]], project_matrix(S2, perm))
+  expect_equal(rownames(projected_list[[1]]), rownames(S1))
+  expect_equal(colnames(projected_list[[2]]), colnames(S2))
+})
+
 test_that("project_matrix handles identity, transpositions, long cycles, and fixed points", {
   S <- matrix(seq_len(36), nrow = 6)
   S <- S + t(S) + diag(6) * 100

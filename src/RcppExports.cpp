@@ -10,21 +10,21 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// project_matrix_cpp_impl_
-NumericMatrix project_matrix_cpp_impl_(NumericMatrix S, IntegerVector sigma);
-RcppExport SEXP _gips_project_matrix_cpp_impl_(SEXP SSEXP, SEXP sigmaSEXP) {
+// project_matrices_cpp_impl_
+List project_matrices_cpp_impl_(List matrices, IntegerVector sigma);
+RcppExport SEXP _gips_project_matrices_cpp_impl_(SEXP matricesSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type S(SSEXP);
+    Rcpp::traits::input_parameter< List >::type matrices(matricesSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_matrix_cpp_impl_(S, sigma));
+    rcpp_result_gen = Rcpp::wrap(project_matrices_cpp_impl_(matrices, sigma));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_gips_project_matrix_cpp_impl_", (DL_FUNC) &_gips_project_matrix_cpp_impl_, 2},
+    {"_gips_project_matrices_cpp_impl_", (DL_FUNC) &_gips_project_matrices_cpp_impl_, 2},
     {NULL, NULL, 0}
 };
 

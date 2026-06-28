@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <algorithm>
 #include <queue>
 #include <vector>
 using namespace Rcpp;
@@ -10,14 +11,30 @@ inline int matrix_index(int row, int col, int size) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix project_matrix_cpp_impl_(NumericMatrix S, IntegerVector sigma) {
-  const int size = S.nrow();
-
-  if (S.ncol() != size) {
-    stop("`S` must be square.");
+List project_matrices_cpp_impl_(List matrices, IntegerVector sigma) {
+  const int matrix_count = matrices.size();
+  if (matrix_count < 1) {
+    stop("`matrices` must contain at least one matrix.");
   }
+
+  std::vector<NumericMatrix> inputs;
+  std::vector<NumericMatrix> projected;
+  inputs.reserve(matrix_count);
+  projected.reserve(matrix_count);
+
+  NumericMatrix first_matrix(matrices[0]);
+  const int size = first_matrix.nrow();
+
   if (sigma.size() != size) {
     stop("`sigma` must have the same length as the size of `S`.");
+  }
+  for (int matrix_index = 0; matrix_index < matrix_count; ++matrix_index) {
+    NumericMatrix current_matrix(matrices[matrix_index]);
+    if (current_matrix.nrow() != size || current_matrix.ncol() != size) {
+      stop("Every matrix in `matrices` must be square and match the length of `sigma`.");
+    }
+    inputs.push_back(current_matrix);
+    projected.push_back(NumericMatrix(size, size));
   }
 
   std::vector<int> next(size);
@@ -29,8 +46,8 @@ NumericMatrix project_matrix_cpp_impl_(NumericMatrix S, IntegerVector sigma) {
     next[i] = image;
   }
 
-  NumericMatrix projected(size, size);
   std::vector<unsigned char> visited(size * size, 0);
+  std::vector<double> sums(matrix_count, 0.0);
 
   for (int start = 0; start < size * size; ++start) {
     if (visited[start]) {
@@ -65,22 +82,30 @@ NumericMatrix project_matrix_cpp_impl_(NumericMatrix S, IntegerVector sigma) {
       }
     }
 
-    double sum = 0.0;
+    std::fill(sums.begin(), sums.end(), 0.0);
     for (std::size_t orbit_index = 0; orbit_index < orbit.size(); ++orbit_index) {
       const int index = orbit[orbit_index];
       const int row = index % size;
       const int col = index / size;
-      sum += S(row, col);
+      for (int matrix_index = 0; matrix_index < matrix_count; ++matrix_index) {
+        sums[matrix_index] += inputs[matrix_index](row, col);
+      }
     }
-    const double mean = sum / orbit.size();
 
     for (std::size_t orbit_index = 0; orbit_index < orbit.size(); ++orbit_index) {
       const int index = orbit[orbit_index];
       const int row = index % size;
       const int col = index / size;
-      projected(row, col) = mean;
+      for (int matrix_index = 0; matrix_index < matrix_count; ++matrix_index) {
+        projected[matrix_index](row, col) = sums[matrix_index] / orbit.size();
+      }
     }
   }
 
-  return projected;
+  List out(matrix_count);
+  for (int matrix_index = 0; matrix_index < matrix_count; ++matrix_index) {
+    out[matrix_index] = projected[matrix_index];
+  }
+
+  return out;
 }
