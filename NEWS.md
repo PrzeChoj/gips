@@ -20,7 +20,7 @@ There was a significant speed improvement in `get_structure_constants()`, which 
 | v1.2.2 | 0.09 s | 0.10 s | 0.25 s | ~10 s | ~25 s |
 | v1.2.3 | 0.07 s | 0.08 s | 0.10 s | 0.17 s | ~0.20 s |
 
-This improved `log_posteriori_of_gips()` as a consequent:
+This change consequently improved `log_posteriori_of_gips()`. For 1000 random permutations of a given size:
 
 | permutation size | 30 | 50 | 100 | 200 | 300 |
 |---|---:|---:|---:|---:|---:|
