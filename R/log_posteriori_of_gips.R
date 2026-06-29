@@ -197,12 +197,16 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
 #' @noRd
 calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
                                                          block_ends) {
-  block_starts <- c(0, block_ends[-length(block_ends)] + 1)
-  sapply(1:length(block_starts), function(i) {
+  block_starts <- c(1, block_ends[-length(block_ends)] + 1)
+  out <- numeric(length(block_starts))
+  
+  for (i in seq_along(block_starts)) {
     slice <- block_starts[i]:block_ends[i]
     block_matrix <- diagonalised_matrix[slice, slice, drop = FALSE]
-    determinant(block_matrix, logarithm = TRUE)[["modulus"]]
-  })
+    out[i] <- determinant(block_matrix, logarithm = TRUE)[["modulus"]]
+  }
+  
+  out
 }
 
 #' Compare the posteriori probabilities of 2 permutations
