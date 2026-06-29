@@ -130,6 +130,7 @@ G_function <- function(structure_constants, delta = 3) {
   L <- structure_constants[["L"]]
   k <- structure_constants[["k"]]
   r <- structure_constants[["r"]]
+  d <- structure_constants[["d"]]
   dim_omega <- structure_constants[["dim_omega"]]
   
   lambda <- k * (delta - 2) / 2 + dim_omega / r
