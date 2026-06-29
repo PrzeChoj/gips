@@ -1,5 +1,14 @@
 # gips 1.2.3.9000
 
+### Performance gain
+
+`project_matrix()` is now implemented in C++ internally. This improves the speed of `log_posteriori_of_gips()`. For 1000 random permutations of a given size:
+
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.3 | 1.29 s | 2.24 s | 6.84 s | 31.73 s | 85.10 s |
+| v1.2.3.9000 | 0.62 s | 1.10 s | 3.85 s | 19.37 s | 82.50 s |
+
 ### Update to functions
 
 - `plot.gips()` now uses `ggplot2` for all plot types.
