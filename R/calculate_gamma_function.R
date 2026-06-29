@@ -127,11 +127,20 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 #'
 #' @noRd
 G_function <- function(structure_constants, delta = 3) {
-  single_G_i <- sapply(1:structure_constants[["L"]], function(i) {
-    lambda_i <- structure_constants[["k"]][i] * (delta - 2) / 2 + structure_constants[["dim_omega"]][i] / structure_constants[["r"]][i]
+  L <- structure_constants[["L"]]
+  single_G_i <- numeric(L)
 
-    calculate_gamma_omega(lambda_i, structure_constants[["dim_omega"]][i], structure_constants[["r"]][i], structure_constants[["d"]][i])
-  })
+  for (i in seq_len(L)) {
+    lambda_i <- structure_constants[["k"]][i] * (delta - 2) / 2 +
+      structure_constants[["dim_omega"]][i] / structure_constants[["r"]][i]
+
+    single_G_i[i] <- calculate_gamma_omega(
+      lambda_i,
+      structure_constants[["dim_omega"]][i],
+      structure_constants[["r"]][i],
+      structure_constants[["d"]][i]
+    )
+  }
 
   sum(single_G_i)
 }
