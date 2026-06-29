@@ -91,7 +91,7 @@ calculate_gamma_function <- function(perm, lambda) {
 #'
 #' @noRd
 calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
-  if (lambda <= dim_omega_i / r_i - 1) {
+  if ((lambda + 1) * r_i <= dim_omega_i) { # equivalent to lambda <= dim_omega_i / r_i - 1
     rlang::warn(c("Gamma integral is divergent for the given lambda value and structure constants.",
       "i" = paste0(
         "Gamma(lambda = ", lambda,
@@ -128,17 +128,19 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 #' @noRd
 G_function <- function(structure_constants, delta = 3) {
   L <- structure_constants[["L"]]
+  k <- structure_constants[["k"]]
+  r <- structure_constants[["r"]]
+  dim_omega <- structure_constants[["dim_omega"]]
+  
+  lambda <- k * (delta - 2) / 2 + dim_omega / r
+  
   single_G_i <- numeric(L)
-
   for (i in seq_len(L)) {
-    lambda_i <- structure_constants[["k"]][i] * (delta - 2) / 2 +
-      structure_constants[["dim_omega"]][i] / structure_constants[["r"]][i]
-
     single_G_i[i] <- calculate_gamma_omega(
-      lambda_i,
-      structure_constants[["dim_omega"]][i],
-      structure_constants[["r"]][i],
-      structure_constants[["d"]][i]
+      lambda[i],
+      dim_omega[i],
+      r[i],
+      d[i]
     )
   }
 
