@@ -13,12 +13,19 @@
 
 ### Performance gain
 
-There was a significant improvement in the speed of calculation. Details in the table below for 1000 random permutations of a given size:
+There was a significant speed improvement in `get_structure_constants()`, which is used internally by posterior calculations. For 1000 random permutations of a given size:
 
-|  permutation size  |  30  |  50  |  100  |  200  | 300 |
-|---|---|---|---|---|---|
-|  old computation time  |  0.09 s  |  0.10 s  |  0.25 s  |  ~10 s  |  ~25 s  |
-|  new computation time  |  0.07 s  |  0.08 s  |  0.10 s  |  0.17 s  |  ~0.20 s |
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.2 | 0.09 s | 0.10 s | 0.25 s | ~10 s | ~25 s |
+| v1.2.3 | 0.07 s | 0.08 s | 0.10 s | 0.17 s | ~0.20 s |
+
+This change consequently improved `log_posteriori_of_gips()`. For 1000 random permutations of a given size:
+
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.2 | 1.50 s | 2.49 s | 7.08 s | 55.25 s | 169.77 s |
+| v1.2.3 | 1.29 s | 2.24 s | 6.84 s | 31.73 s | 85.10 s |
 
 ### Update to functions
 
