@@ -142,3 +142,21 @@ test_that("gips object can be passed as perm", {
   expect_silent(U_Gamma2 <- prepare_orthogonal_matrix(g))
   expect_equal(U_Gamma1, U_Gamma2)
 })
+
+test_that("default fast path agrees with the identity-basis implementation", {
+  perms <- list(
+    gips_perm("()", 5),
+    gips_perm("(1,2)", 5),
+    gips_perm("(1,2,3)(4,5)", 6),
+    gips_perm("(1,2,3,4)", 4),
+    gips_perm("(1,2,3,4,5,6,7)", 7),
+    gips_perm("(1,2)(3,4,5)(6,7,8,9)", 9)
+  )
+
+  for (perm in perms) {
+    expect_equal(
+      prepare_orthogonal_matrix(perm),
+      prepare_orthogonal_matrix(perm, basis = diag(attr(perm, "size")))
+    )
+  }
+})
