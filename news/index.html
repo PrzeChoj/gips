@@ -40,6 +40,46 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.3.9000" id="gips-1239000">gips 1.2.3.9000<a class="anchor" aria-label="anchor" href="#gips-1239000"></a></h2>
 <div class="section level4">
+<h4 id="performance-gain-1-2-3-9000">Performance gain<a class="anchor" aria-label="anchor" href="#performance-gain-1-2-3-9000"></a></h4>
+<p><code><a href="../reference/project_matrix.html">project_matrix()</a></code> is now implemented in C++ internally. Additionally, several internal calculations used by <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> and <code>find_MAP(optimizer = "BF")</code> were optimized.</p>
+<p>For Brute Force optimization:</p>
+<table class="table"><thead><tr><th>permutation size</th>
+<th align="right">6</th>
+<th align="right">7</th>
+<th align="right">8</th>
+<th align="right">9</th>
+</tr></thead><tbody><tr><td>v1.2.3</td>
+<td align="right">1.26 s</td>
+<td align="right">4.06 s</td>
+<td align="right">30.19 s</td>
+<td align="right">4.35 min</td>
+</tr><tr><td>v1.2.3.9000</td>
+<td align="right">0.64 s</td>
+<td align="right">2.66 s</td>
+<td align="right">16.31 s</td>
+<td align="right">2.17 min</td>
+</tr></tbody></table><p>For <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> evaluated on 1000 random permutations of a given size:</p>
+<table class="table"><thead><tr><th>permutation size</th>
+<th align="right">30</th>
+<th align="right">50</th>
+<th align="right">100</th>
+<th align="right">200</th>
+<th align="right">300</th>
+</tr></thead><tbody><tr><td>v1.2.3</td>
+<td align="right">2.31 s</td>
+<td align="right">2.31 s</td>
+<td align="right">11.70 s</td>
+<td align="right">46.49 s</td>
+<td align="right">110.17 s</td>
+</tr><tr><td>v1.2.3.9000</td>
+<td align="right">0.84 s</td>
+<td align="right">1.26 s</td>
+<td align="right">3.24 s</td>
+<td align="right">15.73 s</td>
+<td align="right">39.47 s</td>
+</tr></tbody></table><p>The above tables based on the code from <a href="https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063" class="external-link">Pull Request </a><a href="https://github.com/PrzeChoj/gips/issues/99" class="external-link">#99</a>.</p>
+</div>
+<div class="section level4">
 <h4 id="update-to-functions-1-2-3-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-2-3-9000"></a></h4>
 <ul><li>
 <code><a href="../reference/plot.gips.html">plot.gips()</a></code> now uses <code>ggplot2</code> for all plot types.</li>
