@@ -2,12 +2,23 @@
 
 ### Performance gain
 
-`project_matrix()` is now implemented in C++ internally. This improves the speed of `log_posteriori_of_gips()`. For 1000 random permutations of a given size:
+`project_matrix()` is now implemented in C++ internally. Additionally, several internal calculations used by `log_posteriori_of_gips()` and `find_MAP(optimizer = "BF")` were optimized.
+
+For Brute Force optimization:
+
+| permutation size | 6 | 7 | 8 | 9 |
+|---|---:|---:|---:|---:|
+| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min |
+| v1.2.3.9000 | 0.64 s | 2.66 s | 16.31 s | 2.17 min |
+
+For `log_posteriori_of_gips()` evaluated on 1000 random permutations of a given size:
 
 | permutation size | 30 | 50 | 100 | 200 | 300 |
 |---|---:|---:|---:|---:|---:|
-| v1.2.3 | 1.29 s | 2.24 s | 6.84 s | 31.73 s | 85.10 s |
-| v1.2.3.9000 | 0.62 s | 1.10 s | 3.85 s | 19.37 s | 60.11 s |
+| v1.2.3 | 2.31 s | 2.31 s | 11.70 s | 46.49 s | 110.17 s |
+| v1.2.3.9000 | 0.84 s | 1.26 s | 3.24 s | 15.73 s | 39.47 s |
+
+The above tables based on the code from [Pull Request #99](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063).
 
 ### Update to functions
 
