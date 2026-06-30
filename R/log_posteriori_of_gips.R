@@ -111,9 +111,8 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
   Ac <- sum(structure_constants[["r"]] * structure_constants[["k"]] * log(structure_constants[["k"]])) # (20)
   Ac_part <- (-number_of_observations / 2 * Ac)
 
-  # G_part and phi_part
-  G_part <- G_function(structure_constants, delta + number_of_observations) -
-    G_function(structure_constants, delta)
+  # G_part
+  G_part <- calculate_G_part(structure_constants, delta, number_of_observations)
 
   # phi_part
   phi_part <- calculate_phi_part(
@@ -151,26 +150,44 @@ runif_transposition <- function(perm_size) {
 #' @noRd
 calculate_phi_part <- function(perm_proposal, number_of_observations, U,
                                delta, D_matrix, structure_constants) {
+  # TODO: This depends only on D_matrix, so it could be precomputed once by the optimizer.
+  is_D_matrix_scalar_identity_matrix <- is_scalar_identity_matrix(D_matrix)
+  
   # projection of matrices on perm_proposal
-  projected_matrices <- project_matrices_cpp_(list(D_matrix, U), perm_proposal)
-  Dc <- projected_matrices[[1]]
-  Uc <- projected_matrices[[2]]
-
+  if (is_D_matrix_scalar_identity_matrix) {
+    Dc <- D_matrix
+    Uc <- project_matrix_cpp_(U, perm_proposal)
+  } else {
+    projected_matrices <- project_matrices_cpp_(list(D_matrix, U), perm_proposal)
+    Dc <- projected_matrices[[1]]
+    Uc <- projected_matrices[[2]]
+  }
+  
   # divide by 2 - refer to newest version of the paper
   Dc <- Dc / 2
   Uc <- Uc / 2
 
   # diagonalization
   diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal)
-  Dc_diagonalised <- t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
+  Dc_diagonalised <- if (is_D_matrix_scalar_identity_matrix) {
+    Dc
+  } else {
+    t(diagonalising_matrix) %*% Dc %*% diagonalising_matrix
+  }
   DcUc_diagonalised <- t(diagonalising_matrix) %*% (Uc + Dc) %*% diagonalising_matrix
 
   # block part
   block_ends <- get_block_ends(structure_constants)
-  Dc_block_log_dets <- calculate_log_determinants_of_block_matrices(
-    Dc_diagonalised,
-    block_ends
-  )
+  Dc_block_log_dets <- if (is_D_matrix_scalar_identity_matrix) {
+    block_sizes <- c(block_ends[1], diff(block_ends))
+    # Use the mean of numerically equal diagonal values as the scalar.
+    Dc_block_log_dets <- block_sizes * log(mean(diag(Dc)))
+  } else {
+    calculate_log_determinants_of_block_matrices(
+      Dc_diagonalised,
+      block_ends
+    )
+  }
   DcUc_block_log_dets <- calculate_log_determinants_of_block_matrices(
     DcUc_diagonalised,
     block_ends
