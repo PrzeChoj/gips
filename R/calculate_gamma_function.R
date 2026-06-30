@@ -108,42 +108,51 @@ calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
 }
 
 
-#' G_function for `log_posteriori_of_gips()`
+#' Calculate the G part of `log_posteriori_of_gips()`
 #'
-#' @param delta Parameter of a method. The default is `3`.
-#'     When `structure_constants` are from an id permutation, `delta <= 0` iff `G_function() = +Inf`.
-#'     When `structure_constants` are from a permutation that is not id, `delta <= 1` iff `G_function() = +Inf`.
-#' @param structure_constants Constants from `get_structure_constants` function.
+#' @param structure_constants Constants from `get_structure_constants()`.
+#' @param delta Parameter of a method.
+#' @param number_of_observations Number of observations.
 #'
-#' @returns Sum of logarithms of elements of `calculate_gamma_omega` from i to L.
-#' It is a log of a product part of the equation (27). For more information, see Issue #3 on `gips`' GitHub.
-#'
-#' @examples
-#' perm_size <- 6
-#' perm <- permutations::as.cycle(permutations::as.word(c(2, 3, 1, 5, 4, 6)))
-#' my_gips_perm <- gips_perm(perm, perm_size)
-#' structure_constants <- get_structure_constants(my_gips_perm)
-#' G_function(structure_constants, 3)
-#'
+#' @returns Difference `G(delta + number_of_observations) - G(delta)`.
 #' @noRd
-G_function <- function(structure_constants, delta = 3) {
+calculate_G_part <- function(structure_constants, delta, number_of_observations) {
   L <- structure_constants[["L"]]
   k <- structure_constants[["k"]]
   r <- structure_constants[["r"]]
   d <- structure_constants[["d"]]
   dim_omega <- structure_constants[["dim_omega"]]
-  
-  lambda <- k * (delta - 2) / 2 + dim_omega / r
-  
-  single_G_i <- numeric(L)
-  for (i in seq_len(L)) {
-    single_G_i[i] <- calculate_gamma_omega(
-      lambda[i],
-      dim_omega[i],
-      r[i],
-      d[i]
+
+  lambda_prior <- k * (delta - 2) / 2 + dim_omega / r
+  lambda_posterior <- lambda_prior + k * number_of_observations / 2
+
+  divergent <- (lambda_prior + 1) * r <= dim_omega |
+    (lambda_posterior + 1) * r <= dim_omega
+  if (any(divergent)) {
+    stop(
+      paste0(
+        "Gamma integral divergence detected while calculating the G part. ",
+        "This should not happen for valid `gips` inputs. ",
+        "This follows from the facts that `delta > 1`, `k` is `1` or `2` and `r >= 1`. ",
+        "If You see this, please open an ISSUE on GitHub to let us know."
+      ),
+      call. = FALSE
     )
   }
 
-  sum(single_G_i)
+  out <- 0
+  for (i in seq_len(L)) {
+    offsets <- (0:(-(r[i] - 1))) * d[i] / 2
+    gamma_values <- lgamma(c(
+      lambda_posterior[i] + offsets,
+      lambda_prior[i] + offsets
+    ))
+    block_indices <- seq_len(r[i])
+
+    out <- out +
+      sum(gamma_values[block_indices]) -
+      sum(gamma_values[r[i] + block_indices])
+  }
+
+  out
 }

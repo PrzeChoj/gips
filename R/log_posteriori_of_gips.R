@@ -111,9 +111,8 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
   Ac <- sum(structure_constants[["r"]] * structure_constants[["k"]] * log(structure_constants[["k"]])) # (20)
   Ac_part <- (-number_of_observations / 2 * Ac)
 
-  # G_part and phi_part
-  G_part <- G_function(structure_constants, delta + number_of_observations) -
-    G_function(structure_constants, delta)
+  # G_part
+  G_part <- calculate_G_part(structure_constants, delta, number_of_observations)
 
   # phi_part
   phi_part <- calculate_phi_part(
