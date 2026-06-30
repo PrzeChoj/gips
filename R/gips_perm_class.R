@@ -366,7 +366,7 @@ gips_perm_no_checks <- function(x, size) {
   gips_perm_no_checks_from_cycles(cycles, size)
 }
 
-#' The same as [gips_perm_no_checks()], but starts from unclassed cycles
+#' The same as `gips_perm_no_checks()`, but starts from unclassed cycles
 #'
 #' This helper assumes that cycles come from an internally generated
 #' `permutations::cycle` object, so they are already in canonical cycle form.
