@@ -363,14 +363,22 @@ add_cycle <- function(cycles, new_cycle) {
 #' @noRd
 gips_perm_no_checks <- function(x, size) {
   cycles <- unclass(x)[[1]]
-  all_ints <- unlist(cycles)
-  representatives <- permutations::get1(x)
-  fixed_boolean <- permutations::fixed(x)
-  if (length(fixed_boolean) < size) {
-    fixed_boolean[(length(fixed_boolean) + 1):size] <- TRUE
-  }
-  fixed_elements <- which(fixed_boolean)
-  subcycles <- c(cycles, as.list(fixed_elements))
+  gips_perm_no_checks_from_cycles(cycles, size)
+}
 
-  new_gips_perm(rearrange_cycles(subcycles), size)
+#' The same as [gips_perm_no_checks()], but starts from unclassed cycles
+#'
+#' This helper assumes that cycles come from an internally generated
+#' `permutations::cycle` object, so they are already in canonical cycle form.
+#' @noRd
+gips_perm_no_checks_from_cycles <- function(cycles, size) {
+  fixed_elements <- setdiff(seq_len(size), unlist(cycles, use.names = FALSE))
+  fixed_cycles <- as.list(fixed_elements)
+  subcycles <- c(cycles, fixed_cycles)
+  representatives <- c(
+    vapply(cycles, function(v) v[1], numeric(1)),
+    fixed_elements
+  )
+
+  new_gips_perm(subcycles[order(representatives)], size)
 }

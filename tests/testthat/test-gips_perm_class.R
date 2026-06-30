@@ -71,13 +71,20 @@ test_that("gips_perm gives the same output for different type of input", {
 test_that("gips_perm_no_checks matches gips_perm for internally generated permutations", {
   for (p in 2:5) {
     all_perms <- permutations::as.cycle(permutations::allperms(p))
+    all_perms_cycles <- unclass(all_perms)
 
     for (i in seq_along(all_perms)) {
       checked_perm <- gips_perm(all_perms[i], p)
       unchecked_perm <- gips_perm_no_checks(all_perms[i], p)
+      unchecked_perm_from_cycles <- gips_perm_no_checks_from_cycles(
+        all_perms_cycles[[i]],
+        p
+      )
 
       expect_identical(unchecked_perm, checked_perm)
+      expect_identical(unchecked_perm_from_cycles, checked_perm)
       expect_silent(validate_gips_perm(unchecked_perm))
+      expect_silent(validate_gips_perm(unchecked_perm_from_cycles))
     }
   }
 })
