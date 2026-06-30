@@ -179,9 +179,8 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   # block part
   block_ends <- get_block_ends(structure_constants)
   Dc_block_log_dets <- if (is_D_matrix_scalar_identity_matrix) {
-    block_sizes <- c(block_ends[1], diff(block_ends))
     # Use the mean of numerically equal diagonal values as the scalar.
-    Dc_block_log_dets <- block_sizes * log(mean(diag(Dc)))
+      c(block_ends[1], diff(block_ends)) * log(mean(diag(Dc)))
   } else {
     calculate_log_determinants_of_block_matrices(
       Dc_diagonalised,
