@@ -41,6 +41,33 @@ test_that("is.positive.semi.definite.matrix works", {
   expect_false(is.positive.semi.definite.matrix(random_matrix - diag(p) * (10.01))) # the smallest eigen value is very close to -0.01
 })
 
+test_that("is_scalar_identity_matrix works", {
+  expect_true(is_scalar_identity_matrix(diag(5)))
+  expect_true(is_scalar_identity_matrix(diag(3, 5)))
+  expect_true(is_scalar_identity_matrix(matrix(7, nrow = 1, ncol = 1)))
+
+  expect_false(is_scalar_identity_matrix(matrix(1, nrow = 2, ncol = 3)))
+  expect_false(is_scalar_identity_matrix(diag(c(1, 1, 2))))
+
+  matrix_with_fast_off_diagonal <- diag(3)
+  matrix_with_fast_off_diagonal[1, 2] <- 1e-4
+  expect_false(is_scalar_identity_matrix(matrix_with_fast_off_diagonal))
+
+  matrix_with_late_off_diagonal <- diag(4)
+  matrix_with_late_off_diagonal[3, 4] <- 1e-4
+  expect_false(is_scalar_identity_matrix(matrix_with_late_off_diagonal))
+
+  matrix_within_tolerance <- diag(3)
+  matrix_within_tolerance[1, 2] <- 1e-7
+  matrix_within_tolerance[2, 1] <- -1e-7
+  matrix_within_tolerance[3, 3] <- 1 + 1e-7
+  expect_true(is_scalar_identity_matrix(matrix_within_tolerance))
+
+  matrix_outside_tolerance <- diag(3)
+  matrix_outside_tolerance[3, 3] <- 1 + 1.1e-4
+  expect_false(is_scalar_identity_matrix(matrix_outside_tolerance))
+})
+
 test_that("change_log_probabilities_unnorm_to_probabilities forks as intendent", {
   desired_probs <- c(0.1, 0.2, 0.3, 0.4)
   changed_probs <- log(desired_probs) + runif(1, -1000, 1000)
