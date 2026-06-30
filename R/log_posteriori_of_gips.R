@@ -98,7 +98,7 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
   perm_size <- dim(S)[1]
 
   if (!inherits(perm_proposal, "gips_perm")) {
-    perm_proposal <- gips_perm(perm_proposal, perm_size) # TODO: Change to `new_gips_perm()`
+    perm_proposal <- gips_perm(perm_proposal, perm_size) # This cannot be `new_gips_perm()`, as the user can pass not `gips_perm`
   }
 
   if (is.null(D_matrix)) {
