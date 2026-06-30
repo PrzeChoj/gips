@@ -4,7 +4,7 @@
 \alias{project_matrix}
 \title{Project matrix after optimization}
 \usage{
-project_matrix(S, perm, precomputed_equal_indices = NULL)
+project_matrix(S, perm)
 }
 \arguments{
 \item{S}{A square matrix to be projected.
@@ -17,8 +17,6 @@ it shows a warning of a class \code{not_positive_semi_definite_matrix}.}
 An object of a \code{gips} class,
 a \code{gips_perm} class, or anything that can be used
 as the \code{x} argument in the \code{gips_perm()} function.}
-
-\item{precomputed_equal_indices}{This parameter is for internal use only.}
 }
 \value{
 The matrix \code{S} projected on the space of symmetrical matrices invariant

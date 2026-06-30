@@ -155,10 +155,7 @@
 #' g_map
 #'
 #' g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
-#'
-#' if (require("graphics")) {
-#'   plot(g_map2, type = "both", logarithmic_x = TRUE)
-#' }
+#' plot(g_map2, type = "both", logarithmic_x = TRUE)
 #'
 #' g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 #' summary(g_map_BF)
@@ -780,11 +777,12 @@ brute_force_optimizer <- function(
     # See ISSUE#21 for more information
     all_perms_list <- all_perms_list[perm_group_generators_list[[perm_size - 2]]]
   }
+  all_perms_cycles <- unclass(all_perms_list)
   log_posteriori_values <- sapply(1:length(all_perms_list), function(i) {
     if (show_progress_bar) {
       utils::setTxtProgressBar(progressBar, i)
     }
-    this_perm <- permutations::cycle(list(all_perms_list[[i]]))
+    this_perm <- gips_perm_no_checks_from_cycles(all_perms_cycles[[i]], perm_size)
     my_goal_function(this_perm, i)
   })
 
@@ -798,7 +796,10 @@ brute_force_optimizer <- function(
     probabilities <- NULL
   }
 
-  best_perm <- gips_perm(permutations::cycle(list(all_perms_list[[which.max(log_posteriori_values)]])), perm_size)
+  best_perm <- gips_perm_no_checks_from_cycles(
+    all_perms_cycles[[which.max(log_posteriori_values)]],
+    perm_size
+  )
 
   if (save_all_perms) {
     visited_perms <- all_perms_list

@@ -181,10 +181,7 @@ g_map <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 g_map
 
 summary(g_map)
-
-if (require("graphics")) {
-  plot(g_map, type = "both", logarithmic_x = TRUE)
-}
+plot(g_map, type = "both", logarithmic_x = TRUE)
 }
 \seealso{
 \itemize{

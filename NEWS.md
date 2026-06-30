@@ -17,6 +17,26 @@ group Gamma.
 The MLE exists when `min(n_g) >= n0`. **All existing single-sample usage is
 fully unchanged**.
 
+### Performance gain
+
+`project_matrix()` is now implemented in C++ internally. Additionally, several internal calculations used by `log_posteriori_of_gips()` and `find_MAP(optimizer = "BF")` were optimized.
+
+For Brute Force optimization:
+
+| permutation size | 6 | 7 | 8 | 9 |
+|---|---:|---:|---:|---:|
+| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min |
+| v1.2.3.9000 | 0.64 s | 2.66 s | 16.31 s | 2.17 min |
+
+For `log_posteriori_of_gips()` evaluated on 1000 random permutations of a given size:
+
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.3 | 2.31 s | 2.31 s | 11.70 s | 46.49 s | 110.17 s |
+| v1.2.3.9000 | 0.84 s | 1.26 s | 3.24 s | 15.73 s | 39.47 s |
+
+The above tables based on the code from [Pull Request #99](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063).
+
 ### Update to functions
 
 - `plot.gips()` now uses `ggplot2` for all plot types.
@@ -30,12 +50,19 @@ fully unchanged**.
 
 ### Performance gain
 
-There was a significant improvement in the speed of calculation. Details in the table below for 1000 random permutations of a given size:
+There was a significant speed improvement in `get_structure_constants()`, which is used internally by posterior calculations. For 1000 random permutations of a given size:
 
-|  permutation size  |  30  |  50  |  100  |  200  | 300 |
-|---|---|---|---|---|---|
-|  old computation time  |  0.09 s  |  0.10 s  |  0.25 s  |  ~10 s  |  ~25 s  |
-|  new computation time  |  0.07 s  |  0.08 s  |  0.10 s  |  0.17 s  |  ~0.20 s |
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.2 | 0.09 s | 0.10 s | 0.25 s | ~10 s | ~25 s |
+| v1.2.3 | 0.07 s | 0.08 s | 0.10 s | 0.17 s | ~0.20 s |
+
+This change consequently improved `log_posteriori_of_gips()`. For 1000 random permutations of a given size:
+
+| permutation size | 30 | 50 | 100 | 200 | 300 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.2 | 1.50 s | 2.49 s | 7.08 s | 55.25 s | 169.77 s |
+| v1.2.3 | 1.29 s | 2.24 s | 6.84 s | 31.73 s | 85.10 s |
 
 ### Update to functions
 

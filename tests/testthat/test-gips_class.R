@@ -119,9 +119,12 @@ test_that("Properly validate the gips class with no optimization or after a sing
       optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE
     )
   }
-  g3 <- find_MAP(g1,
-    max_iter = 3, show_progress_bar = FALSE,
-    optimizer = "HC", return_probabilities = FALSE
+  # both warning and no warning are correct
+  suppressWarnings(
+    g3 <- find_MAP(g1,
+                   max_iter = 3, show_progress_bar = FALSE,
+                   optimizer = "HC", return_probabilities = FALSE
+    )
   )
 
   g_BF <- find_MAP(
@@ -223,9 +226,12 @@ test_that("Properly validate the gips class after multiple optimizations", {
     g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
     g2 <- find_MAP(g2, max_iter = 3, show_progress_bar = FALSE, optimizer = "MH", return_probabilities = TRUE, save_all_perms = TRUE)
   }
-  g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
-  g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
-  g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  # both warning and no warning are correct
+  suppressWarnings({
+    g3 <- find_MAP(g1, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+    g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+    g3 <- find_MAP(g3, max_iter = 3, show_progress_bar = FALSE, optimizer = "HC", return_probabilities = FALSE)
+  })
 
   expect_warning(expect_message(expect_message(
     g_MH_MH <- find_MAP(

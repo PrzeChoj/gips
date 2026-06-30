@@ -72,6 +72,31 @@ is.positive.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
   return(all(eigenvalues >= tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
 }
 
+is_scalar_identity_matrix <- function(matrix_of_interest, tolerance = 1e-06) {
+  if (nrow(matrix_of_interest) != ncol(matrix_of_interest)) {
+    return(FALSE)
+  }
+  
+  if (nrow(matrix_of_interest) <= 1) {
+    return(TRUE)
+  }
+  
+  # fast check
+  if (abs(matrix_of_interest[1, 2]) > tolerance) {
+    return(FALSE)
+  }
+  
+  # fast diagonal check
+  diagonals <- diag(matrix_of_interest)
+  # Use the mean of numerically equal diagonal values as the scalar.
+  d <- mean(diagonals)
+  if (any(abs(diagonals - d) > tolerance)) {
+    return(FALSE)
+  }
+  
+  all(abs(matrix_of_interest - diag(d, nrow(matrix_of_interest))) <= tolerance)
+}
+
 wrong_argument_abort <- function(i, x = "") {
   rlang::abort(c("There was a problem identified with provided argument",
     "i" = i,

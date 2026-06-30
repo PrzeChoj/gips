@@ -10,3 +10,9 @@ tests/testthat/Rplots.pdf
 docs
 inst/doc
 README_cache
+*.o
+*.so
+*.dll
+*.dylib
+src/*.a
+src/Makevars.in
