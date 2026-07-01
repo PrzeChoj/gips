@@ -296,6 +296,31 @@ test_that("compare_log_posteriories_of_perms() works on multi-sample gips", {
 })
 
 
+test_that("compare_posteriories_of_perms() compares multi-sample gips to permutation string", {
+  p <- 4
+  g <- gips(
+    S = list(diag(1.1, p), diag(2.4, p)),
+    number_of_observations = c(13, 50)
+  )
+
+  expect_output(
+    result <- compare_posteriories_of_perms(g, "(1,2)")
+  )
+
+  g_2 <- gips(
+    S = attr(g, "S"),
+    number_of_observations = attr(g, "number_of_observations"),
+    delta = attr(g, "delta"),
+    D_matrix = attr(g, "D_matrix"),
+    was_mean_estimated = attr(g, "was_mean_estimated"),
+    perm = "(1,2)"
+  )
+  expected_ratio <- exp(log_posteriori_of_gips(g) - log_posteriori_of_gips(g_2))
+
+  expect_equal(result, expected_ratio, tolerance = 1e-10)
+})
+
+
 test_that("single-sample gips() is unaffected by multi-sample changes", {
   S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   g <- gips(S, 10L)

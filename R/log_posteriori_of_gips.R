@@ -342,7 +342,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     perm2 <- perm2[[1]]
   }
 
-  perm_size <- ncol(S)
+  perm_size <- if (is.list(S)) ncol(S[[1]]) else ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
   }
@@ -498,7 +498,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     edited_number_of_observations <- number_of_observations
   }
 
-  perm_size <- ncol(S)
+  perm_size <- if (is.list(S)) ncol(S[[1]]) else ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
   }
