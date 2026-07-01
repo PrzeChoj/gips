@@ -100,7 +100,7 @@
 project_matrix <- function(S, perm) {
   # Multi-sample: project each group's matrix and return a list
   if (is.list(S)) {
-    return(lapply(S, function(S_g) project_matrix(S_g, perm, precomputed_equal_indices)))
+    return(lapply(S, function(S_g) project_matrix(S_g, perm)))
   }
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
