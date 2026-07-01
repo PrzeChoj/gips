@@ -151,8 +151,10 @@ test_that("find_MAP() with MH optimizer and continue works on larger multi-sampl
   
   g <- gips(list(S1, S2), c(10L, 12L), perm = "(1,2,3,4,5,6,7,8,9,10,11,12,13,14)")
   
-  g_map <- find_MAP(g, optimizer = "MH", max_iter = 20, show_progress_bar = FALSE)
-  g_map_2 <- find_MAP(g_map, optimizer = "continue", max_iter = 20, show_progress_bar = FALSE)
+  suppressWarnings({
+    g_map <- find_MAP(g, optimizer = "MH", max_iter = 20, show_progress_bar = FALSE)
+    g_map_2 <- find_MAP(g_map, optimizer = "continue", max_iter = 20, show_progress_bar = FALSE)
+  })
   
   expect_s3_class(g_map, "gips")
   expect_s3_class(g_map_2, "gips")
