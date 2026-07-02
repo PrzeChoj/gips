@@ -404,6 +404,12 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
       ))
     }
   }
+  
+  list(
+    optimizer = optimizer,
+    continue_optimization = continue_optimization,
+    return_probabilities = return_probabilities
+  )
 }
 
 

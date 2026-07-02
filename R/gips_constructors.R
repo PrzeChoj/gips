@@ -970,7 +970,7 @@ check_multi_D_matrices <- function(D_matrices, Ss) {
   }
 
   unlist(
-    lapply(seq_len(G), function(i) check_D_matrix(D_matrices[[i]], Ss[[i]])),
+    lapply(seq_len(G), function(i) check_D_matrix(D_matrices[[i]], ncol(Ss[[i]]))),
     use.names = TRUE
   )
 }
