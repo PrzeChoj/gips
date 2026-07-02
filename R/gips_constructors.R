@@ -151,16 +151,13 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
       )
     }
     
-    p <- ncol(S[[1]])
-
-    # Normalize delta: a scalar is broadcast to a per-group vector of length G
-    if (length(delta) == 1) delta <- rep(delta, G)
-
-    check_gips_mult_arguments(
+    checked_arguments <- check_gips_mult_arguments(
       Ss = S, numbers_of_observations = number_of_observations,
       delta = delta, D_matrices = D_matrix,
       was_mean_estimated = was_mean_estimated, perm = perm
     )
+    delta <- checked_arguments[["delta"]]
+    p <- ncol(S[[1]])
 
     if (is.null(D_matrix)) {
       D_matrix <- lapply(S, function(y) diag(x = mean(diag(y)), nrow = ncol(y)))
@@ -793,6 +790,9 @@ list_of_matrices_check <- function(x) {
   if (!is.list(x)) {
     return(FALSE)
   }
+  if (length(x) == 0) {
+    return(FALSE)
+  }
   for (y in x) {
     if (!is.matrix(y)) {
       return(FALSE)
@@ -802,41 +802,18 @@ list_of_matrices_check <- function(x) {
 }
 
 
-#' Check that Ss, D_matrices, and numbers_of_observations are compatible
-#'
-#' All three must have the same length G, and each D_matrix element must be
-#' the same dimension as the corresponding S element.
-#'
-#' @noRd
-SDN_compatibility_check <- function(Ss, D_matrices, numbers_of_observations) {
-  n <- length(numbers_of_observations)
-  if (length(Ss) != n || length(D_matrices) != n) {
-    return(FALSE)
-  }
-  if (!all(dim(D_matrices[[1]]) == dim(Ss[[1]]))) {
-    return(FALSE)
-  }
-  return(TRUE)
-}
-
-
-#' Validate arguments for the multi-sample gips constructor and validator
-#'
-#' @noRd
-check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
-                                       D_matrices, was_mean_estimated, perm) {
+check_multi_S_list <- function(Ss) {
   if (!list_of_matrices_check(Ss)) {
     rlang::abort(c(
       "There was a problem identified with the provided S argument:",
-      "i" = "For multi-sample `gips`, `S` must be a list of matrices.",
+      "i" = "For multi-sample `gips`, `S` must be a non-empty list of matrices.",
       "x" = "Not all elements of `S` are valid matrices."
     ))
   }
 
-  G <- length(Ss)
-  p <- ncol(Ss[[1]])
-
-  if (!all(sapply(Ss, ncol) == p) || !all(sapply(Ss, nrow) == p)) {
+  first_dim <- dim(Ss[[1]])
+  same_dimensions <- all(vapply(Ss, function(S) identical(dim(S), first_dim), logical(1)))
+  if (!same_dimensions) {
     rlang::abort(c(
       "There was a problem identified with the provided S argument:",
       "i" = "All matrices in `S` must have the same dimensions.",
@@ -844,9 +821,30 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
     ))
   }
 
-  if (!is.numeric(numbers_of_observations) || length(numbers_of_observations) != G) {
-    rlang::abort(c(
-      "There was a problem identified with the provided arguments:",
+  invisible(NULL)
+}
+
+
+check_multi_numbers_of_observations <- function(numbers_of_observations, G) {
+  if (is.null(numbers_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must not be `NULL`.",
+      "x" = "Your provided `number_of_observations` is `NULL`."
+    ))
+  }
+
+  if (!is.numeric(numbers_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must be a numeric vector with one whole-number entry per matrix in `S`.",
+      "x" = paste0(
+        "You provided `number_of_observations` with type `",
+        typeof(numbers_of_observations), "`."
+      )
+    ))
+  }
+
+  if (length(numbers_of_observations) != G) {
+    return(c(
       "i" = "`number_of_observations` must have one whole-number entry per matrix in `S`.",
       "x" = paste0(
         "You provided `S` with ", G, " matrices but `number_of_observations` has length ",
@@ -855,10 +853,27 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
     ))
   }
 
-  # delta must be either a scalar or a vector of length G; validate length
-  if (!is.numeric(delta) || !(length(delta) == 1 || length(delta) == G)) {
-    rlang::abort(c(
-      "There was a problem identified with the provided delta argument:",
+  unlist(lapply(numbers_of_observations, check_number_of_observations), use.names = TRUE)
+}
+
+
+check_multi_delta <- function(delta, G) {
+  if (is.null(delta)) {
+    return(c(
+      "i" = "`delta` must not be `NULL`.",
+      "x" = "Your provided `delta` is a `NULL`."
+    ))
+  }
+
+  if (!is.numeric(delta)) {
+    return(c(
+      "i" = "`delta` must be a single number or a numeric vector with one entry per matrix in `S`.",
+      "x" = paste0("You provided `delta` with type ", typeof(delta), ".")
+    ))
+  }
+
+  if (!(length(delta) == 1 || length(delta) == G)) {
+    return(c(
       "i" = "`delta` must be a single number or a numeric vector with one entry per matrix in `S`.",
       "x" = paste0(
         "You provided `S` with ", G, " matrices but `delta` has length ",
@@ -866,37 +881,79 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
       )
     ))
   }
-  # Broadcast scalar to vector before per-group validation
-  if (length(delta) == 1) delta <- rep(delta, G)
 
-  if (!is.null(D_matrices)) {
-    if (!list_of_matrices_check(D_matrices)) {
-      rlang::abort(c(
-        "There was a problem identified with the provided D_matrix argument:",
-        "i" = "For multi-sample `gips`, `D_matrix` must be a list of matrices.",
-        "x" = "Not all elements of `D_matrix` are valid matrices."
-      ))
-    }
-    if (!SDN_compatibility_check(Ss, D_matrices, numbers_of_observations)) {
-      rlang::abort(c(
-        "There was a problem identified with the provided arguments:",
-        "i" = "The lists `S`, `D_matrix`, and `number_of_observations` must all have the same length and consistent dimensions.",
-        "x" = "Incompatible lengths or dimensions detected."
-      ))
-    }
+  delta <- if (length(delta) == 1) rep(delta, G) else delta
+  unlist(lapply(delta, check_delta), use.names = TRUE)
+}
+
+
+normalize_multi_delta <- function(delta, G) {
+  if (length(delta) == 1) {
+    rep(delta, G)
+  } else {
+    delta
+  }
+}
+
+
+check_multi_D_matrices <- function(D_matrices, Ss) {
+  G <- length(Ss)
+  if (is.null(D_matrices)) {
+    return(character(0))
   }
 
-  # Validate each group using the single-sample validator
+  if (!is.list(D_matrices)) {
+    provided <- if (is.matrix(D_matrices)) {
+      "a matrix"
+    } else {
+      paste0("type ", typeof(D_matrices))
+    }
+    return(c(
+      "i" = "`D_matrix` must be `NULL` or a list with one matrix per matrix in `S`.",
+      "x" = paste0("You provided `D_matrix` as ", provided, ".")
+    ))
+  }
+
+  if (length(D_matrices) != G) {
+    return(c(
+      "i" = "`D_matrix` must have one matrix per matrix in `S`.",
+      "x" = paste0(
+        "You provided `S` with ", G, " matrices but `D_matrix` has length ",
+        length(D_matrices), "."
+      )
+    ))
+  }
+
+  unlist(
+    lapply(seq_len(G), function(i) check_D_matrix(D_matrices[[i]], Ss[[i]])),
+    use.names = TRUE
+  )
+}
+
+
+#' Validate arguments for the multi-sample gips constructor and validator
+#'
+#' @noRd
+check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
+                                       D_matrices, was_mean_estimated, perm) {
+  check_multi_S_list(Ss)
+  G <- length(Ss)
+  abort_text <- character(0)
+  additional_info <- 0
+
   for (i in seq_len(G)) {
-    check_gips_arguments(
-      S = Ss[[i]],
-      number_of_observations = numbers_of_observations[i],
-      delta = delta[i],
-      D_matrix = if (is.null(D_matrices)) NULL else D_matrices[[i]],
-      was_mean_estimated = was_mean_estimated,
-      perm = perm
-    )
+    S_check <- check_S_matrix(Ss[[i]])
+    abort_text <- c(abort_text, S_check$abort_text)
+    additional_info <- additional_info + S_check$additional_info
   }
 
-  invisible(NULL)
+  abort_text <- c(abort_text, check_multi_numbers_of_observations(numbers_of_observations, G))
+  abort_text <- c(abort_text, check_multi_delta(delta, G))
+  abort_text <- c(abort_text, check_multi_D_matrices(D_matrices, Ss))
+  abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+  abort_text <- c(abort_text, check_permutation_argument(perm, Ss[[1]], "perm"))
+
+  abort_on_argument_problems(abort_text, additional_info)
+
+  invisible(list(delta = normalize_multi_delta(delta, G)))
 }

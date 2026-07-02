@@ -44,6 +44,16 @@ test_that("gips() multi-sample errors on wrong-length number_of_observations", {
 })
 
 
+test_that("gips() multi-sample errors clearly on list number_of_observations", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  err <- rlang::catch_cnd(gips(list(S1, S2), list(10L, 12L)))
+  expect_match(conditionMessage(err), "`number_of_observations` must be a numeric vector", fixed = TRUE)
+  expect_match(conditionMessage(err), "type `list`", fixed = TRUE)
+})
+
+
 test_that("gips() multi-sample errors when S list contains non-matrices", {
   expect_error(gips(list(matrix(c(1, 0.5, 0.5, 2), nrow = 2), "not a matrix"), c(10L, 12L)))
 })
@@ -75,6 +85,19 @@ test_that("gips() multi-sample errors on wrong-length delta vector", {
 })
 
 
+test_that("gips() multi-sample errors clearly on wrong delta type and values", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  type_err <- rlang::catch_cnd(gips(list(S1, S2), c(10L, 12L), delta = list(3, 4)))
+  expect_match(conditionMessage(type_err), "`delta` must be a single number or a numeric vector", fixed = TRUE)
+  expect_match(conditionMessage(type_err), "type list", fixed = TRUE)
+
+  value_err <- rlang::catch_cnd(gips(list(S1, S2), c(10L, 12L), delta = c(3, 1)))
+  expect_match(conditionMessage(value_err), "`delta` must be strictly bigger than 1", fixed = TRUE)
+})
+
+
 test_that("log_posteriori_of_gips() respects per-group delta", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
@@ -102,6 +125,23 @@ test_that("gips() multi-sample accepts a custom D_matrix list", {
 
   g <- gips(list(S1, S2), c(10L, 12L), D_matrix = list(diag(2), 2*diag(2)))
   expect_s3_class(g, "gips")
+})
+
+
+test_that("gips() multi-sample checks D_matrix list shape", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  matrix_err <- rlang::catch_cnd(gips(list(S1, S2), c(10L, 12L), D_matrix = diag(2)))
+  expect_match(conditionMessage(matrix_err), "`D_matrix` must be `NULL` or a list", fixed = TRUE)
+  expect_match(conditionMessage(matrix_err), "as a matrix", fixed = TRUE)
+
+  length_err <- rlang::catch_cnd(gips(list(S1, S2), c(10L, 12L), D_matrix = list(diag(2))))
+  expect_match(conditionMessage(length_err), "`D_matrix` must have one matrix per matrix in `S`", fixed = TRUE)
+  expect_match(conditionMessage(length_err), "length 1", fixed = TRUE)
+
+  dimension_err <- rlang::catch_cnd(gips(list(S1, S2), c(10L, 12L), D_matrix = list(diag(2), diag(3))))
+  expect_match(conditionMessage(dimension_err), "same shape", fixed = TRUE)
 })
 
 
