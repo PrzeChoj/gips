@@ -360,6 +360,51 @@ test_that("compare_posteriories_of_perms() compares multi-sample gips to permuta
   expect_equal(result, expected_ratio, tolerance = 1e-10)
 })
 
+test_that("compare_log_posteriories_of_perms() validates standalone multi-sample arguments", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+  S_list <- list(S1, S2)
+  n <- c(10L, 12L)
+
+  g1 <- gips(S_list, n, perm = "(1,2)", was_mean_estimated = FALSE)
+  g2 <- gips(S_list, n, perm = "()", was_mean_estimated = FALSE)
+
+  expect_equal(
+    compare_log_posteriories_of_perms(
+      "(1,2)", "()", S = S_list, number_of_observations = n,
+      was_mean_estimated = FALSE, print_output = FALSE
+    ),
+    compare_log_posteriories_of_perms(g1, g2, print_output = FALSE),
+    tolerance = 1e-10
+  )
+
+  n_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "(1,2)", "()", S = S_list,
+    number_of_observations = list(10L, 12L),
+    print_output = FALSE
+  ))
+  expect_match(conditionMessage(n_error), "`number_of_observations` must be a numeric vector", fixed = TRUE)
+  expect_match(conditionMessage(n_error), "type `list`", fixed = TRUE)
+
+  delta_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "(1,2)", "()", S = S_list, number_of_observations = n,
+    delta = c(3, 4, 5), print_output = FALSE
+  ))
+  expect_match(conditionMessage(delta_error), "`delta` must be a single number or a numeric vector", fixed = TRUE)
+
+  D_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "(1,2)", "()", S = S_list, number_of_observations = n,
+    D_matrix = diag(2), print_output = FALSE
+  ))
+  expect_match(conditionMessage(D_error), "`D_matrix` must be `NULL` or a list", fixed = TRUE)
+
+  perm2_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "(1,2)", gips_perm("(1,2)", 3), S = S_list,
+    number_of_observations = n, print_output = FALSE
+  ))
+  expect_match(conditionMessage(perm2_error), "`perm2` must have the `size` attribute", fixed = TRUE)
+})
+
 
 test_that("single-sample gips() is unaffected by multi-sample changes", {
   S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)

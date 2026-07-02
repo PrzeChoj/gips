@@ -375,6 +375,35 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 check_compare_posteriories_arguments <- function(S, number_of_observations,
                                                  delta, D_matrix,
                                                  was_mean_estimated) {
+  if (is.list(S)) {
+    check_multi_S_list(S)
+    G <- length(S)
+    abort_text <- character(0)
+    additional_info <- 0
+
+    for (i in seq_len(G)) {
+      S_check <- check_S_matrix(S[[i]])
+      abort_text <- c(abort_text, S_check$abort_text)
+      additional_info <- additional_info + S_check$additional_info
+    }
+
+    abort_text <- c(abort_text, check_multi_numbers_of_observations(number_of_observations, G))
+    abort_text <- c(abort_text, check_multi_delta(delta, G))
+    abort_text <- c(abort_text, check_multi_D_matrices(D_matrix, S))
+    abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+
+    abort_on_argument_problems(abort_text, additional_info)
+
+    if (is.null(D_matrix)) {
+      D_matrix <- lapply(S, function(y) diag(x = mean(diag(y)), nrow = ncol(y)))
+    }
+
+    return(invisible(list(
+      delta = normalize_multi_delta(delta, G),
+      D_matrix = D_matrix
+    )))
+  }
+
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",
@@ -395,7 +424,7 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
 
   abort_on_argument_problems(abort_text, S_check$additional_info)
 
-  invisible(NULL)
+  invisible(list(delta = delta, D_matrix = D_matrix))
 }
 
 #' @describeIn compare_posteriories_of_perms More stable,
@@ -515,8 +544,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     was_mean_estimated <- attr(perm1, "was_mean_estimated")
 
     perm1 <- perm1[[1]]
-  }
-  if (perm2_is_gips) {
+  } else if (perm2_is_gips) {
     S <- attr(perm2, "S")
     number_of_observations <- attr(perm2, "number_of_observations")
     delta <- attr(perm2, "delta")
@@ -525,13 +553,15 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 
     perm2 <- perm2[[1]]
   } else {
-    check_compare_posteriories_arguments(
+    checked_arguments <- check_compare_posteriories_arguments(
       S = S,
       number_of_observations = number_of_observations,
       delta = delta,
       D_matrix = D_matrix,
       was_mean_estimated = was_mean_estimated
     )
+    delta <- checked_arguments[["delta"]]
+    D_matrix <- checked_arguments[["D_matrix"]]
   }
 
   if (was_mean_estimated) {
@@ -549,8 +579,8 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   }
 
   abort_text <- c(
-    check_permutation_argument(perm1, S, "perm1"),
-    check_permutation_argument(perm2, S, "perm2")
+    check_permutation_argument(perm1, if (is.list(S)) S[[1]] else S, "perm1"),
+    check_permutation_argument(perm2, if (is.list(S)) S[[1]] else S, "perm2")
   )
   abort_on_argument_problems(abort_text)
 
