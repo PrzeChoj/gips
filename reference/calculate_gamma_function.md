@@ -55,12 +55,12 @@ link](https://arxiv.org/abs/2004.03503);
 
 ``` r
 id_perm <- gips_perm("()", 2)
-calculate_gamma_function(id_perm, 0.5001) # 10.7...
-#> [1] 10.70139
-calculate_gamma_function(id_perm, 0.50000001) # 19.9...
-#> [1] 19.91198
-calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
-#> [1] 29.12235
+calculate_gamma_function(id_perm, 0.5001) # 44417.54
+#> [1] 44417.54
+calculate_gamma_function(id_perm, 0.50000001) # 444288280
+#> [1] 444288280
+calculate_gamma_function(id_perm, 0.500000000001) # 4.442981e+12
+#> [1] 4.442981e+12
 
 oldw <- getOption("warn")
 options(warn = -1)
