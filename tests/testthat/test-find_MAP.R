@@ -1,7 +1,7 @@
 test_that("Handle improper parameters", {
   expect_error(hill_climbing_optimizer(
     S = matrix_invariant_by_example_perm, number_of_observations = 13,
-    max_iter = Inf, show_progress_bar = TRUE
+    max_iter = Inf, start_perm = permutations::id, show_progress_bar = TRUE
   ), "rogress bar is not yet supported for infinite max_iter")
 
   expect_error(Metropolis_Hastings_optimizer(
@@ -66,6 +66,7 @@ test_that("Handle proper parameters", {
   expect_silent(out <- Metropolis_Hastings_optimizer(
     S = matrix_invariant_by_example_perm,
     number_of_observations = 13, max_iter = 2,
+    start_perm = permutations::id,
     show_progress_bar = FALSE
   ))
   expect_output(
@@ -81,6 +82,7 @@ test_that("Handle proper parameters", {
     out <- hill_climbing_optimizer(
       S = matrix_invariant_by_example_perm,
       number_of_observations = 13, max_iter = 8,
+      start_perm = permutations::id,
       show_progress_bar = TRUE
     ),
     "===="
@@ -89,6 +91,7 @@ test_that("Handle proper parameters", {
     out <- hill_climbing_optimizer(
       S = matrix_invariant_by_example_perm,
       number_of_observations = 13, max_iter = 2,
+      start_perm = permutations::id,
       show_progress_bar = TRUE
     ),
     "===="

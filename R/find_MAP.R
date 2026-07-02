@@ -173,6 +173,101 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   # check the correctness of the g argument
   validate_gips(g)
 
+  validated_arguments <- validate_find_MAP_optimizer_arguments(
+    g = g,
+    max_iter = max_iter,
+    optimizer = optimizer,
+    return_probabilities = return_probabilities
+  )
+  optimizer <- validated_arguments[["optimizer"]]
+  continue_optimization <- validated_arguments[["continue_optimization"]]
+  return_probabilities <- validated_arguments[["return_probabilities"]]
+
+  # extract parameters
+  S <- attr(g, "S")
+  number_of_observations <- attr(g, "number_of_observations")
+  if (continue_optimization) {
+    start_perm <- attr(g, "optimization_info")[["last_perm"]]
+  } else {
+    start_perm <- g[[1]]
+  }
+  delta <- attr(g, "delta")
+  D_matrix <- attr(g, "D_matrix")
+  was_mean_estimated <- attr(g, "was_mean_estimated")
+
+  if (was_mean_estimated) { # one degree of freedom is lost; we will return this 1 to number_of_observations after optimization in `combine_gips()`
+    edited_number_of_observations <- number_of_observations - 1
+  } else {
+    edited_number_of_observations <- number_of_observations
+  }
+
+  start_time <- Sys.time()
+
+  if (optimizer %in% c("MH", "Metropolis_Hastings")) {
+    gips_optimized <- Metropolis_Hastings_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter, start_perm = start_perm,
+      delta = delta, D_matrix = D_matrix,
+      return_probabilities = return_probabilities,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
+  } else if (optimizer %in% c("HC", "hill_climbing")) {
+    gips_optimized <- hill_climbing_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      max_iter = max_iter, start_perm = start_perm,
+      delta = delta, D_matrix = D_matrix,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
+  } else if (optimizer %in% c("BF", "brute_force", "full")) {
+    gips_optimized <- brute_force_optimizer(
+      S = S, number_of_observations = edited_number_of_observations,
+      delta = delta, D_matrix = D_matrix,
+      return_probabilities = return_probabilities,
+      save_all_perms = save_all_perms,
+      show_progress_bar = show_progress_bar
+    )
+  }
+
+  end_time <- Sys.time()
+  attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
+  attr(gips_optimized, "optimization_info")[["whole_optimization_time"]] <- end_time - start_time # this will be combined with previous optimization_time in `combine_gips()`
+
+  structure_constants <- get_structure_constants(gips_optimized[[1]])
+  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
+    n0 <- n0 + 1
+    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
+  }
+  if (n0 > min(number_of_observations)) {
+    if (length(number_of_observations) == 1) {
+      # Single-sample case
+      msg_main <- paste0(
+        "The found permutation has n0 = ", n0,
+        ", which is bigger than the number_of_observations = ",
+        number_of_observations, "."
+      )
+    } else {
+      # Multi-sample case
+      msg_main <- paste0(
+        "The found permutation has n0 = ", n0,
+        ", which is bigger than the minimum number_of_observations = ",
+        min(number_of_observations), " (group ", which.min(number_of_observations), ")."
+      )
+    }
+    rlang::warn(c(
+      msg_main,
+      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
+      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
+    ))
+  }
+
+  return(combine_gips(g, gips_optimized))
+}
+
+
+validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return_probabilities) {
   possible_optimizers <- c(
     "MH", "Metropolis_Hastings", "HC", "hill_climbing",
     "BF", "brute_force", "full", "continue"
@@ -258,7 +353,8 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       ))
     }
 
-    optimizer <- attr(g, "optimization_info")[["optimization_algorithm_used"]][length(attr(g, "optimization_info")[["optimization_algorithm_used"]])] # this is the last used optimizer
+    all_used_optimizers <- attr(g, "optimization_info")[["optimization_algorithm_used"]]
+    optimizer <- all_used_optimizers[length(all_used_optimizers)] # this is the last used optimizer
     if (optimizer %in% c("BF", "brute_force", "full")) {
       rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`, because the whole space was already browsed.",
@@ -308,99 +404,13 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
       ))
     }
   }
-
-  # extract parameters
-  S <- attr(g, "S")
-  number_of_observations <- attr(g, "number_of_observations")
-  if (continue_optimization) {
-    start_perm <- attr(g, "optimization_info")[["last_perm"]]
-  } else {
-    start_perm <- g[[1]]
-  }
-  delta <- attr(g, "delta")
-  D_matrix <- attr(g, "D_matrix")
-  was_mean_estimated <- attr(g, "was_mean_estimated")
-
-  if (was_mean_estimated) { # one degree of freedom is lost; we will return this 1 to number_of_observations after optimization in `combine_gips()`
-    edited_number_of_observations <- number_of_observations - 1
-  } else {
-    edited_number_of_observations <- number_of_observations
-  }
-
-  start_time <- Sys.time()
-
-  if (optimizer %in% c("MH", "Metropolis_Hastings")) {
-    gips_optimized <- Metropolis_Hastings_optimizer(
-      S = S, number_of_observations = edited_number_of_observations,
-      max_iter = max_iter, start_perm = start_perm,
-      delta = delta, D_matrix = D_matrix,
-      return_probabilities = return_probabilities,
-      save_all_perms = save_all_perms,
-      show_progress_bar = show_progress_bar
-    )
-  } else if (optimizer %in% c("HC", "hill_climbing")) {
-    gips_optimized <- hill_climbing_optimizer(
-      S = S, number_of_observations = edited_number_of_observations,
-      max_iter = max_iter, start_perm = start_perm,
-      delta = delta, D_matrix = D_matrix,
-      save_all_perms = save_all_perms,
-      show_progress_bar = show_progress_bar
-    )
-  } else if (optimizer %in% c("BF", "brute_force", "full")) {
-    gips_optimized <- brute_force_optimizer(
-      S = S, number_of_observations = edited_number_of_observations,
-      delta = delta, D_matrix = D_matrix,
-      return_probabilities = return_probabilities,
-      save_all_perms = save_all_perms,
-      show_progress_bar = show_progress_bar
-    )
-  }
-
-  end_time <- Sys.time()
-  attr(gips_optimized, "optimization_info")[["optimization_time"]] <- end_time - start_time
-  attr(gips_optimized, "optimization_info")[["whole_optimization_time"]] <- end_time - start_time
-
-  structure_constants <- get_structure_constants(gips_optimized[[1]])
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
-  if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
-    n0 <- n0 + 1
-    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
-  }
-  if (n0 > min(number_of_observations)) {
-    if (length(number_of_observations) == 1) {
-      # Single-sample case
-      msg_main <- paste0(
-        "The found permutation has n0 = ", n0,
-        ", which is bigger than the number_of_observations = ",
-        number_of_observations, "."
-      )
-    } else {
-      # Multi-sample case
-      msg_main <- paste0(
-        "The found permutation has n0 = ", n0,
-        ", which is bigger than the minimum number_of_observations = ",
-        min(number_of_observations), " (group ", which.min(number_of_observations), ")."
-      )
-    }
-    rlang::warn(c(
-      msg_main,
-      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
-      "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
-    ))
-  }
-
-  return(combine_gips(g, gips_optimized))
 }
 
 
 Metropolis_Hastings_optimizer <- function(
-    S, number_of_observations, max_iter, start_perm = NULL,
+    S, number_of_observations, max_iter, start_perm,
     delta = 3, D_matrix = NULL, return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
-  if (is.null(start_perm)) {
-    start_perm <- permutations::id
-  }
-
   check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = max_iter, start_perm = start_perm,
@@ -545,13 +555,9 @@ Metropolis_Hastings_optimizer <- function(
 
 
 hill_climbing_optimizer <- function(
-    S, number_of_observations, max_iter = 5,
-    start_perm = NULL, delta = 3, D_matrix = NULL,
+    S, number_of_observations, max_iter,
+    start_perm, delta = 3, D_matrix = NULL,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
-  if (is.null(start_perm)) {
-    start_perm <- permutations::id
-  }
-
   check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
     max_iter = max_iter, start_perm = start_perm,
@@ -704,7 +710,7 @@ brute_force_optimizer <- function(
     S,
     number_of_observations,
     delta = 3, D_matrix = NULL,
-    return_probabilities = return_probabilities,
+    return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
   check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
