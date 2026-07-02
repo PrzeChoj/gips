@@ -1,4 +1,4 @@
-test_that("calculate_gamma_omega returns proper value", {
+test_that("calculate_log_gamma_omega returns proper value", {
   delta <- 3
   gips_c <- gips_perm(permutations::as.cycle(permutations::as.word(c(2, 1))), 2)
   gips_cprim <- gips_perm(permutations::id, 2)
@@ -19,7 +19,7 @@ test_that("calculate_gamma_omega returns proper value", {
   expect_equal(lambda, 2)
 
   expect_equal(
-    exp(calculate_gamma_omega(
+    exp(calculate_log_gamma_omega(
       lambda = lambda,
       dim_omega_i = dim_omega_i,
       r_i = r_i,
@@ -44,7 +44,7 @@ test_that("calculate_gamma_omega returns proper value", {
   expect_equal(lambda, 1.5)
 
   expect_equal(
-    exp(calculate_gamma_omega(
+    exp(calculate_log_gamma_omega(
       lambda = lambda,
       dim_omega_i = dim_omega_i,
       r_i = r_i,
@@ -54,8 +54,8 @@ test_that("calculate_gamma_omega returns proper value", {
   ) # gamma(1.5)
 })
 
-test_that("calculate_gamma_omega gives warning and infinity on divergent integral", {
-  expect_warning(out <- calculate_gamma_omega(0.4, 3, 2, 1))
+test_that("calculate_log_gamma_omega gives warning and infinity on divergent integral", {
+  expect_warning(out <- calculate_log_gamma_omega(0.4, 3, 2, 1))
   expect_true(is.infinite(out))
 })
 
@@ -81,13 +81,13 @@ test_that("calculate_G_part returns the expected value when L is 1", {
 
   expect_equal(
     calculate_G_part(structure_constants, delta, number_of_observations),
-    calculate_gamma_omega(
+    calculate_log_gamma_omega(
       lambda_posterior,
       structure_constants[["dim_omega"]][1],
       structure_constants[["r"]][1],
       structure_constants[["d"]][1]
     ) -
-      calculate_gamma_omega(
+      calculate_log_gamma_omega(
         lambda_prior,
         structure_constants[["dim_omega"]][1],
         structure_constants[["r"]][1],
@@ -130,7 +130,7 @@ test_that("G part example from documentation", {
     lambda <- structure_constants[["k"]][i] * (delta - 2) / 2 +
       structure_constants[["dim_omega"]][i] / structure_constants[["r"]][i]
 
-    calculate_gamma_omega(
+    calculate_log_gamma_omega(
       lambda,
       structure_constants[["dim_omega"]][i],
       structure_constants[["r"]][i],
@@ -142,7 +142,7 @@ test_that("G part example from documentation", {
       (delta + number_of_observations - 2) / 2 +
       structure_constants[["dim_omega"]][i] / structure_constants[["r"]][i]
 
-    calculate_gamma_omega(
+    calculate_log_gamma_omega(
       lambda,
       structure_constants[["dim_omega"]][i],
       structure_constants[["r"]][i],

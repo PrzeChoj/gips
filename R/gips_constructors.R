@@ -341,24 +341,317 @@ validate_gips <- function(g) {
 }
 
 
-# Helper for validating logical flag arguments
 check_logical_flag <- function(value, name) {
-  error_msg <- character(0)
   if (!is.logical(value)) {
-    error_msg <- c(
+    return(c(
       "i" = paste0("`", name, "` must be a logic value (`TRUE` or `FALSE`)."),
       "x" = paste0(
         "You provided `", name, "` with type ",
         typeof(value), "."
       )
-    )
-  } else if (is.na(value)) {
-    error_msg <- c(
+    ))
+  }
+
+  if (length(value) != 1) {
+    return(c(
+      "i" = paste0("`", name, "` must be a logic value (`TRUE` or `FALSE`)."),
+      "x" = paste0("You provided `", name, "` with length ", length(value), ".")
+    ))
+  }
+
+  if (is.na(value)) {
+    return(c(
       "i" = paste0("`", name, "` must be a logic value (`TRUE` or `FALSE`)."),
       "x" = paste0("You provided `", name, "` as an `NA`.")
+    ))
+  }
+
+  character(0)
+}
+
+check_number_of_observations <- function(number_of_observations) {
+  if (is.null(number_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must not be `NULL`.",
+      "x" = "Your provided `number_of_observations` is `NULL`."
+    ))
+  }
+
+  if (!is.numeric(number_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must be a single whole number.",
+      "x" = paste0(
+        "You provided `number_of_observations` with type `",
+        typeof(number_of_observations), "`."
+      )
+    ))
+  }
+
+  if (length(number_of_observations) != 1) {
+    return(c(
+      "i" = "`number_of_observations` must be a single whole number.",
+      "x" = paste0(
+        "You provided `number_of_observations` with length ",
+        length(number_of_observations), "."
+      )
+    ))
+  }
+
+  if (is.na(number_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must be a single whole number.",
+      "x" = "You provided `number_of_observations == NA`."
+    ))
+  }
+
+  if (is.infinite(number_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must be a single whole number.",
+      "x" = "You provided an infinite `number_of_observations`."
+    ))
+  }
+
+  if (number_of_observations < 1) {
+    return(c(
+      "i" = "`number_of_observations` must be at least 1.",
+      "x" = paste0(
+        "You provided `number_of_observations == ",
+        number_of_observations, "`."
+      )
+    ))
+  }
+
+  if (!is.wholenumber(number_of_observations)) {
+    return(c(
+      "i" = "`number_of_observations` must be a whole number.",
+      "x" = paste0(
+        "You provided `number_of_observations == ",
+        number_of_observations, "`."
+      )
+    ))
+  }
+
+  character(0)
+}
+
+check_S_matrix <- function(S) {
+  if (ncol(S) != nrow(S)) {
+    return(list(
+      abort_text = c(
+        "i" = "`S` matrix must be a square matrix.",
+        "x" = paste0(
+          "You provided `S` as a matrix, but with different sizes: ",
+          ncol(S), " and ", nrow(S), "."
+        )
+      ),
+      additional_info = 0
+    ))
+  }
+
+  if (!is.numeric(S)) {
+    return(list(
+      abort_text = c(
+        "i" = "`S` matrix must be a numeric matrix.",
+        "x" = paste0(
+          "You provided `S` as a matrix, but with non-numeric values. Your provided type ",
+          typeof(S), "."
+        )
+      ),
+      additional_info = 0
+    ))
+  }
+
+  if (!all(abs(S - t(S)) < 0.000001)) {
+    return(list(
+      abort_text = c(
+        "i" = "`S` matrix must be a symmetric matrix.",
+        "x" = "You provided `S` as a matrix, but a non-symmetric one.",
+        "i" = "Is your matrix approximately symmetric? Maybe try setting `S <- (S+t(S))/2`?"
+      ),
+      additional_info = 1
+    ))
+  }
+
+  if (!is.positive.semi.definite.matrix(S, tolerance = 1e-06)) {
+    return(list(
+      abort_text = c(
+        "i" = "`S` matrix must be positive semi-definite matrix.",
+        "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one."
+      ),
+      additional_info = 0
+    ))
+  }
+
+  list(abort_text = character(0), additional_info = 0)
+}
+
+check_delta <- function(delta) {
+  if (is.null(delta)) {
+    return(c(
+      "i" = "`delta` must not be `NULL`.",
+      "x" = "Your provided `delta` is a `NULL`."
+    ))
+  }
+
+  if (!is.numeric(delta)) {
+    return(c(
+      "i" = "`delta` must be a number.",
+      "x" = paste0("You provided `delta` with type ", typeof(delta), ".")
+    ))
+  }
+
+  if (length(delta) != 1) {
+    return(c(
+      "i" = "`delta` must be a single number.",
+      "x" = paste0("You provided `delta` with length ", length(delta), ".")
+    ))
+  }
+
+  if (is.na(delta)) {
+    return(c(
+      "i" = "`delta` must not be `NA`.",
+      "x" = "You provided `delta == NA`."
+    ))
+  }
+
+  if (delta <= 1) {
+    return(c(
+      "i" = "`delta` must be strictly bigger than 1.",
+      "x" = paste0("You provided `delta == ", delta, "`.")
+    ))
+  }
+
+  character(0)
+}
+
+check_D_matrix <- function(D_matrix, S) {
+  if (!(is.null(D_matrix) || is.matrix(D_matrix))) {
+    return(c(
+      "i" = "`D_matrix` must either be `NULL` or a matrix.",
+      "x" = paste0(
+        "You provided `D_matrix` with type ",
+        typeof(D_matrix), "."
+      )
+    ))
+  }
+
+  if (!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix))) {
+    return(c(
+      "i" = "`D_matrix` must either be `NULL` or a square matrix.",
+      "x" = paste0(
+        "You provided `D_matrix` as a matrix, but with different sizes: ",
+        ncol(D_matrix), " and ", nrow(D_matrix), "."
+      )
+    ))
+  }
+
+  if (!(is.null(D_matrix) || ncol(S) == ncol(D_matrix))) {
+    return(c(
+      "i" = "`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
+      "x" = paste0(
+        "You provided `S` with shape ",
+        ncol(S), " and ", nrow(S),
+        ", but also `D_matrix` with shape ",
+        ncol(D_matrix), " and ", nrow(D_matrix), "."
+      )
+    ))
+  }
+
+  if (any(is.nan(D_matrix))) {
+    return(c(
+      "i" = "`D_matrix` must not contain any `NaN`s.",
+      "x" = "You provided `D_matrix` with `NaN`s!"
+    ))
+  }
+
+  if (any(is.infinite(D_matrix))) {
+    return(c(
+      "i" = "`D_matrix` must not contain any infinite values.",
+      "x" = "You provided `D_matrix` with infinite values!"
+    ))
+  }
+
+  character(0)
+}
+
+check_permutation_argument <- function(perm, S, name) {
+  if (!(permutations::is.cycle(perm) || inherits(perm, "gips_perm"))) {
+    return(c(
+      "i" = paste0(
+        "`", name, "` must be the output of `gips_perm()` function, ",
+        "or of a `cycle` class from `permutations` package."
+      ),
+      "x" = paste0(
+        "You provided `", name, "` with `class(", name, ") == (",
+        paste(class(perm), collapse = ", "),
+        ")`."
+      )
+    ))
+  }
+
+  if (!(permutations::is.cycle(perm) || attr(perm, "size") == ncol(S))) {
+    return(c(
+      "i" = paste0(
+        "`", name, "` must have the `size` attribute equal to ",
+        "the shape of a square matrix `S`"
+      ),
+      "x" = paste0(
+        "You provided `", name, "` with `size == ",
+        attr(perm, "size"),
+        "`, but the `S` matrix You provided has ",
+        ncol(S), " columns."
+      )
+    ))
+  }
+
+  character(0)
+}
+
+check_max_iter <- function(max_iter) {
+  if (!is.numeric(max_iter) || length(max_iter) != 1 || is.na(max_iter) ||
+      !(is.infinite(max_iter) || is.wholenumber(max_iter))) {
+    return(c(
+      "i" = "`max_iter` must be either infinite (for hill_climbing optimizer) or a whole number.",
+      "x" = paste0("You provided `max_iter == ", paste(max_iter, collapse = ", "), "`.")
+    ))
+  }
+
+  if (max_iter < 2) {
+    return(c(
+      "i" = "`max_iter` must be at least 2.",
+      "x" = paste0("You provided `max_iter == ", max_iter, "`.")
+    ))
+  }
+
+  character(0)
+}
+
+abort_on_argument_problems <- function(abort_text, additional_info = 0) {
+  if (length(abort_text) == 0) {
+    return(invisible(NULL))
+  }
+
+  abort_text <- c(
+    paste0(
+      "There were ", (length(abort_text) - additional_info) / 2,
+      " problems identified with the provided arguments:"
+    ),
+    abort_text
+  )
+
+  if (length(abort_text) > 11) {
+    abort_text <- c(
+      abort_text[1:11],
+      paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
     )
   }
-  error_msg
+
+  abort_text <- c(
+    abort_text,
+    ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
+  )
+
+  rlang::abort(abort_text)
 }
 
 
@@ -390,157 +683,16 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
     ))
   }
   abort_text <- character(0)
-  additional_info <- 0
+  S_check <- check_S_matrix(S)
+  abort_text <- c(abort_text, S_check$abort_text)
   
-  if (ncol(S) != nrow(S)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a square matrix.",
-      "x" = paste0(
-        "You provided `S` as a matrix, but with different sizes: ",
-        ncol(S), " and ", nrow(S), "."
-      )
-    )
-  } else if (!is.numeric(S)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a numeric matrix.",
-      "x" = paste0(
-        "You provided `S` as a matrix, but with non-numeric values. Your provided type ",
-        typeof(S), "."
-      )
-    )
-  } else if (!all(abs(S - t(S)) < 0.000001)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a symmetric matrix.",
-      "x" = "You provided `S` as a matrix, but a non-symmetric one.",
-      "i" = "Is your matrix approximately symmetric? Maybe try setting `S <- (S+t(S))/2`?"
-    )
-    additional_info <- additional_info + 1
-  } else if (!is.positive.semi.definite.matrix(S, tolerance = 1e-06)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be positive semi-definite matrix.",
-      "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one."
-    )
-  }
-  
-  if (is.null(number_of_observations)) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must not be `NULL`.",
-      "x" = "Your provided `number_of_observations` is `NULL`."
-    )
-  } else if (number_of_observations < 1) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must be at least 1.",
-      "x" = paste0(
-        "You provided `number_of_observations == ",
-        number_of_observations, "`."
-      )
-    )
-  } else if (!is.wholenumber(number_of_observations)) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must be a whole number.",
-      "x" = paste0(
-        "You provided `number_of_observations == ",
-        number_of_observations, "`."
-      )
-    )
-  }
-  
-  if (is.null(delta)) {
-    abort_text <- c(abort_text,
-      "i" = "`delta` must not be `NULL`.",
-      "x" = "Your provided `delta` is a `NULL`."
-    )
-  } else if (delta <= 1) {
-    abort_text <- c(abort_text,
-      "i" = "`delta` must be strictly bigger than 1.",
-      "x" = paste0("You provided `delta == ", delta, "`.")
-    )
-  }
-  
-  if (!(is.null(D_matrix) || is.matrix(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must either be `NULL` or a matrix.",
-      "x" = paste0(
-        "You provided `D_matrix` with type ",
-        typeof(D_matrix), "."
-      )
-    )
-  } else if (!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must either be `NULL` or a square matrix.",
-      "x" = paste0(
-        "You provided `D_matrix` as a matrix, but with different sizes: ",
-        ncol(D_matrix), " and ", nrow(D_matrix), "."
-      )
-    )
-  } else if (!(is.null(D_matrix) || ncol(S) == ncol(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
-      "x" = paste0(
-        "You provided `S` with shape ",
-        ncol(S), " and ", nrow(S),
-        ", but also `D_matrix` with shape ",
-        ncol(D_matrix), " and ", nrow(D_matrix), "."
-      )
-    )
-  } else if (any(is.nan(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must not contain any `NaN`s.",
-      "x" = "You provided `D_matrix` with `NaN`s!"
-    )
-  } else if (any(is.infinite(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must not contain any infinite values.",
-      "x" = "You provided `D_matrix` with infinite values!"
-    )
-  }
-  
+  abort_text <- c(abort_text, check_number_of_observations(number_of_observations))
+  abort_text <- c(abort_text, check_delta(delta))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+  abort_text <- c(abort_text, check_permutation_argument(perm, S, "perm"))
   
-  if (!(permutations::is.cycle(perm) || inherits(perm, "gips_perm"))) {
-    abort_text <- c(abort_text,
-      "i" = "`perm` must be the output of `gips_perm()` function, or of a `cycle` class from `permutations` package.",
-      "x" = paste0(
-        "You provided `perm` with `class(perm) == (",
-        paste(class(perm), collapse = ", "),
-        ")`."
-      )
-    )
-  } else if (!(permutations::is.cycle(perm) || attr(perm, "size") == ncol(S))) {
-    abort_text <- c(abort_text,
-      "i" = "`perm` must have the `size` attribute equal to the shape of a square matrix `S`",
-      "x" = paste0(
-        "You provided `perm` with `size == ",
-        attr(perm, "size"),
-        "`, but the `S` matrix You provided has ",
-        ncol(S), " columns."
-      )
-    )
-  }
-  
-  if (length(abort_text) > 0) {
-    abort_text <- c(
-      paste0(
-        "There were ", (length(abort_text) - additional_info) / 2,
-        " problems identified with the provided arguments:"
-      ),
-      abort_text
-    )
-
-    if (length(abort_text) > 11) {
-      abort_text <- c(
-        abort_text[1:11],
-        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
-      )
-    }
-
-    abort_text <- c(
-      abort_text,
-      ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
-    )
-
-    rlang::abort(abort_text)
-  }
+  abort_on_argument_problems(abort_text, S_check$additional_info)
   
   invisible(NULL)
 }
@@ -600,172 +752,20 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
   }
 
   abort_text <- character(0)
-  additional_info <- 0
+  S_check <- check_S_matrix(S)
+  abort_text <- c(abort_text, S_check$abort_text)
   
-  if (ncol(S) != nrow(S)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a square matrix.",
-      "x" = paste0(
-        "You provided `S` as a matrix, but with different sizes: ",
-        ncol(S), " and ", nrow(S), "."
-      )
-    )
-  } else if (!is.numeric(S)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a numeric matrix.",
-      "x" = paste0(
-        "You provided `S` as a matrix, but with non-numeric values. Your provided type ",
-        typeof(S), "."
-      )
-    )
-  } else if (!all(abs(S - t(S)) < 0.000001)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be a symmetric matrix.",
-      "x" = "You provided `S` as a matrix, but a non-symmetric one.",
-      "i" = "Is your matrix approximately symmetric? Maybe try setting `S <- (S+t(S))/2`?"
-    )
-    additional_info <- additional_info + 1
-  } else if (!is.positive.semi.definite.matrix(S, tolerance = 1e-06)) {
-    abort_text <- c(abort_text,
-      "i" = "`S` matrix must be positive semi-definite matrix.",
-      "x" = "You provided `S` as a symmetric matrix, but a non-positive-semi-definite one."
-    )
-  }
-  
-  if (is.null(number_of_observations)) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must not be `NULL`.",
-      "x" = "Your provided `number_of_observations` is `NULL`."
-    )
-  } else if (number_of_observations < 1) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must be at least 1.",
-      "x" = paste0(
-        "You provided `number_of_observations == ",
-        number_of_observations, "`."
-      )
-    )
-  } else if (!is.wholenumber(number_of_observations)) {
-    abort_text <- c(abort_text,
-      "i" = "`number_of_observations` must be a whole number.",
-      "x" = paste0(
-        "You provided `number_of_observations == ",
-        number_of_observations, "`."
-      )
-    )
-  }
-  
-  if (!(is.infinite(max_iter) || is.wholenumber(max_iter))) {
-    abort_text <- c(abort_text,
-      "i" = "`max_iter` must be either infinite (for hill_climbing optimizer) or a whole number.",
-      "x" = paste0("You provided `max_iter == ", max_iter, "`.")
-    )
-  } else if (max_iter < 2) {
-    abort_text <- c(abort_text,
-      "i" = "`max_iter` must be at least 2.",
-      "x" = paste0("You provided `max_iter == ", max_iter, "`.")
-    )
-  }
-  
-  if (!(permutations::is.cycle(start_perm) || inherits(start_perm, "gips_perm"))) {
-    abort_text <- c(abort_text,
-      "i" = "`start_perm` must be the output of `gips_perm()` function, or of a `cycle` class from `permutations` package.",
-      "x" = paste0(
-        "You provided `start_perm` with `class(start_perm) == (",
-        paste(class(start_perm), collapse = ", "),
-        ")`."
-      )
-    )
-  } else if (!(permutations::is.cycle(start_perm) || attr(start_perm, "size") == ncol(S))) {
-    abort_text <- c(abort_text,
-      "i" = "`start_perm` must have the `size` attribute equal to the shape of a square matrix `S`",
-      "x" = paste0(
-        "You provided `start_perm` with `size == ",
-        attr(start_perm, "size"),
-        "`, but the `S` matrix You provided has ",
-        ncol(S), " columns."
-      )
-    )
-  }
-  
-  if (is.null(delta)) {
-    abort_text <- c(abort_text,
-      "i" = "`delta` must not be `NULL`.",
-      "x" = "Your provided `delta` is a `NULL`."
-    )
-  } else if (delta <= 1) {
-    abort_text <- c(abort_text,
-      "i" = "`delta` must be strictly bigger than 1.",
-      "x" = paste0("You provided `delta == ", delta, "`.")
-    )
-  }
-  
-  if (!(is.null(D_matrix) || is.matrix(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must either be `NULL` or a matrix.",
-      "x" = paste0(
-        "You provided `D_matrix` with type ",
-        typeof(D_matrix), "."
-      )
-    )
-  } else if (!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must either be `NULL` or a square matrix.",
-      "x" = paste0(
-        "You provided `D_matrix` as a matrix, but with different sizes: ",
-        ncol(D_matrix), " and ", nrow(D_matrix), "."
-      )
-    )
-  } else if (!(is.null(D_matrix) || ncol(S) == ncol(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
-      "x" = paste0(
-        "You provided `S` with shape ",
-        ncol(S), " and ", nrow(S),
-        ", but also `D_matrix` with shape ",
-        ncol(D_matrix), " and ", nrow(D_matrix), "."
-      )
-    )
-  } else if (any(is.nan(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must not contain any `NaN`s.",
-      "x" = "You provided `D_matrix` with `NaN`s!"
-    )
-  } else if (any(is.infinite(D_matrix))) {
-    abort_text <- c(abort_text,
-      "i" = "`D_matrix` must not contain any infinite values.",
-      "x" = "You provided `D_matrix` with infinite values!"
-    )
-  }
-  
+  abort_text <- c(abort_text, check_number_of_observations(number_of_observations))
+  abort_text <- c(abort_text, check_max_iter(max_iter))
+  abort_text <- c(abort_text, check_permutation_argument(start_perm, S, "start_perm"))
+  abort_text <- c(abort_text, check_delta(delta))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
   abort_text <- c(abort_text, check_logical_flag(return_probabilities, "return_probabilities"))
   abort_text <- c(abort_text, check_logical_flag(save_all_perms, "save_all_perms"))
   abort_text <- c(abort_text, check_logical_flag(show_progress_bar, "show_progress_bar"))
   
-  if (length(abort_text) > 0) {
-    abort_text <- c(
-      paste0(
-        "There were ", (length(abort_text) - additional_info) / 2,
-        " problems identified with the provided arguments:"
-      ),
-      abort_text
-    )
-
-    if (length(abort_text) > 11) {
-      abort_text <- c(
-        abort_text[1:11],
-        paste0("... and ", (length(abort_text) - 1) / 2 - 5, " more problems")
-      )
-    }
-
-    abort_text <- c(
-      abort_text,
-      ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
-    )
-
-    rlang::abort(abort_text)
-  }
+  abort_on_argument_problems(abort_text, S_check$additional_info)
 
   if (return_probabilities && !save_all_perms) {
     rlang::abort(c("There was a problem identified with the provided arguments:",

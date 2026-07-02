@@ -29,9 +29,9 @@ and uses the
 }
 \examples{
 id_perm <- gips_perm("()", 2)
-calculate_gamma_function(id_perm, 0.5001) # 10.7...
-calculate_gamma_function(id_perm, 0.50000001) # 19.9...
-calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
+calculate_gamma_function(id_perm, 0.5001) # 44417.54
+calculate_gamma_function(id_perm, 0.50000001) # 444288280
+calculate_gamma_function(id_perm, 0.500000000001) # 4.442981e+12
 
 oldw <- getOption("warn")
 options(warn = -1)
