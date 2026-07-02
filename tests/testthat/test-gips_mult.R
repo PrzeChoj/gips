@@ -157,6 +157,24 @@ test_that("gips() multi-sample checks D_matrix list shape", {
 })
 
 
+test_that("gips() multi-sample checks D_matrix symmetry and positive-definiteness", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  non_symmetric_err <- rlang::catch_cnd(gips(
+    list(S1, S2), c(10L, 12L),
+    D_matrix = list(diag(2), matrix(c(1, 1, 0, 1), nrow = 2))
+  ))
+  expect_match(conditionMessage(non_symmetric_err), "symmetric matrix", fixed = TRUE)
+
+  non_positive_definite_err <- rlang::catch_cnd(gips(
+    list(S1, S2), c(10L, 12L),
+    D_matrix = list(diag(2), diag(c(1, -1)))
+  ))
+  expect_match(conditionMessage(non_positive_definite_err), "positive-definite matrix", fixed = TRUE)
+})
+
+
 test_that("log_posteriori_of_gips() on multi-sample equals sum of single-sample log-posteriors", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
@@ -226,11 +244,13 @@ test_that("project_matrix() returns a list when S is a list", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
 
-  g <- gips(list(S1, S2), c(10L, 12L))
-  projected <- project_matrix(list(S1, S2), g[[1]])
+  S_list <- list(first = S1, second = S2)
+  g <- gips(S_list, c(10L, 12L))
+  projected <- project_matrix(S_list, g[[1]])
 
   expect_true(is.list(projected))
   expect_equal(length(projected), 2L)
+  expect_equal(names(projected), names(S_list))
   expect_true(is.matrix(projected[[1]]))
   expect_true(is.matrix(projected[[2]]))
   # Each element must equal the single-group projection
