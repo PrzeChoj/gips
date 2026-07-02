@@ -473,7 +473,7 @@ check_delta <- function(delta) {
   character(0)
 }
 
-check_D_matrix <- function(D_matrix, S) {
+check_D_matrix <- function(D_matrix, p) {
   if (!(is.null(D_matrix) || is.matrix(D_matrix))) {
     return(c(
       "i" = "`D_matrix` must either be `NULL` or a matrix.",
@@ -494,13 +494,12 @@ check_D_matrix <- function(D_matrix, S) {
     ))
   }
 
-  if (!(is.null(D_matrix) || ncol(S) == ncol(D_matrix))) {
+  if (!(is.null(D_matrix) || p == ncol(D_matrix))) {
     return(c(
-      "i" = "`S` must be a square matrix with the same shape as a square matrix `D_matrix`.",
+      "i" = "`D_matrix` must either be `NULL` or have the same shape as `S`.",
       "x" = paste0(
-        "You provided `S` with shape ",
-        ncol(S), " and ", nrow(S),
-        ", but also `D_matrix` with shape ",
+        "You provided an `S` matrix with ",
+        p, " columns and rows, but also `D_matrix` with shape ",
         ncol(D_matrix), " and ", nrow(D_matrix), "."
       )
     ))
@@ -651,7 +650,7 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
   
   abort_text <- c(abort_text, check_number_of_observations(number_of_observations, was_mean_estimated))
   abort_text <- c(abort_text, check_delta(delta))
-  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, ncol(S)))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
   abort_text <- c(abort_text, check_permutation_argument(perm, S, "perm"))
   
@@ -701,7 +700,7 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
   abort_text <- c(abort_text, check_max_iter(max_iter))
   abort_text <- c(abort_text, check_permutation_argument(start_perm, S, "start_perm"))
   abort_text <- c(abort_text, check_delta(delta))
-  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, ncol(S)))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
   abort_text <- c(abort_text, check_logical_flag(return_probabilities, "return_probabilities"))
   abort_text <- c(abort_text, check_logical_flag(save_all_perms, "save_all_perms"))

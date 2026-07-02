@@ -360,7 +360,7 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
   abort_text <- c(abort_text, S_check$abort_text)
   abort_text <- c(abort_text, check_number_of_observations(number_of_observations, was_mean_estimated))
   abort_text <- c(abort_text, check_delta(delta))
-  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, ncol(S)))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
 
   abort_on_argument_problems(abort_text, S_check$additional_info)
