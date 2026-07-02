@@ -258,6 +258,41 @@ test_that("compare_posteriories_of_perms properly calculates", {
   expect_equal(compare_posteriories_of_perms("(1243)", g4, print_output = FALSE), 1)
 })
 
+test_that("compare_log_posteriories_of_perms validates standalone arguments", {
+  S <- diag(1.1, 4)
+
+  S_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", "(1,2)", S = NULL, number_of_observations = 13,
+    print_output = FALSE
+  ))
+  expect_match(conditionMessage(S_error), "`S` must be a matrix", fixed = TRUE)
+
+  n_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", "(1,2)", S = S, number_of_observations = list(13),
+    print_output = FALSE
+  ))
+  expect_match(conditionMessage(n_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(n_error), "type `list`", fixed = TRUE)
+
+  D_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", "(1,2)", S = S, number_of_observations = 13,
+    D_matrix = diag(3), print_output = FALSE
+  ))
+  expect_match(conditionMessage(D_error), "same shape", fixed = TRUE)
+
+  mean_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", "(1,2)", S = S, number_of_observations = 13,
+    was_mean_estimated = "TRUE", print_output = FALSE
+  ))
+  expect_match(conditionMessage(mean_error), "`was_mean_estimated` must be a logic value", fixed = TRUE)
+
+  perm2_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", gips_perm("(1,2,3,4)", 5), S = S,
+    number_of_observations = 13, print_output = FALSE
+  ))
+  expect_match(conditionMessage(perm2_error), "`perm2` must have the `size` attribute", fixed = TRUE)
+})
+
 test_that("compare_posteriories_of_perms refuse to compare different parameters", {
   g1 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1234)", D_matrix = diag(4, 6), delta = 3)
   g2 <- gips(matrix_invariant_by_example_perm, 14, perm = "(1243)", D_matrix = diag(1, 6), delta = 3)

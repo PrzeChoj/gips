@@ -372,6 +372,32 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   invisible(out)
 }
 
+check_compare_posteriories_arguments <- function(S, number_of_observations,
+                                                 delta, D_matrix,
+                                                 was_mean_estimated) {
+  if (!is.matrix(S)) {
+    rlang::abort(c("There was a problem identified with provided S argument:",
+      "i" = "`S` must be a matrix.",
+      "x" = paste0(
+        "You provided `S` with type ",
+        typeof(S), "."
+      )
+    ))
+  }
+
+  abort_text <- character(0)
+  S_check <- check_S_matrix(S)
+  abort_text <- c(abort_text, S_check$abort_text)
+  abort_text <- c(abort_text, check_number_of_observations(number_of_observations))
+  abort_text <- c(abort_text, check_delta(delta))
+  abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
+  abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+
+  abort_on_argument_problems(abort_text, S_check$additional_info)
+
+  invisible(NULL)
+}
+
 #' @describeIn compare_posteriories_of_perms More stable,
 #'     logarithmic version of `compare_posteriories_of_perms()`.
 #'     The natural logarithm is used.
@@ -498,6 +524,14 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     was_mean_estimated <- attr(perm2, "was_mean_estimated")
 
     perm2 <- perm2[[1]]
+  } else {
+    check_compare_posteriories_arguments(
+      S = S,
+      number_of_observations = number_of_observations,
+      delta = delta,
+      D_matrix = D_matrix,
+      was_mean_estimated = was_mean_estimated
+    )
   }
 
   if (was_mean_estimated) {
@@ -514,13 +548,11 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     perm2 <- gips_perm(perm2, perm_size)
   }
 
-  check_find_MAP_arguments(S,
-    edited_number_of_observations,
-    max_iter = 5,
-    start_perm = perm1, delta = delta, D_matrix = D_matrix,
-    was_mean_estimated = was_mean_estimated, save_all_perms = TRUE,
-    return_probabilities = FALSE, show_progress_bar = FALSE
+  abort_text <- c(
+    check_permutation_argument(perm1, S, "perm1"),
+    check_permutation_argument(perm2, S, "perm2")
   )
+  abort_on_argument_problems(abort_text)
 
   validate_gips_perm(perm1)
   validate_gips_perm(perm2)
