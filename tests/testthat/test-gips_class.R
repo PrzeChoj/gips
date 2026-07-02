@@ -199,6 +199,30 @@ test_that("Properly validate the gips class with no optimization or after a sing
     S[1:4, 1:4], number_of_observations,
     was_mean_estimated = FALSE, D_matrix = diag(Inf, 4)
   ))
+  
+  # non-symmetric or non-positive-definite D_matrix
+  expect_error(
+    gips(
+      S[1:4, 1:4], number_of_observations,
+      was_mean_estimated = FALSE,
+      D_matrix = matrix(c(
+        1, 0, 0, 0,
+        1, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      ), nrow = 4)
+    ),
+    "`D_matrix` must either be `NULL` or a symmetric matrix.",
+    fixed = TRUE
+  )
+  expect_error(
+    gips(
+      S[1:4, 1:4], number_of_observations,
+      was_mean_estimated = FALSE, D_matrix = diag(c(1, 1, 1, -1))
+    ),
+    "`D_matrix` must either be `NULL` or a positive-definite matrix.",
+    fixed = TRUE
+  )
 
   # Other tests
   g_err <- g2

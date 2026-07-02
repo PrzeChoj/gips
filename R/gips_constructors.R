@@ -519,6 +519,20 @@ check_D_matrix <- function(D_matrix, S) {
       "x" = "You provided `D_matrix` with infinite values!"
     ))
   }
+  
+  if (!(is.null(D_matrix) || all(abs(D_matrix - t(D_matrix)) < 0.000001))) {
+    return(c(
+      "i" = "`D_matrix` must either be `NULL` or a symmetric matrix.",
+      "x" = "You provided `D_matrix` as a matrix, but a non-symmetric one."
+    ))
+  }
+  
+  if (!(is.null(D_matrix) || is.positive.definite.matrix(D_matrix, tolerance = 1e-06))) {
+    return(c(
+      "i" = "`D_matrix` must either be `NULL` or a positive-definite matrix.",
+      "x" = "You provided `D_matrix` as a matrix, but a non-positive-definite one."
+    ))
+  }
 
   character(0)
 }
