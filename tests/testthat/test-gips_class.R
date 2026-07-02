@@ -62,6 +62,18 @@ test_that("gips() validates number_of_observations type and length clearly", {
   expect_match(conditionMessage(length_error), "length 2", fixed = TRUE)
 })
 
+test_that("gips() requires enough observations after mean estimation", {
+  expect_silent(gips(S = diag(1.1, 4), number_of_observations = 1, was_mean_estimated = FALSE))
+
+  n_error <- rlang::catch_cnd(gips(
+    S = diag(1.1, 4),
+    number_of_observations = 1,
+    was_mean_estimated = TRUE
+  ))
+  expect_match(conditionMessage(n_error), "`number_of_observations` must be at least 2", fixed = TRUE)
+  expect_match(conditionMessage(n_error), "`was_mean_estimated == TRUE`", fixed = TRUE)
+})
+
 test_that("new_gips() works or throws an erron on wrong arguments", {
   expect_silent(new_gips(
     list(gips_perm("(1,2)(3,4,5,6)", 6)),
@@ -361,6 +373,11 @@ test_that("check_find_MAP_arguments() properly validates arguments", {
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
+  expect_error(check_find_MAP_arguments(
+    S, 1, 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), TRUE, FALSE, FALSE, FALSE
+  ), "`number_of_observations` must be at least 2")
   expect_error(check_find_MAP_arguments(
     S, number_of_observations + 0.1, 30,
     permutations::permutation("(1,3)(2,4)(5,6)"),
