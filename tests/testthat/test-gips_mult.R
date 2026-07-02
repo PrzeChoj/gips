@@ -372,6 +372,42 @@ test_that("compare_posteriories_of_perms() compares multi-sample gips to permuta
   expect_equal(result, expected_ratio, tolerance = 1e-10)
 })
 
+test_that("compare_posteriories_of_perms() compares two multi-sample gips objects", {
+  p <- 4
+  S_list <- list(diag(1.1, p), diag(2.4, p))
+  n <- c(13L, 50L)
+
+  g_1 <- gips(S_list, n, perm = "()")
+  g_2 <- gips(S_list, n, perm = "(1,2)")
+
+  expect_output(
+    result <- compare_posteriories_of_perms(g_1, g_2)
+  )
+
+  expected_ratio <- exp(log_posteriori_of_gips(g_1) - log_posteriori_of_gips(g_2))
+
+  expect_equal(result, expected_ratio, tolerance = 1e-10)
+})
+
+test_that("compare_posteriories_of_perms() works with standalone multi-sample arguments", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+  S_list <- list(S1, S2)
+  n <- c(10L, 12L)
+
+  g1 <- gips(S_list, n, perm = "(1,2)", was_mean_estimated = FALSE)
+  g2 <- gips(S_list, n, perm = "()", was_mean_estimated = FALSE)
+
+  expect_equal(
+    compare_posteriories_of_perms(
+      "(1,2)", "()", S = S_list, number_of_observations = n,
+      was_mean_estimated = FALSE, print_output = FALSE
+    ),
+    compare_posteriories_of_perms(g1, g2, print_output = FALSE),
+    tolerance = 1e-10
+  )
+})
+
 test_that("compare_log_posteriories_of_perms() validates standalone multi-sample arguments", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
