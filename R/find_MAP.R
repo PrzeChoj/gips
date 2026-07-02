@@ -94,6 +94,13 @@
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
 #'
+#' @section Multi-sample:
+#' If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`,
+#' the same optimizers search for one permutation shared by all groups.
+#' The optimized criterion is the combined log-posterior, i.e. the sum of
+#' per-group log-posteriors. The default optimizer is still chosen from the
+#' common matrix size `p`, and warnings about MLE existence use `min(n_g)`.
+#'
 #' @returns An optimized object of a `gips` class.
 #'
 #' @export

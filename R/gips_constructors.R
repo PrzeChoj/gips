@@ -6,7 +6,10 @@
 #' It will not perform optimization; one must call
 #' the [find_MAP()] function to do it. See the examples below.
 #'
-#' @param S A matrix; empirical covariance matrix.
+#' @param S A p by p empirical covariance matrix. This is the standard,
+#'     single-sample use of `gips()`. For the optional multi-sample interface,
+#'     `S` can also be a list of covariance matrices; see the
+#'     **Multi-sample** section below.
 #'     When `Z` is the observed data:
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`,
@@ -14,15 +17,20 @@
 #' * if one knows the theoretical mean is 0, use
 #'     `S = (t(Z) %*% Z) / number_of_observations`, and set
 #'     parameter `was_mean_estimated = FALSE`.
-#' @param number_of_observations A number of data points
-#'     that `S` is based on.
+#' @param number_of_observations A number of data points that `S` is based on.
+#'     For multi-sample input, use one value per matrix in `S`; see the
+#'     **Multi-sample** section below.
 #' @param delta A number, hyper-parameter of a Bayesian model.
 #'     It has to be strictly bigger than 1.
 #'     See the **Hyperparameters** section below.
+#'     For multi-sample input, it can also be a numeric vector with one value
+#'     per matrix in `S`; see the **Multi-sample** section below.
 #' @param D_matrix Symmetric, positive-definite matrix of the same size as `S`.
 #'     Hyper-parameter of a Bayesian model.
 #'     When `NULL`, the (hopefully) reasonable one is derived from the data.
 #'     For more details, see the **Hyperparameters** section below.
+#'     For multi-sample input, use a list of matrices; see the
+#'     **Multi-sample** section below.
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
@@ -72,18 +80,24 @@
 #' \doi{10.18637/jss.v112.i07}.
 #'
 #' @section Multi-sample:
-#' `gips()` supports G groups of samples sharing the same permutation symmetry.
-#' Pass a list of G covariance matrices as `S` and a numeric vector of length G
-#' as `number_of_observations`:
+#' The usual and recommended starting point is the single-sample call
+#' `gips(S, number_of_observations)`.
+#'
+#' The optional multi-sample interface is for G independent groups that are
+#' assumed to share the same permutation symmetry, while each group keeps its
+#' own covariance matrix and sample size. Pass a list of G covariance matrices
+#' as `S` and a numeric vector of length G as `number_of_observations`:
 #'
 #' ```r
 #' g <- gips(list(S1, S2, S3), c(n1, n2, n3))
 #' ```
 #'
+#' All matrices in `S` must be square covariance matrices of the same size.
 #' `D_matrix` should then be a list of G positive-definite matrices
 #' (defaulting to `diag(mean(diag(S_g)), p)` for each group).
 #' `delta` can be a scalar (broadcast to all groups) or a vector of length G
 #' (one value per group); it defaults to `rep(3, G)`.
+#' `was_mean_estimated` is one boolean value applied to all groups.
 #'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.

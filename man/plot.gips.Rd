@@ -48,8 +48,9 @@ non-optimized \code{gips} objects and to "both" for optimized ones.
 Using the default produces a warning.
 
 \strong{Multi-sample note:} Heatmap types produce one facet per group.
-When there are more than 10 groups, the function warns the user
-(or prompts for confirmation in interactive sessions) before plotting.
+Convergence plots use the combined log-posterior optimized by
+\code{\link[=find_MAP]{find_MAP()}}. When there are more than 10 groups, the function warns
+the user before plotting heatmaps.
 
 Arguments \code{logarithmic_y}, \code{logarithmic_x}, \code{color}, \code{title_text},
 \code{xlabel}, \code{ylabel}, \code{show_legend}, \code{ylim}, and \code{xlim} are only used for

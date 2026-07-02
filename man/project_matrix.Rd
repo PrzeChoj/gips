@@ -7,9 +7,10 @@
 project_matrix(S, perm)
 }
 \arguments{
-\item{S}{A square matrix to be projected.
-The empirical covariance matrix.
+\item{S}{A square empirical covariance matrix to be projected.
 (See the \code{S} parameter in the \code{gips()} function).
+For optional multi-sample use, \code{S} can be a list of covariance matrices;
+see the \strong{Multi-sample} section below.
 When it is not positive semi-definite,
 it shows a warning of a class \code{not_positive_semi_definite_matrix}.}
 
@@ -63,8 +64,8 @@ section in \code{vignette("Theory", package = "gips")} or in its
 \section{Multi-sample}{
 
 When \code{S} is a list of matrices (as stored in a multi-sample \code{gips} object),
-\code{project_matrix()} applies the projection to each element and returns a list
-of projected matrices of the same length.
+\code{project_matrix()} applies the same permutation projection to each element
+and returns a list of projected matrices of the same length.
 }
 
 \examples{

@@ -28,9 +28,10 @@
 #'     non-optimized `gips` objects and to "both" for optimized ones.
 #'     Using the default produces a warning.
 #' 
-#' **Multi-sample note:** Heatmap types produce one facet per group. 
-#'     When there are more than 10 groups, the function warns the user 
-#'     (or prompts for confirmation in interactive sessions) before plotting.
+#' **Multi-sample note:** Heatmap types produce one facet per group.
+#'     Convergence plots use the combined log-posterior optimized by
+#'     [find_MAP()]. When there are more than 10 groups, the function warns
+#'     the user before plotting heatmaps.
 #'     
 #' Arguments `logarithmic_y`, `logarithmic_x`, `color`, `title_text`,
 #'     `xlabel`, `ylabel`, `show_legend`, `ylim`, and `xlim` are only used for

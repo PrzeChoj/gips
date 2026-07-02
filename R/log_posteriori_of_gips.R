@@ -37,9 +37,10 @@
 #' @section Multi-sample:
 #' When `g` is a multi-sample `gips` object (created with a list of matrices,
 #' e.g. `gips(list(S1, S2), c(n1, n2))`), the log-posterior is the sum of
-#' the independent single-sample log-posteriors across all G groups:
+#' the independent single-sample log-posteriors across all G groups, using
+#' the per-group `number_of_observations`, `delta`, and `D_matrix` values:
 #'
-#' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{g=1}^{G} \log P(\Gamma | S_g)}
+#' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{\ell=1}^{G} \log P(\Gamma | S_\ell)}
 #'
 #' @returns The logarithm of an unnormalized A Posteriori.
 #'
@@ -271,6 +272,13 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #'
 #' @returns The function `compare_posteriories_of_perms()` returns
 #'     the value of how many times the `perm1` is more likely than `perm2`.
+#'
+#' @section Multi-sample:
+#' When comparing permutations for a multi-sample `gips` object, or when
+#' passing multi-sample arguments directly, the comparison uses the combined
+#' log-posterior (the sum of per-group log-posteriors). Two `gips` objects can
+#' be compared only when they are both single-sample or both multi-sample with
+#' the same data and hyperparameters.
 #'
 #' @seealso
 #' * [print.gips()] - The function that prints the posterior of

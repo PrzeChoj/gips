@@ -1047,6 +1047,11 @@ BIC.gips <- function(object, ...) {
 #' it returns a `NULL` object.
 #' It is sorted according to the probability.
 #'
+#' @section Multi-sample:
+#' For multi-sample `gips` objects, these are probabilities of the shared
+#' permutation symmetry, calculated from the combined posterior used by
+#' [find_MAP()].
+#'
 #' @export
 #'
 #' @seealso
