@@ -698,7 +698,7 @@ brute_force_optimizer <- function(
     S,
     number_of_observations,
     delta = 3, D_matrix = NULL,
-    return_probabilities = return_probabilities,
+    return_probabilities = FALSE,
     save_all_perms = FALSE, show_progress_bar = TRUE) {
   check_find_MAP_arguments(
     S = S, number_of_observations = number_of_observations,
