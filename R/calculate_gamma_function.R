@@ -33,9 +33,9 @@
 #'
 #' @examples
 #' id_perm <- gips_perm("()", 2)
-#' calculate_gamma_function(id_perm, 0.5001) # 10.7...
-#' calculate_gamma_function(id_perm, 0.50000001) # 19.9...
-#' calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
+#' calculate_gamma_function(id_perm, 0.5001) # 44417.54
+#' calculate_gamma_function(id_perm, 0.50000001) # 444288280
+#' calculate_gamma_function(id_perm, 0.500000000001) # 4.442981e+12
 #'
 #' oldw <- getOption("warn")
 #' options(warn = -1)
@@ -66,7 +66,7 @@ calculate_gamma_function <- function(perm, lambda) {
   B_Gamma <- sum(dim_gamma * log(k)) / 2
 
   gamma_omega <- sapply(1:L, function(i) {
-    calculate_gamma_omega(
+    calculate_log_gamma_omega(
       k[i] * lambda,
       dim_gamma[i],
       r[i],
@@ -74,7 +74,7 @@ calculate_gamma_function <- function(perm, lambda) {
     )
   })
 
-  exp(-A_Gamma * lambda + B_Gamma) * prod(gamma_omega)
+  exp(-A_Gamma * lambda + B_Gamma + sum(gamma_omega))
 }
 
 
@@ -90,7 +90,7 @@ calculate_gamma_function <- function(perm, lambda) {
 #' @returns Logarithm of the value of Gamma function.
 #'
 #' @noRd
-calculate_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
+calculate_log_gamma_omega <- function(lambda, dim_omega_i, r_i, d_i) {
   if ((lambda + 1) * r_i <= dim_omega_i) { # equivalent to lambda <= dim_omega_i / r_i - 1
     rlang::warn(c("Gamma integral is divergent for the given lambda value and structure constants.",
       "i" = paste0(
