@@ -235,6 +235,112 @@ sum(eigen(S_projected)$values > 0.00000001)
 Now, the estimated covariance matrix is of full rank (5).
 
 
+# Multi-sample example
+
+Sometimes, we may have several independent groups that should share the same
+permutation symmetry, while each group has its own covariance matrix. In this
+case, pass a list of covariance matrices as `S` and a vector of sample sizes as
+`number_of_observations`.
+
+The two covariance matrices below are different, but both are invariant under
+the permutation $(1,2,3)$:
+
+```{r multi_sample_example_data}
+p <- 5
+n1 <- 20
+n2 <- 23
+
+sigma_matrix_1 <- matrix(c(
+  1.50,  0.95,  0.95,  0.30, -0.05,
+  0.95,  1.50,  0.95,  0.30, -0.05,
+  0.95,  0.95,  1.50,  0.30, -0.05,
+  0.30,  0.30,  0.30,  2.40,  0.05,
+ -0.05, -0.05, -0.05,  0.05,  0.60
+), nrow = p, byrow = TRUE)
+
+sigma_matrix_2 <- matrix(c(
+  2.10,  1.40,  1.40, -0.35,  0.55,
+  1.40,  2.10,  1.40, -0.35,  0.55,
+  1.40,  1.40,  2.10, -0.35,  0.55,
+ -0.35, -0.35, -0.35,  0.80, -0.30,
+  0.55,  0.55,  0.55, -0.30,  2.80
+), nrow = p, byrow = TRUE)
+
+data_sample_1 <- withr::with_seed(21, 
+  MASS::mvrnorm(n1, mu = rep(0, p), Sigma = sigma_matrix_1)
+)
+
+data_sample_2 <- withr::with_seed(37, 
+  MASS::mvrnorm(n2, mu = rep(0, p), Sigma = sigma_matrix_2)
+)
+
+S1 <- cov(data_sample_1)
+S2 <- cov(data_sample_2)
+```
+
+Let us look at the sample covariance matrices:
+
+```{r multi_sample_plot}
+g_multi <- gips(list(S1, S2), c(n1, n2))
+
+plot(g_multi, type = "MLE")
+```
+
+We see that the estimated covariances are different, but both look approximately invariant under the $(1,2,3)$ permutation.
+
+Now we can fit one shared symmetry model to both covariance matrices:
+
+```{r multi_sample_example_fit}
+g_multi_map <- find_MAP(g_multi,
+  optimizer = "brute_force",
+  return_probabilities = TRUE, save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+g_multi_map
+head(get_probabilities_from_gips(g_multi_map), 5)
+```
+
+The MAP symmetry is $(1,2,3)$, matching the shared symmetry used to generate
+both groups. Its posterior probability is about $56\%$. The projected covariance
+estimate is also returned as one matrix per group:
+
+```{r multi_sample_example_project}
+S_multi_projected <- project_matrix(list(S1, S2), g_multi_map)
+
+round(S_multi_projected[[1]], 2)
+round(S_multi_projected[[2]], 2)
+
+plot(g_multi_map, type = "MLE")
+```
+
+If we analyze the two groups separately, the shared symmetry is less clear:
+
+```{r multi_sample_single_group_comparison}
+g_1_map <- find_MAP(gips(S1, n1),
+  optimizer = "BF",
+  return_probabilities = TRUE,
+  save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+g_2_map <- find_MAP(gips(S2, n2),
+  optimizer = "BF",
+  return_probabilities = TRUE,
+  save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+head(get_probabilities_from_gips(g_1_map), 5)
+head(get_probabilities_from_gips(g_2_map), 5)
+```
+
+The separate analyses are more ambiguous. The true $(1,2,3)$ permutation has
+posterior probability about $52\%$ in the first sample and only about $32\%$ in
+the second sample. The multi-sample fit combines evidence from both groups while
+requiring one shared permutation symmetry.
+
+
 # Further reading
 
 1. To learn more about the available optimizers in `find_MAP()` and how to use those, see `vignette("Optimizers", package="gips")` or its [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
