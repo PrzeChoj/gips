@@ -97,7 +97,8 @@
 #' (defaulting to `diag(mean(diag(S_g)), p)` for each group).
 #' `delta` can be a scalar (broadcast to all groups) or a vector of length G
 #' (one value per group); it defaults to `rep(3, G)`.
-#' `was_mean_estimated` is one boolean value applied to all groups.
+#' `was_mean_estimated` is intentionally one boolean value applied to all groups,
+#' not a per-group setting.
 #'
 #' @returns `gips()` returns an object of
 #'     a `gips` class after the safety checks.

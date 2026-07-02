@@ -167,7 +167,8 @@ All matrices in \code{S} must be square covariance matrices of the same size.
 (defaulting to \code{diag(mean(diag(S_g)), p)} for each group).
 \code{delta} can be a scalar (broadcast to all groups) or a vector of length G
 (one value per group); it defaults to \code{rep(3, G)}.
-\code{was_mean_estimated} is one boolean value applied to all groups.
+\code{was_mean_estimated} is intentionally one boolean value applied to all groups,
+not a per-group setting.
 }
 
 \examples{
