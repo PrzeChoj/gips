@@ -380,7 +380,8 @@ check_logical_flag <- function(value, name) {
   character(0)
 }
 
-check_number_of_observations <- function(number_of_observations) {
+check_number_of_observations <- function(number_of_observations,
+                                         was_mean_estimated = FALSE) {
   if (is.null(number_of_observations)) {
     return(c(
       "i" = "`number_of_observations` must not be `NULL`.",
@@ -422,7 +423,18 @@ check_number_of_observations <- function(number_of_observations) {
     ))
   }
 
-  if (number_of_observations < 1) {
+  minimum_number_of_observations <- if (identical(was_mean_estimated, TRUE)) 2 else 1
+  if (number_of_observations < minimum_number_of_observations) {
+    if (identical(was_mean_estimated, TRUE)) {
+      return(c(
+        "i" = "`number_of_observations` must be at least 2 when `was_mean_estimated` is `TRUE`.",
+        "x" = paste0(
+          "You provided `number_of_observations == ",
+          number_of_observations, "` and `was_mean_estimated == TRUE`."
+        )
+      ))
+    }
+
     return(c(
       "i" = "`number_of_observations` must be at least 1.",
       "x" = paste0(
@@ -697,7 +709,7 @@ check_gips_arguments <- function(S, number_of_observations, delta, D_matrix,
   S_check <- check_S_matrix(S)
   abort_text <- c(abort_text, S_check$abort_text)
   
-  abort_text <- c(abort_text, check_number_of_observations(number_of_observations))
+  abort_text <- c(abort_text, check_number_of_observations(number_of_observations, was_mean_estimated))
   abort_text <- c(abort_text, check_delta(delta))
   abort_text <- c(abort_text, check_D_matrix(D_matrix, S))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
@@ -766,7 +778,7 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
   S_check <- check_S_matrix(S)
   abort_text <- c(abort_text, S_check$abort_text)
   
-  abort_text <- c(abort_text, check_number_of_observations(number_of_observations))
+  abort_text <- c(abort_text, check_number_of_observations(number_of_observations, was_mean_estimated))
   abort_text <- c(abort_text, check_max_iter(max_iter))
   abort_text <- c(abort_text, check_permutation_argument(start_perm, S, "start_perm"))
   abort_text <- c(abort_text, check_delta(delta))

@@ -286,6 +286,12 @@ test_that("compare_log_posteriories_of_perms validates standalone arguments", {
   ))
   expect_match(conditionMessage(mean_error), "`was_mean_estimated` must be a logic value", fixed = TRUE)
 
+  n_with_mean_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "()", "(1,2)", S = S, number_of_observations = 1,
+    was_mean_estimated = TRUE, print_output = FALSE
+  ))
+  expect_match(conditionMessage(n_with_mean_error), "`number_of_observations` must be at least 2", fixed = TRUE)
+
   perm2_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
     "()", gips_perm("(1,2,3,4)", 5), S = S,
     number_of_observations = 13, print_output = FALSE

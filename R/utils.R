@@ -118,13 +118,13 @@ change_log_probabilities_unnorm_to_probabilities <- function(log_probabilities_u
 }
 
 pretty_plot_matrix <- function(S, title = "") {
-  plot(gips(S, 1), type = "heatmap") +
+  plot(gips(S, 1, was_mean_estimated = FALSE), type = "heatmap") +
     ggplot2::labs(title = title, x = "", y = "", fill = "value")
 }
 
 pretty_plot_block_matrix <- function(S, perm, title = "") {
   # S is the original cov estimator - not diagonalized!
-  plot(gips(S, 1, perm = perm), type = "block_heatmap") +
+  plot(gips(S, 1, perm = perm, was_mean_estimated = FALSE), type = "block_heatmap") +
     ggplot2::labs(title = title, x = "", y = "", fill = "value")
 }
 
