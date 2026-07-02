@@ -387,7 +387,9 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
       additional_info <- additional_info + S_check$additional_info
     }
 
-    abort_text <- c(abort_text, check_multi_numbers_of_observations(number_of_observations, G))
+    abort_text <- c(abort_text, check_multi_numbers_of_observations(
+      number_of_observations, G, was_mean_estimated
+    ))
     abort_text <- c(abort_text, check_multi_delta(delta, G))
     abort_text <- c(abort_text, check_multi_D_matrices(D_matrix, S))
     abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))

@@ -851,7 +851,8 @@ check_multi_S_list <- function(Ss) {
 }
 
 
-check_multi_numbers_of_observations <- function(numbers_of_observations, G) {
+check_multi_numbers_of_observations <- function(numbers_of_observations, G,
+                                                was_mean_estimated = FALSE) {
   if (is.null(numbers_of_observations)) {
     return(c(
       "i" = "`number_of_observations` must not be `NULL`.",
@@ -879,7 +880,11 @@ check_multi_numbers_of_observations <- function(numbers_of_observations, G) {
     ))
   }
 
-  unlist(lapply(numbers_of_observations, check_number_of_observations), use.names = TRUE)
+  unlist(
+    lapply(numbers_of_observations, check_number_of_observations,
+           was_mean_estimated = was_mean_estimated),
+    use.names = TRUE
+  )
 }
 
 
@@ -973,7 +978,9 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
     additional_info <- additional_info + S_check$additional_info
   }
 
-  abort_text <- c(abort_text, check_multi_numbers_of_observations(numbers_of_observations, G))
+  abort_text <- c(abort_text, check_multi_numbers_of_observations(
+    numbers_of_observations, G, was_mean_estimated
+  ))
   abort_text <- c(abort_text, check_multi_delta(delta, G))
   abort_text <- c(abort_text, check_multi_D_matrices(D_matrices, Ss))
   abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))

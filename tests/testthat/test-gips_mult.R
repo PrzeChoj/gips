@@ -54,6 +54,18 @@ test_that("gips() multi-sample errors clearly on list number_of_observations", {
 })
 
 
+test_that("gips() multi-sample requires enough observations after mean estimation", {
+  S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
+  S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
+
+  expect_silent(gips(list(S1, S2), c(1L, 2L), was_mean_estimated = FALSE))
+
+  err <- rlang::catch_cnd(gips(list(S1, S2), c(1L, 2L), was_mean_estimated = TRUE))
+  expect_match(conditionMessage(err), "`number_of_observations` must be at least 2", fixed = TRUE)
+  expect_match(conditionMessage(err), "`was_mean_estimated == TRUE`", fixed = TRUE)
+})
+
+
 test_that("gips() multi-sample errors when S list contains non-matrices", {
   expect_error(gips(list(matrix(c(1, 0.5, 0.5, 2), nrow = 2), "not a matrix"), c(10L, 12L)))
 })
@@ -385,6 +397,12 @@ test_that("compare_log_posteriories_of_perms() validates standalone multi-sample
   ))
   expect_match(conditionMessage(n_error), "`number_of_observations` must be a numeric vector", fixed = TRUE)
   expect_match(conditionMessage(n_error), "type `list`", fixed = TRUE)
+
+  n_with_mean_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
+    "(1,2)", "()", S = S_list, number_of_observations = c(1L, 2L),
+    was_mean_estimated = TRUE, print_output = FALSE
+  ))
+  expect_match(conditionMessage(n_with_mean_error), "`number_of_observations` must be at least 2", fixed = TRUE)
 
   delta_error <- rlang::catch_cnd(compare_log_posteriories_of_perms(
     "(1,2)", "()", S = S_list, number_of_observations = n,
