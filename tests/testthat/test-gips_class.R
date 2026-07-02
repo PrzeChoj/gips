@@ -48,6 +48,20 @@ test_that("Setting custom permutation in gips constructor works", {
   expect_equal(g2, g3)
 })
 
+test_that("gips() validates number_of_observations type and length clearly", {
+  list_error <- rlang::catch_cnd(gips(S = diag(1.1, 4), number_of_observations = list(13)))
+  expect_match(conditionMessage(list_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(list_error), "type `list`", fixed = TRUE)
+
+  character_error <- rlang::catch_cnd(gips(S = diag(1.1, 4), number_of_observations = "13"))
+  expect_match(conditionMessage(character_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(character_error), "type `character`", fixed = TRUE)
+
+  length_error <- rlang::catch_cnd(gips(S = diag(1.1, 4), number_of_observations = c(13, 14)))
+  expect_match(conditionMessage(length_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(length_error), "length 2", fixed = TRUE)
+})
+
 test_that("new_gips() works or throws an erron on wrong arguments", {
   expect_silent(new_gips(
     list(gips_perm("(1,2)(3,4,5,6)", 6)),
@@ -352,6 +366,27 @@ test_that("check_find_MAP_arguments() properly validates arguments", {
     permutations::permutation("(1,3)(2,4)(5,6)"),
     3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
   ))
+  list_error <- rlang::catch_cnd(check_find_MAP_arguments(
+    S, list(13), 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+  ))
+  expect_match(conditionMessage(list_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(list_error), "type `list`", fixed = TRUE)
+  character_error <- rlang::catch_cnd(check_find_MAP_arguments(
+    S, "13", 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+  ))
+  expect_match(conditionMessage(character_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(character_error), "type `character`", fixed = TRUE)
+  length_error <- rlang::catch_cnd(check_find_MAP_arguments(
+    S, c(13, 14), 30,
+    permutations::permutation("(1,3)(2,4)(5,6)"),
+    3, diag(nrow = ncol(S)), FALSE, FALSE, FALSE, FALSE
+  ))
+  expect_match(conditionMessage(length_error), "`number_of_observations` must be a single whole number", fixed = TRUE)
+  expect_match(conditionMessage(length_error), "length 2", fixed = TRUE)
   expect_error(check_find_MAP_arguments(
     S, number_of_observations, 30.1,
     permutations::permutation("(1,3)(2,4)(5,6)"),
