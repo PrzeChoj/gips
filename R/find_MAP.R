@@ -483,6 +483,9 @@ Metropolis_Hastings_optimizer <- function(
 
   found_perm <- start_perm
   found_perm_log_posteriori <- log_posteriori_values[1]
+  
+  cache <- list()
+  iterations_needed_to_move <- NA
 
   Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -493,12 +496,19 @@ Metropolis_Hastings_optimizer <- function(
     }
 
     e <- runif_transposition(perm_size)
+    e_string <- paste0(max(e), ",", min(e))
     perm_proposal <- compose_with_transposition(current_perm, e)
 
-    goal_function_perm_proposal <- my_goal_function(perm_proposal, i)
+    goal_function_perm_proposal <- if (is.null(cache[[e_string]])) {
+      my_goal_function(perm_proposal, i)
+    } else {
+      cache[[e_string]]
+    }
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
     if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessarily Metropolis-Hastings.
+      cache <- list()
+      iterations_needed_to_move <- NA
       current_perm <- perm_proposal
       if (save_all_perms) {
         visited_perms[[i + 1]] <- current_perm
@@ -517,12 +527,34 @@ Metropolis_Hastings_optimizer <- function(
       }
       log_posteriori_values[i + 1] <- log_posteriori_values[i]
       all_n0[i+1] <- all_n0[i]
+      cache[[e_string]] <- goal_function_perm_proposal
+    }
+    
+    if (length(cache) == perm_size * (perm_size-1) / 2) {
+      # cache is full
+      # TODO: We could make a move based on the probability of the neighbours
+      if (is.na(iterations_needed_to_move)) {
+        biggest_probability <- exp(max(sapply(cache, identity)) - log_posteriori_values[i+1])
+        iterations_needed_to_move <- 1 / biggest_probability
+      }
+      if (iterations_needed_to_move > 2 * (max_iter - i)) {
+        if (show_progress_bar) {
+          message("The local optimum was found")
+        }
+        break
+      }
     }
   }
-
+  
   if (show_progress_bar) {
     close(progressBar)
   }
+
+  # Trim arrays to actual number of iterations performed
+  # (in case the loop broke early when cache filled up)
+  log_posteriori_values <- log_posteriori_values[1:(i+1)]
+  all_n0 <- all_n0[1:(i+1)]
+  acceptance <- acceptance[1:(i+1)]
 
   function_calls <- length(log_posteriori_values)
 
@@ -544,7 +576,7 @@ Metropolis_Hastings_optimizer <- function(
     "iterations_performed" = i,
     "optimization_algorithm_used" = "Metropolis_Hastings",
     "post_probabilities" = probabilities,
-    "did_converge" = NULL,
+    "did_converge" = NULL, # TODO: Maybe it should be TRUE when the early stopping from cache?
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
     "whole_optimization_time" = NA,
