@@ -82,6 +82,7 @@
 <div class="section level4">
 <h4 id="update-to-functions-1-2-3-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-2-3-9000"></a></h4>
 <ul><li>Added caching for <code>find_MAP(optimizer = "MH")</code> to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.</li>
+<li>Improved <code>find_MAP(optimizer = "MH")</code> with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See <a href="https://github.com/PrzeChoj/gips/issues/115" class="external-link">#115</a>.</li>
 <li>
 <code><a href="../reference/plot.gips.html">plot.gips()</a></code> now uses <code>ggplot2</code> for all plot types.</li>
 <li>
@@ -91,7 +92,7 @@
 <h4 id="bugfix-1-2-3-9000">Bugfix:<a class="anchor" aria-label="anchor" href="#bugfix-1-2-3-9000"></a></h4>
 <ul><li>Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.</li>
 <li>
-<code>plot.gips(type = "n0")</code> works properly after multiple optimizations. See <a href="https://github.com/PrzeChoj/gips/issues/114" class="external-link">#114</a></li>
+<code>plot.gips(type = "n0")</code> works properly after multiple optimizations. See <a href="https://github.com/PrzeChoj/gips/issues/114" class="external-link">#114</a>.</li>
 </ul></div>
 </div>
     <div class="section level2">

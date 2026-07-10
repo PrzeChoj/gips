@@ -35,6 +35,12 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 - Added caching for `find_MAP(optimizer = "MH")` to store computed
   values. This reduces computation time for the Markov chain,
   particularly when the acceptance rate is low.
+- Improved `find_MAP(optimizer = "MH")` with a forced move mechanism:
+  when the cache is full (all neighbors have been evaluated), the
+  algorithm now makes a probabilistic move based on the cached values
+  instead of exiting early, which improves exploration of the
+  permutation space. See
+  [\#115](https://github.com/PrzeChoj/gips/issues/115).
 - [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md)
   now uses `ggplot2` for all plot types.
 - `plot.gips(type = "all", "best", "both", or "n0")` is now much faster
@@ -45,7 +51,7 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 - Documentation improvements: grammar and style corrections in roxygen
   comments, vignettes, and error messages.
 - `plot.gips(type = "n0")` works properly after multiple optimizations.
-  See [\#114](https://github.com/PrzeChoj/gips/issues/114)
+  See [\#114](https://github.com/PrzeChoj/gips/issues/114).
 
 ## gips 1.2.3
 
