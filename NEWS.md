@@ -23,6 +23,7 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 ### Update to functions
 
 - `plot.gips()` now uses `ggplot2` for all plot types.
+- `plot.gips(type = "all", "best", "both", or "n0")` is now much faster for large iteration counts.
 
 ### Bugfix:
 
