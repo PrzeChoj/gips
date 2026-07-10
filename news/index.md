@@ -41,6 +41,8 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 
 - Documentation improvements: grammar and style corrections in roxygen
   comments, vignettes, and error messages.
+- `plot.gips(type = "n0")` works properly after multiple optimizations.
+  See [\#114](https://github.com/PrzeChoj/gips/issues/114)
 
 ## gips 1.2.3
 
