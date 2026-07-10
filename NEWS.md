@@ -28,6 +28,7 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 ### Bugfix:
 
 - Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.
+- `plot.gips(type = "n0")` works properly after multiple optimizations. See #114
 
 
 # gips 1.2.3

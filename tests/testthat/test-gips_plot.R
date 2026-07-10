@@ -135,3 +135,32 @@ local({
     expect_lt(nrow(gg_all$data), num_of_steps)
   })
 })
+
+
+# ── Continuing MH runs and plotting n0 trajectory ────────────────────────────
+
+test_that("MH -> continue -> continue -> plot(type = 'n0') works end-to-end", {
+  # Start with MH optimization
+  g_base <- gips(diag(1.1, 5), 10)
+  g_mh <- suppressMessages(find_MAP(g_base, optimizer = "MH", max_iter = 10,
+    show_progress_bar = FALSE))
+  
+  expect_true(inherits(g_mh, "gips"))
+  
+  # First continue call
+  g_continue1 <- suppressMessages(find_MAP(g_mh, optimizer = "continue", max_iter = 5,
+    show_progress_bar = FALSE))
+  
+  expect_true(inherits(g_continue1, "gips"))
+  
+  # Second continue call
+  g_continue2 <- suppressMessages(find_MAP(g_continue1, optimizer = "continue", max_iter = 5,
+    show_progress_bar = FALSE))
+  
+  expect_true(inherits(g_continue2, "gips"))
+  
+  # Plot n0 trajectory
+  gg_n0 <- plot(g_continue2, type = "n0", logarithmic_y = FALSE)
+  
+  expect_true(inherits(gg_n0, "ggplot"))
+})

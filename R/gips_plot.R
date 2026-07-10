@@ -178,7 +178,7 @@ plot.gips <- function(x, type = NA,
     is_mh <- if (length(opt_algo) == 1) {
       opt_algo == "Metropolis_Hastings"
     } else {
-      opt_algo[-1] == "Metropolis_Hastings"
+      opt_algo[length(opt_algo)] == "Metropolis_Hastings"
     }
     
     if (!is_mh) {
