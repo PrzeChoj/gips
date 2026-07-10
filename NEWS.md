@@ -22,6 +22,7 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 
 ### Update to functions
 
+- Added caching for `find_MAP(optimizer = "MH")` to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.
 - `plot.gips()` now uses `ggplot2` for all plot types.
 - `plot.gips(type = "all", "best", "both", or "n0")` is now much faster for large iteration counts.
 
