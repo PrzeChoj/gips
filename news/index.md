@@ -34,6 +34,8 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 
 - [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md)
   now uses `ggplot2` for all plot types.
+- `plot.gips(type = "all", "best", "both", or "n0")` is now much faster
+  for large iteration counts.
 
 #### Bugfix:
 
