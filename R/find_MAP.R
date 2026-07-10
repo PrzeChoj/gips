@@ -486,6 +486,7 @@ Metropolis_Hastings_optimizer <- function(
   
   cache <- list()
   iterations_needed_to_move <- NA
+  forbidden_string <- ""
 
   Uniformly_drawn_numbers <- stats::runif(max_iter, min = 0, max = 1)
 
@@ -496,7 +497,7 @@ Metropolis_Hastings_optimizer <- function(
     }
 
     e <- runif_transposition(perm_size)
-    e_string <- paste0(max(e), ",", min(e))
+    e_string <- paste0(min(e), ",", max(e))
     perm_proposal <- compose_with_transposition(current_perm, e)
 
     goal_function_perm_proposal <- if (is.null(cache[[e_string]])) {
@@ -504,10 +505,15 @@ Metropolis_Hastings_optimizer <- function(
     } else {
       cache[[e_string]]
     }
+    
+    if (forbidden_string == e_string) {
+      goal_function_perm_proposal <- -Inf
+    }
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
     if (Uniformly_drawn_numbers[i] < exp(goal_function_perm_proposal - log_posteriori_values[i])) { # the probability of drawing e such that g' = g*e is the same as the probability of drawing e' such that g = g'*e. This probability is 1/(p choose 2). That means this is Metropolis algorithm, not necessarily Metropolis-Hastings.
       cache <- list()
+      forbidden_string <- ""
       iterations_needed_to_move <- NA
       current_perm <- perm_proposal
       if (save_all_perms) {
@@ -530,19 +536,24 @@ Metropolis_Hastings_optimizer <- function(
       cache[[e_string]] <- goal_function_perm_proposal
     }
     
-    if (length(cache) == perm_size * (perm_size-1) / 2) {
+    if ((perm_size >= 3) && (length(cache) == perm_size * (perm_size-1) / 2)) {
       # cache is full
-      # TODO: We could make a move based on the probability of the neighbours
-      if (is.na(iterations_needed_to_move)) {
-        biggest_probability <- exp(max(sapply(cache, identity)) - log_posteriori_values[i+1])
-        iterations_needed_to_move <- 1 / biggest_probability
+      cache_num <- sapply(cache, identity)
+      cache_num <- cache_num - max(cache_num)
+      probability <- exp(cache_num) / sum(exp(cache_num))
+      
+      cache <- list()
+      
+      current_perm_character <- sample(names(probability), size = 1, prob = probability)
+      forbidden_string <- current_perm_character
+      e <- as.numeric(strsplit(current_perm_character, ",")[[1]])
+      current_perm <- compose_with_transposition(current_perm, e)
+      
+      if (save_all_perms) {
+        visited_perms[[i + 1]] <- current_perm
       }
-      if (iterations_needed_to_move > 2 * (max_iter - i)) {
-        if (show_progress_bar) {
-          message("The local optimum was found")
-        }
-        break
-      }
+      log_posteriori_values[i + 1] <- my_goal_function(current_perm, i)
+      all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE)
     }
   }
   

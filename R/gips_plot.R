@@ -185,7 +185,7 @@ plot.gips <- function(x, type = NA,
     is_mh <- if (length(opt_algo) == 1) {
       opt_algo == "Metropolis_Hastings"
     } else {
-      opt_algo[-1] == "Metropolis_Hastings"
+      opt_algo[length(opt_algo)] == "Metropolis_Hastings"
     }
     
     if (!is_mh) {
@@ -417,8 +417,8 @@ plot_gips_convergence <- function(x, type,
   # R CMD check: no visible binding for global variable
   step <- value <- series <- NULL
 
-  df_all  <- data.frame(step = seq_len(num_of_steps), value = y_values_from, series = all_label)
-  df_best <- data.frame(step = seq_len(num_of_steps), value = y_values_max,  series = best_label)
+  df_all  <- deduplicate_step_runs(data.frame(step = seq_len(num_of_steps), value = y_values_from, series = all_label))
+  df_best <- deduplicate_step_runs(data.frame(step = seq_len(num_of_steps), value = y_values_max,  series = best_label))
 
   df <- switch(type,
     "all"  = df_all,
@@ -505,7 +505,7 @@ plot_gips_n0 <- function(x,
   # R CMD check: no visible binding for global variable
   step <- value <- label <- NULL
 
-  df <- data.frame(step = seq_len(num_of_steps), value = y_values, label = n0_label)
+  df <- deduplicate_step_runs(data.frame(step = seq_len(num_of_steps), value = y_values, label = n0_label))
 
   g_plot <- ggplot2::ggplot(df, ggplot2::aes(x = step, y = value, color = label)) +
     ggplot2::geom_step(linewidth = 1) +
@@ -549,6 +549,24 @@ get_block_matrix_for_S_perm <- function(S, perm) {
     block_matrix[slice, slice] <- full_block_matrix[slice, slice, drop = FALSE]
   }
   block_matrix
+}
+
+
+#' Deduplicate consecutive identical values for step plots
+#'
+#' For [ggplot2::geom_step()] plots, consecutive rows with the same y-value
+#' produce redundant zero-height steps. This keeps only the first row of each
+#' run, plus the final row so the line extends to the last x position.
+#'
+#' @param df A data.frame with at least columns `step` and `value`.
+#' @returns A (smaller) data.frame with the same columns.
+#'
+#' @noRd
+deduplicate_step_runs <- function(df) {
+  n <- nrow(df)
+  keep <- c(TRUE, df$value[-1] != df$value[-n])
+  keep[n] <- TRUE
+  df[keep, , drop = FALSE]
 }
 
 

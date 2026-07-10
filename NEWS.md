@@ -39,11 +39,15 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 
 ### Update to functions
 
+- Added caching for `find_MAP(optimizer = "MH")` to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.
+- Improved `find_MAP(optimizer = "MH")` with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See #115.
 - `plot.gips()` now uses `ggplot2` for all plot types.
+- `plot.gips(type = "all", "best", "both", or "n0")` is now much faster for large iteration counts.
 
 ### Bugfix:
 
 - Documentation improvements: grammar and style corrections in roxygen comments, vignettes, and error messages.
+- `plot.gips(type = "n0")` works properly after multiple optimizations. See #114.
 
 
 # gips 1.2.3
