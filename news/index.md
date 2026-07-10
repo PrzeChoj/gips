@@ -32,6 +32,9 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 
 #### Update to functions
 
+- Added caching for `find_MAP(optimizer = "MH")` to store computed
+  values. This reduces computation time for the Markov chain,
+  particularly when the acceptance rate is low.
 - [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md)
   now uses `ggplot2` for all plot types.
 - `plot.gips(type = "all", "best", "both", or "n0")` is now much faster
