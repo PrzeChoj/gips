@@ -4,71 +4,65 @@
 
 get_perm_group_generators <- function(p) {
   stopifnot(1 < p, p < 19)
-  cat(paste0("Get perm_group_generators for p = ", p, ". There will be 2 progress bars:\n"))
+  message("Getting perm_group_generators for p = ", p, ". There will be 2 progress bars:")
   start_time <- Sys.time()
-
-  p_factorial <- prod(1:p)
+  
+  p_factorial <- factorial(p)
   perm_group_generators <- rep(NA, p_factorial)
   
-  progressBar <- utils::txtProgressBar(min = 0, max = prod(1:p), initial = 1)
-
   all_perms_list <- permutations::as.cycle(permutations::allperms(p))
   all_perms_hash <- hash::hash()
-
-  for (i in 1:length(all_perms_list)) {
+  
+  progressBar <- utils::txtProgressBar(min = 0, max = p_factorial, initial = 0)
+  for (i in seq_along(all_perms_list)) {
     utils::setTxtProgressBar(progressBar, i)
     all_perms_hash[[as.character(all_perms_list[i])]] <- i
   }
   close(progressBar)
-
+  
   get_perms_in_group <- function(i) {
-    perms_in_group <- numeric(0)
-
     this_perm <- all_perms_list[i]
-    this_perm_cumulated <- all_perms_list[i]
-    while (TRUE) {
+    this_perm_cumulated <- this_perm
+    perms_in_group <- integer(0)
+    
+    repeat {
       this_perm_cumulated <- permutations::as.cycle(this_perm_cumulated * this_perm)
-      this_perm_cumulated_char <- as.character(this_perm_cumulated)
-
-      if (this_perm_cumulated_char == "()") {
-        return(perms_in_group)
-      }
-
-      perms_in_group[length(perms_in_group) + 1] <- all_perms_hash[[this_perm_cumulated_char]]
+      char <- as.character(this_perm_cumulated)
+      if (char == "()") break
+      perms_in_group <- c(perms_in_group, all_perms_hash[[char]])
     }
+    
+    perms_in_group
   }
-
-  progressBar <- utils::txtProgressBar(min = 0, max = prod(1:p), initial = 1)
-
+  
   perm_group_generators[1] <- TRUE
-  perm_group_generators_where <- c(1)
-
-  for (i in 2:length(perm_group_generators)) {
+  progressBar <- utils::txtProgressBar(min = 0, max = p_factorial, initial = 0)
+  
+  for (i in 2:p_factorial) {
     utils::setTxtProgressBar(progressBar, i)
-    if (!is.na(perm_group_generators[i])) {
-      next
-    }
-
+    if (!is.na(perm_group_generators[i])) next
+    
     perm_group_generators[i] <- TRUE
-
+    
     perms_in_group <- get_perms_in_group(i)
-    num_perms_in_group_i <- length(perms_in_group) + 2 # + the generator + id
-    if (length(perms_in_group) == 0) {
-      next
-    }
-    for (j in 1:length(perms_in_group)) {
+    if (length(perms_in_group) == 0) next
+    
+    # group order = (non-identity powers) + generator + identity
+    group_order <- length(perms_in_group) + 2L
+    
+    for (j in seq_along(perms_in_group)) {
       perm_j <- perms_in_group[j] # perm_j = (all_perms_list[i]) ^ (j+1)
-      if (is.na(perm_group_generators[perm_j]) && numbers::coprime(j + 1, num_perms_in_group_i)) {
+      # sigma^(j+1) generates the same full cyclic group as sigma iff gcd(j+1, order) = 1.
+      # Mark it FALSE so it isn't treated as a new canonical generator.
+      if (is.na(perm_group_generators[perm_j]) && numbers::coprime(j + 1L, group_order)) {
         perm_group_generators[perm_j] <- FALSE
       }
     }
   }
   close(progressBar)
-
-  end_time <- Sys.time()
-
-  print(end_time - start_time)
-
+  
+  message("Time elapsed: ", format(Sys.time() - start_time))
+  
   perm_group_generators
 }
 
