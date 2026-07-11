@@ -34,6 +34,14 @@
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html) -
 #'     A place to learn more about the math behind the `gips` package.
 #'
+#' @section Multi-sample:
+#' When `g` is a multi-sample `gips` object (created with a list of matrices,
+#' e.g. `gips(list(S1, S2), c(n1, n2))`), the log-posterior is the sum of
+#' the independent single-sample log-posteriors across all G groups, using
+#' the per-group `number_of_observations`, `delta`, and `D_matrix` values:
+#'
+#' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{\ell=1}^{G} \log P(\Gamma | S_\ell)}
+#'
 #' @returns The logarithm of an unnormalized A Posteriori.
 #'
 #' @examples
@@ -86,6 +94,9 @@ log_posteriori_of_gips <- function(g) {
   )
 }
 
+# NOTE: when `S` is a list (multi-sample), `number_of_observations` is a vector
+# and `D_matrix` is a list. The function dispatches to the multi-sample branch.
+
 #' We recommend to use the `log_posteriori_of_gips()` function.
 #' 
 #' If You really want to use `log_posteriori_of_perm()`, remember
@@ -94,6 +105,18 @@ log_posteriori_of_gips <- function(g) {
 #' @noRd
 log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
                                    delta, D_matrix) {
+  # Multi-sample: sum single-sample log-posteriors across groups.
+  # delta and D_matrix are both vectors/lists of length G.
+  if (is.list(S)) {
+    log_values <- mapply(
+      function(S_g, n_g, delta_g, D_g) {
+        log_posteriori_of_perm(perm_proposal, S_g, n_g, delta_g, D_g)
+      },
+      S, number_of_observations, delta, D_matrix
+    )
+    return(sum(log_values))
+  }
+
   U <- S * number_of_observations # in the paper there is U everywhere instead of S, so it is easier to use U matrix in the code
   perm_size <- dim(S)[1]
 
@@ -250,6 +273,13 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' @returns The function `compare_posteriories_of_perms()` returns
 #'     the value of how many times the `perm1` is more likely than `perm2`.
 #'
+#' @section Multi-sample:
+#' When comparing permutations for a multi-sample `gips` object, or when
+#' passing multi-sample arguments directly, the comparison uses the combined
+#' log-posterior (the sum of per-group log-posteriors). Two `gips` objects can
+#' be compared only when they are both single-sample or both multi-sample with
+#' the same data and hyperparameters.
+#'
 #' @seealso
 #' * [print.gips()] - The function that prints the posterior of
 #'     the optimized `gips` object compared to the starting permutation.
@@ -320,7 +350,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     perm2 <- perm2[[1]]
   }
 
-  perm_size <- ncol(S)
+  perm_size <- if (is.list(S)) ncol(S[[1]]) else ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
   }
@@ -345,6 +375,37 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 check_compare_posteriories_arguments <- function(S, number_of_observations,
                                                  delta, D_matrix,
                                                  was_mean_estimated) {
+  if (is.list(S)) {
+    check_multi_S_list(S)
+    G <- length(S)
+    abort_text <- character(0)
+    additional_info <- 0
+
+    for (i in seq_len(G)) {
+      S_check <- check_S_matrix(S[[i]])
+      abort_text <- c(abort_text, S_check$abort_text)
+      additional_info <- additional_info + S_check$additional_info
+    }
+
+    abort_text <- c(abort_text, check_multi_numbers_of_observations(
+      number_of_observations, G, was_mean_estimated
+    ))
+    abort_text <- c(abort_text, check_multi_delta(delta, G))
+    abort_text <- c(abort_text, check_multi_D_matrices(D_matrix, S))
+    abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
+
+    abort_on_argument_problems(abort_text, additional_info)
+
+    if (is.null(D_matrix)) {
+      D_matrix <- lapply(S, function(y) diag(x = mean(diag(y)), nrow = ncol(y)))
+    }
+
+    return(invisible(list(
+      delta = normalize_multi_delta(delta, G),
+      D_matrix = D_matrix
+    )))
+  }
+
   if (!is.matrix(S)) {
     rlang::abort(c("There was a problem identified with provided S argument:",
       "i" = "`S` must be a matrix.",
@@ -365,7 +426,7 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
 
   abort_on_argument_problems(abort_text, S_check$additional_info)
 
-  invisible(NULL)
+  invisible(list(delta = delta, D_matrix = D_matrix))
 }
 
 #' @describeIn compare_posteriories_of_perms More stable,
@@ -394,36 +455,82 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 
   if (perm1_is_gips && perm2_is_gips) {
     # Check the same parameters
-    if (dim(attr(perm1, "S"))[1] != dim(attr(perm2, "S"))[1]) {
+    S1 <- attr(perm1, "S")
+    S2 <- attr(perm2, "S")
+    p1 <- if (is.list(S1)) ncol(S1[[1]]) else ncol(S1)
+    p2 <- if (is.list(S2)) ncol(S2[[1]]) else ncol(S2)
+
+    if (p1 != p2) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
         class = "different_parameters"
       )
     }
-    if (any(abs((attr(perm1, "S") - attr(perm2, "S"))) > 0.00000001)) {
-      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
+
+    # For single-sample, check S equality; for multi-sample, check all elements
+    if (is.list(S1) && is.list(S2)) {
+      if (length(S1) != length(S2)) {
+        rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different number of groups! They cannot be compared!"),
+          class = "different_parameters"
+        )
+      }
+      for (i in seq_along(S1)) {
+        if (any(abs((S1[[i]] - S2[[i]])) > 0.00000001)) {
+          rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
+            class = "different_parameters"
+          )
+        }
+      }
+    } else if (!is.list(S1) && !is.list(S2)) {
+      if (any(abs((S1 - S2)) > 0.00000001)) {
+        rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `S` matrix! They cannot be compared!"),
+          class = "different_parameters"
+        )
+      }
+    } else {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but one is multi-sample and the other is not! They cannot be compared!"),
         class = "different_parameters"
       )
     }
-    if (attr(perm1, "number_of_observations") != attr(perm2, "number_of_observations")) {
+
+    if (!identical(attr(perm1, "number_of_observations"), attr(perm2, "number_of_observations"))) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `number_of_observations`! They cannot be compared!"),
         class = "different_parameters"
       )
     }
-    if (attr(perm1, "delta") != attr(perm2, "delta")) {
+
+    if (!identical(attr(perm1, "delta"), attr(perm2, "delta"))) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `delta`! They cannot be compared!"),
         class = "different_parameters"
       )
     }
-    if (dim(attr(perm1, "D_matrix"))[1] != dim(attr(perm2, "D_matrix"))[1]) {
-      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
+
+    D1 <- attr(perm1, "D_matrix")
+    D2 <- attr(perm2, "D_matrix")
+    if (is.list(D1) && is.list(D2)) {
+      if (length(D1) != length(D2)) {
+        rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix`! They cannot be compared!"),
+          class = "different_parameters"
+        )
+      }
+      for (i in seq_along(D1)) {
+        if (any(abs((D1[[i]] - D2[[i]])) > 0.00000001)) {
+          rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
+            class = "different_parameters"
+          )
+        }
+      }
+    } else if (!is.list(D1) && !is.list(D2)) {
+      if (any(abs((D1 - D2)) > 0.00000001)) {
+        rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
+          class = "different_parameters"
+        )
+      }
+    } else {
+      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but one has multi-sample `D_matrix` and the other does not! They cannot be compared!"),
         class = "different_parameters"
       )
     }
-    if (any(abs((attr(perm1, "D_matrix") - attr(perm2, "D_matrix"))) > 0.00000001)) {
-      rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `D_matrix` matrix! They cannot be compared!"),
-        class = "different_parameters"
-      )
-    }
+
     if (attr(perm1, "was_mean_estimated") != attr(perm2, "was_mean_estimated")) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `was_mean_estimated`! They cannot be compared!"),
         class = "different_parameters"
@@ -448,13 +555,15 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 
     perm2 <- perm2[[1]]
   } else {
-    check_compare_posteriories_arguments(
+    checked_arguments <- check_compare_posteriories_arguments(
       S = S,
       number_of_observations = number_of_observations,
       delta = delta,
       D_matrix = D_matrix,
       was_mean_estimated = was_mean_estimated
     )
+    delta <- checked_arguments[["delta"]]
+    D_matrix <- checked_arguments[["D_matrix"]]
   }
 
   if (was_mean_estimated) {
@@ -463,7 +572,7 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
     edited_number_of_observations <- number_of_observations
   }
 
-  perm_size <- ncol(S)
+  perm_size <- if (is.list(S)) ncol(S[[1]]) else ncol(S)
   if (!inherits(perm1, "gips_perm")) {
     perm1 <- gips_perm(perm1, perm_size)
   }
@@ -472,8 +581,8 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
   }
 
   abort_text <- c(
-    check_permutation_argument(perm1, S, "perm1"),
-    check_permutation_argument(perm2, S, "perm2")
+    check_permutation_argument(perm1, if (is.list(S)) S[[1]] else S, "perm1"),
+    check_permutation_argument(perm2, if (is.list(S)) S[[1]] else S, "perm2")
   )
   abort_on_argument_problems(abort_text)
 

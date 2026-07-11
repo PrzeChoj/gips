@@ -28,7 +28,10 @@ new_gips(
 validate_gips(g)
 }
 \arguments{
-\item{S}{A matrix; empirical covariance matrix.
+\item{S}{A p by p empirical covariance matrix. This is the standard,
+single-sample use of \code{gips()}. For the optional multi-sample interface,
+\code{S} can also be a list of covariance matrices; see the
+\strong{Multi-sample} section below.
 When \code{Z} is the observed data:
 \itemize{
 \item if one does not know the theoretical mean and has to
@@ -39,17 +42,22 @@ and leave parameter \code{was_mean_estimated = TRUE} as default;
 parameter \code{was_mean_estimated = FALSE}.
 }}
 
-\item{number_of_observations}{A number of data points
-that \code{S} is based on.}
+\item{number_of_observations}{A number of data points that \code{S} is based on.
+For multi-sample input, use one value per matrix in \code{S}; see the
+\strong{Multi-sample} section below.}
 
 \item{delta}{A number, hyper-parameter of a Bayesian model.
 It has to be strictly bigger than 1.
-See the \strong{Hyperparameters} section below.}
+See the \strong{Hyperparameters} section below.
+For multi-sample input, it can also be a numeric vector with one value
+per matrix in \code{S}; see the \strong{Multi-sample} section below.}
 
 \item{D_matrix}{Symmetric, positive-definite matrix of the same size as \code{S}.
 Hyper-parameter of a Bayesian model.
 When \code{NULL}, the (hopefully) reasonable one is derived from the data.
-For more details, see the \strong{Hyperparameters} section below.}
+For more details, see the \strong{Hyperparameters} section below.
+For multi-sample input, use a list of matrices; see the
+\strong{Multi-sample} section below.}
 
 \item{was_mean_estimated}{A boolean.
 \itemize{
@@ -139,6 +147,28 @@ of "Learning permutation symmetries with gips in R"
 by \code{gips} developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
 \href{https://doi.org/10.18637/jss.v112.i07}{Journal of Statistical Software};
 \doi{10.18637/jss.v112.i07}.
+}
+
+\section{Multi-sample}{
+
+The usual and recommended starting point is the single-sample call
+\code{gips(S, number_of_observations)}.
+
+The optional multi-sample interface is for G independent groups that are
+assumed to share the same permutation symmetry, while each group keeps its
+own covariance matrix and sample size. Pass a list of G covariance matrices
+as \code{S} and a numeric vector of length G as \code{number_of_observations}:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+}\if{html}{\out{</div>}}
+
+All matrices in \code{S} must be square covariance matrices of the same size.
+\code{D_matrix} should then be a list of G positive-definite matrices
+(defaulting to \code{diag(mean(diag(S_g)), p)} for each group).
+\code{delta} can be a scalar (broadcast to all groups) or a vector of length G
+(one value per group); it defaults to \code{rep(3, G)}.
+\code{was_mean_estimated} is intentionally one boolean value applied to all groups,
+not a per-group setting.
 }
 
 \examples{

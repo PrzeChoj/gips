@@ -48,6 +48,14 @@ the \strong{Information Criterion - AIC and BIC} section in
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 
+\section{Multi-sample}{
+
+For multi-sample \code{gips} objects, \code{AIC.gips()} and \code{BIC.gips()} are based on
+the combined log-likelihood (sum across G groups). The penalty term uses
+\code{G * dim_omega(sigma)} parameters, and the BIC sample size is \code{sum(n_g)}.
+See \code{\link[=logLik.gips]{logLik.gips()}} for details.
+}
+
 \examples{
 S <- matrix(c(
   5.15, 2.05, 3.10, 1.99,

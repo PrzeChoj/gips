@@ -25,6 +25,16 @@ It is calculated using
 
 If \code{Inf} or \code{NaN} is reached, it produces a warning.
 }
+\section{Multi-sample}{
+
+When \code{g} is a multi-sample \code{gips} object (created with a list of matrices,
+e.g. \code{gips(list(S1, S2), c(n1, n2))}), the log-posterior is the sum of
+the independent single-sample log-posteriors across all G groups, using
+the per-group \code{number_of_observations}, \code{delta}, and \code{D_matrix} values:
+
+\deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{\ell=1}^{G} \log P(\Gamma | S_\ell)}
+}
+
 \examples{
 # In the space with p = 2, there is only 2 permutations:
 perm1 <- permutations::as.cycle("(1)(2)")

@@ -127,6 +127,15 @@ in every iteration. For bigger \code{p}, this may be costly.
 }
 }
 
+\section{Multi-sample}{
+
+If \code{g} was created with \code{gips(list(S1, S2, ...), c(n1, n2, ...))},
+the same optimizers search for one permutation shared by all groups.
+The optimized criterion is the combined log-posterior, i.e. the sum of
+per-group log-posteriors. The default optimizer is still chosen from the
+common matrix size \code{p}, and warnings about MLE existence use \code{min(n_g)}.
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 
