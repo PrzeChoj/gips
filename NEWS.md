@@ -6,10 +6,10 @@
 
 For Brute Force optimization:
 
-| permutation size | 6 | 7 | 8 | 9 |
-|---|---:|---:|---:|---:|
-| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min |
-| v1.2.3.9000 | 0.64 s | 2.66 s | 16.31 s | 2.17 min |
+| permutation size | 6 | 7 | 8 | 9 | 10 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min | 1 h 46 min |
+| v1.2.3.9000 | 0.52 s | 1.89 s | 10.34 s | 1.21 min | 12.14 min |
 
 For `log_posteriori_of_gips()` evaluated on 1000 random permutations of a given size:
 
