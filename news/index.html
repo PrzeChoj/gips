@@ -81,7 +81,9 @@
 </div>
 <div class="section level4">
 <h4 id="update-to-functions-1-2-3-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-2-3-9000"></a></h4>
-<ul><li>Added caching for <code>find_MAP(optimizer = "MH")</code> to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.</li>
+<ul><li>
+<code><a href="../reference/find_MAP.html">find_MAP()</a></code> now uses its precomputed cyclic-subgroup generators for <code>optimizer = "BF"</code> through <code>perm_size = 10</code>; Brute Force is the default through this size.</li>
+<li>Added caching for <code>find_MAP(optimizer = "MH")</code> to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.</li>
 <li>Improved <code>find_MAP(optimizer = "MH")</code> with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See <a href="https://github.com/PrzeChoj/gips/issues/115" class="external-link">#115</a>.</li>
 <li>
 <code><a href="../reference/plot.gips.html">plot.gips()</a></code> now uses <code>ggplot2</code> for all plot types.</li>

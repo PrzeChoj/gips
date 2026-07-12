@@ -32,6 +32,10 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 
 #### Update to functions
 
+- [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
+  now uses its precomputed cyclic-subgroup generators for
+  `optimizer = "BF"` through `perm_size = 10`; Brute Force is the
+  default through this size.
 - Added caching for `find_MAP(optimizer = "MH")` to store computed
   values. This reduces computation time for the Markov chain,
   particularly when the acceptance rate is low.
