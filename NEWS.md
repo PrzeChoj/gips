@@ -22,6 +22,7 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 
 ### Update to functions
 
+- `find_MAP()` now uses its precomputed cyclic-subgroup generators for `optimizer = "BF"` through `perm_size = 10`; Brute Force is the default through this size.
 - Added caching for `find_MAP(optimizer = "MH")` to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.
 - Improved `find_MAP(optimizer = "MH")` with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See #115.
 - `plot.gips()` now uses `ggplot2` for all plot types.

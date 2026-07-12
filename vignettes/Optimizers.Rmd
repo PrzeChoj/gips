@@ -35,8 +35,8 @@ This a posteriori probability function is described in-depth in the **Bayesian m
 
 The space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=12$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple (3) optimizers to choose from:
 
-* `"brute_force"`, `"BF"`, `"full"` | recommend for $p\le 9$.
-* `"Metropolis_Hastings"`, `"MH"`   | recommend for $p\ge 10$.
+* `"brute_force"`, `"BF"`, `"full"` | recommend for $p\le 10$.
+* `"Metropolis_Hastings"`, `"MH"`   | recommend for $p\ge 11$.
 * `"hill_climbing"`, `"HC"`
 
 ### Note on computation time
@@ -54,7 +54,9 @@ It searches through the whole space at once.
 
 This is the only optimizer that will certainly find the true MAP estimator. 
 
-Brute Force is **only recommended** for small spaces ($p \le 9$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (Apple M2, single core), and we show the time in the table below:
+Brute Force is **only recommended** for small spaces ($p \le 10$). It can also browse bigger spaces, but the required time is probably too long. We tested how much time it takes to browse with Brute Force (Apple M2, single core), and we show the time in the table below:
+
+TODO: Update this table!
 
 | p=2       | p=3       | p=4      | p=5     | p=6   | p=7     | p=8    | p=9   | p=10          |
 |-----------|-----------|----------|---------|-------|---------|--------|-------|---------------|

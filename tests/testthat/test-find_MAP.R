@@ -250,7 +250,21 @@ test_that("find_MAP() with calculate exact probabilities will return probability
 
 test_that("there is proper number of generators", {
   num_of_generators <- sapply(perm_group_generators_list, sum)
-  for (i in 3:9) {
+  expect_equal(length(perm_group_generators_list), 8)
+  for (i in seq_along(num_of_generators) + 2) {
     expect_equal(num_of_generators[i - 2], OEIS_A051625[i])
   }
+})
+
+test_that("permutations package preserves the allperms order", {
+  all_perms <- permutations::as.cycle(permutations::allperms(4))
+  expect_identical(as.character(all_perms[2]), "(3,4)")
+  expect_identical(as.character(all_perms[14]), "(1,3,4,2)")
+  expect_identical(as.character(all_perms[17]), "(1,3)(2,4)")
+  
+  all_perms <- permutations::as.cycle(permutations::allperms(5))
+  expect_identical(as.character(all_perms[15]), "(2,4)")
+  expect_identical(as.character(all_perms[58]), "(1,3,4,5)")
+  expect_identical(as.character(all_perms[101]), "(1,5,3,4,2)")
+  expect_identical(as.character(all_perms[102]), "(1,5,2)(3,4)")
 })

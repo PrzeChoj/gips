@@ -28,7 +28,7 @@
 #'     space of a given size. This algorithm will find
 #'     the actual Maximum A Posteriori Estimation, but it is
 #'     very computationally expensive for bigger spaces.
-#'     We recommend Brute Force only for `p <= 9`.
+#'     We recommend Brute Force only for `p <= 10`.
 #'     For the time the Brute Force takes on our machines, see in the
 #'     `vignette("Optimizers", package = "gips")` or in its
 #'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html).
@@ -64,7 +64,7 @@
 #'     for `optimizer = "MH"`, it has to be finite;
 #'     for `optimizer = "HC"`, it can be infinite.
 #' @param optimizer The optimizer for the search of the maximum posteriori:
-#'   * `"BF"` (the default for unoptimized `g` with `perm size <= 9`) - Brute Force;
+#'   * `"BF"` (the default for unoptimized `g` with `perm size <= 10`) - Brute Force;
 #'   * `"MH"` (the default for unoptimized `g` with `perm size > 10`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
 #'   * `"continue"` (the default for optimized `g`) - The same as
@@ -273,7 +273,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
   if (is.na(optimizer)) {
     optimizer <- ifelse(!is.null(attr(g, "optimization_info")),
       "continue",
-      ifelse(ncol(attr(g, "S")) <= 9,
+      ifelse(ncol(attr(g, "S")) <= 10,
         "BF",
         "MH"
       )
@@ -371,7 +371,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
   # inform that user can consider "BF"
   if ((optimizer %in% c("MH", "Metropolis_Hastings")) && is.finite(max_iter)) { # infinite max_iter is illegal, but additional check will not hurt
     p <- ncol(attr(g, "S"))
-    bf_iters <- if (3 <= p && p <= 9) OEIS_A051625[p] else prod(1:p)
+    bf_iters <- if (3 <= p && p <= 10) OEIS_A051625[p] else prod(1:p)
     if (max_iter * 10 >= bf_iters) {
       rlang::inform(c(
         paste0(
@@ -764,7 +764,7 @@ brute_force_optimizer <- function(
     ))
   }
 
-  if (perm_size > 9) {
+  if (perm_size > 10) {
     rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutational space.",
       "x" = paste0(
         "You provided a space with size ", perm_size,
@@ -776,9 +776,9 @@ brute_force_optimizer <- function(
   }
 
   iterations_to_perform <-
-    if ((3 <= perm_size) && (perm_size <= 9)) {
+    if ((3 <= perm_size) && (perm_size <= 10)) {
       # Only the generators are interesting for us:
-      # We precalculated perm_group_generators only for up to perm_size = 9
+      # We precalculated perm_group_generators only for up to perm_size = 10
       # See ISSUE#21 for more information
       OEIS_A051625[perm_size]
     } else {
@@ -814,13 +814,13 @@ brute_force_optimizer <- function(
 
   # main loop
   all_perms_list <- permutations::allperms(perm_size)
-  all_perms_list <- permutations::as.cycle(all_perms_list)
-  if ((3 <= perm_size) && (perm_size <= 9)) {
+  if ((3 <= perm_size) && (perm_size <= 10)) {
     # Only the generators are interesting for us:
-    # perm_group_generators are calculated only for up to perm_size = 9
+    # perm_group_generators are calculated only for up to perm_size = 10
     # See ISSUE#21 for more information
     all_perms_list <- all_perms_list[perm_group_generators_list[[perm_size - 2]]]
   }
+  all_perms_list <- permutations::as.cycle(all_perms_list)
   all_perms_cycles <- unclass(all_perms_list)
   log_posteriori_values <- sapply(1:length(all_perms_list), function(i) {
     if (show_progress_bar) {
