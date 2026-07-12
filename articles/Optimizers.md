@@ -52,7 +52,7 @@ For Metropolis-Hastings, it computes the a posteriori probability for
 $`{p\choose 2} \cdot`$`max_iter` of them.
 
 In the case of the Brute Force optimizer, it computes all $`f(\sigma)`$
-values. The number of all different $`\sigma`$s follows [OEIS sequence
+values. The number of all different $`\sigma`$ follows [OEIS sequence
 A051625](https://oeis.org/A051625).
 
 ### Brute Force
@@ -65,13 +65,124 @@ estimator.
 Brute Force is **only recommended** for small spaces ($`p \le 10`$). It
 can also browse bigger spaces, but the required time is probably too
 long. We tested how much time it takes to browse with Brute Force (Apple
-M2, single core), and we show the time in the table below:
+M2), and we show the time in the table below:
 
-TODO: Update this table!
+``` r
 
-| p=2         | p=3       | p=4       | p=5       | p=6     | p=7     | p=8    | p=9     | p=10   |
-|-------------|-----------|-----------|-----------|---------|---------|--------|---------|--------|
-| 0.005 sec 1 | 0.010 sec | 0.025 sec | 0.075 sec | 0.3 sec | 1.8 sec | 13 sec | 1.8 min | 47 min |
+library(gips)
+# install.packages("pbmcapply")
+library(pbmcapply)
+
+get_gips_for_p <- function(p, n=30) {
+  S_inv <- diag(1, p, p)
+  S_inv[1, 2:p] <- -1/sqrt(p)
+  S_inv[2:p, 1] <- -1/sqrt(p)
+  
+  S <- solve(S_inv)
+  
+  gips(S, n)
+}
+
+get_time <- function(p, optimizer, max_iter = NA, seed = 1234) {
+  set.seed(seed)
+  g <- get_gips_for_p(p)
+  g_MAP <- suppressWarnings(
+    find_MAP(g, optimizer = optimizer, max_iter = max_iter, show_progress_bar = FALSE)
+  )
+  
+  as.numeric(attr(g_MAP, "optimization_info")$optimization_time, units = "secs")
+}
+
+benchmark_optimization <- function(n_reps = 2, n_cores = max(1L, parallel::detectCores() - 1L)) {
+  make_label <- function(optimizer, p, max_iter = NA) {
+    if (is.na(max_iter)) {
+      paste0(optimizer, " p=", p)
+    } else {
+      paste0(optimizer, " p=", p, ", ", max_iter)
+    }
+  }
+  
+  cases <- data.frame(
+    p = c(2, 3, 4, 5, 6, 7, 8, 9, 10),
+    max_iter = c(NA, NA, NA, NA, NA, NA, NA, NA, NA),
+    stringsAsFactors = FALSE
+  )
+  
+  cases$optimizer <- ifelse(is.na(cases$max_iter), "BF", "MH")
+  
+  cases$label <- mapply(
+    make_label,
+    optimizer = cases$optimizer,
+    p = cases$p,
+    max_iter = cases$max_iter
+  )
+  label_levels <- unique(cases$label)
+  
+  jobs <- cases[rep(seq_len(nrow(cases)), each = n_reps), ]
+  jobs$rep <- rep(seq_len(n_reps), times = nrow(cases))
+  jobs$seed <- 1234
+  
+  rownames(jobs) <- NULL
+  
+  run_one_job <- function(j) {
+    job <- jobs[j, ]
+    
+    data.frame(
+      label = job$label,
+      p = job$p,
+      optimizer = job$optimizer,
+      max_iter = job$max_iter,
+      rep = job$rep,
+      seed = job$seed,
+      time = get_time(
+        p = job$p,
+        optimizer = job$optimizer,
+        max_iter = job$max_iter,
+        seed = job$seed
+      ),
+      stringsAsFactors = FALSE
+    )
+  }
+  
+  results_list <- pbmcapply::pbmclapply(
+    X = seq_len(nrow(jobs)),
+    FUN = run_one_job,
+    mc.cores = n_cores
+  )
+  
+  results <- do.call(rbind, results_list)
+  
+  results$label <- factor(results$label, levels = label_levels)
+  rownames(results) <- NULL
+  
+  results
+}
+
+start_time <- Sys.time()
+benchmark_results <- benchmark_optimization(n_reps = 7, n_cores = 7)
+end_time <- Sys.time()
+end_time - start_time
+
+aggregate(
+  time ~ label,
+  data = benchmark_results,
+  FUN = function(x) {
+    c(
+      median = median(x),
+      mean = mean(x),
+      min = min(x),
+      max = max(x),
+      sd = sd(x)
+    )
+  }
+)
+```
+
+Show/hide the benchmark code
+
+| p=2 | p=3 | p=4 | p=5 | p=6 | p=7 | p=8 | p=9 | p=10 |
+|----|----|----|----|----|----|----|----|----|
+| 0.0035 sec | 0.008 sec | 0.015 sec | 0.056 sec | 0.25 sec | 1.31 sec | 10.0 sec | 57 sec | 16.9 min |
 
 #### Example
 
@@ -277,15 +388,18 @@ hill_climb <- function(g, max_iter) {
   best_neighbor_log_f <- -Inf
 
   i <- 1
+  perm_i <- perm
+  perm_i_log_f <- perm_log_f
+  perm_i_minus_1_log_f <- -Inf
 
-  while (perm_i_minus_1_log_f < perm_i_log_f && i < max_iter) {
+  while (i < max_iter) {
     best_neighbor <- NULL
     best_neighbor_log_f <- -Inf
 
     for (j in 1:(perm_size - 1)) {
       for (k in (j + 1):perm_size) {
         t <- c(j, k)
-        neighbor <- gips:::compose_with_transposition(perm, t)
+        neighbor <- gips:::compose_with_transposition(perm_i, t)
         neighbor_log_f <- log_posteriori_of_gips(gips(
           S, number_of_observations,
           perm = neighbor
@@ -300,6 +414,10 @@ hill_climb <- function(g, max_iter) {
     i <- i + 1
 
     perm_i_minus_1_log_f <- perm_i_log_f
+    
+    if (best_neighbor_log_f <= perm_i_log_f) {
+      break
+    }
 
     perm_i <- best_neighbor
     perm_i_log_f <- best_neighbor_log_f
@@ -438,7 +556,7 @@ calculation of the probabilities after optimization.
 
 The `save_all_perms = TRUE` will save all visited permutations in the
 outputted object, which significantly increases the required RAM. For
-instance, with $`p=150`$ and `max_perm = 150000`, we needed 400 MB to
+instance, with $`p=150`$ and `max_iter = 150000`, we needed 400 MB to
 store it, whereas `save_all_perms = FALSE` only required 2 MB. However,
 `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE`
 or more complex path analysis.
