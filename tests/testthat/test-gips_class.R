@@ -848,14 +848,7 @@ test_that("summary.gips() works", {
     likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
-    delta = 3, D_matrix = structure(c(
-      1, 0, 0, 0, 0, 0,
-      0, 1, 0, 0, 0, 0,
-      0, 0, 1, 0, 0, 0,
-      0, 0, 0, 1, 0, 0,
-      0, 0, 0, 0, 1, 0,
-      0, 0, 0, 0, 0, 1
-    ), .Dim = c(6L, 6L)),
+    delta = 3, D_matrix = diag(6),
     n_parameters = 7,
     AIC = AIC(g1),
     BIC = BIC(g1)
