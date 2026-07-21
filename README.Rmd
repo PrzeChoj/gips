@@ -168,7 +168,7 @@ Z <- withr::with_seed(2022,
 ```
 
 ```{r example_mean_known1_1, echo=FALSE}
-plot(gips(sigma_matrix, 1), type = "heatmap") +
+plot(gips(sigma_matrix, 2), type = "heatmap") +
   ggplot2::labs(title = "This is the real covariance matrix\nWe want to estimate it based on n = 4 observations", x = "", y = "")
 ```
 
