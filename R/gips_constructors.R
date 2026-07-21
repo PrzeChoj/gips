@@ -88,7 +88,7 @@
 #'     the `gips` object. To be more precise, the base object
 #'     for `gips` is a one-element list of a `gips_perm` object.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("ggplot2") && rlang::is_installed("MASS")
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 5

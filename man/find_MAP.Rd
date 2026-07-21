@@ -128,6 +128,7 @@ in every iteration. For bigger \code{p}, this may be costly.
 }
 
 \examples{
+\dontshow{if (rlang::is_installed("ggplot2") && rlang::is_installed("MASS")) withAutoprint(\{ # examplesIf}
 require("MASS") # for mvrnorm()
 
 perm_size <- 5
@@ -156,6 +157,7 @@ plot(g_map2, type = "both", logarithmic_x = TRUE)
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 summary(g_map_BF)
+\dontshow{\}) # examplesIf}
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.

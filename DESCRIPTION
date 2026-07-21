@@ -31,22 +31,19 @@ Imports:
     permutations,
     Rcpp,
     rlang (>= 0.4.10),
-    utils
+    stringi
 LinkingTo: 
     Rcpp
 Suggests: 
     DAAG,
     dplyr,
     ggplot2,
-    graphics,
-    hash,
     HSAUR2,
     knitr,
     MASS (>= 7.3-39),
     mvtnorm,
     rmarkdown,
     spelling,
-    stringi,
     testthat (>= 3.0.0),
     tibble,
     tidyr,

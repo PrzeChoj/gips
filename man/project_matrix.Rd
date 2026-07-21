@@ -59,6 +59,7 @@ section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 }
 \examples{
+\dontshow{if (rlang::is_installed("ggplot2")) withAutoprint(\{ # examplesIf}
 p <- 6
 my_perm <- "(14)(23)" # permutation (1,4)(2,3)(5)(6)
 number_of_observations <- 10
@@ -78,6 +79,7 @@ g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metr
 S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP)
 S_MAP
 plot(g_MAP, type = "heatmap")
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \itemize{

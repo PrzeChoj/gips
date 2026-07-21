@@ -59,7 +59,7 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("ggplot2") && rlang::is_installed("MASS")
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 6

@@ -130,7 +130,7 @@
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("ggplot2") && rlang::is_installed("MASS")
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 5
@@ -351,21 +351,6 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
       "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
       "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FALSE`?"
     ))
-  }
-
-  if (return_probabilities && optimizer %in% c("MH", "Metropolis_Hastings")) {
-    rlang::check_installed("stringi",
-      reason = "to return probabilities in `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`; without this package, probabilities cannot be returned"
-    )
-    if (!rlang::is_installed("stringi")) {
-      rlang::warn(c("There was a problem with return_probabilities:",
-        "i" = "Package `stringi` is required to successfully call `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = TRUE)`.",
-        "x" = "You do not have package `stringi` installed.",
-        "i" = "Optimization will proceed as `find_MAP(optimizer = 'Metropolis_Hastings', return_probabilities = FALSE)`."
-      ))
-
-      return_probabilities <- FALSE
-    }
   }
 
   # inform that user can consider "BF"
