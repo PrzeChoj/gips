@@ -8,7 +8,7 @@ statistical confidence.
 ## Usage
 
 ``` r
-project_matrix(S, perm)
+project_matrix(S, perm, precomputed_equal_indices = NULL)
 ```
 
 ## Arguments
@@ -28,6 +28,10 @@ project_matrix(S, perm)
   the
   [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
   function.
+
+- precomputed_equal_indices:
+
+  This parameter is no longer used and will be deleted in v1.3.0.
 
 ## Value
 
