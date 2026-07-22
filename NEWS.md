@@ -27,6 +27,7 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 - Improved `find_MAP(optimizer = "MH")` with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See #115.
 - `plot.gips()` now uses `ggplot2` for all plot types.
 - `plot.gips(type = "all", "best", "both", or "n0")` is now much faster for large iteration counts.
+- `project_matrix()`: The `precomputed_equal_indices` parameter is no longer used and will be removed in v1.3.0.
 
 ### Bugfix:
 
