@@ -1,4 +1,4 @@
-# gips 1.2.4
+# gips 1.2.4.9000
 
 ### Multi-sample support
 
@@ -16,6 +16,9 @@ hyperparameters `D_matrix_g` and `delta_g`, but all share the same symmetry
 group Gamma.
 The MLE exists when `min(n_g) >= n0`. **All existing single-sample usage is
 fully unchanged**.
+
+
+# gips 1.2.4
 
 ### Performance gain
 
