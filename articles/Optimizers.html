@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Available Optimizers: How to Find Maximum A Posteriori?</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.2/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
       <div class="d-none name"><code>Optimizers.Rmd</code></div>
     </div>
 
@@ -144,9 +144,8 @@ Estimator.</p>
 <p>Brute Force is <strong>only recommended</strong> for small spaces
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">p \le 9</annotation></semantics></math>).
 It can also browse bigger spaces, but the required time is probably too
-long. We tested how much time it takes to browse with Brute Force (AMD
-EPYC 7413 Processor, single core), and we show the time in the table
-below:</p>
+long. We tested how much time it takes to browse with Brute Force (Apple
+M2, single core), and we show the time in the table below:</p>
 <table class="table">
 <colgroup>
 <col width="12%">
@@ -171,15 +170,15 @@ below:</p>
 <th>p=10</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td>0.007 sec</td>
-<td>0.015 sec</td>
-<td>0.04 sec</td>
-<td>0.2 sec</td>
-<td>1 sec</td>
-<td>4.5 sec</td>
-<td>30 sec</td>
-<td>4 min</td>
-<td>1 hour 45 min</td>
+<td>0.005 sec 1</td>
+<td>0.010 sec</td>
+<td>0.025 sec</td>
+<td>0.075 sec</td>
+<td>0.3 sec</td>
+<td>1.8 sec</td>
+<td>13 sec</td>
+<td>1.8 min</td>
+<td>47 min</td>
 </tr></tbody>
 </table>
 <div class="section level4">
@@ -576,7 +575,8 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/
 10.1214/22-AOS2174</a></p>
 <p>[2] “Learning permutation symmetries with gips in R” by
 <code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
-Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
+Kołodziejek, <a href="doi:10.18637/jss.v112.i07">Journal of Statistical
+Software</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

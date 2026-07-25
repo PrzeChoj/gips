@@ -52,8 +52,8 @@ page](https://przechoj.github.io/gips/articles/Theory.html).
 For an in-depth analysis of the package performance, capabilities, and
 comparison with other packages, see the article “Learning permutation
 symmetries with gips in R” by `gips`’ developers Adam Chojecki, Paweł
-Morgen, and Bartosz Kołodziejek, available on
-[arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+Morgen, and Bartosz Kołodziejek, [Journal of Statistical
+Software](doi:10.18637/jss.v112.i07).
 
 ## Practical example
 
@@ -321,5 +321,5 @@ Now, the estimated covariance matrix is of full rank (5).
 3.  For an in-depth analysis of the package performance, capabilities,
     and comparison with other packages, see the article “Learning
     permutation symmetries with gips in R” by `gips` developers Adam
-    Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on
-    [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+    Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of
+    Statistical Software](doi:10.18637/jss.v112.i07).

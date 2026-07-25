@@ -240,6 +240,9 @@ summary(g_map_BF)
 #> Times more likely than starting permutation:
 #>  414.386
 #> 
+#> The p-value of Likelihood-Ratio test:
+#>  0.4883
+#> 
 #> The number of observations:
 #>  13
 #> 
@@ -270,5 +273,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.1278954 secs
+#>  0.1226521 secs
 ```

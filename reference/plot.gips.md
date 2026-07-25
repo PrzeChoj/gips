@@ -33,7 +33,7 @@ plot(
 - type:
 
   A character vector of length 1. One of
-  `c("heatmap", "MLE", "best", "all", "both", "block_heatmap")`:
+  `c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")`:
 
   - `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
     Estimator of the covariance matrix given the permutation. That is,
@@ -46,6 +46,9 @@ plot(
   - `"all"` - Plots the line of a posteriori for all visited states.
 
   - `"both"` - Plots both lines from "all" and "best".
+
+  - `"n0"` - Plots the line of `n0`s that were spotted during
+    optimization (only for "MH" optimization).
 
   - `"block_heatmap"` - Plots a heatmap of diagonally block
     representation of `S`. Non-block entries (equal to 0) are white for
@@ -101,7 +104,7 @@ plot(
 
 ## Value
 
-When `type` is one of `"best"`, `"all"` or `"both"`, returns an
+When `type` is one of `"best"`, `"all"`, `"both"` or `"n0"`, returns an
 invisible `NULL`. When `type` is one of `"heatmap"`, `"MLE"` or
 `"block_heatmap"`, returns an object of class `ggplot`.
 
@@ -158,4 +161,9 @@ if (require("graphics")) {
 
 # Now, the output is (most likely) different because the permutation
   # `g_map[[1]]` is (most likely) not an identity permutation.
+
+g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
+if (require("graphics")) {
+  plot(g_map_MH, type = "n0")
+}
 ```

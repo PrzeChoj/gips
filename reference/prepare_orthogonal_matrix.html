@@ -9,7 +9,7 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Prepare orthogonal matrix</h1>
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.2/R/prepare_orthogonal_matrix.R" class="external-link"><code>R/prepare_orthogonal_matrix.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/R/prepare_orthogonal_matrix.R" class="external-link"><code>R/prepare_orthogonal_matrix.R</code></a></small>
       <div class="d-none name"><code>prepare_orthogonal_matrix.Rd</code></div>
     </div>
 
@@ -122,12 +122,12 @@ and see more examples of <code>prepare_orthogonal_matrix()</code>.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">block_decomposition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">U_Gamma</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">U_Gamma</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">block_decomposition</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># the non-zeros only on diagonal and [1,2] and [2,1]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]    [,2]    [,3]    [,4]    [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.10350 0.08694 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.08694 0.72049 0.00000 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.00000 0.00000 0.93155 0.00000 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.00000 0.00000 0.00000 0.93155 0.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.00000 0.00000 0.00000 0.00000 0.38298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]    [,2]    [,3]    [,4]   [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.41684 0.11768 0.00000 0.00000 0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.11768 1.09027 0.00000 0.00000 0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.00000 0.00000 0.92989 0.00000 0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.00000 0.00000 0.00000 0.92989 0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.00000 0.00000 0.00000 0.00000 0.9588</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -152,8 +152,8 @@ page](https://przechoj.github.io/gips/articles/Theory.html)).
 
 For analysis of the Hyperparameters influence, see **Section 3.2.** of
 "Learning permutation symmetries with gips in R" by `gips` developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on
-[arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of
+Statistical Software](doi:10.18637/jss.v112.i07).
 
 ## See also
 
@@ -213,6 +213,9 @@ summary(g_map)
 #> Times more likely than starting permutation:
 #>  953.095
 #> 
+#> The p-value of Likelihood-Ratio test:
+#>  0.6008
+#> 
 #> The number of observations:
 #>  13
 #> 
@@ -243,7 +246,7 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.121953 secs
+#>  0.1149871 secs
 
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)

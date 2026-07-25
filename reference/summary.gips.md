@@ -47,23 +47,34 @@ statistics of the given `gips` object. Those are:
       Remember that this number can big and overflow to `Inf` or small
       and underflow to 0.
 
-  5.  `n0` - the minimum number of observations needed for the
+  5.  `log_times_more_likely_than_id` - log of
+      `times_more_likely_than_id`.
+
+  6.  `likelihood_ratio_test_statistics`,
+      `likelihood_ratio_test_p_value` - statistics and p-value of
+      Likelihood Ratio test, where the H_0 is that the data was drawn
+      from the normal distribution with Covariance matrix invariant
+      under the given permutation. The p-value is calculated from the
+      asymptotic distribution. Note that this is sensibly defined only
+      for \\n \ge p\\.
+
+  7.  `n0` - the minimum number of observations needed for the
       covariance matrix's maximum likelihood estimator (corresponding to
       a MAP) to exist. See **\\C\sigma\\ and `n0`** section in
       [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
       or in its [pkgdown
       page](https://przechoj.github.io/gips/articles/Theory.html).
 
-  6.  `S_matrix` - the underlying matrix. This matrix will be used in
+  8.  `S_matrix` - the underlying matrix. This matrix will be used in
       calculations of the posteriori value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
-  7.  `number_of_observations` - the number of observations that were
+  9.  `number_of_observations` - the number of observations that were
       observed for the `S_matrix` to be calculated. This value will be
       used in calculations of the posteriori value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
-  8.  `was_mean_estimated` - given by the user while creating the `gips`
+  10. `was_mean_estimated` - given by the user while creating the `gips`
       object:
 
       - `TRUE` means the `S` parameter was the output of
@@ -72,19 +83,19 @@ statistics of the given `gips` object. Those are:
       - `FALSE` means the `S` parameter was calculated with
         `S = t(X) %*% X / number_of_observations`.
 
-  9.  `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
+  11. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
       See the **Hyperparameters** section of
       [`gips()`](https://przechoj.github.io/gips/reference/gips.md)
       documentation.
 
-  10. `AIC`, `BIC` - output of
+  12. `n_parameters` - number of free parameters in the covariance
+      matrix.
+
+  13. `AIC`, `BIC` - output of
       [`AIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
       and
       [`BIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
       functions.
-
-  11. `n_parameters` - number of free parameters in the covariance
-      matrix.
 
 - For optimized `gips` object:
 
@@ -108,23 +119,34 @@ statistics of the given `gips` object. Those are:
       a number less than 1. Remember that this number can big and
       overflow to `Inf`.
 
-  7.  `n0` - the minimal number of observations needed for the existence
+  7.  `log_times_more_likely_than_start` - log of
+      `times_more_likely_than_start`.
+
+  8.  `likelihood_ratio_test_statistics`,
+      `likelihood_ratio_test_p_value` - statistics and p-value of
+      Likelihood Ratio test, where the H_0 is that the data was drawn
+      from the normal distribution with Covariance matrix invariant
+      under `found_permutation`. The p-value is calculated from the
+      asymptotic distribution. Note that this is sensibly defined only
+      for \\n \ge p\\.
+
+  9.  `n0` - the minimal number of observations needed for the existence
       of the maximum likelihood estimator (corresponding to a MAP) of
       the covariance matrix (see **\\C\sigma\\ and `n0`** section in
       [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
       or in its [pkgdown
       page](https://przechoj.github.io/gips/articles/Theory.html)).
 
-  8.  `S_matrix` - the underlying matrix. This matrix will be used in
+  10. `S_matrix` - the underlying matrix. This matrix will be used in
       calculations of the posteriori value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
-  9.  `number_of_observations` - the number of observations that were
+  11. `number_of_observations` - the number of observations that were
       observed for the `S_matrix` to be calculated. This value will be
       used in calculations of the posteriori value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
-  10. `was_mean_estimated` - given by the user while creating the `gips`
+  12. `was_mean_estimated` - given by the user while creating the `gips`
       object:
 
       - `TRUE` means the `S` parameter was output of the
@@ -133,34 +155,34 @@ statistics of the given `gips` object. Those are:
       - `FALSE` means the `S` parameter was calculated with
         `S = t(X) %*% X / number_of_observations`.
 
-  11. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
+  13. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
       See the **Hyperparameters** section of
       [`gips()`](https://przechoj.github.io/gips/reference/gips.md)
       documentation.
 
-  12. `AIC`, `BIC` - output of
+  14. `n_parameters` - number of free parameters in the covariance
+      matrix.
+
+  15. `AIC`, `BIC` - output of
       [`AIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
       and
       [`BIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
       functions.
 
-  13. `n_parameters` - number of free parameters in the covariance
-      matrix.
-
-  14. `optimization_algorithm_used` - all used optimization algorithms
+  16. `optimization_algorithm_used` - all used optimization algorithms
       in order (one could start optimization with "MH", and then do an
       "HC").
 
-  15. `did_converge` - a boolean, did the last used algorithm converge.
+  17. `did_converge` - a boolean, did the last used algorithm converge.
 
-  16. `number_of_log_posteriori_calls` - how many times was the
+  18. `number_of_log_posteriori_calls` - how many times was the
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
       function called during the optimization.
 
-  17. `whole_optimization_time` - how long was the optimization process;
+  19. `whole_optimization_time` - how long was the optimization process;
       the sum of all optimization times (when there were multiple).
 
-  18. `log_posteriori_calls_after_best` - how many times was the
+  20. `log_posteriori_calls_after_best` - how many times was the
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
       function called after the `found_permutation`; in other words, how
       long ago could the optimization be stopped and have the same
@@ -169,7 +191,7 @@ statistics of the given `gips` object. Those are:
       again with `optimizer = "continue"`. For `optimizer = "BF"`, it is
       `NULL`.
 
-  19. `acceptance_rate` - only interesting for `optimizer = "MH"`. How
+  21. `acceptance_rate` - only interesting for `optimizer = "MH"`. How
       often was the algorithm accepting the change of permutation in an
       iteration.
 
@@ -205,12 +227,12 @@ perm_size <- 6
 mu <- runif(6, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.1, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.1, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.1, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.1, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.1, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.1
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -219,41 +241,39 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-
-g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
-unclass(summary(g_map))
+unclass(summary(g))
 #> $optimized
-#> [1] TRUE
-#> 
-#> $found_permutation
-#> [1] ()
-#> 
-#> $found_permutation_log_posteriori
-#> [1] -4.536729
+#> [1] FALSE
 #> 
 #> $start_permutation
 #> [1] ()
 #> 
 #> $start_permutation_log_posteriori
-#> [1] -4.536729
+#> [1] -31.54222
 #> 
-#> $times_more_likely_than_start
+#> $times_more_likely_than_id
 #> [1] 1
 #> 
-#> $log_times_more_likely_than_start
+#> $log_times_more_likely_than_id
 #> [1] 0
+#> 
+#> $likelihood_ratio_test_statistics
+#> [1] 0
+#> 
+#> $likelihood_ratio_test_p_value
+#> NULL
 #> 
 #> $n0
 #> [1] 7
 #> 
 #> $S_matrix
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 0.5231376 0.3721420 0.4435844 0.7453107 0.8963063 0.8248638
-#> [2,] 0.3721420 0.5271158 0.6757445 0.9053160 0.7503422 0.6017135
-#> [3,] 0.4435844 0.6757445 1.0217525 1.2731260 1.0409659 0.6949579
-#> [4,] 0.7453107 0.9053160 1.2731260 1.9798133 1.8198079 1.4519979
-#> [5,] 0.8963063 0.7503422 1.0409659 1.8198079 1.9657720 1.6751482
-#> [6,] 0.8248638 0.6017135 0.6949579 1.4519979 1.6751482 1.5819038
+#> [1,] 1.0494842 1.1827957 1.0811047 0.6491538 0.5910505 0.7578313
+#> [2,] 1.1827957 1.5722816 1.1559233 0.5854755 0.2377610 0.7524728
+#> [3,] 1.0811047 1.1559233 1.5841572 0.9470600 0.7940677 0.5350399
+#> [4,] 0.6491538 0.5854755 0.9470600 1.0954129 0.9148409 0.6746779
+#> [5,] 0.5910505 0.2377610 0.7940677 0.9148409 1.5101372 0.7777238
+#> [6,] 0.7578313 0.7524728 0.5350399 0.6746779 0.7777238 1.0100209
 #> 
 #> $number_of_observations
 #> [1] 13
@@ -266,21 +286,90 @@ unclass(summary(g_map))
 #> 
 #> $D_matrix
 #>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
-#> [1,] 1.266582 0.000000 0.000000 0.000000 0.000000 0.000000
-#> [2,] 0.000000 1.266582 0.000000 0.000000 0.000000 0.000000
-#> [3,] 0.000000 0.000000 1.266582 0.000000 0.000000 0.000000
-#> [4,] 0.000000 0.000000 0.000000 1.266582 0.000000 0.000000
-#> [5,] 0.000000 0.000000 0.000000 0.000000 1.266582 0.000000
-#> [6,] 0.000000 0.000000 0.000000 0.000000 0.000000 1.266582
+#> [1,] 1.303582 0.000000 0.000000 0.000000 0.000000 0.000000
+#> [2,] 0.000000 1.303582 0.000000 0.000000 0.000000 0.000000
+#> [3,] 0.000000 0.000000 1.303582 0.000000 0.000000 0.000000
+#> [4,] 0.000000 0.000000 0.000000 1.303582 0.000000 0.000000
+#> [5,] 0.000000 0.000000 0.000000 0.000000 1.303582 0.000000
+#> [6,] 0.000000 0.000000 0.000000 0.000000 0.000000 1.303582
 #> 
 #> $n_parameters
 #> [1] 21
 #> 
 #> $AIC
-#> [1] -653.0269
+#> [1] 163.442
 #> 
 #> $BIC
-#> [1] -641.163
+#> [1] 175.3059
+#> 
+
+g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
+unclass(summary(g_map))
+#> $optimized
+#> [1] TRUE
+#> 
+#> $found_permutation
+#> [1] (12)(45)
+#> 
+#> $found_permutation_log_posteriori
+#> [1] -28.4427
+#> 
+#> $start_permutation
+#> [1] ()
+#> 
+#> $start_permutation_log_posteriori
+#> [1] -31.54222
+#> 
+#> $times_more_likely_than_start
+#> [1] 22.18745
+#> 
+#> $log_times_more_likely_than_start
+#> [1] 3.099527
+#> 
+#> $likelihood_ratio_test_statistics
+#> [1] 17.4246
+#> 
+#> $likelihood_ratio_test_p_value
+#> [1] 0.0259792
+#> 
+#> $n0
+#> [1] 5
+#> 
+#> $S_matrix
+#>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+#> [1,] 1.0494842 1.1827957 1.0811047 0.6491538 0.5910505 0.7578313
+#> [2,] 1.1827957 1.5722816 1.1559233 0.5854755 0.2377610 0.7524728
+#> [3,] 1.0811047 1.1559233 1.5841572 0.9470600 0.7940677 0.5350399
+#> [4,] 0.6491538 0.5854755 0.9470600 1.0954129 0.9148409 0.6746779
+#> [5,] 0.5910505 0.2377610 0.7940677 0.9148409 1.5101372 0.7777238
+#> [6,] 0.7578313 0.7524728 0.5350399 0.6746779 0.7777238 1.0100209
+#> 
+#> $number_of_observations
+#> [1] 13
+#> 
+#> $was_mean_estimated
+#> [1] TRUE
+#> 
+#> $delta
+#> [1] 3
+#> 
+#> $D_matrix
+#>          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
+#> [1,] 1.303582 0.000000 0.000000 0.000000 0.000000 0.000000
+#> [2,] 0.000000 1.303582 0.000000 0.000000 0.000000 0.000000
+#> [3,] 0.000000 0.000000 1.303582 0.000000 0.000000 0.000000
+#> [4,] 0.000000 0.000000 0.000000 1.303582 0.000000 0.000000
+#> [5,] 0.000000 0.000000 0.000000 0.000000 1.303582 0.000000
+#> [6,] 0.000000 0.000000 0.000000 0.000000 0.000000 1.303582
+#> 
+#> $n_parameters
+#> [1] 13
+#> 
+#> $AIC
+#> [1] 164.8666
+#> 
+#> $BIC
+#> [1] 172.211
 #> 
 #> $optimization_algorithm_used
 #> [1] "Metropolis_Hastings"
@@ -292,13 +381,13 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.01458597 secs
+#> Time difference of 0.0133872 secs
 #> 
 #> $log_posteriori_calls_after_best
-#> [1] 9
+#> [1] 0
 #> 
 #> $acceptance_rate
-#> [1] 0.3
+#> [1] 0.2
 #> 
 
 g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "hill_climbing")
@@ -306,13 +395,16 @@ summary(g_map2)
 #> The optimized `gips` object.
 #> 
 #> Permutation:
-#>  ()
+#>  (3,6)(4,5)
 #> 
 #> Log_posteriori:
-#>  -4.536729
+#>  -25.37572
 #> 
 #> Times more likely than starting permutation:
-#>  1
+#>  476.515
+#> 
+#> The p-value of Likelihood-Ratio test:
+#>  0.2636
 #> 
 #> The number of observations:
 #>  13
@@ -322,32 +414,32 @@ summary(g_map2)
 #> There are 12 degrees of freedom left.
 #> 
 #> n0:
-#>  7
+#>  5
 #> 
 #> The number of observations is bigger than n0 for this permutation,
 #> so the gips model based on the found permutation does exist.
 #> 
 #> The number of free parameters in the covariance matrix:
-#>  21
+#>  13
 #> 
 #> BIC:
-#>  -641.163
+#>  164.8062
 #> 
 #> AIC:
-#>  -653.0269
+#>  157.4618
 #> 
 #> --------------------------------------------------------------------------------
 #> Optimization algorithm:
 #>  hill_climbing did converge
 #> 
 #> The number of log_posteriori calls:
-#>  16
+#>  46
 #> 
 #> Optimization time:
-#>  0.0247817 secs
+#>  0.05804491 secs
 #> 
 #> Log_posteriori calls after the found permutation:
-#>  15
+#>  17
 # ================================================================================
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
@@ -359,6 +451,8 @@ print(summary(g))
 #> 
 #> Log_posteriori:
 #>  -15.4837
+#> 
+#> The current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)
 #> 
 #> The number of observations:
 #>  10
