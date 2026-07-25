@@ -1,6 +1,6 @@
 # Changelog
 
-## gips 1.2.3.9000
+## gips 1.2.4
 
 #### Performance gain
 
@@ -15,7 +15,7 @@ For Brute Force optimization:
 | permutation size |      6 |      7 |       8 |        9 |         10 |
 |------------------|-------:|-------:|--------:|---------:|-----------:|
 | v1.2.3           | 1.26 s | 4.06 s | 30.19 s | 4.35 min | 1 h 46 min |
-| v1.2.3.9000      | 0.52 s | 1.89 s | 10.34 s | 1.21 min |  12.14 min |
+| v1.2.4           | 0.52 s | 1.89 s | 10.34 s | 1.21 min |  12.14 min |
 
 For
 [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
@@ -24,7 +24,7 @@ evaluated on 1000 random permutations of a given size:
 | permutation size |     30 |     50 |     100 |     200 |      300 |
 |------------------|-------:|-------:|--------:|--------:|---------:|
 | v1.2.3           | 2.31 s | 2.31 s | 11.70 s | 46.49 s | 110.17 s |
-| v1.2.3.9000      | 0.84 s | 1.26 s |  3.24 s | 15.73 s |  39.47 s |
+| v1.2.4           | 0.84 s | 1.26 s |  3.24 s | 15.73 s |  39.47 s |
 
 The above tables are based on the code from [Pull
 Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
