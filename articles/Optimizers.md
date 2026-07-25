@@ -578,4 +578,5 @@ link](https://arxiv.org/abs/2004.03503); [DOI:
 
 \[2\] “Learning permutation symmetries with gips in R” by `gips`
 developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
-[Journal of Statistical Software](doi:10.18637/jss.v112.i07).
+[Journal of Statistical
+Software](https://doi.org/10.18637/jss.v112.i07).
