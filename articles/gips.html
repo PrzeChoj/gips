@@ -5,17 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>A Gentle Introduction to Modeling with gips • gips</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
-<link rel="manifest" href="../site.webmanifest">
+<title>gips • gips</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="A Gentle Introduction to Modeling with gips">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="gips">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -25,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +34,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a></li>
-    <li><a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a></li>
+<li><a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a></li>
+    <li><a class="dropdown-item" href="../articles/Theory.html">Theory</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,10 +57,12 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>A Gentle Introduction to Modeling with gips</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>gips</h1>
+                        <h4 data-toc-skip class="author">Przemysław
+Chojecki, Paweł Morgen, Bartosz Kołodziejek</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.4/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.0.0/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
       <div class="d-none name"><code>gips.Rmd</code></div>
     </div>
 
@@ -74,22 +71,22 @@
 <div class="section level2">
 <h2 id="the-problem">The problem<a class="anchor" aria-label="anchor" href="#the-problem"></a>
 </h2>
-<p>Often, we have too little data to perform valid inferences. Consider
-the situation with multivariate Gaussian distribution, where we have few
-observations compared to the number of variables. For example, that’s
-the case for graphical models used in biology or medicine. In such a
-setting, the usual way of finding the covariance matrix (the maximum
-likelihood method) isn’t statistically applicable. What now?</p>
+<p>Quite often, we have too little data to perform valid inference.
+Consider the situation with multivariate Gaussian distribution, where we
+have few observations compared to the number of variables. For example,
+that’s the case for graphical models used in biology or medicine. In
+such a setting, the usual way of finding the covariance matrix (the
+maximum likelihood method) isn’t statistically applicable. What now?</p>
 </div>
 <div class="section level2">
 <h2 id="invariance-by-permutation">Invariance by permutation<a class="anchor" aria-label="anchor" href="#invariance-by-permutation"></a>
 </h2>
-<p>Sometimes, the interchange of variables in the vector does not change
-its distribution. In the multivariate Gaussian case, it means they have
-the same variances and covariances with other respective variables. For
-instance, in the following covariance matrix, variables X1 and X3 are
-interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have
-the same distribution.</p>
+<p>In some cases, the interchange of variables in the vector does not
+change its distribution. In the multivariate Gaussian case, it would
+mean that they have the same variances and covariances with other
+respective variables. For instance, in the following covariance matrix,
+variables X1 and X3 are interchangeable, meaning that vectors (X1, X2,
+X3) and (X3, X2, X1) have the same distribution.</p>
 <p><img src="gips_files/figure-html/symvariant_matrix-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now, we can state this interchangeability property in terms of
 permutations. In our case, the distribution of (X1, X2, X3) is
@@ -120,107 +117,26 @@ case, <em>reasonable</em> means maximizing the Bayesian posterior
 distribution when using a Wishart-like distribution on symmetric,
 positive definite matrices as a prior. The idea, exact formulas, and
 algorithm sketch are explored in another vignette that can be accessed
-by <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or on its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
+by <code><a href="../articles/Theory.html">vignette("Theory")</a></code> or on its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>.</p>
-<p>For an in-depth analysis of the package performance, capabilities,
-and comparison with other packages, see the article “Learning
-permutation symmetries with gips in R” by <code>gips</code>’ developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
-Software</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="practical-example">Practical example<a class="anchor" aria-label="anchor" href="#practical-example"></a>
-</h2>
-<p>Let’s examine thickness, height, and breadth data from 12 books:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>We suspect books from this dataset were printed with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math>
-aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A-series paper
-size</a>. Therefore, we can use this expert knowledge in the analysis
-and unify the data for height and width:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Z</span><span class="op">$</span><span class="va">height</span> <span class="op">&lt;-</span> <span class="va">Z</span><span class="op">$</span><span class="va">height</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p>Now, let’s plot the data:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 12</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 3</span></span>
-<span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         thick height breadth</span></span>
-<span><span class="co">#&gt; thick    72.7  -28.5   -31.7</span></span>
-<span><span class="co">#&gt; height  -28.5   12.7    14.6</span></span>
-<span><span class="co">#&gt; breadth -31.7   14.6    17.2</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
-<span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Standard, MLE estimator\nof a covariance matrix"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="gips_files/figure-html/change_D_matrix_example1_2-1.png" class="r-plt" alt="" width="700"></p>
-<p>We can see similarities between columns 2 and 3, representing the
-book’s height and breadth. In particular, the covariance between [1,2]
-is very similar to [1,3], and the variance of [2] is similar to the
-variance of [3]. Those are not surprising, given the data interpretation
-(after the rescaling of height that we did).</p>
-<p>Let’s see what the <code>gips</code> will tell about this data:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>  optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
-<span>  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span></span>
-<span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (2,3):</span></span>
-<span><span class="co">#&gt;  - was found after 5 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.305 times more likely than the () permutation.</span></span>
-<span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          (2,3)             ()          (1,3)        (1,2,3)          (1,2) </span></span>
-<span><span class="co">#&gt; 0.566078057717 0.433908667868 0.000006728772 0.000004683290 0.000001862353</span></span></code></pre></div>
-<p><code><a href="../reference/find_MAP.html">find_MAP()</a></code> found the symmetry represented by permutation
-(2,3).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="gips_files/figure-html/change_D_matrix_example4-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         thick height breadth</span></span>
-<span><span class="co">#&gt; thick    72.7  -30.1   -30.1</span></span>
-<span><span class="co">#&gt; height  -30.1   14.9    14.6</span></span>
-<span><span class="co">#&gt; breadth -30.1   14.6    14.9</span></span></code></pre></div>
-<p>The result depends on two input parameters, <code>delta</code> and
-<code>D_matrix</code>. By default, they are set to <code>3</code> and
-<code>diag(p) * d</code>, respectively, where
-<code>d = mean(diag(S))</code>. The method is not scale-invariant, so we
-recommend running gips for different values of <code>D_matrix</code> of
-the form <code>D_matrix = d * diag(p)</code>, where <code>d</code>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><msup><mi>ℝ</mi><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">\in \mathbb{R}^+</annotation></semantics></math>).
-The impact analysis of those can be read in [2] in section <em>3.2.
-Hyperparameter’s influence</em>.</p>
-</div>
-<div class="section level2">
-<h2 id="theoretic-example">Theoretic example<a class="anchor" aria-label="anchor" href="#theoretic-example"></a>
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <div id="spoiler1" style="display:none">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">p</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="fl">8.4</span>, <span class="fl">4.1</span>, <span class="fl">1.9</span>, <span class="fl">1.9</span>, <span class="fl">1.9</span>,</span>
-<span>  <span class="fl">4.1</span>, <span class="fl">3.5</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
-<span>  <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
-<span>  <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>,</span>
-<span>  <span class="fl">1.9</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1</span></span>
-<span><span class="op">)</span>, ncol <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7.5</span>, <span class="fl">5</span>,   <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>,</span>
+<span>                         <span class="fl">5</span>,   <span class="fl">4.5</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
+<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">1</span>,   <span class="fl">0.8</span>,</span>
+<span>                         <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co"># sigma_matrix is a matrix invariant under permutation (3,4,5)</span></span>
-<span><span class="va">toy_example_data</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
-<span>    mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span></span>
-<span>  <span class="op">)</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
+<span><span class="va">toy_example_data</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">1234</span>,</span>
+<span>    code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
+<span>                         mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler1') .style.display=='none')
@@ -228,20 +144,20 @@ Hyperparameter’s influence</em>.</p>
             else{document.getElementById('spoiler1') .style.display='none'}">
 Show/hide data preparation
 </button>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
 <span><span class="co">#&gt;            [,1]     [,2]     [,3]      [,4]       [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -5.554883 7.466693 2.444659 -5.757642  -9.374783</span></span>
-<span><span class="co">#&gt; [2,] -11.330708 1.700968 2.756588 -5.623130  -8.560550</span></span>
-<span><span class="co">#&gt; [3,] -10.579451 3.914784 2.327188 -7.085606 -10.115170</span></span>
-<span><span class="co">#&gt; [4,] -12.634411 4.881232 1.248641 -8.067525 -11.114509</span></span>
+<span><span class="co">#&gt; [1,] -11.886380 4.753934 1.092400 -7.191882 -10.511253</span></span>
+<span><span class="co">#&gt; [2,]  -8.064560 7.955955 1.669257 -6.948952 -10.521423</span></span>
+<span><span class="co">#&gt; [3,]  -5.776251 9.079530 3.139842 -5.992006  -9.517660</span></span>
+<span><span class="co">#&gt; [4,] -15.261303 2.611751 1.976991 -7.597607  -9.065878</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span> <span class="co"># 4</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span> <span class="co"># 5</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span> <span class="co"># 5</span></span>
 <span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span></span>
@@ -253,94 +169,156 @@ Show/hide data preparation
 <code>S</code>.</p>
 <p>We want to find reasonable additional assumptions on <code>S</code>
 to make it easier to estimate.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span>S <span class="op">=</span> <span class="va">S</span>, number_of_observations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/toy_example_data_show2-1.png" class="r-plt" alt="" width="700"></p>
 <p>Looking at the plot, one can see the similarities between columns 3,
 4, and 5. They have similar variance and covariance to each other. The 3
 and 5 have similar covariance with columns 1 and 2. However, the 4 is
-also close.</p>
+not far from them.</p>
 <p>Let’s see if <code>gips</code> will find the relationship:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>  optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
-<span>  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
+<span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="co">#&gt; Warning: The found permutation has n0 = 5 which is bigger than the number_of_observations = 4.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/toy_example_data_show3-1.png" class="r-plt" alt="" width="700"></p>
 <p><code>gips</code> decided that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
 was the most reasonable assumption. Let’s see how much better it is:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (3,4,5):</span></span>
-<span><span class="co">#&gt;  - was found after 67 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 3.63 times more likely than the () permutation.</span></span></code></pre></div>
-<p>This assumption is over 3 times more believable than making no
+<span><span class="co">#&gt; The permutation (3,4)</span></span>
+<span><span class="co">#&gt;  - was found after 120 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 3.79207316417081 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<p>This assumption is over two times more believable than making no
 assumption. Let’s examine how reasonable are other possible
 assumptions:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      (3,4,5)      (2,4,5) (1,2)(3,4,5)    (2,3,5,4)        (4,5)        (3,5) </span></span>
-<span><span class="co">#&gt;  0.061991931  0.056959514  0.048479131  0.040410788  0.038027185  0.037829891 </span></span>
-<span><span class="co">#&gt;        (3,4)    (2,3,4,5)    (2,4,3,5)   (2,4)(3,5)      (2,3,5)   (1,2)(3,5) </span></span>
-<span><span class="co">#&gt;  0.035085538  0.034415530  0.033895061  0.031448291  0.029438098  0.026938644 </span></span>
-<span><span class="co">#&gt;   (1,2)(3,4)   (2,5)(3,4)   (1,2)(4,5)      (2,3,4)        (2,5)        (2,4) </span></span>
-<span><span class="co">#&gt;  0.026167559  0.025906388  0.025384163  0.024145834  0.024081717  0.020399181 </span></span>
-<span><span class="co">#&gt; (1,2,4)(3,5)    (1,4,2,5)   (2,3)(4,5)           ()  (1,2,3,5,4)    (1,2,5,4) </span></span>
-<span><span class="co">#&gt;  0.019323499  0.018904417  0.018141398  0.017079855  0.016588093  0.016298998 </span></span>
-<span><span class="co">#&gt; (1,2,5)(3,4)    (1,2,4,5)        (1,2) (1,4)(2,3,5)        (2,3)  (1,2,3,4,5) </span></span>
-<span><span class="co">#&gt;  0.015996810  0.013635218  0.013223117  0.012292494  0.011350938  0.010572077 </span></span>
-<span><span class="co">#&gt;  (1,2,5,3,4) (1,2,3)(4,5)  (1,2,4,5,3)   (1,4)(2,5) (1,3)(2,4,5)  (1,2,4,3,5) </span></span>
-<span><span class="co">#&gt;  0.010280022  0.010147160  0.009968266  0.009810562  0.009448103  0.009398996 </span></span>
-<span><span class="co">#&gt;    (1,2,3,5)      (1,2,4)      (1,2,5) (1,5)(2,3,4)    (1,3,2,5)    (1,2,3,4) </span></span>
-<span><span class="co">#&gt;  0.009168309  0.009011297  0.008941143  0.008833158  0.008315048  0.008279742 </span></span>
-<span><span class="co">#&gt;  (1,2,5,4,3)    (1,3,2,4)   (1,4)(3,5)   (1,5)(2,4)    (1,2,5,3)      (1,2,3) </span></span>
-<span><span class="co">#&gt;  0.008007561  0.006254947  0.005565898  0.005389584  0.004968273  0.004515910 </span></span>
-<span><span class="co">#&gt;   (1,4)(2,3)   (1,5)(2,3)    (1,2,4,3)   (1,3)(4,5)   (1,5)(3,4) (1,3,4)(2,5) </span></span>
-<span><span class="co">#&gt;  0.004287814  0.004249572  0.003919107  0.003875914  0.003868923  0.003383014 </span></span>
-<span><span class="co">#&gt;        (1,4)   (1,3)(2,5)        (1,5) (1,3,5)(2,4)        (1,3)      (1,4,5) </span></span>
-<span><span class="co">#&gt;  0.003272443  0.002762345  0.002701743  0.002404967  0.002143353  0.002045112 </span></span>
-<span><span class="co">#&gt; (1,4,5)(2,3)      (1,3,4)   (1,3)(2,4)      (1,3,5)    (1,3,5,4)    (1,4,3,5) </span></span>
-<span><span class="co">#&gt;  0.001893502  0.001828460  0.001732156  0.001582799  0.001166460  0.001118505 </span></span>
-<span><span class="co">#&gt;    (1,3,4,5) </span></span>
-<span><span class="co">#&gt;  0.001048474</span></span></code></pre></div>
+<span><span class="co">#&gt;             ()          (4,5)          (3,4)        (3,4,5)          (3,5) </span></span>
+<span><span class="co">#&gt; 0.069068384307 0.060727414839 0.261912366623 0.197438701138 0.086934032936 </span></span>
+<span><span class="co">#&gt;          (2,3)     (2,3)(4,5)        (2,3,4)      (2,3,4,5)      (2,3,5,4) </span></span>
+<span><span class="co">#&gt; 0.002520241430 0.006495999997 0.001182043961 0.000080031096 0.000234494736 </span></span>
+<span><span class="co">#&gt;        (2,3,5)          (2,4)        (2,4,5)     (2,4)(3,5)      (2,4,3,5) </span></span>
+<span><span class="co">#&gt; 0.000410499786 0.002137051762 0.000410407100 0.004843578288 0.000065540223 </span></span>
+<span><span class="co">#&gt;          (2,5)     (2,5)(3,4)          (1,2)     (1,2)(4,5)     (1,2)(3,4) </span></span>
+<span><span class="co">#&gt; 0.001009443542 0.001421639262 0.019092314439 0.033265194830 0.055875021388 </span></span>
+<span><span class="co">#&gt;   (1,2)(3,4,5)     (1,2)(3,5)        (1,2,3)   (1,2,3)(4,5)      (1,2,3,4) </span></span>
+<span><span class="co">#&gt; 0.071376121642 0.057369194387 0.000213901332 0.000256492936 0.000100763693 </span></span>
+<span><span class="co">#&gt;    (1,2,3,4,5)    (1,2,3,5,4)      (1,2,3,5)      (1,2,4,3)    (1,2,4,5,3) </span></span>
+<span><span class="co">#&gt; 0.000005822908 0.000327661509 0.000176796343 0.000052885180 0.000211582316 </span></span>
+<span><span class="co">#&gt;        (1,2,4)      (1,2,4,5)   (1,2,4)(3,5)    (1,2,4,3,5)    (1,2,5,4,3) </span></span>
+<span><span class="co">#&gt; 0.000091830785 0.000011635176 0.000143967951 0.000009848927 0.000009992229 </span></span>
+<span><span class="co">#&gt;      (1,2,5,3)      (1,2,5,4)        (1,2,5)    (1,2,5,3,4)   (1,2,5)(3,4) </span></span>
+<span><span class="co">#&gt; 0.003827744236 0.000300980514 0.000113543776 0.000025464602 0.000506120822 </span></span>
+<span><span class="co">#&gt;          (1,3)     (1,3)(4,5)        (1,3,4)      (1,3,4,5)      (1,3,5,4) </span></span>
+<span><span class="co">#&gt; 0.000622993877 0.001543477661 0.000058544101 0.000002108636 0.000004421858 </span></span>
+<span><span class="co">#&gt;        (1,3,5)     (1,3)(2,4)   (1,3)(2,4,5)      (1,3,2,4)   (1,3,5)(2,4) </span></span>
+<span><span class="co">#&gt; 0.000101638418 0.000995784985 0.000032602399 0.000478312732 0.000004978116 </span></span>
+<span><span class="co">#&gt;     (1,3)(2,5)      (1,3,2,5)   (1,3,4)(2,5)          (1,4)        (1,4,5) </span></span>
+<span><span class="co">#&gt; 0.026206794910 0.005021800273 0.000010645580 0.000206209778 0.000047628153 </span></span>
+<span><span class="co">#&gt;     (1,4)(3,5)      (1,4,3,5)     (1,4)(2,3)   (1,4,5)(2,3)   (1,4)(2,3,5) </span></span>
+<span><span class="co">#&gt; 0.000409718620 0.000001927521 0.000365234206 0.000017712903 0.000002866249 </span></span>
+<span><span class="co">#&gt;     (1,4)(2,5)      (1,4,2,5)          (1,5)     (1,5)(3,4)     (1,5)(2,3) </span></span>
+<span><span class="co">#&gt; 0.000501465259 0.000237282418 0.000629620291 0.000683780081 0.020299482408 </span></span>
+<span><span class="co">#&gt;   (1,5)(2,3,4)     (1,5)(2,4) </span></span>
+<span><span class="co">#&gt; 0.000081562806 0.001174652814</span></span></code></pre></div>
 <p>We see that assumption
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
-is the most likely with a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6.2</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">6.2\%</annotation></semantics></math>
-posterior probability. 21 possible permutations are more likely than
-id.</p>
-<p>Remember that the <code>n0</code> could still be too big for your
-data. In this example, the assumptions with transpositions (like
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5)</annotation></semantics></math>)
-would yield the <code>n0</code>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">= 5</annotation></semantics></math>,
-which would be insufficient for us to estimate covariance correctly. The
-assumption
+is the most likely with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19.9</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">19.9\%</annotation></semantics></math>
+posterior probability. However, the assumption
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5)</annotation></semantics></math>
+is also reasonable, with a posterior probability of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19.6</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">19.6\%</annotation></semantics></math>.
+So it is up to us to decide which one to choose.</p>
+<p>Remember that with the assumption
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5)</annotation></semantics></math>,
+the <code>n0</code> will be 4, which would be insufficient for us to
+estimate covariance correctly. The assumption
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
 will be just right:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># n0 = 4 &lt;= 4 = number_of_observations</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span></span>
-<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="va">S_projected</span></span>
-<span><span class="co">#&gt;          [,1]       [,2]       [,3]       [,4]       [,5]</span></span>
-<span><span class="co">#&gt; [1,] 9.601087  5.4152903  1.4727442  1.4727442  1.4727442</span></span>
-<span><span class="co">#&gt; [2,] 5.415290  5.7077767 -0.4783693 -0.4783693 -0.4783693</span></span>
-<span><span class="co">#&gt; [3,] 1.472744 -0.4783693  0.9870649  0.8600285  0.8600285</span></span>
-<span><span class="co">#&gt; [4,] 1.472744 -0.4783693  0.8600285  0.9870649  0.8600285</span></span>
-<span><span class="co">#&gt; [5,] 1.472744 -0.4783693  0.8600285  0.8600285  0.9870649</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">S_projected</span><span class="op">)</span><span class="op">$</span><span class="va">values</span> <span class="op">&gt;</span> <span class="fl">0.00000001</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 5</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Now, the estimated covariance matrix is of full rank (5).</p>
+</div>
+<div class="section level2">
+<h2 id="practical-example">Practical example<a class="anchor" aria-label="anchor" href="#practical-example"></a>
+</h2>
+<p>Let’s examine 12 books’ thick, height, and breadth data:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span><span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 12</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 3</span></span>
+<span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="va">S</span></span>
+<span><span class="co">#&gt;             thick    height   breadth</span></span>
+<span><span class="co">#&gt; thick    72.69697 -40.33485 -31.74242</span></span>
+<span><span class="co">#&gt; height  -40.33485  25.36992  20.58576</span></span>
+<span><span class="co">#&gt; breadth -31.74242  20.58576  17.18424</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="co"># the default D_matrix</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gips_files/figure-html/change_D_matrix_example1-1.png" class="r-plt" alt="" width="700"></p>
+<p>We can see similarities between columns 2 and 3, representing the
+book’s height and breadth. In particular, the covariance between [1,2]
+is very similar to [1,3], and the variance if [2] is similar to the
+variance of [3]. Those are not surprising, given the interpretation of
+the data.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
+<span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span></span>
+<span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; The permutation ()</span></span>
+<span><span class="co">#&gt;  - was found after 6 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 1 times more likely than the starting, () permutation.</span></span>
+<span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                   ()                (2,3)                (1,2) </span></span>
+<span><span class="co">#&gt; 0.917699644399123216 0.082300333638115772 0.000000000064309861 </span></span>
+<span><span class="co">#&gt;              (1,2,3)                (1,3) </span></span>
+<span><span class="co">#&gt; 0.000000021892918704 0.000000000005532453</span></span></code></pre></div>
+<p>We see the search was too restrictive and did not find the
+permutation. We will weaken the restrictions by changing the
+<code>D_matrix</code> parameter.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, D_matrix<span class="op">=</span><span class="fl">0.05</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
+<span>                  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span></span>
+<span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; The permutation (2,3)</span></span>
+<span><span class="co">#&gt;  - was found after 6 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 3.5796631131816 times more likely than the starting, () permutation.</span></span>
+<span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  ()               (2,3)               (1,2)             (1,2,3) </span></span>
+<span><span class="co">#&gt; 0.21834865211409399 0.78161461578574387 0.00000000027813589 0.00003673179839076 </span></span>
+<span><span class="co">#&gt;               (1,3) </span></span>
+<span><span class="co">#&gt; 0.00000000002363545</span></span></code></pre></div>
+<p><code>find_MAP</code> found the symmetry represented by permutation
+(2,3). The result depends on two input parameters, <code>delta</code>
+and <code>D_matrix</code>. By default they are set to <code>3</code> and
+<code>diag(p)</code>, respectively.</p>
+<p>The method is not scale-invariant and therefore we recommend to run
+gips for different values of <code>D_matrix</code> (typically, of the
+form <code>C * diag(p)</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
@@ -348,16 +326,11 @@ will be just right:</p>
 <ol style="list-style-type: decimal">
 <li>To learn more about the available optimizers in
 <code><a href="../reference/find_MAP.html">find_MAP()</a></code> and how to use those, see
-<code><a href="../articles/Optimizers.html">vignette("Optimizers", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown
+<code><a href="../articles/Optimizers.html">vignette("Optimizers")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown
 page</a>.</li>
 <li>To learn more about the math and theory behind the <code>gips</code>
-package, see <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
+package, see <code><a href="../articles/Theory.html">vignette("Theory")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>.</li>
-<li>For an in-depth analysis of the package performance, capabilities,
-and comparison with other packages, see the article “Learning
-permutation symmetries with gips in R” by <code>gips</code> developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
-Software</a>.</li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -367,7 +340,7 @@ Software</a>.</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Adam Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
+  <p>Developed by Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
 </div>
 
 <div class="pkgdown-footer-right">

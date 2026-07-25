@@ -32,87 +32,75 @@ plot(
 
 - type:
 
-  A character vector of length 1. One of
-  `c("heatmap", "MLE", "best", "all", "both", "n0", "block_heatmap")`:
+  A single character. One of
+  `c("heatmap", "block_heatmap", "all", "best", "both")`.
 
-  - `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
-    Estimator of the covariance matrix given the permutation. That is,
-    the `S` matrix inside the `gips` object projected on the permutation
-    in the `gips` object.
+  - "heatmap" - Plots a heatmap of the `S` matrix inside the `gips`
+    object projected on the permutation in the `gips` object.
 
-  - `"best"` - Shows the maximum A Posteriori value found over time.
-
-  - `"all"` - Shows the A Posteriori values for all visited states.
-
-  - `"both"` - Shows both trajectories from "all" and "best".
-
-  - `"n0"` - Plots the `n0` values observed during optimization (only
-    for "MH" optimization).
-
-  - `"block_heatmap"` - Plots a heatmap of diagonally block
-    representation of `S`. Non-block entries (equal to 0) are white for
-    better clarity. For more information, see **Block Decomposition -
-    \[1\], Theorem 1** section in
+  - "block_heatmap" - Plots a heatmap of diagonally block representation
+    of `S`. Non-block entries (equal to 0) are white for better clarity.
+    For more information see **Block Decomposition - \[1\], Theorem 1**
+    section in
     [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
     or in its [pkgdown
-    page](https://przechoj.github.io/gips/articles/Theory.html).
+    page](https://przechoj.github.io/gips/articles/Theory.html)).
+
+  - "all" - Plots the line of a posteriori for all visited states.
+
+  - "best" - Plots the line of the biggest a posteriori found over time.
+
+  - "both" - Plots both lines from "all" and "best".
 
   The default value is `NA`, which will be changed to "heatmap" for
   non-optimized `gips` objects and to "both" for optimized ones. Using
-  the default produces a warning.
-
-  Arguments `logarithmic_y`, `logarithmic_x`, `color`, `title_text`,
-  `xlabel`, `ylabel`, `show_legend`, `ylim`, and `xlim` are only used
-  for `type %in% c("all", "best", "both", "n0")` and ignored for heatmap
-  types.
+  the default produces a warning. All other arguments are ignored for
+  the `type = "heatmap"`.
 
 - logarithmic_y, logarithmic_x:
 
-  A boolean. Sets the axis of the plot in logarithmic scale. Only used
-  for `type %in% c("all", "best", "both", "n0")`.
+  A boolean. Sets the axis of the plot in logarithmic scale.
 
 - color:
 
-  Vector of colors to be used to plot lines. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Vector of colors to be used to plot lines.
 
 - title_text:
 
-  Text to be in the title of the plot. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Text to be in the title of the plot.
 
 - xlabel:
 
-  Text to be on the bottom of the plot. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Text to be on the bottom of the plot.
 
 - ylabel:
 
-  Text to be on the left of the plot. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Text to be on the left of the plot.
 
 - show_legend:
 
-  A boolean. Whether or not to show a legend. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  A boolean. Whether or not to show a legend.
 
 - ylim:
 
-  Limits of the y axis. When `NULL`, uses the data range. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Limits of the y axis. When `NULL`, the minimum and maximum of the
+  [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
+  are taken.
 
 - xlim:
 
-  Limits of the x axis. When `NULL`, uses the data range. Only used for
-  `type %in% c("all", "best", "both", "n0")`.
+  Limits of the x axis. When `NULL`, the whole optimization process is
+  shown.
 
 - ...:
 
-  Ignored.
+  Additional arguments passed to
+  [`stats::heatmap()`](https://rdrr.io/r/stats/heatmap.html) or other
+  various elements of the plot.
 
 ## Value
 
-An object of class `ggplot`.
+Returns an invisible `NULL`.
 
 ## See also
 
@@ -121,7 +109,7 @@ An object of class `ggplot`.
   [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md).
 
 - [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md) -
-  The function used with `type = "MLE"`.
+  The function used with `type = "heatmap"`.
 
 - [`gips()`](https://przechoj.github.io/gips/reference/gips.md) - The
   constructor of a `gips` class. The `gips` object is used as the `x`
@@ -150,18 +138,21 @@ Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix)
 S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
-plot(g, type = "MLE")
+if (require("graphics")) {
+  plot(g, type = "heatmap")
+}
 
 
 g_map <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "hill_climbing")
-plot(g_map, type = "both", logarithmic_x = TRUE)
+if (require("graphics")) {
+  plot(g_map, type = "both", logarithmic_x = TRUE)
+}
 
 
-plot(g_map, type = "MLE")
+if (require("graphics")) {
+  plot(g_map, type = "heatmap")
+}
 
 # Now, the output is (most likely) different because the permutation
   # `g_map[[1]]` is (most likely) not an identity permutation.
-
-g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
-plot(g_map_MH, type = "n0", logarithmic_y = FALSE)
 ```

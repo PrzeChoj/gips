@@ -2,8 +2,7 @@
 
 ## Authors
 
-- **Adam Przemysław Chojecki**. Author, maintainer.
-  [](https://orcid.org/0009-0008-2902-4096)
+- **Przemysław Chojecki**. Author, maintainer.
 
 - **Paweł Morgen**. Author.
 
@@ -13,20 +12,16 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/PrzeChoj/gips/blob/v1.2.4/inst/CITATION)
+[`DESCRIPTION`](https://github.com/PrzeChoj/gips/blob/v1.0.0/DESCRIPTION)
 
-Chojecki A, Morgen P, Kołodziejek B (2025). “Learning Permutation
-Symmetry of a Gaussian Vector with gips in R.” *Journal of Statistical
-Software*, **112**(7), 1–38.
-[doi:10.18637/jss.v112.i07](https://doi.org/10.18637/jss.v112.i07).
+Chojecki P, Morgen P, Kołodziejek B (2026). *gips: Gaussian Model
+Invariant by Permutation Symmetry*. R package version 1.0.0,
+<https://github.com/PrzeChoj/gips>.
 
-    @Article{,
-      title = {Learning Permutation Symmetry of a {G}aussian Vector with {gips} in {R}},
-      author = {Adam Chojecki and Pawe{\l} Morgen and Bartosz Ko{\l}odziejek},
-      journal = {Journal of Statistical Software},
-      year = {2025},
-      volume = {112},
-      number = {7},
-      pages = {1--38},
-      doi = {10.18637/jss.v112.i07},
+    @Manual{,
+      title = {gips: Gaussian Model Invariant by Permutation Symmetry},
+      author = {Przemysław Chojecki and Paweł Morgen and Bartosz Kołodziejek},
+      year = {2026},
+      note = {R package version 1.0.0},
+      url = {https://github.com/PrzeChoj/gips},
     }

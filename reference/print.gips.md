@@ -8,7 +8,7 @@ Printing function for a `gips` class.
 # S3 method for class 'gips'
 print(
   x,
-  digits = 3,
+  digits = Inf,
   compare_to_original = TRUE,
   log_value = FALSE,
   oneline = FALSE,
@@ -24,14 +24,14 @@ print(
 
 - digits:
 
-  The number of decimal places for the posterior probability. It can be
-  negative. By default, `Inf`. It is passed to
+  The number of digits after the comma for a posteriori to be presented.
+  It can be negative. By default, `Inf`. It is passed to
   [`base::round()`](https://rdrr.io/r/base/Round.html).
 
 - compare_to_original:
 
-  A logical. Whether to print how many times more likely the current
-  permutation is compared to:
+  A logical. Whether to print how many times more likely is the current
+  permutation compared to:
 
   - the identity permutation `()` (for unoptimized `gips` object);
 
@@ -39,7 +39,9 @@ print(
 
 - log_value:
 
-  A logical. Whether to print the logarithmic value. Default to `FALSE`.
+  A logical. Whether to print the value of a
+  [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
+  Default to `FALSE`.
 
 - oneline:
 
@@ -53,7 +55,7 @@ print(
 
 ## Value
 
-An invisible `NULL`.
+Returns an invisible `NULL`.
 
 ## See also
 
@@ -69,7 +71,8 @@ An invisible `NULL`.
 
 ``` r
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
-g <- gips(S, 10, perm = "(12)")
-print(g, digits = 4, oneline = TRUE)
-#> The permutation (1,2): is 2.2801 times more likely than the () permutation.
+g <- gips(S, 10)
+print(g, digits = 4)
+#> The permutation ()
+#>  - is 1 times more likely than the id, () permutation.
 ```

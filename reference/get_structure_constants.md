@@ -1,7 +1,7 @@
 # Get Structure Constants
 
-Finds constants necessary for internal calculations of integrals and
-eventually the posteriori probability in
+Finds constants that are necessary for internal calculations of
+integrals and eventually the posteriori probability in
 [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
 ## Usage
@@ -14,20 +14,19 @@ get_structure_constants(perm)
 
 - perm:
 
-  An object of a `gips_perm` class. It can also be of a `gips` class,
-  but it will be interpreted as the underlying `gips_perm`.
+  An object of a `gips_perm` class.
 
 ## Value
 
-A list with 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of
+Returns a list of 5 items: `r`, `d`, `k`, `L`, `dim_omega` - vectors of
 constants from [Theorem 1 from
 references](https://arxiv.org/abs/2004.03503) and the beginning of
 [section 3.1. from references](https://arxiv.org/abs/2004.03503).
 
 ## Details
 
-Uses [Theorem 5 from references](https://arxiv.org/abs/2004.03503) to
-calculate the constants.
+Uses the [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
+to calculate the constants.
 
 ## References
 
@@ -46,7 +45,7 @@ link](https://arxiv.org/abs/2004.03503);
 ## Examples
 
 ``` r
-perm <- gips_perm("(1)(2)(3)(4,5)", 5)
+perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
 get_structure_constants(perm)
 #> $r
 #> [1] 4 1

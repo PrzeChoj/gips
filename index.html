@@ -6,18 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Gaussian Model Invariant by Permutation Symmetry • gips</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" sizes="any" href="favicon.ico">
-<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Gaussian Model Invariant by Permutation Symmetry">
-<meta name="description" content="Find the permutation symmetry group such that the covariance matrix of the given data is approximately invariant under it. Discovering such a permutation decreases the number of observations needed to fit a Gaussian model, which is of great use when it is smaller than the number of variables. Even if that is not the case, the covariance matrix found with gips approximates the actual covariance with less statistical error. The methods implemented in this package are described in Graczyk et al. (2022) &lt;doi:10.1214/22-AOS2174&gt;. Documentation about gips is provided via its website at &lt;https://przechoj.github.io/gips/&gt; and the paper by Chojecki, Morgen, Kołodziejek (2025, &lt;doi:10.18637/jss.v112.i07&gt;).">
-<meta property="og:description" content="Find the permutation symmetry group such that the covariance matrix of the given data is approximately invariant under it. Discovering such a permutation decreases the number of observations needed to fit a Gaussian model, which is of great use when it is smaller than the number of variables. Even if that is not the case, the covariance matrix found with gips approximates the actual covariance with less statistical error. The methods implemented in this package are described in Graczyk et al. (2022) &lt;doi:10.1214/22-AOS2174&gt;. Documentation about gips is provided via its website at &lt;https://przechoj.github.io/gips/&gt; and the paper by Chojecki, Morgen, Kołodziejek (2025, &lt;doi:10.18637/jss.v112.i07&gt;).">
+<meta name="description" content="Find the permutation symmetry group such that the covariance matrix of the given data is invariant under it. Discovering such a permutation decreases the number of observations needed to fit a Gaussian model, which is of great use when it is smaller than the number of variables. Even if that is not the case, the covariance matrix found with gips approximates the actual covariance with less statistical error. The methods implemented in this package are described in Graczyk et al. (2022) &lt;doi:10.1214/22-AOS2174&gt;.">
+<meta property="og:description" content="Find the permutation symmetry group such that the covariance matrix of the given data is invariant under it. Discovering such a permutation decreases the number of observations needed to fit a Gaussian model, which is of great use when it is smaller than the number of variables. Even if that is not the case, the covariance matrix found with gips approximates the actual covariance with less statistical error. The methods implemented in this package are described in Graczyk et al. (2022) &lt;doi:10.1214/22-AOS2174&gt;.">
 <meta property="og:image" content="https://przechoj.github.io/gips/logo.svg">
 </head>
 <body>
@@ -28,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,8 +37,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a></li>
-    <li><a class="dropdown-item" href="articles/Theory.html">The Theory Behind gips</a></li>
+<li><a class="dropdown-item" href="articles/Optimizers.html">Optimizers</a></li>
+    <li><a class="dropdown-item" href="articles/Theory.html">Theory</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -78,7 +73,7 @@
 </h2>
 <ol style="list-style-type: decimal">
 <li>Finding hidden symmetries between the variables. <code>gips</code> can be used as an exploratory tool for searching the space of permutation symmetries of the Gaussian vector. Useful in the Exploratory Data Analysis (EDA).</li>
-<li>Covariance estimation. The Maximum Likelihood Estimator (MLE) for the covariance matrix is known to exist if and only if the number of variables is less or equal to the number of observations. Additional knowledge of symmetries significantly weakens this requirement. Moreover, the reduction of model dimension brings the advantage in terms of precision of covariance estimation.</li>
+<li>Covariance estimation. The MLE for the covariance matrix is known to exist if and only if the number of variables is less or equal to the number of observations. Additional knowledge of symmetries significantly weakens this requirement. Moreover, the reduction of model dimension brings the advantage in terms of precision of covariance estimation.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -91,8 +86,8 @@
 <p>From <a href="https://github.com/PrzeChoj/gips" class="external-link">GitHub</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install the development version from GitHub:</span></span>
-<span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"PrzeChoj/gips"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"PrzeChoj/gips"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -104,52 +99,53 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">HSAUR2</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/HSAUR2/man/aspirin.html" class="external-link">aspirin</a></span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">HSAUR</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/HSAUR/man/aspirin.html" class="external-link">aspirin</a></span></span>
 <span></span>
 <span><span class="co"># Renumber the columns for better readability:</span></span>
-<span><span class="va">Z</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">Z</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">Z</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">Z</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Assume the data <code>Z</code> is normally distributed.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 7 4</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 7</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 4</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 4</span></span>
 <span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span>, <span class="op">-</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         [,1]    [,2]    [,3]    [,4]</span></span>
-<span><span class="co">#&gt; [1,]  381000  347000 1834000 1814000</span></span>
-<span><span class="co">#&gt; [2,]  347000  317000 1675000 1659000</span></span>
-<span><span class="co">#&gt; [3,] 1834000 1675000 8958000 8844000</span></span>
-<span><span class="co">#&gt; [4,] 1814000 1659000 8844000 8755000</span></span>
+<span><span class="co">#&gt; [1,]  381405  345527 1864563 1813725</span></span>
+<span><span class="co">#&gt; [2,]  345527  316411 1711853 1663065</span></span>
+<span><span class="co">#&gt; [3,] 1864563 1711853 9305049 8991343</span></span>
+<span><span class="co">#&gt; [4,] 1813725 1663065 8991343 8755176</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
-<span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_unknown2-1.png" alt="" width="100%"></p>
-<p>Remember, we analyze the covariance matrix. We can see some nearly identical colors in the estimated covariance matrix. E.g., variances of columns 1 and 2 are very similar (<code>S[1,1]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,2]</code>), and variances of columns 3 and 4 are very similar (<code>S[3,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[4,4]</code>). What is more, Covariances are also similar (<code>S[1,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[1,4]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,3]</code> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math><code>S[2,4]</code>). Are those approximate equalities coincidental? Or do they reflect some underlying data properties? It is hard to decide purely by looking at the matrix.</p>
-<p><code><a href="reference/find_MAP.html">find_MAP()</a></code> will use the Bayesian model to quantify if the approximate equalities are coincidental. Let’s see if it will find this relationship:</p>
+<span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example_mean_unknown2-1.png" width="100%"></p>
+<p>Remember, we analyze the covariance matrix. We can see some strong similarities between the covariances of columns 3 and 4. Those have similar variances (<code>S[3,3]</code> <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Capprox" title="\approx" alt=""><code>S[4,4]</code>), and their covariances with the rest of the columns are alike (<code>S[1,3]</code> <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Capprox" title="\approx" alt=""><code>S[1,4]</code> and <code>S[2,3]</code> <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Capprox" title="\approx" alt=""><code>S[2,4]</code>).</p>
+<p>Note that the variances of columns 1 and 2 are also similar, but the covariances with other columns (3 and 4) are not alike.</p>
+<p>Let’s see if the <code><a href="reference/find_MAP.html">find_MAP()</a></code> will find this relationship:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span></span>
 <span><span class="va">g_MAP</span></span>
-<span><span class="co">#&gt; The permutation (1,2)(3,4):</span></span>
-<span><span class="co">#&gt;  - was found after 17 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 3.374 times more likely than the () permutation.</span></span></code></pre></div>
-<p>The <code>find_MAP</code> found the relationship (1,2)(3,4). The variances [1,1] and [2,2] as well as [3,3] and [4,4] are so close to each other that it is reasonable to consider them equal. Similarly, the covariances [1,3] and [2,4]; just as covariances [2,3] and [1,4], also will be considered equal:</p>
+<span><span class="co">#&gt; The permutation (3,4)</span></span>
+<span><span class="co">#&gt;  - was found after 24 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 106222567640989 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<p>The <code>find_MAP</code> found the relationship (3,4). In its opinion, the variances [3,3] and [4,4] are so close to each other that it is reasonable to consider them equal. Similarly, the covariances [1,3] and [1,4]; just as covariances [2,3] and [3,4], also will be considered equal:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_MAP</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_MAP</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_projected</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         [,1]    [,2]    [,3]    [,4]</span></span>
-<span><span class="co">#&gt; [1,]  349160  347320 1746602 1744545</span></span>
-<span><span class="co">#&gt; [2,]  347320  349160 1744545 1746602</span></span>
-<span><span class="co">#&gt; [3,] 1746602 1744545 8856368 8844312</span></span>
-<span><span class="co">#&gt; [4,] 1744545 1746602 8844312 8856368</span></span>
+<span><span class="co">#&gt; [1,]  381405  345527 1839144 1839144</span></span>
+<span><span class="co">#&gt; [2,]  345527  316411 1687459 1687459</span></span>
+<span><span class="co">#&gt; [3,] 1839144 1687459 9030113 8991343</span></span>
+<span><span class="co">#&gt; [4,] 1839144 1687459 8991343 9030113</span></span>
 <span></span>
-<span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_MAP</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_unknown4-1.png" alt="" width="100%"></p>
+<span><span class="fu">my_add_text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_MAP</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example_mean_unknown4-1.png" width="100%"></p>
 <p>This <code>S_projected</code> matrix can now be interpreted as a more stable covariance matrix estimator.</p>
-<p>We can also interpret the output as suggesting that there is no change in covariance for treatment with Aspirin.</p>
+<p>We can also interpret the data suggesting there is, for example, the same covariance of “number of deaths after Aspirin” with “number of people treated with *” no matter if the “*” represents the placebo or Aspirin.</p>
 </div>
 <div class="section level3">
 <h3 id="example-2---modeling">Example 2 - modeling<a class="anchor" aria-label="anchor" href="#example-2---modeling"></a>
@@ -157,9 +153,8 @@
 <p>First, construct data for the example:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prepare model, multivariate normal distribution</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">)</span>  </span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fl">1.1</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>,</span>
@@ -169,80 +164,70 @@
 <span>    <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.1</span>, <span class="fl">0.8</span>,</span>
 <span>    <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.1</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  nrow <span class="op">=</span> <span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  nrow <span class="op">=</span> <span class="va">perm_size</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="co"># sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># Generate example data from a model:</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">n</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="fl">4</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
 <span><span class="co"># End of prepare model</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known1_1-1.png" alt="" width="100%"></p>
-<p>Suppose we do not know the actual covariance matrix <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math> and we want to estimate it. We cannot use the standard MLE because it does not exists (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>&lt;</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">4 &lt; 6</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>&lt;</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n &lt; p</annotation></semantics></math>).</p>
-<p>We will assume it was generated from the normal distribution with the mean <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</p>
+<p>Suppose we do not know the true covariance matrix <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5CSigma" title="\Sigma" alt=""> and we want to estimate it. We cannot use the standard MLE because it does not exists (<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;4%20%3C%206" title="4 &lt; 6" alt="4 &lt; 6">, <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;n%20%3C%20p" title="n &lt; p" alt="n &lt; p">).</p>
+<p>We will assume it was generated from the normal distribution with the mean <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;0" title="0" alt="0">.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 6</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 4</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 6</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 6</span></span>
 <span></span>
 <span><span class="co"># Calculate the covariance matrix from the data:</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">Z</span><span class="op">)</span> <span class="op">/</span> <span class="va">number_of_observations</span></span></code></pre></div>
 <p>Make the gips object out of data:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>We can see the standard estimator of the covariance matrix: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><msubsup><mi mathvariant="normal">Σ</mi><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)</annotation></semantics></math> It is not MLE (again, because MLE does not exist for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>&lt;</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n &lt; p</annotation></semantics></math>):</p>
+<p>Find the Maximum A Posteriori Estimator for the permutation. Space is small (<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;6%21%20%3D%20720" title="6! = 720" alt="6! = 720">), so it is reasonable to browse the whole of it:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Covariance estimated in standard way"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known3_1-1.png" alt="" width="100%"></p>
-<p>Let’s find the Maximum A Posteriori Estimator for the permutation. Space is small (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mi>!</mi><mo>=</mo><mn>720</mn></mrow><annotation encoding="application/x-tex">6! = 720</annotation></semantics></math>), so it is reasonable to browse the whole of it:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
-<span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 118.863 times more likely than the () permutation.</span></span></code></pre></div>
-<p>We see that the found permutation is over a hundred times more likely than making no additional assumption. That means the additional assumptions are justified.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; The permutation (1,2,3,4,5,6)</span></span>
+<span><span class="co">#&gt;  - was found after 720 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 234.659014400441 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<p>We see that the found permutation is hundreds of times more likely than making no additional assumption. That means the additional assumptions are justified.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="op">&lt;=</span> <span class="va">number_of_observations</span> <span class="co"># 1 &lt;= 4</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>What is more, we see the number of observations (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>) is bigger or equal to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_0 = 1</annotation></semantics></math>, so we can estimate the covariance matrix with the Maximum Likelihood estimator:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span>
+<p>What is more, we see the number of observations (<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;4" title="4" alt="4">) is bigger or equal to <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;n_0%20%3D%201" title="n_0 = 1" alt="n_0 = 1">, so we can estimate the covariance matrix with the Maximum Likelihood estimator:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">S_projected</span></span>
 <span><span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]</span></span>
-<span><span class="co">#&gt; [1,] 1.3747718 1.0985729 0.6960213 0.4960295 0.6960213 1.0985729</span></span>
-<span><span class="co">#&gt; [2,] 1.0985729 1.3747718 1.0985729 0.6960213 0.4960295 0.6960213</span></span>
-<span><span class="co">#&gt; [3,] 0.6960213 1.0985729 1.3747718 1.0985729 0.6960213 0.4960295</span></span>
-<span><span class="co">#&gt; [4,] 0.4960295 0.6960213 1.0985729 1.3747718 1.0985729 0.6960213</span></span>
-<span><span class="co">#&gt; [5,] 0.6960213 0.4960295 0.6960213 1.0985729 1.3747718 1.0985729</span></span>
-<span><span class="co">#&gt; [6,] 1.0985729 0.6960213 0.4960295 0.6960213 1.0985729 1.3747718</span></span>
+<span><span class="co">#&gt; [1,] 1.0432544 0.8066746 0.5881748 0.4007521 0.5881748 0.8066746</span></span>
+<span><span class="co">#&gt; [2,] 0.8066746 1.0432544 0.8066746 0.5881748 0.4007521 0.5881748</span></span>
+<span><span class="co">#&gt; [3,] 0.5881748 0.8066746 1.0432544 0.8066746 0.5881748 0.4007521</span></span>
+<span><span class="co">#&gt; [4,] 0.4007521 0.5881748 0.8066746 1.0432544 0.8066746 0.5881748</span></span>
+<span><span class="co">#&gt; [5,] 0.5881748 0.4007521 0.5881748 0.8066746 1.0432544 0.8066746</span></span>
+<span><span class="co">#&gt; [6,] 0.8066746 0.5881748 0.4007521 0.5881748 0.8066746 1.0432544</span></span>
 <span></span>
 <span><span class="co"># Plot the found matrix:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Covariance estimated with `gips`"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example_mean_known6-1.png" alt="" width="100%"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example_mean_known6-1.png" width="100%"></p>
 <p>We see <code>gips</code> found the data’s structure, and we could estimate the covariance matrix with huge accuracy only with a small amount of data and additional reasonable assumptions.</p>
-<p>Note that the rank of the <code>S</code> matrix was 4, while the rank of the <code>S_projected</code> matrix was 6 (full rank).</p>
+<p>Note that the rank of the <code>S</code> matrix was 4, while the rank of the <code>S_projected</code> matrix was 6.</p>
 </div>
 </div>
 </div>
 <div class="section level1">
 <h1 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h1>
-<p>For more examples and introduction, see <code><a href="articles/gips.html">vignette("gips", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/gips.html">pkgdown page</a>.</p>
-<p>For an in-depth analysis of the package performance, capabilities, and comparison with similar packages, see the article “Learning permutation symmetries with gips in R” by <code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical Software</a>.</p>
+<p>For more examples and introduction, see <code><a href="articles/gips.html">vignette("gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/gips.html">pkgdown page</a>.</p>
 </div>
 <div class="section level1">
 <h1 id="acknowledgment">Acknowledgment<a class="anchor" aria-label="anchor" href="#acknowledgment"></a>
 </h1>
 <p>Project was funded by Warsaw University of Technology within the Excellence Initiative: Research University (IDUB) programme.</p>
-<p>The development was carried out with the support of the Laboratory of Bioinformatics and Computational Genomics and the High Performance Computing Center of the Faculty of Mathematics and Information Science Warsaw University of Technology.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
@@ -273,7 +258,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Adam Przemysław Chojecki <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0009-0008-2902-4096" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Przemysław Chojecki <br><small class="roles"> Author, maintainer </small>   </li>
 <li>Paweł Morgen <br><small class="roles"> Author </small>   </li>
 <li>Bartosz Kołodziejek <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-5220-9012" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
@@ -294,7 +279,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Adam Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
+  <p>Developed by Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
 </div>
 
 <div class="pkgdown-footer-right">

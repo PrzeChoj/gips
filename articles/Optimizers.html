@@ -5,17 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Available Optimizers: How to Find Maximum A Posteriori? • gips</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
-<link rel="manifest" href="../site.webmanifest">
+<title>Optimizers • gips</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Available Optimizers: How to Find Maximum A Posteriori?">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Optimizers">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -25,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +34,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a></li>
-    <li><a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a></li>
+<li><a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a></li>
+    <li><a class="dropdown-item" href="../articles/Theory.html">Theory</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,10 +57,12 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Available Optimizers: How to Find Maximum A Posteriori?</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Optimizers</h1>
+                        <h4 data-toc-skip class="author">Przemysław
+Chojecki, Paweł Morgen, Bartosz Kołodziejek</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.4/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.0.0/vignettes/Optimizers.Rmd" class="external-link"><code>vignettes/Optimizers.Rmd</code></a></small>
       <div class="d-none name"><code>Optimizers.Rmd</code></div>
     </div>
 
@@ -74,7 +71,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">?</span><span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">?</span><span class="va">find_MAP</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="what-are-we-optimizing">What are we optimizing?<a class="anchor" aria-label="anchor" href="#what-are-we-optimizing"></a>
 </h2>
@@ -83,15 +80,13 @@
 that maximizes the a posteriori probability (MAP - Maximum A
 Posteriori). Such a permutation represents the most plausible symmetry
 given the data.</p>
-<p>This a posteriori probability function is described in-depth in the
-<strong>Bayesian model selection</strong> section of the
-<code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code>, also available as a <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
-page</a>. <code>gips</code> can calculate the logarithm of it by the
+<p>This a posteriori probability function is described more in-depth in
+the <strong>Bayesian model selection</strong> section of the
+<code><a href="../articles/Theory.html">vignette("Theory")</a></code>, also available as a <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
+page</a>. <code>gips</code> can calculate the logarithm of it by
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> function. In the following
 paragraphs, we will refer to this a posteriori probability function as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>.
-We have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(\sigma) &gt; 0</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="available-optimizers">Available optimizers<a class="anchor" aria-label="anchor" href="#available-optimizers"></a>
@@ -102,205 +97,282 @@ the space of all permutations is of size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>!</mi></mrow><annotation encoding="application/x-tex">p!</annotation></semantics></math>
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
 factorial). Even for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">p=12</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>19</mn></mrow><annotation encoding="application/x-tex">p=19</annotation></semantics></math>,
 this space is practically impossible to browse. This is why
-<code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements multiple (3) optimizers to choose
+<code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements multiple optimizers to choose
 from:</p>
 <ul>
 <li>
-<code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> |
-recommend for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\le 10</annotation></semantics></math>.</li>
-<li>
-<code>"Metropolis_Hastings"</code>, <code>"MH"</code> | recommend
-for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>11</mn></mrow><annotation encoding="application/x-tex">p\ge 11</annotation></semantics></math>.</li>
+<code>"Metropolis_Hastings"</code>, <code>"MH"</code>
+</li>
 <li>
 <code>"hill_climbing"</code>, <code>"HC"</code>
 </li>
+<li>
+<code>"brute_force"</code>, <code>"BF"</code>,
+<code>"full"</code>
+</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="metropolis-hastings">Metropolis Hastings<a class="anchor" aria-label="anchor" href="#metropolis-hastings"></a>
+</h2>
+<p>This optimizer is implementation of the <em>Second approach</em> from
+<a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec 4.1.2]</a>.</p>
+<p>This uses the Metropolis-Hastings algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="external-link">see
+Wikipedia</a>. This algorithm used in this context is a special case of
+the Simulated Annealing the reader may be more familiar with; <a href="https://en.wikipedia.org/wiki/Simulated_annealing" class="external-link">see
+Wikipedia</a>.</p>
 <div class="section level4">
-<h4 id="note-on-computation-time">Note on computation time<a class="anchor" aria-label="anchor" href="#note-on-computation-time"></a>
+<h4 id="short-description">Short description<a class="anchor" aria-label="anchor" href="#short-description"></a>
 </h4>
-<p>The <code>max_iter</code> parameter works differently in
-Metropolis-Hastings and hill climbing.</p>
-<p>For Metropolis-Hastings, it computes the a posteriori probability for
-<code>max_iter</code> permutations, whereas for hill climbing, it
-computes
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>p</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo></mrow><annotation encoding="application/x-tex">{p\choose 2} \cdot</annotation></semantics></math><code>max_iter</code> of them.</p>
-<p>In the case of the Brute Force optimizer, it computes all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>
-values. The number of all different
+<p>In every iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+an algorithm is in a permutation, say,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
+Then a random transposition is drawn uniformly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_i = (j,k)</annotation></semantics></math>
+and the value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i)</annotation></semantics></math>
+is computed.</p>
+<ul>
+<li>If new value is bigger than the previous one,
+(i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) \ge f(\sigma_i)</annotation></semantics></math>),
+then we set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>.</li>
+<li>If new value is smaller
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) &lt; f(\sigma_i)</annotation></semantics></math>),
+then we will choose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>
+with probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><annotation encoding="application/x-tex">\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.
+Otherwise, we set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i</annotation></semantics></math>
+with complementary probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.</li>
+</ul>
+<p>The final value is the best
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-follows <a href="https://oeis.org/A051625" class="external-link">OEIS sequence
-A051625</a>.</p>
+that was ever computed.</p>
 </div>
-<div class="section level3">
-<h3 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
-</h3>
-<p>It searches through the whole space at once.</p>
-<p>This is the only optimizer that will certainly find the true MAP
-estimator.</p>
-<p>Brute Force is <strong>only recommended</strong> for small spaces
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p \le 10</annotation></semantics></math>).
-It can also browse bigger spaces, but the required time is probably too
-long. We tested how much time it takes to browse with Brute Force (Apple
-M2), and we show the time in the table below:</p>
-<div id="spoiler_benchmark" style="display:none">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
-<span><span class="co"># install.packages("pbmcapply")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kvnkuang/pbmcapply" class="external-link">pbmcapply</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">get_gips_for_p</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">n</span><span class="op">=</span><span class="fl">30</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">S_inv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">p</span>, <span class="va">p</span><span class="op">)</span></span>
-<span>  <span class="va">S_inv</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">:</span><span class="va">p</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span>  <span class="va">S_inv</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="va">p</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">S_inv</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">n</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">get_time</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">optimizer</span>, <span class="va">max_iter</span> <span class="op">=</span> <span class="cn">NA</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span></span>
-<span>  <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">get_gips_for_p</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span>  <span class="va">g_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="va">optimizer</span>, max_iter <span class="op">=</span> <span class="va">max_iter</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g_MAP</span>, <span class="st">"optimization_info"</span><span class="op">)</span><span class="op">$</span><span class="va">optimization_time</span>, units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">benchmark_optimization</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_reps</span> <span class="op">=</span> <span class="fl">2</span>, <span class="va">n_cores</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">make_label</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">optimizer</span>, <span class="va">p</span>, <span class="va">max_iter</span> <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">max_iter</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">optimizer</span>, <span class="st">" p="</span>, <span class="va">p</span><span class="op">)</span></span>
-<span>    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">optimizer</span>, <span class="st">" p="</span>, <span class="va">p</span>, <span class="st">", "</span>, <span class="va">max_iter</span><span class="op">)</span></span>
-<span>    <span class="op">}</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="va">cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>    max_iter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>    stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">cases</span><span class="op">$</span><span class="va">optimizer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">cases</span><span class="op">$</span><span class="va">max_iter</span><span class="op">)</span>, <span class="st">"BF"</span>, <span class="st">"MH"</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">cases</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span></span>
-<span>    <span class="va">make_label</span>,</span>
-<span>    optimizer <span class="op">=</span> <span class="va">cases</span><span class="op">$</span><span class="va">optimizer</span>,</span>
-<span>    p <span class="op">=</span> <span class="va">cases</span><span class="op">$</span><span class="va">p</span>,</span>
-<span>    max_iter <span class="op">=</span> <span class="va">cases</span><span class="op">$</span><span class="va">max_iter</span></span>
-<span>  <span class="op">)</span></span>
-<span>  <span class="va">label_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cases</span><span class="op">$</span><span class="va">label</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">jobs</span> <span class="op">&lt;-</span> <span class="va">cases</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">n_reps</span><span class="op">)</span>, <span class="op">]</span></span>
-<span>  <span class="va">jobs</span><span class="op">$</span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_reps</span><span class="op">)</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">jobs</span><span class="op">$</span><span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">1234</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">jobs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span>  </span>
-<span>  <span class="va">run_one_job</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">job</span> <span class="op">&lt;-</span> <span class="va">jobs</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span></span>
-<span>    </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>      label <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">label</span>,</span>
-<span>      p <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">p</span>,</span>
-<span>      optimizer <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">optimizer</span>,</span>
-<span>      max_iter <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">max_iter</span>,</span>
-<span>      rep <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">rep</span>,</span>
-<span>      seed <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">seed</span>,</span>
-<span>      time <span class="op">=</span> <span class="fu">get_time</span><span class="op">(</span></span>
-<span>        p <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">p</span>,</span>
-<span>        optimizer <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">optimizer</span>,</span>
-<span>        max_iter <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">max_iter</span>,</span>
-<span>        seed <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">seed</span></span>
-<span>      <span class="op">)</span>,</span>
-<span>      stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="va">results_list</span> <span class="op">&lt;-</span> <span class="fu">pbmcapply</span><span class="fu">::</span><span class="fu">pbmclapply</span><span class="op">(</span></span>
-<span>    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">jobs</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    FUN <span class="op">=</span> <span class="va">run_one_job</span>,</span>
-<span>    mc.cores <span class="op">=</span> <span class="va">n_cores</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">results_list</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">results</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">label</span>, levels <span class="op">=</span> <span class="va">label_levels</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span>  </span>
-<span>  <span class="va">results</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">benchmark_results</span> <span class="op">&lt;-</span> <span class="fu">benchmark_optimization</span><span class="op">(</span>n_reps <span class="op">=</span> <span class="fl">7</span>, n_cores <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
-<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span></span>
-<span>  <span class="va">time</span> <span class="op">~</span> <span class="va">label</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">benchmark_results</span>,</span>
-<span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>      mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>      min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>      max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>      sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
+</h4>
+<p>This algorithm was tested in multiple settings and turned out to be
+an outstanding optimizer. Especially given it does not need any
+hyperparameters tuned.</p>
+<p>The only parameter it depends on is <code>max_iter</code>, which
+determines the number of steps described above. One should choose this
+number rationally. When decided too small, there is a missed opportunity
+to find potentially a much better permutation. When decided too big,
+there is a lost time and computational power that does not lead to
+growth. Our recommendation is to plot the convergence plot with a
+logarithmic OX scale:
+<code>plot(g_map, type = "both", logarithmic_x = TRUE)</code>. Then
+decide if the line has flattened already. Keep in mind that the OY scale
+is also logarithmic. For example, a small change on the OY scale could
+mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10000</mn><annotation encoding="application/x-tex">10000</annotation></semantics></math><strong>times</strong> the change in A Posteriori.</p>
+<p>This algorithm has been analyzed extensively by statisticians. Thanks
+to the ergodic theorem, the frequency of visits of a given state
+converges almost surely to the probability of that state. This is the
+approach explained in the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,
+Sec.4.1.2]</a> and shown in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec. 5.2]</a>. One can
+obtain estimates of posterior probabilities by setting
+<code>return_probabilities = TRUE</code>.</p>
 </div>
-<button title="Click to show the benchmark code" type="button" onclick="if(document.getElementById('spoiler_benchmark') .style.display=='none')
-              {document.getElementById('spoiler_benchmark') .style.display=''}
-            else{document.getElementById('spoiler_benchmark') .style.display='none'}">
-Show/hide the benchmark code
-</button>
-<table class="table">
-<colgroup>
-<col width="12%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="10%">
-<col width="10%">
-<col width="10%">
-<col width="8%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th>p=2</th>
-<th>p=3</th>
-<th>p=4</th>
-<th>p=5</th>
-<th>p=6</th>
-<th>p=7</th>
-<th>p=8</th>
-<th>p=9</th>
-<th>p=10</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td>0.0035 sec</td>
-<td>0.008 sec</td>
-<td>0.015 sec</td>
-<td>0.056 sec</td>
-<td>0.25 sec</td>
-<td>1.31 sec</td>
-<td>10.0 sec</td>
-<td>57 sec</td>
-<td>16.9 min</td>
-</tr></tbody>
-</table>
 <div class="section level4">
 <h4 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h4>
-<div id="spoiler4" style="display:none">
+<div id="spoiler1" style="display:none">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler1') .style.display=='none')
+              {document.getElementById('spoiler1') .style.display=''}
+            else{document.getElementById('spoiler1') .style.display='none'}">
+Show/hide data preparation
+</button>
+<p>Let’s say we have the data <code>Z</code> from the unknown
+process:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 50 70</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span> <span class="co"># message from ggplot2</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span>,<span class="fl">40</span>,<span class="fl">50</span>,<span class="fl">60</span>,<span class="fl">70</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span>,<span class="fl">40</span>,<span class="fl">50</span>,<span class="fl">60</span>,<span class="fl">70</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/Metropolis_Hastings_2-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">10</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ========================================================================</span></span>
+<span><span class="co">#&gt; Warning: The found permutation has n0 = 67 which is bigger than the number_of_observations = 50.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
+<span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; The permutation (4,60)(22,31)(30,58)(40,68)</span></span>
+<span><span class="co">#&gt;  - was found after 10 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 5091332471298263613440 times more likely than the starting, () permutation.</span></span></code></pre></div>
+<p>Only after ten iterations the found permutation is unimaginably more
+likely than the original, <code>()</code> permutation.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" class="r-plt" alt="" width="700"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="hill-climbing">Hill climbing<a class="anchor" aria-label="anchor" href="#hill-climbing"></a>
+</h2>
+<p>It uses the Hill climbing algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Hill_climbing" class="external-link">see
+Wikipedia</a>.</p>
+<p>It is performing the local optimization iteratively.</p>
+<div class="section level4">
+<h4 id="short-description-1">Short description<a class="anchor" aria-label="anchor" href="#short-description-1"></a>
+</h4>
+<p>In every iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+an algorithm is in a permutation; call it
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
+Then all the values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t)</annotation></semantics></math>
+are computed for every possible transposition
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t = (j,k)</annotation></semantics></math>.
+Then the next
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\sigma_{i+1}</annotation></semantics></math>
+will be the one with the biggest value:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>a</mi><mi>r</mi><mi>g</mi><mi>m</mi><mi>a</mi><msub><mi>x</mi><mrow><mtext mathvariant="normal">perm</mtext><mo>∈</mo><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">posteriori</mtext><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{\text{posteriori}(perm)\}</annotation></semantics></math></p>
+<p>Where:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>σ</mi><mo>∘</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mn>1</mn><mo>≤</mo><mi>j</mi><mo>&lt;</mo><mi>k</mi><mo>≤</mo><mtext mathvariant="normal">p</mtext><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}</annotation></semantics></math></p>
+<p>The algorithm ends when all neighbors are less likely, or the
+<code>max_iter</code> was achieved. In the first case, the algorithm
+will end in a local maximum, but there is no guarantee that this is also
+the global maximum.</p>
+</div>
+<div class="section level4">
+<h4 id="pseudocode">Pseudocode<a class="anchor" aria-label="anchor" href="#pseudocode"></a>
+</h4>
+<div id="spoiler2" style="display:none">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hill_climb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">g</span>, <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">perm</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">perm_posteriori</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span>  <span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">perm</span>, <span class="st">"size"</span><span class="op">)</span></span>
+<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"S"</span><span class="op">)</span></span>
+<span>  <span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"number_of_observations"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span>  <span class="va">best_neighbor_posteriori</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
+<span>  </span>
+<span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>  </span>
+<span>  <span class="kw">while</span> <span class="op">(</span><span class="va">best_neighbor_posteriori</span> <span class="op">&gt;</span> <span class="va">perm_posteriori</span> <span class="op">&amp;&amp;</span> <span class="va">i</span> <span class="op">&lt;</span> <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span>    <span class="va">best_neighbor_posteriori</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
+<span>    </span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">perm_size</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="kw">for</span> <span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="op">(</span><span class="va">j</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">perm_size</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">neighbor</span> <span class="op">&lt;-</span> <span class="fu">gips</span><span class="fu">:::</span><span class="fu">compose_with_transposition</span><span class="op">(</span><span class="va">perm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">j</span>, <span class="va">k</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="va">neighbor_posteriori</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips</a></span><span class="op">(</span><span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span></span>
+<span>          <span class="va">S</span>,</span>
+<span>          <span class="va">number_of_observations</span>,</span>
+<span>          perm <span class="op">=</span> <span class="va">neighbor</span></span>
+<span>        <span class="op">)</span><span class="op">)</span></span>
+<span>        </span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="va">neighbor_posteriori</span> <span class="op">&gt;</span> <span class="va">best_neighbor_posteriori</span><span class="op">)</span> <span class="op">{</span></span>
+<span>          <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="va">neighbor</span></span>
+<span>          <span class="va">best_neighbor_posteriori</span> <span class="op">&lt;-</span> <span class="va">neighbor_posteriori</span></span>
+<span>        <span class="op">}</span> <span class="co"># end if</span></span>
+<span>      <span class="op">}</span> <span class="co"># end for k</span></span>
+<span>    <span class="op">}</span> <span class="co"># end for j</span></span>
+<span>    <span class="va">i</span> <span class="op">&lt;-</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span>  <span class="op">}</span> <span class="co"># end while</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">best_neighbor</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
+<button title="Click to show pseudocode" type="button" onclick="if(document.getElementById('spoiler2') .style.display=='none')
+              {document.getElementById('spoiler2') .style.display=''}
+            else{document.getElementById('spoiler2') .style.display='none'}">
+Show/hide
+</button>
+</div>
+<div class="section level4">
+<h4 id="notes-1">Notes<a class="anchor" aria-label="anchor" href="#notes-1"></a>
+</h4>
+<p>The <code>max_iter</code> parameter works differently for this
+optimizer and Metropolis-Hastings. The Metropolis-Hastings will compute
+a posteriori of <code>max_iter</code> permutations. The Brute Force
+optimizer,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>p</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo></mrow><annotation encoding="application/x-tex">{p\choose 2} \cdot</annotation></semantics></math><code>max_iter</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
+</h4>
+<div id="spoiler3" style="display:none">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span><span class="op">*</span><span class="va">perm_size</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">perm_size</span><span class="op">)</span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler3') .style.display=='none')
+              {document.getElementById('spoiler3') .style.display=''}
+            else{document.getElementById('spoiler3') .style.display='none'}">
+Show/hide data preparation
+</button>
+<p>Let’s say we have the data Z from the unknown process:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 20 25</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 20</span></span>
+<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 25</span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/hill_climbing_2-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">2</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span>
+<span><span class="co">#&gt; Warning: Hill Climbing algorithm did not converge in 2 iterations!</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output.</span></span>
+<span><span class="co">#&gt; Warning: The found permutation has n0 = 24 which is bigger than the number_of_observations = 20.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
+<span><span class="va">g_map</span></span>
+<span><span class="co">#&gt; The permutation (10,12,18)</span></span>
+<span><span class="co">#&gt;  - was found after 601 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 57645036230018958320663003136 times more likely than the starting, () permutation.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" class="r-plt" alt="" width="700"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
+</h2>
+<p>It searches through the whole space at once.</p>
+<p>This is the only optimizer that will certainly find the actual MAP
+Estimator.</p>
+<p>This is <strong>only recommended</strong> for small spaces
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">p \le 8</annotation></semantics></math>).
+It can also browse bigger spaces, but the required time is probably too
+long.</p>
+<div class="section level4">
+<h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
+</h4>
+<div id="spoiler4" style="display:none">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
@@ -315,18 +387,15 @@ Show/hide the benchmark code
 <span>  nrow <span class="op">=</span> <span class="va">perm_size</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="co"># the real covariance matrix, that we want to estimate, is invariant under permutation (1,2,3,4,5,6)</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">13</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler4') .style.display=='none')
               {document.getElementById('spoiler4') .style.display=''}
             else{document.getElementById('spoiler4') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have the data <code>Z</code> from the unknown
-process:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>Let’s say we have the data Z from the unknown process:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 13  6</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 13</span></span>
@@ -338,351 +407,43 @@ process:</p>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 28979.967 times more likely than the () permutation.</span></span></code></pre></div>
-<p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p = 6</annotation></semantics></math>.</p>
+<span><span class="co">#&gt; The permutation (1,2,4,5)(3,6)</span></span>
+<span><span class="co">#&gt;  - was found after 720 log_posteriori calculations</span></span>
+<span><span class="co">#&gt;  - is 3285.53768904866 times more likely than the starting, () permutation.</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level3">
-<h3 id="metropolis-hastings">Metropolis-Hastings<a class="anchor" aria-label="anchor" href="#metropolis-hastings"></a>
-</h3>
-<p>This optimizer implements the <em>Second approach</em> from <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec 4.1.2]</a>.</p>
-<p>It uses the Metropolis-Hastings algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="external-link">see
-Wikipedia</a>. This algorithm used in this context is a special case of
-the Simulated Annealing the reader may be more familiar with; <a href="https://en.wikipedia.org/wiki/Simulated_annealing" class="external-link">see
-Wikipedia</a>.</p>
-<div class="section level4">
-<h4 id="short-description">Short description<a class="anchor" aria-label="anchor" href="#short-description"></a>
-</h4>
-<p>In every iteration
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
-an algorithm considers a permutation, say,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
-Then a random transposition is drawn uniformly
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_i = (j,k)</annotation></semantics></math>,
-and the value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i)</annotation></semantics></math>
-is computed.</p>
-<ul>
-<li>If a new value is bigger than the previous one (i.e.,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) \ge f(\sigma_i)</annotation></semantics></math>),
-then we set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>.</li>
-<li>If a new value is smaller
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) &lt; f(\sigma_i)</annotation></semantics></math>),
-then we will choose
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>
-with probability
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><annotation encoding="application/x-tex">\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.
-Otherwise, we set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i</annotation></semantics></math>
-with complementary probability
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.</li>
-</ul>
-<p>The final value is the best
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-ever computed.</p>
-</div>
-<div class="section level4">
-<h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h4>
-<p>This algorithm was tested in multiple settings and turned out to be a
-good optimizer for this problem. Especially given it does not need any
-hyperparameters tuned.</p>
-<p>The only parameter it depends on is <code>max_iter</code>, which
-determines the number of steps described above. One should choose this
-number rationally. When set too small, there is a missed opportunity to
-find a much better permutation. When set too big, there is a lost time
-and computational power that does not lead to growth. We recommend
-plotting the convergence plot with a logarithmic OX scale:
-<code>plot(g_map, type = "best", logarithmic_x = TRUE)</code>, then
-decide if the line has flattened already. Keep in mind that the OY scale
-is also logarithmic. For example, a marginal change on the OY scale
-could mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10000</mn><annotation encoding="application/x-tex">10000</annotation></semantics></math><strong>times</strong> the change in A Posteriori.</p>
-<p>For more information about continuing the optimization, see the
-<strong>Continuing the optimization</strong> section below.</p>
-<p>This algorithm has been analyzed extensively by statisticians. Thanks
-to the ergodic theorem, the frequency of visits to a given state
-converges almost surely to the probability of that state. This is the
-approach explained in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,
-Sec.4.1.2]</a> and shown in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec. 5.2]</a>. One can
-obtain estimates of posterior probabilities by setting
-<code>return_probabilities = TRUE</code>.</p>
-</div>
-<div class="section level4">
-<h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
-</h4>
-<div id="spoiler1" style="display:none">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler1') .style.display=='none')
-              {document.getElementById('spoiler1') .style.display=''}
-            else{document.getElementById('spoiler1') .style.display='none'}">
-Show/hide data preparation
-</button>
-<p>Let’s say we have the data <code>Z</code> from the unknown
-process:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 50 70</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
-<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
-<span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span> <span class="co"># message from ggplot2</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">60</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">60</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/Metropolis_Hastings_2-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ===============================================================================</span></span>
-<span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,34,64,27,60,40,26,14,13,53,62,22,11,41,21,7,29,48,24,30,46,57,38,16,23,18,20,10,59,35,32,69,54,17,2,58,31,8,49,66,52,15,47,37,45,50,51,3,63,43,68,33,19,44,55,6,9,4,36,56,25,39,61,70,42,5,67):</span></span>
-<span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 5.34e+648 times more likely than the () permutation.</span></span></code></pre></div>
-<p>After just 150 iterations, the found permutation is unimaginably more
-likely than the $_0 = $ <code>()</code> permutation.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" class="r-plt" alt="" width="700"></p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="hill-climbing">Hill climbing<a class="anchor" aria-label="anchor" href="#hill-climbing"></a>
-</h3>
-<p>It uses the Hill climbing algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Hill_climbing" class="external-link">see
-Wikipedia</a>.</p>
-<p>It is performing the local optimization iteratively.</p>
-<div class="section level4">
-<h4 id="short-description-1">Short description<a class="anchor" aria-label="anchor" href="#short-description-1"></a>
-</h4>
-<p>In every iteration
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
-an algorithm considers a permutation; call it
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
-Then, all the values of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t)</annotation></semantics></math>
-are computed for every possible transposition
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t = (j,k)</annotation></semantics></math>.
-Then the next
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\sigma_{i+1}</annotation></semantics></math>
-will be the one with the biggest value:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>a</mi><mi>r</mi><mi>g</mi><mi>m</mi><mi>a</mi><msub><mi>x</mi><mrow><mtext mathvariant="normal">perm</mtext><mo>∈</mo><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\}</annotation></semantics></math></p>
-<p>Where:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>σ</mi><mo>∘</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mn>1</mn><mo>≤</mo><mi>j</mi><mo>&lt;</mo><mi>k</mi><mo>≤</mo><mtext mathvariant="normal">p</mtext><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}</annotation></semantics></math></p>
-<p>The algorithm ends when all neighbors are less likely, or the
-<code>max_iter</code> is achieved. In the first case, the algorithm will
-finish at a local maximum, but there is no guarantee that this is also
-the global maximum.</p>
-</div>
-<div class="section level4">
-<h4 id="pseudocode">Pseudocode<a class="anchor" aria-label="anchor" href="#pseudocode"></a>
-</h4>
-<div id="spoiler2" style="display:none">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hill_climb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">g</span>, <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">perm</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">perm_log_f</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
-<span>  <span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">perm</span>, <span class="st">"size"</span><span class="op">)</span></span>
-<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"S"</span><span class="op">)</span></span>
-<span>  <span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"number_of_observations"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span>  <span class="va">best_neighbor_log_f</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
-<span></span>
-<span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span>  <span class="va">perm_i</span> <span class="op">&lt;-</span> <span class="va">perm</span></span>
-<span>  <span class="va">perm_i_log_f</span> <span class="op">&lt;-</span> <span class="va">perm_log_f</span></span>
-<span>  <span class="va">perm_i_minus_1_log_f</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
-<span></span>
-<span>  <span class="kw">while</span> <span class="op">(</span><span class="va">i</span> <span class="op">&lt;</span> <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span>    <span class="va">best_neighbor_log_f</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
-<span></span>
-<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">perm_size</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="kw">for</span> <span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="op">(</span><span class="va">j</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">perm_size</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">j</span>, <span class="va">k</span><span class="op">)</span></span>
-<span>        <span class="va">neighbor</span> <span class="op">&lt;-</span> <span class="fu">gips</span><span class="fu">:::</span><span class="fu">compose_with_transposition</span><span class="op">(</span><span class="va">perm_i</span>, <span class="va">t</span><span class="op">)</span></span>
-<span>        <span class="va">neighbor_log_f</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips</a></span><span class="op">(</span><span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span></span>
-<span>          <span class="va">S</span>, <span class="va">number_of_observations</span>,</span>
-<span>          perm <span class="op">=</span> <span class="va">neighbor</span></span>
-<span>        <span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span>        <span class="kw">if</span> <span class="op">(</span><span class="va">neighbor_log_f</span> <span class="op">&gt;</span> <span class="va">best_neighbor_log_f</span><span class="op">)</span> <span class="op">{</span></span>
-<span>          <span class="va">best_neighbor</span> <span class="op">&lt;-</span> <span class="va">neighbor</span></span>
-<span>          <span class="va">best_neighbor_log_f</span> <span class="op">&lt;-</span> <span class="va">neighbor_log_f</span></span>
-<span>        <span class="op">}</span> <span class="co"># end if</span></span>
-<span>      <span class="op">}</span> <span class="co"># end for k</span></span>
-<span>    <span class="op">}</span> <span class="co"># end for j</span></span>
-<span>    <span class="va">i</span> <span class="op">&lt;-</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span></span>
-<span></span>
-<span>    <span class="va">perm_i_minus_1_log_f</span> <span class="op">&lt;-</span> <span class="va">perm_i_log_f</span></span>
-<span>    </span>
-<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">best_neighbor_log_f</span> <span class="op">&lt;=</span> <span class="va">perm_i_log_f</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="kw">break</span></span>
-<span>    <span class="op">}</span></span>
-<span></span>
-<span>    <span class="va">perm_i</span> <span class="op">&lt;-</span> <span class="va">best_neighbor</span></span>
-<span>    <span class="va">perm_i_log_f</span> <span class="op">&lt;-</span> <span class="va">best_neighbor_log_f</span></span>
-<span>  <span class="op">}</span> <span class="co"># end while</span></span>
-<span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">perm_i</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-</div>
-<button title="Click to show pseudocode" type="button" onclick="if(document.getElementById('spoiler2') .style.display=='none')
-              {document.getElementById('spoiler2') .style.display=''}
-            else{document.getElementById('spoiler2') .style.display='none'}">
-Show/hide pseudocode
-</button>
-</div>
-<div class="section level4">
-<h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
-</h4>
-<div id="spoiler3" style="display:none">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler3') .style.display=='none')
-              {document.getElementById('spoiler3') .style.display=''}
-            else{document.getElementById('spoiler3') .style.display='none'}">
-Show/hide data preparation
-</button>
-<p>Let’s say we have the data <code>Z</code> from the unknown
-process:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 20 25</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 20</span></span>
-<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 25</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span>
-<span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/hill_climbing_2-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">2</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; Warning: Hill Climbing algorithm did not converge in 2 iterations!</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output.</span></span>
-<span><span class="co">#&gt; Warning: The found permutation has n0 = 24, which is bigger than the number_of_observations = 20.</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
-<span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (11,15)(13,24):</span></span>
-<span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 2.132e+8 times more likely than the () permutation.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" class="r-plt" alt="" width="700"></p>
-<p>The above warnings are expected.</p>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="continuing-the-optimization">Continuing the optimization<a class="anchor" aria-label="anchor" href="#continuing-the-optimization"></a>
-</h2>
-<p>When <code>max_iter</code> is reached during Metropolis-Hastings or
-hill climbing, the optimization stops and returns the result. Users are
-encouraged to plot the result and determine if it has converged. If
-necessary, users can continue the optimization, as shown below.</p>
-<div id="spoiler5" style="display:none">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># the same code as for generating example for Metropolis-Hastings above</span></span>
-<span></span>
-<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 50 70</span></span>
-<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 50</span></span>
-<span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 70</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># Assume we have to estimate the mean</span></span></code></pre></div>
-</div>
-<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler5') .style.display=='none')
-              {document.getElementById('spoiler5') .style.display=''}
-            else{document.getElementById('spoiler5') .style.display='none'}">
-Show/hide data preparation
-</button>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">50</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ==============================================================================</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/continuing_2-1.png" class="r-plt" alt="" width="700"></p>
-<p>The algorithm was still significantly improving the permutation. It
-is reasonable to continue it:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">100</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ===============================================================================</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Optimizers_files/figure-html/continuing_3-1.png" class="r-plt" alt="" width="700"></p>
-<p>The improvement has slowed down significantly. It is fair to stop the
-algorithm here. Keep in mind the y scale is logarithmic. The visually
-“small” improvement between 100 and 150 iterations was huge,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>52</mn></msup><annotation encoding="application/x-tex">10^{52}</annotation></semantics></math>
-times the posteriori.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
 </h2>
-<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function has two additional parameters:
-<code>show_progress_bar</code> and <code>save_all_perms</code>, which
-can be set to <code>TRUE</code> or <code>FALSE</code>.</p>
-<p>When <code>show_progress_bar = TRUE</code>, <code>gips</code> will
-print “=” characters on the console during optimization. Remember that
-when the user sets the <code>return_probabilities = TRUE</code>, a
-second progress bar will indicate the calculation of the probabilities
-after optimization.</p>
-<p>The <code>save_all_perms = TRUE</code> will save all visited
-permutations in the outputted object, which significantly increases the
-required RAM. For instance, with
+<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function also has two additional
+parameters, namely <code>show_progress_bar</code> and
+<code>save_all_perms</code>. Both can be set to <code>TRUE</code> or
+<code>FALSE</code>.</p>
+<p>The <code>show_progress_bar = TRUE</code> means <code>gips</code>
+will print the “=” characters on the console as the optimization run.
+Keep in mind that when one sets the
+<code>return_probabilities = TRUE</code>, there will be a second
+progress bar indicating calculating the probabilities after
+optimization.</p>
+<p>The <code>save_all_perms = TRUE</code> means that <code>gips</code>
+will save all visited permutations in the outputted object. This will
+significantly increase the RAM needed for this object (for example, for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>150</mn></mrow><annotation encoding="application/x-tex">p=150</annotation></semantics></math>
-and <code>max_iter = 150000</code>, we needed 400 MB to store it,
-whereas <code>save_all_perms = FALSE</code> only required 2 MB. However,
-<code>save_all_perms = TRUE</code> is necessary for
-<code>return_probabilities = TRUE</code> or more complex path
-analysis.</p>
+and <code>max_perm = 150000</code>, we needed 400 MB to store it, while
+with <code>save_all_perms = FALSE</code>, the 2 MB was enough). However,
+this is necessary for <code>return_probabilities = TRUE</code> or more
+complex path analysis.</p>
 </div>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
 </h2>
-<p>We encourage everyone to discuss on available and potential new
-optimizers on <a href="https://github.com/PrzeChoj/gips/issues/21" class="external-link">ISSUE#21</a>. One can
-also see why some optimizers were implemented but not yet added to gips
-there.</p>
+<p>We are considering implementing the <strong>First approach</strong>
+from [1] in the future as well. In this approach, the Markov chain
+travels along cyclic groups rather than permutations.</p>
+<p>We encourage everyone to leave a comment on available and potential
+new optimizers on the <a href="https://github.com/PrzeChoj/gips/issues/21" class="external-link">ISSUE#21</a>. There,
+one can also find the implemented optimizers but not yet added to
+<code>gips</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -691,10 +452,6 @@ there.</p>
 “Model selection in the space of Gaussian models invariant by symmetry.”
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
-<p>[2] “Learning permutation symmetries with gips in R” by
-<code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
-Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of
-Statistical Software</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -703,7 +460,7 @@ Statistical Software</a>.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Adam Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
+  <p>Developed by Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
 </div>
 
 <div class="pkgdown-footer-right">

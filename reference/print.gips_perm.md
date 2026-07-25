@@ -17,16 +17,17 @@ print(x, ...)
 
 - ...:
 
-  Further arguments (currently ignored).
+  Further arguments passed to
+  [`permutations::print.cycle()`](https://robinhankin.github.io/permutations/reference/print.html).
 
 ## Value
 
-An invisible `NULL`.
+Returns its argument invisibly, after printing it.
 
 ## Examples
 
 ``` r
-gperm <- gips_perm("(5,4)", 5)
-print(gperm)
+g_perm <- gips_perm(permutations::as.cycle("(5,4)"), 5)
+print(g_perm)
 #> [1] (45)
 ```

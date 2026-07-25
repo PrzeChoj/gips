@@ -2,8 +2,8 @@
 
 ## Main functions
 
-Functions for the main `gips` purpose: Finding the permutation under
-which a matrix is (approximately) invariant and estimating the
+Functions for the main `gips` purpose: Finding the permutation, under
+which a matrix is (approximately) invariant under, and estimating the
 covariance matrix.
 
 - [`gips()`](https://przechoj.github.io/gips/reference/gips.md)
@@ -19,10 +19,9 @@ covariance matrix.
 - [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
   : Project matrix after optimization
 
-## Diagnostics
+## Helper functions
 
-Functions for diagnostics of the `gips` optimization process or its
-results.
+Functions for pleasant work in `gips`.
 
 - [`plot(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/plot.gips.md)
   :
@@ -38,30 +37,6 @@ results.
   [`print(`*`<summary.gips>`*`)`](https://przechoj.github.io/gips/reference/summary.gips.md)
   : Summarizing the gips object
 
-- [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
-  [`compare_log_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
-  : Compare the posteriori probabilities of 2 permutations
-
-- [`AIC(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/AIC.gips.md)
-  [`BIC(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/AIC.gips.md)
-  :
-
-  Akaike's An Information Criterion for `gips` class
-
-- [`logLik(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/logLik.gips.md)
-  :
-
-  Extract the Log-Likelihood for `gips` class
-
-## Helper functions
-
-Functions for pleasant work in `gips`.
-
-- [`as.character(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/as.character.gips.md)
-  :
-
-  Transform the `gips` object to a character vector
-
 - [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
   [`new_gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
   [`validate_gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
@@ -72,10 +47,14 @@ Functions for pleasant work in `gips`.
 
   Printing `gips_perm` object
 
-- [`as.character(`*`<gips_perm>`*`)`](https://przechoj.github.io/gips/reference/as.character.gips_perm.md)
+- [`as.character(`*`<gips_perm>`*`)`](https://przechoj.github.io/gips/reference/as.character.md)
   :
 
-  Transform the `gips_perm` object to a character vector
+  Transform `gips_perm` object to character vector
+
+- [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
+  [`compare_log_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
+  : Compare the posteriori probabilities of 2 permutations
 
 - [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md)
   :
@@ -94,8 +73,8 @@ Functions for pleasant work in `gips`.
 Functions for internal calculations
 
 - [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
-  : Log of the A Posteriori of the permutation that the covariance
-  matrix is invariant under
+  : A log of a posteriori that the covariance matrix is invariant under
+  permutation
 - [`prepare_orthogonal_matrix()`](https://przechoj.github.io/gips/reference/prepare_orthogonal_matrix.md)
   : Prepare orthogonal matrix
 - [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md)
