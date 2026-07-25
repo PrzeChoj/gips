@@ -23,7 +23,7 @@ for \code{optimizer = "HC"}, it can be infinite.}
 
 \item{optimizer}{The optimizer for the search of the maximum posteriori:
 \itemize{
-\item \code{"BF"} (the default for unoptimized \code{g} with \verb{perm size <= 9}) - Brute Force;
+\item \code{"BF"} (the default for unoptimized \code{g} with \verb{perm size <= 10}) - Brute Force;
 \item \code{"MH"} (the default for unoptimized \code{g} with \verb{perm size > 10}) - Metropolis-Hastings;
 \item \code{"HC"} - Hill Climbing;
 \item \code{"continue"} (the default for optimized \code{g}) - The same as
@@ -97,7 +97,7 @@ the \strong{Brute Force} algorithm that checks the whole permutation
 space of a given size. This algorithm will find
 the actual Maximum A Posteriori Estimation, but it is
 very computationally expensive for bigger spaces.
-We recommend Brute Force only for \code{p <= 9}.
+We recommend Brute Force only for \code{p <= 10}.
 For the time the Brute Force takes on our machines, see in the
 \code{vignette("Optimizers", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Optimizers.html}{pkgdown page}.
@@ -137,6 +137,7 @@ common matrix size \code{p}, and warnings about MLE existence use \code{min(n_g)
 }
 
 \examples{
+\dontshow{if (rlang::is_installed("ggplot2") && rlang::is_installed("MASS")) withAutoprint(\{ # examplesIf}
 require("MASS") # for mvrnorm()
 
 perm_size <- 5
@@ -165,6 +166,7 @@ plot(g_map2, type = "both", logarithmic_x = TRUE)
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 summary(g_map_BF)
+\dontshow{\}) # examplesIf}
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.

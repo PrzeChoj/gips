@@ -227,6 +227,7 @@ test_that("find_MAP() with calculate exact probabilities will return probability
     optimizer = "brute_force", return_probabilities = TRUE, save_all_perms = TRUE
   )
 
+  # note: Tied probabilities have no guaranteed relative order.
   my_post_prob <- c(
     `(1,2,3,4)` = 0.326304997567465, `(1,2,4,3)` = 0.326304997567465,
     `(1,3,2,4)` = 0.326304997567465, `(1,2,3)` = 0.00709444735420907,
@@ -238,19 +239,36 @@ test_that("find_MAP() with calculate exact probabilities will return probability
     `(2,4)` = 2.56690835859916e-08, `(1,4)` = 2.56690835859916e-08,
     `()` = 1.18881017985689e-13
   )
+  
+  post_probabilities <- attr(g_map, "optimization_info")[["post_probabilities"]]
+  
+  expect_length(post_probabilities, length(my_post_prob))
+  expect_setequal(names(post_probabilities), names(my_post_prob))
   expect_equal(
-    attr(g_map, "optimization_info")[["post_probabilities"]],
+    post_probabilities[names(my_post_prob)],
     my_post_prob
   )
-  expect_equal(
-    sum(attr(g_map, "optimization_info")[["post_probabilities"]]),
-    1
-  )
+  expect_true(all(diff(unname(post_probabilities)) <= 0))
+  expect_equal(sum(post_probabilities), 1)
 })
 
 test_that("there is proper number of generators", {
   num_of_generators <- sapply(perm_group_generators_list, sum)
-  for (i in 3:9) {
+  expect_equal(length(perm_group_generators_list), 8)
+  for (i in seq_along(num_of_generators) + 2) {
     expect_equal(num_of_generators[i - 2], OEIS_A051625[i])
   }
+})
+
+test_that("permutations package preserves the allperms order", {
+  all_perms <- permutations::as.cycle(permutations::allperms(4))
+  expect_identical(as.character(all_perms[2]), "(3,4)")
+  expect_identical(as.character(all_perms[14]), "(1,3,4,2)")
+  expect_identical(as.character(all_perms[17]), "(1,3)(2,4)")
+  
+  all_perms <- permutations::as.cycle(permutations::allperms(5))
+  expect_identical(as.character(all_perms[15]), "(2,4)")
+  expect_identical(as.character(all_perms[58]), "(1,3,4,5)")
+  expect_identical(as.character(all_perms[101]), "(1,5,3,4,2)")
+  expect_identical(as.character(all_perms[102]), "(1,5,2)(3,4)")
 })

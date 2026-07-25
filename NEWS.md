@@ -23,10 +23,10 @@ fully unchanged**.
 
 For Brute Force optimization:
 
-| permutation size | 6 | 7 | 8 | 9 |
-|---|---:|---:|---:|---:|
-| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min |
-| v1.2.3.9000 | 0.64 s | 2.66 s | 16.31 s | 2.17 min |
+| permutation size | 6 | 7 | 8 | 9 | 10 |
+|---|---:|---:|---:|---:|---:|
+| v1.2.3 | 1.26 s | 4.06 s | 30.19 s | 4.35 min | 1 h 46 min |
+| v1.2.3.9000 | 0.52 s | 1.89 s | 10.34 s | 1.21 min | 12.14 min |
 
 For `log_posteriori_of_gips()` evaluated on 1000 random permutations of a given size:
 
@@ -39,10 +39,12 @@ The above tables based on the code from [Pull Request #99](https://github.com/Pr
 
 ### Update to functions
 
+- `find_MAP()` now uses its precomputed cyclic-subgroup generators for `optimizer = "BF"` through `perm_size = 10`; Brute Force is the default through this size.
 - Added caching for `find_MAP(optimizer = "MH")` to store computed values. This reduces computation time for the Markov chain, particularly when the acceptance rate is low.
 - Improved `find_MAP(optimizer = "MH")` with a forced move mechanism: when the cache is full (all neighbors have been evaluated), the algorithm now makes a probabilistic move based on the cached values instead of exiting early, which improves exploration of the permutation space. See #115.
 - `plot.gips()` now uses `ggplot2` for all plot types.
 - `plot.gips(type = "all", "best", "both", or "n0")` is now much faster for large iteration counts.
+- `project_matrix()`: The `precomputed_equal_indices` parameter is no longer used and will be removed in v1.4.0.
 
 ### Bugfix:
 

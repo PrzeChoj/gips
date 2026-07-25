@@ -110,6 +110,7 @@ local({
   )
 
   test_that("convergence plot data x-range spans full iteration count (type = 'all')", {
+    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "all")
     expect_true(inherits(gg, "ggplot"))
     expect_equal(max(gg$data$step), num_of_steps)
@@ -117,16 +118,19 @@ local({
   })
 
   test_that("convergence plot data x-range spans full iteration count (type = 'best')", {
+    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "best")
     expect_equal(max(gg$data$step), num_of_steps)
   })
 
   test_that("convergence plot data x-range spans full iteration count (type = 'both')", {
+    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "both")
     expect_equal(max(gg$data$step), num_of_steps)
   })
 
   test_that("convergence plot data has fewer rows than num_of_steps (deduplication works)", {
+    skip_if_not_installed("ggplot2")
     # With MH and 50 steps at p=5, there will be many repeated log-posterior
     # values (rejected proposals). After deduplication the data frame must be
     # smaller (if all 50 values happened to be distinct this would fail, but
@@ -140,6 +144,7 @@ local({
 # ── Continuing MH runs and plotting n0 trajectory ────────────────────────────
 
 test_that("MH -> continue -> continue -> plot(type = 'n0') works end-to-end", {
+  skip_if_not_installed("ggplot2")
   # Start with MH optimization
   g_base <- gips(diag(1.1, 5), 10)
   g_mh <- suppressMessages(find_MAP(g_base, optimizer = "MH", max_iter = 10,

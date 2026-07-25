@@ -44,6 +44,7 @@
 #'     An object of a `gips` class,
 #'     a `gips_perm` class, or anything that can be used
 #'     as the `x` argument in the `gips_perm()` function.
+#' @param precomputed_equal_indices This parameter is no longer used and will be deleted in v1.4.0.
 #'
 #' @section Multi-sample:
 #' When `S` is a list of matrices (as stored in a multi-sample `gips` object),
@@ -78,7 +79,7 @@
 #'     number of observations, so that the projected matrix
 #'     will be the MLE estimator of the covariance matrix.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("ggplot2")
 #' p <- 6
 #' my_perm <- "(14)(23)" # permutation (1,4)(2,3)(5)(6)
 #' number_of_observations <- 10
@@ -98,7 +99,7 @@
 #' S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP)
 #' S_MAP
 #' plot(g_MAP, type = "heatmap")
-project_matrix <- function(S, perm) {
+project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   # Multi-sample: project each group's matrix and return a list
   if (is.list(S)) {
     return(lapply(S, function(S_g) project_matrix(S_g, perm)))

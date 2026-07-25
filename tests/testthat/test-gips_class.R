@@ -744,6 +744,7 @@ test_that("print.gips() works", {
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
+  skip_if_not_installed("ggplot2")
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
     was_mean_estimated = FALSE, perm = custom_perm1
@@ -797,6 +798,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
 })
 
 test_that("plot.gips() works for books example", {
+  skip_if_not_installed("ggplot2")
   Z <- DAAG::oddbooks[, c(1, 2, 3)]
   Z$height <- Z$height / sqrt(2)
 
@@ -848,14 +850,7 @@ test_that("summary.gips() works", {
     likelihood_ratio_test_p_value = likelihood_ratio_test_p_value,
     n0 = 2, S_matrix = S, number_of_observations = 13,
     was_mean_estimated = FALSE,
-    delta = 3, D_matrix = structure(c(
-      1, 0, 0, 0, 0, 0,
-      0, 1, 0, 0, 0, 0,
-      0, 0, 1, 0, 0, 0,
-      0, 0, 0, 1, 0, 0,
-      0, 0, 0, 0, 1, 0,
-      0, 0, 0, 0, 0, 1
-    ), .Dim = c(6L, 6L)),
+    delta = 3, D_matrix = diag(6),
     n_parameters = 7,
     AIC = AIC(g1),
     BIC = BIC(g1)

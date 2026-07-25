@@ -172,6 +172,7 @@ not a per-group setting.
 }
 
 \examples{
+\dontshow{if (rlang::is_installed("ggplot2") && rlang::is_installed("MASS")) withAutoprint(\{ # examplesIf}
 require("MASS") # for mvrnorm()
 
 perm_size <- 5
@@ -197,6 +198,7 @@ g_map
 
 summary(g_map)
 plot(g_map, type = "both", logarithmic_x = TRUE)
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \itemize{
