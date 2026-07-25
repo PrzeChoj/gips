@@ -9,7 +9,7 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ Theorem 1 from references."><meta property="og:image" content="https://przechoj.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Prepare orthogonal matrix</h1>
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/R/prepare_orthogonal_matrix.R" class="external-link"><code>R/prepare_orthogonal_matrix.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/R/prepare_orthogonal_matrix.R" class="external-link"><code>R/prepare_orthogonal_matrix.R</code></a></small>
       <div class="d-none name"><code>prepare_orthogonal_matrix.Rd</code></div>
     </div>
 
@@ -66,7 +66,7 @@ Required if <code>perm</code> is neither <code>gips_perm</code> nor <code>gips</
 
 
 <dt id="arg-basis">basis<a class="anchor" aria-label="anchor" href="#arg-basis"></a></dt>
-<dd><p>A matrix with basis vectors in COLUMNS. Identity by default.</p></dd>
+<dd><p>A matrix with basis vectors in COLUMNS; identity by default.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -77,9 +77,10 @@ columns from vector elements \(v_k^{(c)}\) according to
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Given X - a matrix invariant under the permutation <code>perm</code>. Call Gamma
-the permutations cyclic group: \(\Gamma = &lt;perm&gt; = \{perm, perm^2, ...\}\).</p>
-<p>Then, \(U_\Gamma\) is such an orthogonal matrix, which block-diagonalizes X.</p>
+    <p>Let \(X\) be a matrix invariant under the permutation <code>perm</code>.
+Let the permutations cyclic group for it be called Gamma:
+\(\Gamma = &lt;perm&gt; = \{perm, perm^2, ...\}\).</p>
+<p>Then \(U_\Gamma\) is an orthogonal matrix that block-diagonalizes \(X\).</p>
 <p>To be more precise, the matrix <code>t(U_Gamma) %*% X %*% U_Gamma</code> has a
 block-diagonal structure, which is ensured by
 <a href="https://arxiv.org/abs/2004.03503" class="external-link">Theorem 1 from references</a>.</p>

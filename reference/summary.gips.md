@@ -38,14 +38,14 @@ statistics of the given `gips` object. Those are:
 
   2.  `start_permutation` - the permutation this `gips` represents.
 
-  3.  `start_permutation_log_posteriori` - the log of the a posteriori
+  3.  `start_permutation_log_posteriori` - the log of the A Posteriori
       value the start permutation has.
 
-  4.  `times_more_likely_than_id` - how many more likely the
+  4.  `times_more_likely_than_id` - how many times more likely the
       `start_permutation` is over the identity permutation, `()`. It can
       be less than 1, meaning the identity permutation is more likely.
-      Remember that this number can big and overflow to `Inf` or small
-      and underflow to 0.
+      Remember that this number can become very large and overflow to
+      `Inf` or small and underflow to 0.
 
   5.  `log_times_more_likely_than_id` - log of
       `times_more_likely_than_id`.
@@ -102,16 +102,16 @@ statistics of the given `gips` object. Those are:
   1.  `optimized` - `TRUE`.
 
   2.  `found_permutation` - the permutation this `gips` represents. The
-      visited permutation with the biggest a posteriori value.
+      visited permutation with the biggest A Posteriori value.
 
-  3.  `found_permutation_log_posteriori` - the log of the a posteriori
+  3.  `found_permutation_log_posteriori` - the log of the A Posteriori
       value the found permutation has.
 
   4.  `start_permutation` - the original permutation this `gips`
       represented before optimization. It is the first visited
       permutation.
 
-  5.  `start_permutation_log_posteriori` - the log of the a posteriori
+  5.  `start_permutation_log_posteriori` - the log of the A Posteriori
       value the start permutation has.
 
   6.  `times_more_likely_than_start` - how many more likely the
@@ -201,6 +201,14 @@ The function `print.summary.gips()` returns an invisible `NULL`.
 
 - `print(summary.gips)`: Printing method for class `summary.gips`.
   Prints every interesting information in a form pleasant for humans.
+
+## Multi-sample
+
+For multi-sample `gips` objects the summary includes the number of
+groups G, the full vector of per-group sample sizes, and the total
+`n_parameters` (which equals `G * dim_omega(sigma)`). The n0 existence
+check uses `min(n_g)`. The Likelihood-Ratio test is not available for
+multi-sample objects and is reported as `NULL`.
 
 ## See also
 
@@ -381,7 +389,7 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.0133872 secs
+#> Time difference of 0.005133867 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -413,11 +421,11 @@ summary(g_map2)
 #> Therefore, one degree of freedom was lost.
 #> There are 12 degrees of freedom left.
 #> 
-#> n0:
+#> n0 = number of cycles in a permutation + 1 (as the mean was estimated):
 #>  5
 #> 
-#> The number of observations is bigger than n0 for this permutation,
-#> so the gips model based on the found permutation does exist.
+#> The MLE estimator based on the found permutation does exist,
+#> since the number of observations (13) is bigger than n0 (5).
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  13
@@ -436,7 +444,7 @@ summary(g_map2)
 #>  46
 #> 
 #> Optimization time:
-#>  0.05804491 secs
+#>  0.02332997 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  17
@@ -461,11 +469,11 @@ print(summary(g))
 #> Therefore, one degree of freedom was lost.
 #> There are 9 degrees of freedom left.
 #> 
-#> n0:
+#> n0 = number of cycles in a permutation + 1 (as the mean was estimated):
 #>  3
 #> 
-#> The number of observations is bigger than n0 for this permutation,
-#> so the gips model based on the found permutation does exist.
+#> The MLE estimator based on the found permutation does exist,
+#> since the number of observations (10) is bigger than n0 (3).
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3

@@ -2,7 +2,7 @@
 
 Create a `gips` object. This object will contain initial data and all
 other information needed to find the most likely invariant permutation.
-It will not perform optimization. One must call the
+It will not perform optimization; one must call the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
 function to do it. See the examples below.
 
@@ -35,31 +35,39 @@ validate_gips(g)
 
 - S:
 
-  A matrix; empirical covariance matrix. When `Z` is the observed data:
+  A p by p empirical covariance matrix. This is the standard,
+  single-sample use of `gips()`. For the optional multi-sample
+  interface, `S` can also be a list of covariance matrices; see the
+  **Multi-sample** section below. When `Z` is the observed data:
 
   - if one does not know the theoretical mean and has to estimate it
     with the observed mean, use `S = cov(Z)`, and leave parameter
     `was_mean_estimated = TRUE` as default;
 
-  - if one know the theoretical mean is 0, use
+  - if one knows the theoretical mean is 0, use
     `S = (t(Z) %*% Z) / number_of_observations`, and set parameter
     `was_mean_estimated = FALSE`.
 
 - number_of_observations:
 
-  A number of data points that `S` is based on.
+  A number of data points that `S` is based on. For multi-sample input,
+  use one value per matrix in `S`; see the **Multi-sample** section
+  below.
 
 - delta:
 
   A number, hyper-parameter of a Bayesian model. It has to be strictly
-  bigger than 1. See the **Hyperparameters** section below.
+  bigger than 1. See the **Hyperparameters** section below. For
+  multi-sample input, it can also be a numeric vector with one value per
+  matrix in `S`; see the **Multi-sample** section below.
 
 - D_matrix:
 
   Symmetric, positive-definite matrix of the same size as `S`.
   Hyper-parameter of a Bayesian model. When `NULL`, the (hopefully)
   reasonable one is derived from the data. For more details, see the
-  **Hyperparameters** section below.
+  **Hyperparameters** section below. For multi-sample input, use a list
+  of matrices; see the **Multi-sample** section below.
 
 - was_mean_estimated:
 
@@ -68,7 +76,7 @@ validate_gips(g)
   - Set `TRUE` (default) when your `S` parameter is a result of a
     [`stats::cov()`](https://rdrr.io/r/stats/cor.html) function.
 
-  - Set FALSE when your `S` parameter is a result of a
+  - Set `FALSE` when your `S` parameter is a result of a
     `(t(Z) %*% Z) / number_of_observations` calculation.
 
 - perm:
@@ -97,8 +105,7 @@ validate_gips(g)
 
 `gips()` returns an object of a `gips` class after the safety checks.
 
-`new_gips()` returns an object of a `gips` class without the safety
-checks.
+`new_gips()` returns an object of a `gips` class without safety checks.
 
 `validate_gips()` returns its argument unchanged. If the argument is not
 a proper element of a `gips` class, it produces an error.
@@ -127,9 +134,9 @@ a proper element of a `gips` class, it produces an error.
 
 ## Hyperparameters
 
-We encourage the user to try `D_matrix = d * I`, where `I` is an
-identity matrix of a size `p x p` and `d > 0` for some different `d`.
-When `d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
+We encourage you to try `D_matrix = d * I`, where `I` is a `p`
+\\\times\\ `p` identity matrix and `d > 0` for some different `d`. When
+`d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
 bigger structures will be found. When `d` is big compared to the data
 (e.g., `d=100 * mean(diag(S))`), the posterior distribution does not
 depend on the data.
@@ -152,8 +159,38 @@ page](https://przechoj.github.io/gips/articles/Theory.html)).
 
 For analysis of the Hyperparameters influence, see **Section 3.2.** of
 "Learning permutation symmetries with gips in R" by `gips` developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of
-Statistical Software](doi:10.18637/jss.v112.i07).
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, Journal of
+Statistical Software;
+[doi:10.18637/jss.v112.i07](https://doi.org/10.18637/jss.v112.i07) .
+
+## Multi-sample
+
+The usual and recommended starting point is the single-sample call
+`gips(S, number_of_observations)`.
+
+The optional multi-sample interface is for G independent groups that are
+assumed to share the same permutation symmetry, while each group keeps
+its own covariance matrix and sample size. Pass a list of G covariance
+matrices as `S` and a numeric vector of length G as
+`number_of_observations`:
+
+    S_by_group <- list(control = S1, treatment = S2, follow_up = S3)
+    g <- gips(S_by_group, c(n1, n2, n3))
+
+All matrices in `S` must be square covariance matrices of the same size,
+and their rows and columns must refer to the same variables in the same
+order. `gips()` applies one shared permutation to matching matrix
+indices; it does not match or reorder variables using matrix names.
+Names of the list elements can identify groups, while matching row and
+column names on the matrices can identify variables. These names are
+used as labels in multi-sample heatmaps in
+[`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md).
+`D_matrix` should then be a list of G positive-definite matrices
+(defaulting to `diag(mean(diag(S_g)), p)` for each group). `delta` can
+be a scalar (broadcast to all groups) or a vector of length G (one value
+per group); it defaults to `rep(3, G)`. `was_mean_estimated` is
+intentionally one boolean value applied to all groups, not a per-group
+setting.
 
 ## See also
 
@@ -223,11 +260,11 @@ summary(g_map)
 #> Therefore, one degree of freedom was lost.
 #> There are 12 degrees of freedom left.
 #> 
-#> n0:
+#> n0 = number of cycles in a permutation + 1 (as the mean was estimated):
 #>  2
 #> 
-#> The number of observations is bigger than n0 for this permutation,
-#> so the gips model based on the found permutation does exist.
+#> The MLE estimator based on the found permutation does exist,
+#> since the number of observations (13) is bigger than n0 (2).
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3
@@ -246,9 +283,6 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.1149871 secs
-
-if (require("graphics")) {
-  plot(g_map, type = "both", logarithmic_x = TRUE)
-}
+#>  0.04622626 secs
+plot(g_map, type = "both", logarithmic_x = TRUE)
 ```

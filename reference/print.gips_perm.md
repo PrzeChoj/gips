@@ -21,7 +21,7 @@ print(x, ...)
 
 ## Value
 
-Returns an invisible `NULL`.
+An invisible `NULL`.
 
 ## Examples
 

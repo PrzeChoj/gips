@@ -39,8 +39,7 @@ found in the **Existence of likelihood** section below.
 
 ## Details
 
-This will always be the biggest for `perm = "()"` (provided that
-`p <= n`).
+This will always be largest for `perm = "()"` (provided that `p <= n`).
 
 If the found permutation still requires more parameters than `n`, the
 likelihood does not exist; thus the function returns `NULL`.
@@ -59,6 +58,14 @@ is bigger or equal to `n0`. To get `n0` for the `gips` object `g`, call
 See examples where the `g_n_too_small` had too small
 `number_of_observations` to have likelihood. After the optimization, the
 likelihood did exist.
+
+## Multi-sample
+
+For multi-sample `gips` objects the log-likelihood is the sum of the
+per-group log-likelihoods. The existence condition becomes
+`min(n_g) >= n0`. The `df` attribute equals `G * dim_omega(sigma)` (each
+group has its own free covariance parameters), and `nobs` equals
+`sum(n_g)`.
 
 For more information, refer to **\\C\_\sigma\\ and `n0`** section in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)

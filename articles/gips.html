@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>A Gentle Introduction to Modeling with gips</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
       <div class="d-none name"><code>gips.Rmd</code></div>
     </div>
 
@@ -74,22 +74,22 @@
 <div class="section level2">
 <h2 id="the-problem">The problem<a class="anchor" aria-label="anchor" href="#the-problem"></a>
 </h2>
-<p>Quite often, we have too little data to perform valid inferences.
-Consider the situation with multivariate Gaussian distribution, where we
-have few observations compared to the number of variables. For example,
-that’s the case for graphical models used in biology or medicine. In
-such a setting, the usual way of finding the covariance matrix (the
-maximum likelihood method) isn’t statistically applicable. What now?</p>
+<p>Often, we have too little data to perform valid inferences. Consider
+the situation with multivariate Gaussian distribution, where we have few
+observations compared to the number of variables. For example, that’s
+the case for graphical models used in biology or medicine. In such a
+setting, the usual way of finding the covariance matrix (the maximum
+likelihood method) isn’t statistically applicable. What now?</p>
 </div>
 <div class="section level2">
 <h2 id="invariance-by-permutation">Invariance by permutation<a class="anchor" aria-label="anchor" href="#invariance-by-permutation"></a>
 </h2>
 <p>Sometimes, the interchange of variables in the vector does not change
-its distribution. In the multivariate Gaussian case, it would mean that
-they have the same variances and covariances with other respective
-variables. For instance, in the following covariance matrix, variables
-X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and
-(X3, X2, X1) have the same distribution.</p>
+its distribution. In the multivariate Gaussian case, it means they have
+the same variances and covariances with other respective variables. For
+instance, in the following covariance matrix, variables X1 and X3 are
+interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have
+the same distribution.</p>
 <p><img src="gips_files/figure-html/symvariant_matrix-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now, we can state this interchangeability property in terms of
 permutations. In our case, the distribution of (X1, X2, X3) is
@@ -125,13 +125,13 @@ page</a>.</p>
 <p>For an in-depth analysis of the package performance, capabilities,
 and comparison with other packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code>’ developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="doi:10.18637/jss.v112.i07">Journal of Statistical
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
 Software</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="practical-example">Practical example<a class="anchor" aria-label="anchor" href="#practical-example"></a>
 </h2>
-<p>Let’s examine 12 books’ thick, height, and breadth data:</p>
+<p>Let’s examine thickness, height, and breadth data from 12 books:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
@@ -180,7 +180,7 @@ variance of [3]. Those are not surprising, given the data interpretation
 <span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          (2,3)             ()          (1,3)        (1,2,3)          (1,2) </span></span>
 <span><span class="co">#&gt; 0.566078057717 0.433908667868 0.000006728772 0.000004683290 0.000001862353</span></span></code></pre></div>
-<p><code>find_MAP</code> found the symmetry represented by permutation
+<p><code><a href="../reference/find_MAP.html">find_MAP()</a></code> found the symmetry represented by permutation
 (2,3).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_cosmetic_modifications</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -343,6 +343,143 @@ will be just right:</p>
 <p>Now, the estimated covariance matrix is of full rank (5).</p>
 </div>
 <div class="section level2">
+<h2 id="multi-sample-example">Multi-sample example<a class="anchor" aria-label="anchor" href="#multi-sample-example"></a>
+</h2>
+<p>Sometimes, we may have several independent groups that should share
+the same permutation symmetry, while each group has its own covariance
+matrix. In this case, pass a list of covariance matrices as
+<code>S</code> and a vector of sample sizes as
+<code>number_of_observations</code>.</p>
+<p>Every matrix must describe the same variables in the same row and
+column order. <code>gips</code> applies a shared permutation to matching
+matrix indices; it does not match or reorder variables using matrix
+names.</p>
+<p>The two covariance matrices below are different, but both are
+invariant under the permutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<span><span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">23</span></span>
+<span></span>
+<span><span class="va">sigma_matrix_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1.50</span>,  <span class="fl">0.95</span>,  <span class="fl">0.95</span>,  <span class="fl">0.30</span>, <span class="op">-</span><span class="fl">0.05</span>,</span>
+<span>  <span class="fl">0.95</span>,  <span class="fl">1.50</span>,  <span class="fl">0.95</span>,  <span class="fl">0.30</span>, <span class="op">-</span><span class="fl">0.05</span>,</span>
+<span>  <span class="fl">0.95</span>,  <span class="fl">0.95</span>,  <span class="fl">1.50</span>,  <span class="fl">0.30</span>, <span class="op">-</span><span class="fl">0.05</span>,</span>
+<span>  <span class="fl">0.30</span>,  <span class="fl">0.30</span>,  <span class="fl">0.30</span>,  <span class="fl">2.40</span>,  <span class="fl">0.05</span>,</span>
+<span> <span class="op">-</span><span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.05</span>,  <span class="fl">0.05</span>,  <span class="fl">0.60</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sigma_matrix_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">2.10</span>,  <span class="fl">1.40</span>,  <span class="fl">1.40</span>, <span class="op">-</span><span class="fl">0.35</span>,  <span class="fl">0.55</span>,</span>
+<span>  <span class="fl">1.40</span>,  <span class="fl">2.10</span>,  <span class="fl">1.40</span>, <span class="op">-</span><span class="fl">0.35</span>,  <span class="fl">0.55</span>,</span>
+<span>  <span class="fl">1.40</span>,  <span class="fl">1.40</span>,  <span class="fl">2.10</span>, <span class="op">-</span><span class="fl">0.35</span>,  <span class="fl">0.55</span>,</span>
+<span> <span class="op">-</span><span class="fl">0.35</span>, <span class="op">-</span><span class="fl">0.35</span>, <span class="op">-</span><span class="fl">0.35</span>,  <span class="fl">0.80</span>, <span class="op">-</span><span class="fl">0.30</span>,</span>
+<span>  <span class="fl">0.55</span>,  <span class="fl">0.55</span>,  <span class="fl">0.55</span>, <span class="op">-</span><span class="fl">0.30</span>,  <span class="fl">2.80</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_sample_1</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">21</span>, </span>
+<span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">n1</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix_1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_sample_2</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">37</span>, </span>
+<span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">n2</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix_2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">S1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">data_sample_1</span><span class="op">)</span></span>
+<span><span class="va">S2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">data_sample_2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">variable_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"he"</span>, <span class="st">"ha"</span>, <span class="st">"hi"</span>, <span class="st">"hu"</span>, <span class="st">"hy"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">S1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">variable_names</span>, <span class="va">variable_names</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">S2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">variable_names</span>, <span class="va">variable_names</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">S_by_group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Sample 1"</span> <span class="op">=</span> <span class="va">S1</span>, <span class="st">"Sample 2"</span> <span class="op">=</span> <span class="va">S2</span><span class="op">)</span></span></code></pre></div>
+<p>Let us look at the sample covariance matrices:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S_by_group</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n1</span>, <span class="va">n2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gips_files/figure-html/multi_sample_plot-1.png" class="r-plt" alt="" width="700"></p>
+<p>We see that the estimated covariances are different, but both look
+approximately invariant under the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
+permutation.</p>
+<p>Now we can fit one shared symmetry model to both covariance
+matrices:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_multi_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_multi</span>,</span>
+<span>  optimizer <span class="op">=</span> <span class="st">"brute_force"</span>,</span>
+<span>  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g_multi_map</span></span>
+<span><span class="co">#&gt; The permutation (1,2,3):</span></span>
+<span><span class="co">#&gt;  - was found after 67 posteriori calculations;</span></span>
+<span><span class="co">#&gt;  - is 2147633.177 times more likely than the () permutation.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_multi_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) </span></span>
+<span><span class="co">#&gt;  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919</span></span></code></pre></div>
+<p>The MAP symmetry is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>,
+matching the shared symmetry used to generate both groups. Its posterior
+probability is about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>56</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">56\%</annotation></semantics></math>.
+The projected covariance estimate is also returned as one matrix per
+group:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S_multi_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S_by_group</span>, <span class="va">g_multi_map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_multi_projected</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       he    ha    hi   hu    hy</span></span>
+<span><span class="co">#&gt; he  1.99  1.42  1.42 0.22 -0.26</span></span>
+<span><span class="co">#&gt; ha  1.42  1.99  1.42 0.22 -0.26</span></span>
+<span><span class="co">#&gt; hi  1.42  1.42  1.99 0.22 -0.26</span></span>
+<span><span class="co">#&gt; hu  0.22  0.22  0.22 2.18  0.08</span></span>
+<span><span class="co">#&gt; hy -0.26 -0.26 -0.26 0.08  0.61</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_multi_projected</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       he    ha    hi    hu    hy</span></span>
+<span><span class="co">#&gt; he  2.13  1.35  1.35 -0.06  0.95</span></span>
+<span><span class="co">#&gt; ha  1.35  2.13  1.35 -0.06  0.95</span></span>
+<span><span class="co">#&gt; hi  1.35  1.35  2.13 -0.06  0.95</span></span>
+<span><span class="co">#&gt; hu -0.06 -0.06 -0.06  0.78 -0.66</span></span>
+<span><span class="co">#&gt; hy  0.95  0.95  0.95 -0.66  3.24</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gips_files/figure-html/multi_sample_example_project-1.png" class="r-plt" alt="" width="700"></p>
+<p>If we analyze the two groups separately, the shared symmetry is less
+clear:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_1_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S1</span>, <span class="va">n1</span><span class="op">)</span>,</span>
+<span>  optimizer <span class="op">=</span> <span class="st">"BF"</span>,</span>
+<span>  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g_2_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S2</span>, <span class="va">n2</span><span class="op">)</span>,</span>
+<span>  optimizer <span class="op">=</span> <span class="st">"BF"</span>,</span>
+<span>  return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_1_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) </span></span>
+<span><span class="co">#&gt;   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_2_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) </span></span>
+<span><span class="co">#&gt; 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413</span></span></code></pre></div>
+<p>The separate analyses are more ambiguous. The true
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
+permutation has posterior probability about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>52</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">52\%</annotation></semantics></math>
+in the first sample and only about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">32\%</annotation></semantics></math>
+in the second sample. The multi-sample fit combines evidence from both
+groups while requiring one shared permutation symmetry.</p>
+</div>
+<div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <ol style="list-style-type: decimal">
@@ -356,7 +493,7 @@ page</a>.</li>
 <li>For an in-depth analysis of the package performance, capabilities,
 and comparison with other packages, see the article “Learning
 permutation symmetries with gips in R” by <code>gips</code> developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="doi:10.18637/jss.v112.i07">Journal of Statistical
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
 Software</a>.</li>
 </ol>
 </div>

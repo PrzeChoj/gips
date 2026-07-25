@@ -1,16 +1,109 @@
 # Changelog
 
-## gips 1.2.2.9000
+## gips 1.2.4.9000
+
+#### Multi-sample support
+
+[`gips()`](https://przechoj.github.io/gips/reference/gips.md) now
+accepts a **list of covariance matrices** and a vector of sample sizes,
+enabling Bayesian model selection with a shared permutation symmetry
+across G independent groups:
+
+``` r
+
+g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+g_MAP <- find_MAP(g, optimizer = "BF")
+```
+
+Each group has its own covariance matrix `Sigma_g` and can have its own
+prior hyperparameters `D_matrix_g` and `delta_g`, but all share the same
+symmetry group Gamma. The MLE exists when `min(n_g) >= n0`. **All
+existing single-sample usage is fully unchanged**.
+
+## gips 1.2.4
 
 #### Performance gain
 
-There was a significant improvement in the speed of calculation. Details
-in the table below for 1000 random permutations of a given size:
+[`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
+is now implemented in C++ internally. Additionally, several internal
+calculations used by
+[`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
+and `find_MAP(optimizer = "BF")` were optimized.
 
-| permutation size     | 30     | 50     | 100    | 200    | 300     |
-|----------------------|--------|--------|--------|--------|---------|
-| old computation time | 0.09 s | 0.10 s | 0.25 s | ~10 s  | ~25 s   |
-| new computation time | 0.07 s | 0.08 s | 0.10 s | 0.17 s | ~0.20 s |
+For Brute Force optimization:
+
+| permutation size |      6 |      7 |       8 |        9 |         10 |
+|------------------|-------:|-------:|--------:|---------:|-----------:|
+| v1.2.3           | 1.26 s | 4.06 s | 30.19 s | 4.35 min | 1 h 46 min |
+| v1.2.4           | 0.52 s | 1.89 s | 10.34 s | 1.21 min |  12.14 min |
+
+For
+[`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
+evaluated on 1000 random permutations of a given size:
+
+| permutation size |     30 |     50 |     100 |     200 |      300 |
+|------------------|-------:|-------:|--------:|--------:|---------:|
+| v1.2.3           | 2.31 s | 2.31 s | 11.70 s | 46.49 s | 110.17 s |
+| v1.2.4           | 0.84 s | 1.26 s |  3.24 s | 15.73 s |  39.47 s |
+
+The above tables are based on the code from [Pull
+Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
+[\#99](https://github.com/PrzeChoj/gips/issues/99).
+
+#### Update to functions
+
+- [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
+  now uses its precomputed cyclic-subgroup generators for
+  `optimizer = "BF"` through `perm_size = 10`; Brute Force is the
+  default through this size.
+- Added caching for `find_MAP(optimizer = "MH")` to store computed
+  values. This reduces computation time for the Markov chain,
+  particularly when the acceptance rate is low.
+- Improved `find_MAP(optimizer = "MH")` with a forced move mechanism:
+  when the cache is full (all neighbors have been evaluated), the
+  algorithm now makes a probabilistic move based on the cached values
+  instead of exiting early, which improves exploration of the
+  permutation space. See
+  [\#115](https://github.com/PrzeChoj/gips/issues/115).
+- [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md)
+  now uses `ggplot2` for all plot types.
+- `plot.gips(type = "all", "best", "both", or "n0")` is now much faster
+  for large iteration counts.
+- [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md):
+  The `precomputed_equal_indices` parameter is no longer used and will
+  be removed in v1.4.0.
+
+#### Bugfixes:
+
+- Documentation improvements: grammar and style corrections in roxygen
+  comments, vignettes, and error messages.
+- `plot.gips(type = "n0")` works properly after multiple optimizations.
+  See [\#114](https://github.com/PrzeChoj/gips/issues/114).
+
+## gips 1.2.3
+
+CRAN release: 2025-03-18
+
+#### Performance gain
+
+There was a significant speed improvement in
+[`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md),
+which is used internally by posterior calculations. For 1000 random
+permutations of a given size:
+
+| permutation size |     30 |     50 |    100 |    200 |     300 |
+|------------------|-------:|-------:|-------:|-------:|--------:|
+| v1.2.2           | 0.09 s | 0.10 s | 0.25 s |  ~10 s |   ~25 s |
+| v1.2.3           | 0.07 s | 0.08 s | 0.10 s | 0.17 s | ~0.20 s |
+
+This change consequently improved
+[`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
+For 1000 random permutations of a given size:
+
+| permutation size |     30 |     50 |    100 |     200 |      300 |
+|------------------|-------:|-------:|-------:|--------:|---------:|
+| v1.2.2           | 1.50 s | 2.49 s | 7.08 s | 55.25 s | 169.77 s |
+| v1.2.3           | 1.29 s | 2.24 s | 6.84 s | 31.73 s |  85.10 s |
 
 #### Update to functions
 
@@ -23,7 +116,7 @@ in the table below for 1000 random permutations of a given size:
 
 ## gips 1.2.2
 
-#### Bugfix:
+#### Bugfixes:
 
 - [`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md)
   will return an object of class `logLik`;

@@ -11,7 +11,7 @@ those calculated probabilities can be extracted with this function."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ those calculated probabilities can be extracted with this function."><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Extract probabilities for <code>gips</code> object optimized with <code>return_probabilities = TRUE</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/R/gips_class.R" class="external-link"><code>R/gips_class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/R/gips_methods.R" class="external-link"><code>R/gips_methods.R</code></a></small>
       <div class="d-none name"><code>get_probabilities_from_gips.Rd</code></div>
     </div>
 
@@ -64,11 +64,19 @@ A result of a <code>find_MAP(return_probabilities = TRUE)</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a numeric vector, calculated values of probabilities.
-Names contain permutations this probabilities represent.
+    <p>A numeric vector of calculated probability values.
+Names contain the permutations that these probabilities represent.
 For <code>gips</code> object optimized with <code>find_MAP(return_probabilities = FALSE)</code>,
 it returns a <code>NULL</code> object.
 It is sorted according to the probability.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="multi-sample">Multi-sample<a class="anchor" aria-label="anchor" href="#multi-sample"></a></h2>
+
+
+<p>For multi-sample <code>gips</code> objects, these are probabilities of the shared
+permutation symmetry, calculated from the combined posterior used by
+<code><a href="find_MAP.html">find_MAP()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -24,14 +24,14 @@ print(
 
 - digits:
 
-  The number of digits after the comma for a posteriori to be presented.
-  It can be negative. By default, `Inf`. It is passed to
+  The number of decimal places for the posterior probability. It can be
+  negative. By default, `Inf`. It is passed to
   [`base::round()`](https://rdrr.io/r/base/Round.html).
 
 - compare_to_original:
 
-  A logical. Whether to print how many times more likely is the current
-  permutation compared to:
+  A logical. Whether to print how many times more likely the current
+  permutation is compared to:
 
   - the identity permutation `()` (for unoptimized `gips` object);
 
@@ -53,7 +53,13 @@ print(
 
 ## Value
 
-Returns an invisible `NULL`.
+An invisible `NULL`.
+
+## Multi-sample
+
+For multi-sample `gips` objects the number of observations is shown as a
+vector `n = c(n1, n2, ...)` and the comparison to the starting
+permutation uses the combined log-posterior (sum across groups).
 
 ## See also
 

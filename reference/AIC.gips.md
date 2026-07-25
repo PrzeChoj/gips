@@ -57,6 +57,15 @@ AIC and BIC** section in
 or its [pkgdown
 page](https://przechoj.github.io/gips/articles/Theory.html).
 
+## Multi-sample
+
+For multi-sample `gips` objects, `AIC.gips()` and `BIC.gips()` are based
+on the combined log-likelihood (sum across G groups). The penalty term
+uses `G * dim_omega(sigma)` parameters, and the BIC sample size is
+`sum(n_g)`. See
+[`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md)
+for details.
+
 ## See also
 
 - [`AIC()`](https://rdrr.io/r/stats/AIC.html),

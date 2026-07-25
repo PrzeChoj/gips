@@ -3,6 +3,7 @@
 ## Authors
 
 - **Adam Przemysław Chojecki**. Author, maintainer.
+  [](https://orcid.org/0009-0008-2902-4096)
 
 - **Paweł Morgen**. Author.
 
@@ -12,7 +13,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/PrzeChoj/gips/blob/v1.2.3/inst/CITATION)
+[`inst/CITATION`](https://github.com/PrzeChoj/gips/blob/main/inst/CITATION)
 
 Chojecki A, Morgen P, Kołodziejek B (2025). “Learning Permutation
 Symmetry of a Gaussian Vector with gips in R.” *Journal of Statistical

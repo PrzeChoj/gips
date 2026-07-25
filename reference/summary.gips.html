@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Summarizing the gips object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/R/gips_class.R" class="external-link"><code>R/gips_class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/R/gips_methods.R" class="external-link"><code>R/gips_methods.R</code></a></small>
       <div class="d-none name"><code>summary.gips.Rd</code></div>
     </div>
 
@@ -72,13 +72,13 @@
     <p>The function <code>summary.gips()</code> computes and returns a list of summary
 statistics of the given <code>gips</code> object. Those are:</p><ul><li><p>For unoptimized <code>gips</code> object:</p><ol><li><p><code>optimized</code> - <code>FALSE</code>.</p></li>
 <li><p><code>start_permutation</code> - the permutation this <code>gips</code> represents.</p></li>
-<li><p><code>start_permutation_log_posteriori</code> - the log of the a posteriori
+<li><p><code>start_permutation_log_posteriori</code> - the log of the A Posteriori
 value the start permutation has.</p></li>
-<li><p><code>times_more_likely_than_id</code> - how many more likely
+<li><p><code>times_more_likely_than_id</code> - how many times more likely
 the <code>start_permutation</code> is over the identity permutation, <code>()</code>.
 It can be less than 1, meaning the identity permutation
-is more likely. Remember that this number can big and
-overflow to <code>Inf</code> or small and underflow to 0.</p></li>
+is more likely. Remember that this number can become
+very large and overflow to <code>Inf</code> or small and underflow to 0.</p></li>
 <li><p><code>log_times_more_likely_than_id</code> - log of <code>times_more_likely_than_id</code>.</p></li>
 <li><p><code>likelihood_ratio_test_statistics</code>, <code>likelihood_ratio_test_p_value</code> -
 statistics and p-value of Likelihood Ratio test, where
@@ -109,12 +109,12 @@ See the <strong>Hyperparameters</strong> section of <code><a href="gips.html">gi
 </ol></li>
 <li><p>For optimized <code>gips</code> object:</p><ol><li><p><code>optimized</code> - <code>TRUE</code>.</p></li>
 <li><p><code>found_permutation</code> - the permutation this <code>gips</code> represents.
-The visited permutation with the biggest a posteriori value.</p></li>
-<li><p><code>found_permutation_log_posteriori</code> - the log of the a posteriori
+The visited permutation with the biggest A Posteriori value.</p></li>
+<li><p><code>found_permutation_log_posteriori</code> - the log of the A Posteriori
 value the found permutation has.</p></li>
 <li><p><code>start_permutation</code> - the original permutation this <code>gips</code>
 represented before optimization. It is the first visited permutation.</p></li>
-<li><p><code>start_permutation_log_posteriori</code> - the log of the a posteriori
+<li><p><code>start_permutation_log_posteriori</code> - the log of the A Posteriori
 value the start permutation has.</p></li>
 <li><p><code>times_more_likely_than_start</code> - how many more likely
 the <code>found_permutation</code> is over the <code>start_permutation</code>.
@@ -176,6 +176,16 @@ in an iteration.</p></li>
 <ul><li><p><code>print(summary.gips)</code>: Printing method for class <code>summary.gips</code>.
 Prints every interesting information in a form pleasant for humans.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="multi-sample">Multi-sample<a class="anchor" aria-label="anchor" href="#multi-sample"></a></h2>
+
+
+<p>For multi-sample <code>gips</code> objects the summary includes the number of groups G,
+the full vector of per-group sample sizes, and the total <code>n_parameters</code>
+(which equals <code>G * dim_omega(sigma)</code>). The n0 existence check uses
+<code>min(n_g)</code>. The Likelihood-Ratio test is not available for multi-sample
+objects and is reported as <code>NULL</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">
@@ -352,7 +362,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.0133872 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.005133867 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
@@ -384,11 +394,11 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Therefore, one degree of freedom was lost.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There are 12 degrees of freedom left.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> n0:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> n0 = number of cycles in a permutation + 1 (as the mean was estimated):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations is bigger than n0 for this permutation,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The MLE estimator based on the found permutation does exist,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> since the number of observations (13) is bigger than n0 (5).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of free parameters in the covariance matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  13</span>
@@ -407,7 +417,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  46</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.05804491 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.02332997 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  17</span>
@@ -432,11 +442,11 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Therefore, one degree of freedom was lost.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There are 9 degrees of freedom left.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> n0:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> n0 = number of cycles in a permutation + 1 (as the mean was estimated):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The number of observations is bigger than n0 for this permutation,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> so the gips model based on the found permutation does exist.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The MLE estimator based on the found permutation does exist,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> since the number of observations (10) is bigger than n0 (3).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of free parameters in the covariance matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>

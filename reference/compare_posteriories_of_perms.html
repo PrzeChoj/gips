@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Compare the posteriori probabilities of 2 permutations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.3/R/log_posteriori_of_gips.R" class="external-link"><code>R/log_posteriori_of_gips.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/R/log_posteriori_of_gips.R" class="external-link"><code>R/log_posteriori_of_gips.R</code></a></small>
       <div class="d-none name"><code>compare_posteriories_of_perms.Rd</code></div>
     </div>
 
@@ -75,7 +75,7 @@
 
 <dl><dt id="arg-perm-perm-">perm1, perm2<a class="anchor" aria-label="anchor" href="#arg-perm-perm-"></a></dt>
 <dd><p>Permutations to compare.
-How many times <code>perm1</code> is more likely than <code>perm2</code>?
+How many times is <code>perm1</code> more likely than <code>perm2</code>?
 Those can be provided as the <code>gips</code> objects,
 the <code>gips_perm</code> objects, or anything that can be used as
 the <code>x</code> parameter in the <code><a href="gips_perm.html">gips_perm()</a></code> function.
@@ -115,6 +115,16 @@ the logarithm of how many times the <code>perm1</code> is more likely than <code
 logarithmic version of <code>compare_posteriories_of_perms()</code>.
 The natural logarithm is used.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="multi-sample">Multi-sample<a class="anchor" aria-label="anchor" href="#multi-sample"></a></h2>
+
+
+<p>When comparing permutations for a multi-sample <code>gips</code> object, or when
+passing multi-sample arguments directly, the comparison uses the combined
+log-posterior (the sum of per-group log-posteriors). Two <code>gips</code> objects can
+be compared only when they are both single-sample or both multi-sample with
+the same data and hyperparameters.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">

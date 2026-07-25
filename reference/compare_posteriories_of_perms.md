@@ -34,7 +34,7 @@ compare_log_posteriories_of_perms(
 
 - perm1, perm2:
 
-  Permutations to compare. How many times `perm1` is more likely than
+  Permutations to compare. How many times is `perm1` more likely than
   `perm2`? Those can be provided as the `gips` objects, the `gips_perm`
   objects, or anything that can be used as the `x` parameter in the
   [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
@@ -72,6 +72,14 @@ of how many times the `perm1` is more likely than `perm2`.
 - `compare_log_posteriories_of_perms()`: More stable, logarithmic
   version of `compare_posteriories_of_perms()`. The natural logarithm is
   used.
+
+## Multi-sample
+
+When comparing permutations for a multi-sample `gips` object, or when
+passing multi-sample arguments directly, the comparison uses the
+combined log-posterior (the sum of per-group log-posteriors). Two `gips`
+objects can be compared only when they are both single-sample or both
+multi-sample with the same data and hyperparameters.
 
 ## See also
 

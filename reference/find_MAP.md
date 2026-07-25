@@ -1,7 +1,7 @@
 # Find the Maximum A Posteriori Estimation
 
 Use one of the optimization algorithms to find the permutation that
-maximizes a posteriori probability based on observed data. Not all
+maximizes A Posteriori probability based on observed data. Not all
 optimization algorithms will always find the MAP, but they try to find a
 significant value. More information can be found in the "**Possible
 algorithms to use as optimizers**" section below.
@@ -35,7 +35,7 @@ find_MAP(
 
   The optimizer for the search of the maximum posteriori:
 
-  - `"BF"` (the default for unoptimized `g` with `perm size <= 9`) -
+  - `"BF"` (the default for unoptimized `g` with `perm size <= 10`) -
     Brute Force;
 
   - `"MH"` (the default for unoptimized `g` with `perm size > 10`) -
@@ -66,8 +66,8 @@ find_MAP(
 
 - return_probabilities:
 
-  A boolean. `TRUE` can only be provided only when
-  `save_all_perms = TRUE`. For:
+  A boolean. `TRUE` can only be provided when `save_all_perms = TRUE`.
+  For:
 
   - `optimizer = "MH"` - use Metropolis-Hastings results to estimate
     posterior probabilities;
@@ -76,14 +76,14 @@ find_MAP(
     posterior probabilities.
 
   These additional calculations are costly, so a second and third
-  progress bar is shown (when `show_progress_bar = TRUE`).
+  progress bars are shown (when `show_progress_bar = TRUE`).
 
   To examine probabilities after optimization, call
   [`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md).
 
 ## Value
 
-Returns an optimized object of a `gips` class.
+An optimized object of a `gips` class.
 
 ## Details
 
@@ -112,7 +112,7 @@ For every algorithm, there are some aliases available.
   that checks the whole permutation space of a given size. This
   algorithm will find the actual Maximum A Posteriori Estimation, but it
   is very computationally expensive for bigger spaces. We recommend
-  Brute Force only for `p <= 9`. For the time the Brute Force takes on
+  Brute Force only for `p <= 10`. For the time the Brute Force takes on
   our machines, see in the
   [`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
   or in its [pkgdown
@@ -133,13 +133,21 @@ For every algorithm, there are some aliases available.
 - `"hill_climbing"`, `"HC"` - use the **hill climbing** algorithm; [see
   Wikipedia](https://en.wikipedia.org/wiki/Hill_climbing). The algorithm
   will check all transpositions in every iteration and go to the one
-  with the biggest a posteriori value. The optimization ends when all
-  *neighbors* will have a smaller a posteriori value. If the `max_iter`
+  with the biggest A Posteriori value. The optimization ends when all
+  *neighbors* will have a smaller A Posteriori value. If the `max_iter`
   is reached before the end, then the warning is shown, and it is
   recommended to continue the optimization on the output of the
   `find_MAP()` with `optimizer = "continue"`; see examples. Remember
   that `p*(p-1)/2` transpositions will be checked in every iteration.
   For bigger `p`, this may be costly.
+
+## Multi-sample
+
+If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`, the
+same optimizers search for one permutation shared by all groups. The
+optimized criterion is the combined log-posterior, i.e. the sum of
+per-group log-posteriors. The default optimizer is still chosen from the
+common matrix size `p`, and warnings about MLE existence use `min(n_g)`.
 
 ## References
 
@@ -221,10 +229,7 @@ g_map
 #>  - is 2.337 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
-
-if (require("graphics")) {
-  plot(g_map2, type = "both", logarithmic_x = TRUE)
-}
+plot(g_map2, type = "both", logarithmic_x = TRUE)
 
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
@@ -250,11 +255,11 @@ summary(g_map_BF)
 #> Therefore, one degree of freedom was lost.
 #> There are 12 degrees of freedom left.
 #> 
-#> n0:
+#> n0 = number of cycles in a permutation + 1 (as the mean was estimated):
 #>  2
 #> 
-#> The number of observations is bigger than n0 for this permutation,
-#> so the gips model based on the found permutation does exist.
+#> The MLE estimator based on the found permutation does exist,
+#> since the number of observations (13) is bigger than n0 (2).
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3
@@ -273,5 +278,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.1226521 secs
+#>  0.04672766 secs
 ```

@@ -2,21 +2,21 @@
 
 ## The problem
 
-Quite often, we have too little data to perform valid inferences.
-Consider the situation with multivariate Gaussian distribution, where we
-have few observations compared to the number of variables. For example,
-that’s the case for graphical models used in biology or medicine. In
-such a setting, the usual way of finding the covariance matrix (the
-maximum likelihood method) isn’t statistically applicable. What now?
+Often, we have too little data to perform valid inferences. Consider the
+situation with multivariate Gaussian distribution, where we have few
+observations compared to the number of variables. For example, that’s
+the case for graphical models used in biology or medicine. In such a
+setting, the usual way of finding the covariance matrix (the maximum
+likelihood method) isn’t statistically applicable. What now?
 
 ## Invariance by permutation
 
 Sometimes, the interchange of variables in the vector does not change
-its distribution. In the multivariate Gaussian case, it would mean that
-they have the same variances and covariances with other respective
-variables. For instance, in the following covariance matrix, variables
-X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and
-(X3, X2, X1) have the same distribution.
+its distribution. In the multivariate Gaussian case, it means they have
+the same variances and covariances with other respective variables. For
+instance, in the following covariance matrix, variables X1 and X3 are
+interchangeable, meaning that vectors (X1, X2, X3) and (X3, X2, X1) have
+the same distribution.
 
 ![](gips_files/figure-html/symvariant_matrix-1.png)
 
@@ -53,11 +53,11 @@ For an in-depth analysis of the package performance, capabilities, and
 comparison with other packages, see the article “Learning permutation
 symmetries with gips in R” by `gips`’ developers Adam Chojecki, Paweł
 Morgen, and Bartosz Kołodziejek, [Journal of Statistical
-Software](doi:10.18637/jss.v112.i07).
+Software](https://doi.org/10.18637/jss.v112.i07).
 
 ## Practical example
 
-Let’s examine 12 books’ thick, height, and breadth data:
+Let’s examine thickness, height, and breadth data from 12 books:
 
 ``` r
 
@@ -124,7 +124,8 @@ get_probabilities_from_gips(g_map)
 #> 0.566078057717 0.433908667868 0.000006728772 0.000004683290 0.000001862353
 ```
 
-`find_MAP` found the symmetry represented by permutation (2,3).
+[`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
+found the symmetry represented by permutation (2,3).
 
 ``` r
 
@@ -305,6 +306,154 @@ sum(eigen(S_projected)$values > 0.00000001)
 
 Now, the estimated covariance matrix is of full rank (5).
 
+## Multi-sample example
+
+Sometimes, we may have several independent groups that should share the
+same permutation symmetry, while each group has its own covariance
+matrix. In this case, pass a list of covariance matrices as `S` and a
+vector of sample sizes as `number_of_observations`.
+
+Every matrix must describe the same variables in the same row and column
+order. `gips` applies a shared permutation to matching matrix indices;
+it does not match or reorder variables using matrix names.
+
+The two covariance matrices below are different, but both are invariant
+under the permutation $`(1,2,3)`$:
+
+``` r
+
+p <- 5
+n1 <- 20
+n2 <- 23
+
+sigma_matrix_1 <- matrix(c(
+  1.50,  0.95,  0.95,  0.30, -0.05,
+  0.95,  1.50,  0.95,  0.30, -0.05,
+  0.95,  0.95,  1.50,  0.30, -0.05,
+  0.30,  0.30,  0.30,  2.40,  0.05,
+ -0.05, -0.05, -0.05,  0.05,  0.60
+), nrow = p, byrow = TRUE)
+
+sigma_matrix_2 <- matrix(c(
+  2.10,  1.40,  1.40, -0.35,  0.55,
+  1.40,  2.10,  1.40, -0.35,  0.55,
+  1.40,  1.40,  2.10, -0.35,  0.55,
+ -0.35, -0.35, -0.35,  0.80, -0.30,
+  0.55,  0.55,  0.55, -0.30,  2.80
+), nrow = p, byrow = TRUE)
+
+data_sample_1 <- withr::with_seed(21, 
+  MASS::mvrnorm(n1, mu = rep(0, p), Sigma = sigma_matrix_1)
+)
+
+data_sample_2 <- withr::with_seed(37, 
+  MASS::mvrnorm(n2, mu = rep(0, p), Sigma = sigma_matrix_2)
+)
+
+S1 <- cov(data_sample_1)
+S2 <- cov(data_sample_2)
+
+variable_names <- c("he", "ha", "hi", "hu", "hy")
+dimnames(S1) <- list(variable_names, variable_names)
+dimnames(S2) <- list(variable_names, variable_names)
+
+S_by_group <- list("Sample 1" = S1, "Sample 2" = S2)
+```
+
+Let us look at the sample covariance matrices:
+
+``` r
+
+g_multi <- gips(S_by_group, c(n1, n2))
+
+plot(g_multi, type = "MLE")
+```
+
+![](gips_files/figure-html/multi_sample_plot-1.png)
+
+We see that the estimated covariances are different, but both look
+approximately invariant under the $`(1,2,3)`$ permutation.
+
+Now we can fit one shared symmetry model to both covariance matrices:
+
+``` r
+
+g_multi_map <- find_MAP(g_multi,
+  optimizer = "brute_force",
+  return_probabilities = TRUE, save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+g_multi_map
+#> The permutation (1,2,3):
+#>  - was found after 67 posteriori calculations;
+#>  - is 2147633.177 times more likely than the () permutation.
+head(get_probabilities_from_gips(g_multi_map), 5)
+#>      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) 
+#>  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919
+```
+
+The MAP symmetry is $`(1,2,3)`$, matching the shared symmetry used to
+generate both groups. Its posterior probability is about $`56\%`$. The
+projected covariance estimate is also returned as one matrix per group:
+
+``` r
+
+S_multi_projected <- project_matrix(S_by_group, g_multi_map)
+
+round(S_multi_projected[[1]], 2)
+#>       he    ha    hi   hu    hy
+#> he  1.99  1.42  1.42 0.22 -0.26
+#> ha  1.42  1.99  1.42 0.22 -0.26
+#> hi  1.42  1.42  1.99 0.22 -0.26
+#> hu  0.22  0.22  0.22 2.18  0.08
+#> hy -0.26 -0.26 -0.26 0.08  0.61
+round(S_multi_projected[[2]], 2)
+#>       he    ha    hi    hu    hy
+#> he  2.13  1.35  1.35 -0.06  0.95
+#> ha  1.35  2.13  1.35 -0.06  0.95
+#> hi  1.35  1.35  2.13 -0.06  0.95
+#> hu -0.06 -0.06 -0.06  0.78 -0.66
+#> hy  0.95  0.95  0.95 -0.66  3.24
+
+plot(g_multi_map, type = "MLE")
+```
+
+![](gips_files/figure-html/multi_sample_example_project-1.png)
+
+If we analyze the two groups separately, the shared symmetry is less
+clear:
+
+``` r
+
+g_1_map <- find_MAP(gips(S1, n1),
+  optimizer = "BF",
+  return_probabilities = TRUE,
+  save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+g_2_map <- find_MAP(gips(S2, n2),
+  optimizer = "BF",
+  return_probabilities = TRUE,
+  save_all_perms = TRUE,
+  show_progress_bar = FALSE
+)
+
+head(get_probabilities_from_gips(g_1_map), 5)
+#>      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) 
+#>   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839
+head(get_probabilities_from_gips(g_2_map), 5)
+#>    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) 
+#> 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413
+```
+
+The separate analyses are more ambiguous. The true $`(1,2,3)`$
+permutation has posterior probability about $`52\%`$ in the first sample
+and only about $`32\%`$ in the second sample. The multi-sample fit
+combines evidence from both groups while requiring one shared
+permutation symmetry.
+
 ## Further reading
 
 1.  To learn more about the available optimizers in
@@ -322,4 +471,4 @@ Now, the estimated covariance matrix is of full rank (5).
     and comparison with other packages, see the article “Learning
     permutation symmetries with gips in R” by `gips` developers Adam
     Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of
-    Statistical Software](doi:10.18637/jss.v112.i07).
+    Statistical Software](https://doi.org/10.18637/jss.v112.i07).
