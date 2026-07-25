@@ -213,6 +213,22 @@ test_that("find_MAP() with BF optimizer works on multi-sample gips (p=3, G=2)", 
 })
 
 
+test_that("find_MAP() validates max_iter for multi-sample gips", {
+  g <- gips(list(diag(5), 2 * diag(5)), c(10L, 12L))
+
+  expect_error(
+    find_MAP(g, optimizer = "MH", max_iter = 1, show_progress_bar = FALSE),
+    "`max_iter` must be at least 2.",
+    fixed = TRUE
+  )
+  expect_error(
+    find_MAP(g, optimizer = "MH", max_iter = 2.5, show_progress_bar = FALSE),
+    "`max_iter` must be either infinite (for hill_climbing optimizer) or a whole number.",
+    fixed = TRUE
+  )
+})
+
+
 test_that("find_MAP() with MH optimizer and continue works on larger multi-sample gips (p=30, G=2)", {
   p <- 30
   Sigma <- diag(p)

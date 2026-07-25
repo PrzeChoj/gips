@@ -773,6 +773,7 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
   # For multi-sample (list S), the detailed validation was done in gips().
   if (is.list(S)) {
     abort_text <- character(0)
+    abort_text <- c(abort_text, check_max_iter(max_iter))
     abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))
     abort_text <- c(abort_text, check_logical_flag(return_probabilities, "return_probabilities"))
     abort_text <- c(abort_text, check_logical_flag(save_all_perms, "save_all_perms"))
