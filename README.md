@@ -218,9 +218,9 @@ g_map
 #>  - is 118.863 times more likely than the () permutation.
 ```
 
-We see that the found permutation is over a hundred times more likely
-than making no additional assumption. That means the additional
-assumptions are justified.
+We see that the found permutation is 118.86 times more likely than
+making no additional assumption. That means the additional assumptions
+are justified.
 
 ``` r
 summary(g_map)$n0
@@ -229,9 +229,9 @@ summary(g_map)$n0 <= number_of_observations # 1 <= 4
 #> [1] TRUE
 ```
 
-What is more, we see the number of observations ($4$) is bigger or equal
-to $n_0 = 1$, so we can estimate the covariance matrix with the Maximum
-Likelihood estimator:
+What is more, we see the number of observations (4) is bigger than or
+equal to $n_0 = 1$, so we can estimate the covariance matrix with the
+Maximum Likelihood estimator:
 
 ``` r
 S_projected <- project_matrix(S, g_map)

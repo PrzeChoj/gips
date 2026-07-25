@@ -204,13 +204,19 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 g_map
 ```
 
-We see that the found permutation is over a hundred times more likely than making no additional assumption. That means the additional assumptions are justified.
+We see that the found permutation is
+`r round(compare_posteriories_of_perms(g_map, g, print_output = FALSE), 2)`
+times more likely than making no additional assumption. That means the
+additional assumptions are justified.
 ```{r example_mean_known5}
 summary(g_map)$n0
 summary(g_map)$n0 <= number_of_observations # 1 <= 4
 ```
 
-What is more, we see the number of observations ($4$) is bigger or equal to $n_0 = 1$, so we can estimate the covariance matrix with the Maximum Likelihood estimator:
+What is more, we see the number of observations
+(`r number_of_observations`) is bigger than or equal to
+$n_0 = `r summary(g_map)$n0`$, so we can estimate the covariance matrix with
+the Maximum Likelihood estimator:
 ```{r example_mean_known6}
 S_projected <- project_matrix(S, g_map)
 S_projected
@@ -221,7 +227,8 @@ plot(g_map, type = "heatmap") + ggplot2::ggtitle("Covariance estimated with `gip
 
 We see `gips` found the data's structure, and we could estimate the covariance matrix with huge accuracy only with a small amount of data and additional reasonable assumptions.
 
-Note that the rank of the `S` matrix was 4, while the rank of the `S_projected` matrix was 6 (full rank).
+Note that the rank of the `S` matrix was `r qr(S)$rank`, while the rank of the
+`S_projected` matrix was `r qr(S_projected)$rank` (full rank).
 
 
 # Further reading

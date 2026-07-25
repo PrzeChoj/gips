@@ -188,7 +188,10 @@ S <- cov(toy_example_data)
 
 sum(eigen(S)$values > 0.00000001)
 ```
-Note that the rank of the `S` matrix is 3, despite the `number_of_observations` being 4. This is because `cov()` estimated the mean on every column to compute `S`.
+Note that the rank of the `S` matrix is
+`r sum(eigen(S)$values > 0.00000001)`, despite the `number_of_observations`
+being `r number_of_observations`. This is because `cov()` estimated the mean
+on every column to compute `S`.
 
 We want to find reasonable additional assumptions on `S` to make it easier to estimate.
 
@@ -216,23 +219,30 @@ plot(g_map, type = "heatmap")
 ```{r toy_example_data_show4}
 g_map
 ```
-This assumption is over 3 times more believable than making no assumption. Let's examine how reasonable are other possible assumptions:
+This assumption is
+`r round(compare_posteriories_of_perms(g_map, g, print_output = FALSE), 2)`
+times more believable than making no assumption. Let's examine how reasonable
+other possible assumptions are:
 
 ```{r toy_example_data_show5}
-get_probabilities_from_gips(g_map)
+toy_probabilities <- get_probabilities_from_gips(g_map)
+toy_probabilities
 ```
-We see that assumption $(3,4,5)$ is the most likely with a $6.2\%$ posterior probability. 21 possible permutations are more likely than id.
+We see that assumption $(3,4,5)$ is the most likely with a
+`r round(100 * toy_probabilities[["(3,4,5)"]], 1)`% posterior probability.
+`r sum(toy_probabilities > toy_probabilities[["()"]])` possible permutations
+are more likely than id.
 
 Remember that the `n0` could still be too big for your data. In this example, the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 5$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:
 
 ```{r toy_example_data_show6}
-summary(g_map)$n0 # n0 = 4 <= 4 = number_of_observations
+summary(g_map)$n0 # compare n0 with number_of_observations
 
 S_projected <- project_matrix(S, g_map)
 S_projected
 sum(eigen(S_projected)$values > 0.00000001)
 ```
-Now, the estimated covariance matrix is of full rank (5).
+Now, the estimated covariance matrix is of full rank (`r nrow(S_projected)`).
 
 
 # Multi-sample example
@@ -308,11 +318,13 @@ g_multi_map <- find_MAP(g_multi,
 )
 
 g_multi_map
-head(get_probabilities_from_gips(g_multi_map), 5)
+multi_probabilities <- get_probabilities_from_gips(g_multi_map)
+head(multi_probabilities, 5)
 ```
 
 The MAP symmetry is $(1,2,3)$, matching the shared symmetry used to generate
-both groups. Its posterior probability is about $56\%$. The projected covariance
+both groups. Its posterior probability is about
+`r round(100 * multi_probabilities[["(1,2,3)"]], 1)`%. The projected covariance
 estimate is also returned as one matrix per group:
 
 ```{r multi_sample_example_project}
@@ -341,14 +353,19 @@ g_2_map <- find_MAP(gips(S2, n2),
   show_progress_bar = FALSE
 )
 
-head(get_probabilities_from_gips(g_1_map), 5)
-head(get_probabilities_from_gips(g_2_map), 5)
+group_1_probabilities <- get_probabilities_from_gips(g_1_map)
+group_2_probabilities <- get_probabilities_from_gips(g_2_map)
+
+head(group_1_probabilities, 5)
+head(group_2_probabilities, 5)
 ```
 
 The separate analyses are more ambiguous. The true $(1,2,3)$ permutation has
-posterior probability about $52\%$ in the first sample and only about $32\%$ in
-the second sample. The multi-sample fit combines evidence from both groups while
-requiring one shared permutation symmetry.
+posterior probability about
+`r round(100 * group_1_probabilities[["(1,2,3)"]], 1)`% in the first sample and
+only about `r round(100 * group_2_probabilities[["(1,2,3)"]], 1)`% in the second
+sample. The multi-sample fit combines evidence from both groups while requiring
+one shared permutation symmetry.
 
 
 # Further reading
