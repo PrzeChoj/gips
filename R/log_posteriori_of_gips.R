@@ -492,13 +492,16 @@ compare_log_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
       )
     }
 
-    if (!identical(attr(perm1, "number_of_observations"), attr(perm2, "number_of_observations"))) {
+    if (!isTRUE(all.equal(
+      attr(perm1, "number_of_observations"),
+      attr(perm2, "number_of_observations")
+    ))) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `number_of_observations`! They cannot be compared!"),
         class = "different_parameters"
       )
     }
 
-    if (!identical(attr(perm1, "delta"), attr(perm2, "delta"))) {
+    if (!isTRUE(all.equal(attr(perm1, "delta"), attr(perm2, "delta")))) {
       rlang::abort(c("x" = "Give perm1 and perm2 are `gips` objects, but have different `delta`! They cannot be compared!"),
         class = "different_parameters"
       )
