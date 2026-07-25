@@ -206,13 +206,13 @@
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
 <span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 118.863 times more likely than the () permutation.</span></span></code></pre></div>
-<p>We see that the found permutation is over a hundred times more likely than making no additional assumption. That means the additional assumptions are justified.</p>
+<p>We see that the found permutation is 118.86 times more likely than making no additional assumption. That means the additional assumptions are justified.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="op">&lt;=</span> <span class="va">number_of_observations</span> <span class="co"># 1 &lt;= 4</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>What is more, we see the number of observations (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>) is bigger or equal to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_0 = 1</annotation></semantics></math>, so we can estimate the covariance matrix with the Maximum Likelihood estimator:</p>
+<p>What is more, we see the number of observations (4) is bigger than or equal to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_0 = 1</annotation></semantics></math>, so we can estimate the covariance matrix with the Maximum Likelihood estimator:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="va">S_projected</span></span>

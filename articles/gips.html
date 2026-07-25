@@ -282,11 +282,12 @@ was the most reasonable assumption. Let’s see how much better it is:</p>
 <span><span class="co">#&gt; The permutation (3,4,5):</span></span>
 <span><span class="co">#&gt;  - was found after 67 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 3.63 times more likely than the () permutation.</span></span></code></pre></div>
-<p>This assumption is over 3 times more believable than making no
-assumption. Let’s examine how reasonable are other possible
-assumptions:</p>
+<p>This assumption is 3.63 times more believable than making no
+assumption. Let’s examine how reasonable other possible assumptions
+are:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">toy_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
+<span><span class="va">toy_probabilities</span></span>
 <span><span class="co">#&gt;      (3,4,5)      (2,4,5) (1,2)(3,4,5)    (2,3,5,4)        (4,5)        (3,5) </span></span>
 <span><span class="co">#&gt;  0.061991931  0.056959514  0.048479131  0.040410788  0.038027185  0.037829891 </span></span>
 <span><span class="co">#&gt;        (3,4)    (2,3,4,5)    (2,4,3,5)   (2,4)(3,5)      (2,3,5)   (1,2)(3,5) </span></span>
@@ -313,10 +314,8 @@ assumptions:</p>
 <span><span class="co">#&gt;  0.001048474</span></span></code></pre></div>
 <p>We see that assumption
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
-is the most likely with a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6.2</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">6.2\%</annotation></semantics></math>
-posterior probability. 21 possible permutations are more likely than
-id.</p>
+is the most likely with a 6.2% posterior probability. 21 possible
+permutations are more likely than id.</p>
 <p>Remember that the <code>n0</code> could still be too big for your
 data. In this example, the assumptions with transpositions (like
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5)</annotation></semantics></math>)
@@ -327,7 +326,7 @@ assumption
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
 will be just right:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># n0 = 4 &lt;= 4 = number_of_observations</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># compare n0 with number_of_observations</span></span>
 <span><span class="co">#&gt; [1] 4</span></span>
 <span></span>
 <span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span>
@@ -417,16 +416,15 @@ matrices:</p>
 <span><span class="co">#&gt; The permutation (1,2,3):</span></span>
 <span><span class="co">#&gt;  - was found after 67 posteriori calculations;</span></span>
 <span><span class="co">#&gt;  - is 2147633.177 times more likely than the () permutation.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_multi_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) </span></span>
-<span><span class="co">#&gt;  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919</span></span></code></pre></div>
+<span><span class="va">multi_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_multi_map</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">multi_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)        (1,3)   (1,5)(2,3) </span></span>
+<span><span class="co">#&gt; 0.5623733798 0.4330643758 0.0029614554 0.0006747875 0.0003612172</span></span></code></pre></div>
 <p>The MAP symmetry is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>,
 matching the shared symmetry used to generate both groups. Its posterior
-probability is about
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>56</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">56\%</annotation></semantics></math>.
-The projected covariance estimate is also returned as one matrix per
-group:</p>
+probability is about 56.2%. The projected covariance estimate is also
+returned as one matrix per group:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_multi_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S_by_group</span>, <span class="va">g_multi_map</span><span class="op">)</span></span>
 <span></span>
@@ -439,11 +437,11 @@ group:</p>
 <span><span class="co">#&gt; hy -0.26 -0.26 -0.26 0.08  0.61</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_multi_projected</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       he    ha    hi    hu    hy</span></span>
-<span><span class="co">#&gt; he  2.13  1.35  1.35 -0.06  0.95</span></span>
-<span><span class="co">#&gt; ha  1.35  2.13  1.35 -0.06  0.95</span></span>
-<span><span class="co">#&gt; hi  1.35  1.35  2.13 -0.06  0.95</span></span>
-<span><span class="co">#&gt; hu -0.06 -0.06 -0.06  0.78 -0.66</span></span>
-<span><span class="co">#&gt; hy  0.95  0.95  0.95 -0.66  3.24</span></span>
+<span><span class="co">#&gt; he  2.40  1.62  1.62 -0.51  0.28</span></span>
+<span><span class="co">#&gt; ha  1.62  2.40  1.62 -0.51  0.28</span></span>
+<span><span class="co">#&gt; hi  1.62  1.62  2.40 -0.51  0.28</span></span>
+<span><span class="co">#&gt; hu -0.51 -0.51 -0.51  1.01 -0.73</span></span>
+<span><span class="co">#&gt; hy  0.28  0.28  0.28 -0.73  2.22</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/multi_sample_example_project-1.png" class="r-plt" alt="" width="700"></p>
@@ -464,20 +462,21 @@ clear:</p>
 <span>  show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_1_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">group_1_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_1_map</span><span class="op">)</span></span>
+<span><span class="va">group_2_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_2_map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">group_1_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) </span></span>
-<span><span class="co">#&gt;   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_2_map</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) </span></span>
-<span><span class="co">#&gt; 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.49565042   0.23330543   0.04511523   0.03684306   0.02882993</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">group_2_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; (1,2,3)(4,5)      (1,2,3)      (1,3,5)        (2,3)        (1,3) </span></span>
+<span><span class="co">#&gt;   0.52524938   0.32106074   0.04231691   0.02906696   0.01401196</span></span></code></pre></div>
 <p>The separate analyses are more ambiguous. The true
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
-permutation has posterior probability about
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>52</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">52\%</annotation></semantics></math>
-in the first sample and only about
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">32\%</annotation></semantics></math>
-in the second sample. The multi-sample fit combines evidence from both
-groups while requiring one shared permutation symmetry.</p>
+permutation has posterior probability about 49.6% in the first sample
+and only about 32.1% in the second sample. The multi-sample fit combines
+evidence from both groups while requiring one shared permutation
+symmetry.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>

@@ -247,12 +247,13 @@ g_map
 #>  - is 3.63 times more likely than the () permutation.
 ```
 
-This assumption is over 3 times more believable than making no
-assumption. Let’s examine how reasonable are other possible assumptions:
+This assumption is 3.63 times more believable than making no assumption.
+Let’s examine how reasonable other possible assumptions are:
 
 ``` r
 
-get_probabilities_from_gips(g_map)
+toy_probabilities <- get_probabilities_from_gips(g_map)
+toy_probabilities
 #>      (3,4,5)      (2,4,5) (1,2)(3,4,5)    (2,3,5,4)        (4,5)        (3,5) 
 #>  0.061991931  0.056959514  0.048479131  0.040410788  0.038027185  0.037829891 
 #>        (3,4)    (2,3,4,5)    (2,4,3,5)   (2,4)(3,5)      (2,3,5)   (1,2)(3,5) 
@@ -279,7 +280,7 @@ get_probabilities_from_gips(g_map)
 #>  0.001048474
 ```
 
-We see that assumption $`(3,4,5)`$ is the most likely with a $`6.2\%`$
+We see that assumption $`(3,4,5)`$ is the most likely with a 6.2%
 posterior probability. 21 possible permutations are more likely than id.
 
 Remember that the `n0` could still be too big for your data. In this
@@ -289,7 +290,7 @@ covariance correctly. The assumption $`(3,4,5)`$ will be just right:
 
 ``` r
 
-summary(g_map)$n0 # n0 = 4 <= 4 = number_of_observations
+summary(g_map)$n0 # compare n0 with number_of_observations
 #> [1] 4
 
 S_projected <- project_matrix(S, g_map)
@@ -388,13 +389,14 @@ g_multi_map
 #> The permutation (1,2,3):
 #>  - was found after 67 posteriori calculations;
 #>  - is 2147633.177 times more likely than the () permutation.
-head(get_probabilities_from_gips(g_multi_map), 5)
-#>      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) 
-#>  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919
+multi_probabilities <- get_probabilities_from_gips(g_multi_map)
+head(multi_probabilities, 5)
+#>      (1,2,3) (1,2,3)(4,5)        (2,3)        (1,3)   (1,5)(2,3) 
+#> 0.5623733798 0.4330643758 0.0029614554 0.0006747875 0.0003612172
 ```
 
 The MAP symmetry is $`(1,2,3)`$, matching the shared symmetry used to
-generate both groups. Its posterior probability is about $`56\%`$. The
+generate both groups. Its posterior probability is about 56.2%. The
 projected covariance estimate is also returned as one matrix per group:
 
 ``` r
@@ -410,11 +412,11 @@ round(S_multi_projected[[1]], 2)
 #> hy -0.26 -0.26 -0.26 0.08  0.61
 round(S_multi_projected[[2]], 2)
 #>       he    ha    hi    hu    hy
-#> he  2.13  1.35  1.35 -0.06  0.95
-#> ha  1.35  2.13  1.35 -0.06  0.95
-#> hi  1.35  1.35  2.13 -0.06  0.95
-#> hu -0.06 -0.06 -0.06  0.78 -0.66
-#> hy  0.95  0.95  0.95 -0.66  3.24
+#> he  2.40  1.62  1.62 -0.51  0.28
+#> ha  1.62  2.40  1.62 -0.51  0.28
+#> hi  1.62  1.62  2.40 -0.51  0.28
+#> hu -0.51 -0.51 -0.51  1.01 -0.73
+#> hy  0.28  0.28  0.28 -0.73  2.22
 
 plot(g_multi_map, type = "MLE")
 ```
@@ -440,19 +442,22 @@ g_2_map <- find_MAP(gips(S2, n2),
   show_progress_bar = FALSE
 )
 
-head(get_probabilities_from_gips(g_1_map), 5)
+group_1_probabilities <- get_probabilities_from_gips(g_1_map)
+group_2_probabilities <- get_probabilities_from_gips(g_2_map)
+
+head(group_1_probabilities, 5)
 #>      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) 
-#>   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839
-head(get_probabilities_from_gips(g_2_map), 5)
-#>    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) 
-#> 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413
+#>   0.49565042   0.23330543   0.04511523   0.03684306   0.02882993
+head(group_2_probabilities, 5)
+#> (1,2,3)(4,5)      (1,2,3)      (1,3,5)        (2,3)        (1,3) 
+#>   0.52524938   0.32106074   0.04231691   0.02906696   0.01401196
 ```
 
 The separate analyses are more ambiguous. The true $`(1,2,3)`$
-permutation has posterior probability about $`52\%`$ in the first sample
-and only about $`32\%`$ in the second sample. The multi-sample fit
-combines evidence from both groups while requiring one shared
-permutation symmetry.
+permutation has posterior probability about 49.6% in the first sample
+and only about 32.1% in the second sample. The multi-sample fit combines
+evidence from both groups while requiring one shared permutation
+symmetry.
 
 ## Further reading
 

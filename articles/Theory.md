@@ -424,12 +424,11 @@ S_projected <- project_matrix(S, g_map)
 
 We see the posterior probability
 [\[1,(30)\]](https://arxiv.org/abs/2004.03503) has the biggest value for
-the permutation $`(1,2,3,4,5,6)`$. It was over 100 times bigger than for
-the trivial $`\text{id} = (1)(2)\ldots(p)`$ permutation. We interpret
-that under the assumptions (centered Gaussian), it is over 100 times
-more reasonable to assume the data `Z` was drawn from model
-$`\mathrm{N}_p(0,\text{S_projected})`$ than from model
-$`\mathrm{N}_p(0,\text{S})`$.
+the permutation $`(1,2,3,4,5,6)`$. It is 133.16 times bigger than for
+the trivial $`\text{id} = (1)(2)\ldots(p)`$ permutation. Under the
+assumptions (centered Gaussian), we therefore interpret the model
+$`\mathrm{N}_p(0,\text{S_projected})`$ as more reasonable than
+$`\mathrm{N}_p(0,\text{S})`$ for the data `Z`.
 
 ## Information Criterion - AIC and BIC
 
