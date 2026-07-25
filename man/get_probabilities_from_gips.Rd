@@ -22,6 +22,13 @@ After the \code{gips} object was optimized with
 the \code{find_MAP(return_probabilities = TRUE)} function, then
 those calculated probabilities can be extracted with this function.
 }
+\section{Multi-sample}{
+
+For multi-sample \code{gips} objects, these are probabilities of the shared
+permutation symmetry, calculated from the combined posterior used by
+\code{\link[=find_MAP]{find_MAP()}}.
+}
+
 \examples{
 g <- gips(matrix(c(1, 0.5, 0.5, 1.3), nrow = 2), 13, was_mean_estimated = FALSE)
 g_map <- find_MAP(g,

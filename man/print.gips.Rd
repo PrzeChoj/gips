@@ -41,6 +41,13 @@ An invisible \code{NULL}.
 \description{
 Printing function for a \code{gips} class.
 }
+\section{Multi-sample}{
+
+For multi-sample \code{gips} objects the number of observations is shown as a
+vector \code{n = c(n1, n2, ...)} and the comparison to the starting permutation
+uses the combined log-posterior (sum across groups).
+}
+
 \examples{
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10, perm = "(12)")

@@ -322,3 +322,19 @@ test_that("compare_posteriories_of_perms refuse to compare different parameters"
   g7 <- gips(matrix_invariant_by_example_perm2, 140, perm = "(1235)", D_matrix = diag(1, 6), delta = 10, was_mean_estimated = FALSE)
   expect_error(compare_posteriories_of_perms(g6, g7), class = "different_parameters")
 })
+
+test_that("compare_posteriories_of_perms accepts equivalent numeric parameter types", {
+  S <- matrix(c(1, 0.2, 0.2, 1.5), nrow = 2)
+
+  g_n_integer <- gips(S, 10L, delta = 3, perm = "(1,2)")
+  g_n_double <- gips(S, 10, delta = 3, perm = "()")
+  expect_no_error(compare_log_posteriories_of_perms(
+    g_n_integer, g_n_double, print_output = FALSE
+  ))
+
+  g_delta_integer <- gips(S, 10, delta = 3L, perm = "(1,2)")
+  g_delta_double <- gips(S, 10, delta = 3, perm = "()")
+  expect_no_error(compare_log_posteriories_of_perms(
+    g_delta_integer, g_delta_double, print_output = FALSE
+  ))
+})

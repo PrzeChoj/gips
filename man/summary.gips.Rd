@@ -139,6 +139,15 @@ The function \code{print.summary.gips()} returns an invisible \code{NULL}.
 Prints every interesting information in a form pleasant for humans.
 
 }}
+\section{Multi-sample}{
+
+For multi-sample \code{gips} objects the summary includes the number of groups G,
+the full vector of per-group sample sizes, and the total \code{n_parameters}
+(which equals \code{G * dim_omega(sigma)}). The n0 existence check uses
+\code{min(n_g)}. The Likelihood-Ratio test is not available for multi-sample
+objects and is reported as \code{NULL}.
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 

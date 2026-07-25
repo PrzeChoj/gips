@@ -47,6 +47,15 @@ for the \code{gips} object \code{g}, call \code{summary(g)$n0}.
 See examples where the \code{g_n_too_small} had too small
 \code{number_of_observations} to have likelihood. After the optimization,
 the likelihood did exist.
+}
+
+\section{Multi-sample}{
+
+For multi-sample \code{gips} objects the log-likelihood is the sum of the
+per-group log-likelihoods. The existence condition becomes
+\code{min(n_g) >= n0}. The \code{df} attribute equals \code{G * dim_omega(sigma)}
+(each group has its own free covariance parameters), and \code{nobs} equals
+\code{sum(n_g)}.
 
 For more information, refer to \strong{\eqn{C_\sigma} and \code{n0}} section in
 \code{vignette("Theory", package = "gips")} or its

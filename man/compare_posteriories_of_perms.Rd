@@ -67,6 +67,15 @@ logarithmic version of \code{compare_posteriories_of_perms()}.
 The natural logarithm is used.
 
 }}
+\section{Multi-sample}{
+
+When comparing permutations for a multi-sample \code{gips} object, or when
+passing multi-sample arguments directly, the comparison uses the combined
+log-posterior (the sum of per-group log-posteriors). Two \code{gips} objects can
+be compared only when they are both single-sample or both multi-sample with
+the same data and hyperparameters.
+}
+
 \examples{
 require("MASS") # for mvrnorm()
 
