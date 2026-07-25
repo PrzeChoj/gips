@@ -1,7 +1,7 @@
 # Prepare orthogonal matrix
 
-Calculate orthogonal matrix U_Gamma for decomposition in [Theorem 1 from
-references](https://arxiv.org/abs/2004.03503).
+Calculate the orthogonal matrix `U_Gamma` for decomposition in [Theorem
+1 from references](https://arxiv.org/abs/2004.03503).
 
 ## Usage
 
@@ -13,15 +13,15 @@ prepare_orthogonal_matrix(perm, perm_size = NULL, basis = NULL)
 
 - perm:
 
-  An object of a `gips_perm` or a
-  [`permutations::cycle`](https://robinhankin.github.io/permutations/reference/permutation.html)
-  class.
+  An object of a `gips_perm` or anything a
+  [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
+  can handle. It can also be of a `gips` class, but it will be
+  interpreted as the underlying `gips_perm`.
 
 - perm_size:
 
-  Size of a permutation. Required if `perm` is of a
-  [`permutations::cycle`](https://robinhankin.github.io/permutations/reference/permutation.html)
-  class.
+  Size of a permutation. Required if `perm` is neither `gips_perm` nor
+  `gips`.
 
 - basis:
 
@@ -36,16 +36,24 @@ references](https://arxiv.org/abs/2004.03503).
 ## Details
 
 Given X - a matrix invariant under the permutation `perm`. Call Gamma
-the permutations cyclic group \\\<perm\> = \\perm, perm^2, ...\\\\.
+the permutations cyclic group: \\\Gamma = \<perm\> = \\perm, perm^2,
+...\\\\.
 
-Then, U_Gamma is such an orthogonal matrix, which block-diagonalizes X.
+Then, \\U\_\Gamma\\ is such an orthogonal matrix, which
+block-diagonalizes X.
 
 To be more precise, the matrix `t(U_Gamma) %*% X %*% U_Gamma` has a
 block-diagonal structure, which is ensured by [Theorem 1 from
-references](https://arxiv.org/abs/2004.03503)
-
-Formula for U_Gamma can be found in [Theorem 6 from
 references](https://arxiv.org/abs/2004.03503).
+
+The formula for `U_Gamma` can be found in [Theorem 6 from
+references](https://arxiv.org/abs/2004.03503).
+
+A nice example is demonstrated in the **Block Decomposition - \[1\],
+Theorem 1** section of
+[`vignette("Theory", package="gips")`](https://przechoj.github.io/gips/articles/Theory.md)
+or its [pkgdown
+page](https://przechoj.github.io/gips/articles/Theory.html).
 
 ## References
 
@@ -64,7 +72,7 @@ link](https://arxiv.org/abs/2004.03503);
 - **Block Decomposition - \[1\], Theorem 1** section of
   [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or its [pkgdown
-  page](https://przechoj.github.io/gips/articles/Theory.html)) - A place
+  page](https://przechoj.github.io/gips/articles/Theory.html) - A place
   to learn more about the math behind the `gips` package and see more
   examples of `prepare_orthogonal_matrix()`.
 
@@ -82,9 +90,9 @@ X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
 block_decomposition <- t(U_Gamma) %*% X %*% U_Gamma
 round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]
 #>         [,1]    [,2]    [,3]    [,4]    [,5]
-#> [1,] 2.02909 0.34634 0.00000 0.00000 0.00000
-#> [2,] 0.34634 1.12904 0.00000 0.00000 0.00000
-#> [3,] 0.00000 0.00000 0.70611 0.00000 0.00000
-#> [4,] 0.00000 0.00000 0.00000 0.70611 0.00000
-#> [5,] 0.00000 0.00000 0.00000 0.00000 0.83694
+#> [1,] 1.10350 0.08694 0.00000 0.00000 0.00000
+#> [2,] 0.08694 0.72049 0.00000 0.00000 0.00000
+#> [3,] 0.00000 0.00000 0.93155 0.00000 0.00000
+#> [4,] 0.00000 0.00000 0.00000 0.93155 0.00000
+#> [5,] 0.00000 0.00000 0.00000 0.00000 0.38298
 ```

@@ -8,7 +8,9 @@
 <url><loc>https://przechoj.github.io/gips/authors.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/index.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/news/index.html</loc></url>
-<url><loc>https://przechoj.github.io/gips/reference/as.character.html</loc></url>
+<url><loc>https://przechoj.github.io/gips/reference/AIC.gips.html</loc></url>
+<url><loc>https://przechoj.github.io/gips/reference/as.character.gips.html</loc></url>
+<url><loc>https://przechoj.github.io/gips/reference/as.character.gips_perm.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/calculate_gamma_function.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/find_MAP.html</loc></url>
@@ -18,6 +20,7 @@
 <url><loc>https://przechoj.github.io/gips/reference/gips.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/gips_perm.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/index.html</loc></url>
+<url><loc>https://przechoj.github.io/gips/reference/logLik.gips.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/log_posteriori_of_gips.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/plot.gips.html</loc></url>
 <url><loc>https://przechoj.github.io/gips/reference/prepare_orthogonal_matrix.html</loc></url>

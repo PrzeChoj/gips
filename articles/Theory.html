@@ -5,12 +5,17 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Theory • gips</title>
+<title>The Theory Behind gips • gips</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Theory">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The Theory Behind gips">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,8 +39,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Optimizers.html">Optimizers</a></li>
-    <li><a class="dropdown-item" href="../articles/Theory.html">Theory</a></li>
+<li><a class="dropdown-item" href="../articles/Optimizers.html">Available Optimizers: How to Find Maximum A Posteriori?</a></li>
+    <li><a class="dropdown-item" href="../articles/Theory.html">The Theory Behind gips</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -57,17 +62,17 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Theory</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>The Theory Behind gips</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.0.0/vignettes/Theory.Rmd" class="external-link"><code>vignettes/Theory.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.2.2/vignettes/Theory.Rmd" class="external-link"><code>vignettes/Theory.Rmd</code></a></small>
       <div class="d-none name"><code>Theory.Rmd</code></div>
     </div>
 
     
     
 <div class="section level2">
-<h2 id="theory-the-gips-is-based-on">Theory the <code>gips</code> is based on<a class="anchor" aria-label="anchor" href="#theory-the-gips-is-based-on"></a>
+<h2 id="what-the-gips-is-based-on">What the <code>gips</code> is based on<a class="anchor" aria-label="anchor" href="#what-the-gips-is-based-on"></a>
 </h2>
 <p>The package is based on the article <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>. There the math behind
 the package is precisely demonstrated, and all the theorems are
@@ -86,6 +91,14 @@ parameter
 complete Gaussian models invariant by the action of a subgroup of the
 symmetric group (…)”. Those ideas are implemented in the
 <code>gips</code> package.</p>
+<div class="section level3">
+<h3 id="alternative-reference">Alternative reference<a class="anchor" aria-label="anchor" href="#alternative-reference"></a>
+</h3>
+<p>The theory derived in [1] is for general group invariance, while in
+this package, we only consider invariance under cyclic groups. This
+allows for massive simplifications. This simplified version is
+comprehensibly set out in [2].</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="basic-definitions">Basic definitions<a class="anchor" aria-label="anchor" href="#basic-definitions"></a>
@@ -93,7 +106,7 @@ symmetric group (…)”. Those ideas are implemented in the
 <p>Let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">V=\{1,\ldots,p\}</annotation></semantics></math>
 be a finite index set, and for every
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">i\in V</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">i\in \{1, \dots, n\}</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>Z</mi><mn>1</mn><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>Z</mi><mi>p</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top</annotation></semantics></math>
 be a multivariate random variable following a centered Gaussian model
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\Sigma)</annotation></semantics></math>,
@@ -124,7 +137,7 @@ if for all
 with its permutation matrix).</p>
 <p>For a subgroup
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>⊂</mo><msub><mi>𝔖</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">\Gamma \subset  \mathfrak{S}_p</annotation></semantics></math>,
-we define the colored space, i.e. the space of symmetric matrices
+we define the colored space, i.e., the space of symmetric matrices
 invariant under
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>,
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mi>S</mi><mo>∈</mo><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">y</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>;</mo><mi>ℝ</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><msub><mi>S</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>S</mi><mrow><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>V</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},</annotation></semantics></math>
@@ -156,12 +169,14 @@ and that <code>gips</code> searches within cyclic subgroups only.</p>
 </h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,</span>
-<span>              <span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,</span>
-<span>              <span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,<span class="fl">0.8</span>,</span>
-<span>              <span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">0.8</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">1.1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>,</span>
+<span>  <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>,</span>
+<span>  <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>,</span>
+<span>  <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_2-1.png" class="r-plt" alt="" width="700"></p>
 <p><code>S</code> is a symmetric matrix invariant under the group
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt;(1,2,3,4,5,6)\right&gt;</annotation></semantics></math>.</p>
@@ -180,18 +195,22 @@ and that <code>gips</code> searches within cyclic subgroups only.</p>
 <span><span class="co">#&gt; [6,]  0.0  0.0  0.0  0.0  0.0  0.2</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_4-1.png" class="r-plt" alt="" width="700"></p>
 <p>The transformed matrix is in the block-diagonal form of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>, Theorem 1. Blank
-entries are off-block entries and equal to 0. The result was rounded to
-the 5th place after the decimal to hide the inaccuracies of floating
-point arithmetic.</p>
+entries are off-block entries and equal to 0. Notice that, for example,
+the [2,3] is not blank regardless of being 0. This is because it is a
+part of the block-diagonal form but happens to have a value of 0.</p>
+<p>The result was rounded to the 5th place after the decimal to hide the
+inaccuracies of floating point arithmetic.</p>
 <p>Let’s see the other example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">0.4</span>,<span class="fl">0.2</span>,<span class="fl">0.1</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.1</span>,<span class="fl">0.4</span>,<span class="fl">0.2</span>,</span>
-<span>              <span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.2</span>,<span class="fl">0.1</span>,<span class="fl">0.4</span>,</span>
-<span>              <span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span>,<span class="fl">0.9</span>,</span>
-<span>              <span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">1.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>,</span>
+<span>  <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.4</span>,</span>
+<span>  <span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span>, <span class="fl">0.9</span>,</span>
+<span>  <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">1.2</span></span>
+<span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_6-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now, <code>S</code> is a symmetric matrix invariant under the group
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt;(1,2,3)(4,5,6)\right&gt;</annotation></semantics></math>.</p>
@@ -234,8 +253,18 @@ which means:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">id</mtext><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mi>…</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}</annotation></semantics></math>
 we have
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">id</mtext><mo stretchy="false" form="postfix">}</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">\pi_{\{\text{id}\}}(S) = S</annotation></semantics></math>.</p>
-<p>So no additional assumptions are made; thus the standard covariance
+<p>So, no additional assumptions are made; thus, the standard covariance
 estimator is the best we can do.</p>
+</div>
+<div class="section level4">
+<h4 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
+</h4>
+<p>We will abbreviate the notation: when the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mi>c</mi><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt; c \right&gt;</annotation></semantics></math>
+is a cyclic group of a permutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
+we will write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>π</mi><mrow><mo stretchy="true" form="prefix">⟨</mo><mi>c</mi><mo stretchy="true" form="postfix">⟩</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\pi_{c}(S) := \pi_{\Gamma}(S) = \pi_{\left&lt; c \right&gt;}(S)</annotation></semantics></math>.</p>
 </div>
 <div class="section level4">
 <h4 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -243,28 +272,28 @@ estimator is the best we can do.</p>
 <p>Let <code>S</code> be any symmetric square matrix:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;        [,1]  [,2]   [,3]  [,4]   [,5]  [,6]</span></span>
-<span><span class="co">#&gt; [1,] 108.99  3.44 -14.41 14.90 -15.28 -5.78</span></span>
-<span><span class="co">#&gt; [2,]   3.44 27.71  -3.45  2.56   4.81 -4.46</span></span>
-<span><span class="co">#&gt; [3,] -14.41 -3.45  42.59  8.15  -7.57 -0.95</span></span>
-<span><span class="co">#&gt; [4,]  14.90  2.56   8.15 29.94  -1.52  0.83</span></span>
-<span><span class="co">#&gt; [5,] -15.28  4.81  -7.57 -1.52  10.85  5.56</span></span>
-<span><span class="co">#&gt; [6,]  -5.78 -4.46  -0.95  0.83   5.56 27.04</span></span></code></pre></div>
+<span><span class="co">#&gt;        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]</span></span>
+<span><span class="co">#&gt; [1,] 137.51 -16.21  10.03   0.16 -24.35 -17.42</span></span>
+<span><span class="co">#&gt; [2,] -16.21  34.08 -10.62  15.93  12.23  -2.74</span></span>
+<span><span class="co">#&gt; [3,]  10.03 -10.62  35.47   3.10  -3.81  -9.60</span></span>
+<span><span class="co">#&gt; [4,]   0.16  15.93   3.10  26.74   7.71 -13.51</span></span>
+<span><span class="co">#&gt; [5,] -24.35  12.23  -3.81   7.71  26.00  -7.24</span></span>
+<span><span class="co">#&gt; [6,] -17.42  -2.74  -9.60 -13.51  -7.24  16.77</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/def3_2-1.png" class="r-plt" alt="" width="700"></p>
 <p>One can project this matrix, for example, on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt;(1,2)(3,4,5,6)\right&gt;</annotation></semantics></math>:</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mtext mathvariant="normal">perm</mtext><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt; \text{perm} \right&gt; = \left&lt;(1,2)(3,4,5,6)\right&gt;</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, perm <span class="op">=</span> <span class="st">"(1,2)(3,4,5,6)"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_projected</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span></span>
-<span><span class="co">#&gt; [1,] 68.35  3.44 -7.90  2.62 -7.90  2.62</span></span>
-<span><span class="co">#&gt; [2,]  3.44 68.35  2.62 -7.90  2.62 -7.90</span></span>
-<span><span class="co">#&gt; [3,] -7.90  2.62 27.60  2.81 -3.37  2.81</span></span>
-<span><span class="co">#&gt; [4,]  2.62 -7.90  2.81 27.60  2.81 -3.37</span></span>
-<span><span class="co">#&gt; [5,] -7.90  2.62 -3.37  2.81 27.60  2.81</span></span>
-<span><span class="co">#&gt; [6,]  2.62 -7.90  2.81 -3.37  2.81 27.60</span></span></code></pre></div>
+<span><span class="co">#&gt;        [,1]   [,2]  [,3]  [,4]  [,5]  [,6]</span></span>
+<span><span class="co">#&gt; [1,]  85.80 -16.21 -0.28 -3.91 -0.28 -3.91</span></span>
+<span><span class="co">#&gt; [2,] -16.21  85.80 -3.91 -0.28 -3.91 -0.28</span></span>
+<span><span class="co">#&gt; [3,]  -0.28  -3.91 26.25 -1.51 -8.66 -1.51</span></span>
+<span><span class="co">#&gt; [4,]  -3.91  -0.28 -1.51 26.25 -1.51 -8.66</span></span>
+<span><span class="co">#&gt; [5,]  -0.28  -3.91 -8.66 -1.51 26.25 -1.51</span></span>
+<span><span class="co">#&gt; [6,]  -3.91  -0.28 -1.51 -8.66 -1.51 26.25</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/def3_4-1.png" class="r-plt" alt="" width="700"></p>
-<p>Notice in the <code>S_projected</code> matrix, there are identical
+<p>Notice in the <code>S_projected</code> matrix there are identical
 elements according to the equation from the beginning of this section.
 For example, <code>S_projected[1,1] = S_projected[2,2]</code>.</p>
 </div>
@@ -295,7 +324,7 @@ Therefore a single observation would be enough to estimate a covariance
 matrix with <code><a href="../reference/project_matrix.html">project_matrix()</a></code>. If the permutation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sigma = (1,2)(3,4,5,6)</annotation></semantics></math>
 is discovered, then
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>σ</mi></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">C_\sigma = 2</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>σ</mi></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">C_\sigma = 2</annotation></semantics></math>,
 and so 2 observations would be enough.</p>
 <p>To get this
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>
@@ -309,7 +338,7 @@ appropriate <code>gips</code> object:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span></span>
 <span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
 <p>This is called <code>n0</code> and not
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>
 because it is increased by 1 when the mean was estimated:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
@@ -336,7 +365,7 @@ the paper demonstrates a way how to find it.</p>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>.</li>
 <li>Calculate the posteriori distribution (up to a normalizing constant)
-by formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
+by the formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
 (30).</li>
 <li>Use the Metropolis-Hastings algorithm to find the permutation with
 the biggest value of the posterior probability
@@ -363,17 +392,22 @@ follows the Diaconis-Ylvisaker conjugate prior distribution with
 parameters
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
 (real number,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 2</annotation></semantics></math>)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 1</annotation></semantics></math>)
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
 (symmetric, positive definite square matrix of the same size as
 <code>S</code>), see <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
 Sec. 3.4.</li>
 </ol>
-<p>Footnote: Actually in some cases smaller (but still positive) values
-for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
-parameter are theoretically correct. Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
+<p>Footnote: Actually, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>i</mi><mi>d</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Gamma = \{id\}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 0</annotation></semantics></math>
+parameters are theoretically correct. In <code>gips</code>, we want this
+to be defined for all cyclic groups
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>,
+so we restrict
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 1</annotation></semantics></math>.
+Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
 </div>
 <div class="section level4">
 <h4 id="gips-technical-details">
@@ -385,15 +419,18 @@ is named <code>delta</code>, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
 is named <code>D_matrix</code>. By default, they are set to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
-and <code>diag(p)</code>, respectively. However, it is worth running the
+and <code>diag(d, p)</code>, respectively, where
+<code>d = mean(diag(S))</code>. However, it is worth running the
 procedure for several parameters <code>D_matrix</code> of form
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>⋅</mo><mi>d</mi><mi>i</mi><mi>a</mi><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">C\cdot diag(p)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>⋅</mo><mi>d</mi><mi>i</mi><mi>a</mi><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">d\cdot diag(p)</annotation></semantics></math>
 for positive constant
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>.
-Large
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
-(compared to the data) favors small groups.</p>
-<p>One can calculate the logarithm of formula (30) with function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>.
+Small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+(compared to the data) favors small structures. Large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+will “forget” the data.</p>
+<p>One can calculate the logarithm of formula (30) with the function
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p>
 </div>
 <div class="section level4">
@@ -414,19 +451,21 @@ was drawn from the model
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top</annotation></semantics></math></p>
 <p>In such a case, we call
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><annotation encoding="application/x-tex">c_{\text{map}}</annotation></semantics></math>
-the Maximum A Posteri (MAP).</p>
+the Maximum A Posteriori (MAP).</p>
 </div>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
 <p>The space of all permutations is enormous for bigger
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">p\ge9</annotation></semantics></math>).
-It is more reasonable to estimate the MAP in such a big space than to
-calculate it precisely.</p>
+(in our experiments,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\ge 10</annotation></semantics></math>
+is too big). In such a big space, estimating the MAP is more reasonable
+than calculating it precisely.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
 it. To see the discussion on it and other options available in
-<code>gips</code>, see <code><a href="../articles/Optimizers.html">vignette("Optimizers")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown
+<code>gips</code>, see
+<code><a href="../articles/Optimizers.html">vignette("Optimizers", package="gips")</a></code> or its <a href="https://przechoj.github.io/gips/articles/Optimizers.html">pkgdown
 page</a>.</p>
 </div>
 <div class="section level4">
@@ -451,9 +490,11 @@ page</a>.</p>
 <span><span class="op">)</span> <span class="co"># sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)</span></span>
 <span></span>
 <span><span class="co"># Generate example data from a model:</span></span>
-<span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">1234</span>,<span class="op">{</span></span>
-<span>  <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
+<span>    mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co"># End of prepare model</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler3') .style.display=='none')
@@ -461,12 +502,12 @@ page</a>.</p>
             else{document.getElementById('spoiler3') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have this data, <code>Z</code>. It has only
+<p>Let’s say we have this data, <code>Z</code>. It has dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>
+and only
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
-observations, and its dimension is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>.
-Let’s assume <code>Z</code> was drawn from the normal distribution with
-the mean
+observations. Let’s assume <code>Z</code> was drawn from the normal
+distribution with the mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,0,0,0,0,0)</annotation></semantics></math>.
 We want to estimate the covariance matrix:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -484,23 +525,136 @@ We want to estimate the covariance matrix:</p>
 <span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt; The permutation (1,2,3,4,5,6)</span></span>
-<span><span class="co">#&gt;  - was found after 720 log_posteriori calculations</span></span>
-<span><span class="co">#&gt;  - is 157.903480698964 times more likely than the starting, () permutation.</span></span>
+<span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
+<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
+<span><span class="co">#&gt;  - is 133.158 times more likely than the () permutation.</span></span>
 <span></span>
-<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/example2_readme3-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see the posterior probability <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,(30)]</a> has the biggest
 value for the permutation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3,4,5,6)</annotation></semantics></math>.
-It was over 150 times bigger than for the trivial
+It was over 100 times bigger than for the trivial
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">id</mtext><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mi>…</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{id} = (1)(2)\ldots(p)</annotation></semantics></math>
 permutation. We interpret that under the assumptions (centered
-Gaussian), it is over 150 times more reasonable to assume the data
+Gaussian), it is over 100 times more reasonable to assume the data
 <code>Z</code> was drawn from model
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mtext mathvariant="normal">S_projected</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\text{S_projected})</annotation></semantics></math>
 than from model
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mtext mathvariant="normal">S</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\text{S})</annotation></semantics></math>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="information-criterion---aic-and-bic">Information Criterion - AIC and BIC<a class="anchor" aria-label="anchor" href="#information-criterion---aic-and-bic"></a>
+</h2>
+<p>One may be interested in Akaike’s An Information Criterion (AIC) or
+Schwarz’s Bayesian Information Criterion (BIC) of the found model. Those
+are defined based on log-Likelihood:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo>;</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><mi>p</mi><mn>2</mn></mfrac><mi mathvariant="normal">log</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi mathvariant="normal">log</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo></mrow><annotation encoding="application/x-tex">\log L\left(\Sigma; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12 {Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \Sigma\right)\right) - \frac{n}2\mathrm{tr}(\Sigma^{-1} S),</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top</annotation></semantics></math>.</p>
+<p>The MLE of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
+in a model invariant under
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">\Gamma=c</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\Sigma} = \pi_{c}(S)</annotation></semantics></math>.
+Further, for every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>⋅</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p</annotation></semantics></math>,
+so:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>;</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>−</mi><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2</annotation></semantics></math></p>
+<p>which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
+<p>Then AIC and BIC are defined by:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>I</mi><mi>C</mi><mo>=</mo><mn>2</mn><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">dim</mi><mo>⁡</mo></mrow><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>2</mn><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">AIC = 2 \cdot (\dim M) -2 \log L(\pi_{c}(S))</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>I</mi><mi>C</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">dim</mi><mo>⁡</mo></mrow><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>2</mn><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BIC = (\log n) \cdot (\dim M) -2 \log L(\pi_{c}(S))</annotation></semantics></math></p>
+<p>A smaller value of the criteria for a given model indicates a better
+fit.</p>
+<p>Those can be calculated by <code><a href="../reference/AIC.gips.html">AIC.gips()</a></code> and
+<code><a href="../reference/AIC.gips.html">BIC.gips()</a></code>.</p>
+<div class="section level4">
+<h4 id="estimated-mean">Estimated mean<a class="anchor" aria-label="anchor" href="#estimated-mean"></a>
+</h4>
+<p>When the mean was estimated, we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo stretchy="false" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><msup><mrow><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}</annotation></semantics></math>.
+Then in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">\log L</annotation></semantics></math>
+we use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>
+in stead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
+Definitions of AIC and BIC stay the same.</p>
+</div>
+<div class="section level4">
+<h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
+</h4>
+<p>Consider an example similar to one in the <strong>Bayesian model
+selection</strong> section:</p>
+<div id="spoiler4" style="display:none">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Prepare model, multivariate normal distribution</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>,</span>
+<span>    <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>,</span>
+<span>    <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>,</span>
+<span>    <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>,</span>
+<span>    <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span>, <span class="fl">0.8</span>,</span>
+<span>    <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.05</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span> <span class="co"># sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)</span></span>
+<span></span>
+<span><span class="co"># Generate example data from a model:</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>,</span>
+<span>    mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># End of prepare model</span></span></code></pre></div>
+</div>
+<button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler4') .style.display=='none')
+              {document.getElementById('spoiler4') .style.display=''}
+            else{document.getElementById('spoiler4') .style.display='none'}">
+Show/hide data preparation
+</button>
+<p>Let’s say we have this data, <code>Z</code>. It has dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+observations. Let’s assume <code>Z</code> was drawn from the normal
+distribution with the mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,0,0,0,0,0)</annotation></semantics></math>.
+We want to estimate the covariance matrix:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 7 6</span></span>
+<span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 7</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># 6</span></span>
+<span></span>
+<span><span class="va">S</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">Z</span><span class="op">)</span> <span class="op">/</span> <span class="va">number_of_observations</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, optimizer <span class="op">=</span> <span class="st">"brute_force"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ================================================================================</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 64.19906</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># this is smaller, so this is better</span></span>
+<span><span class="co">#&gt; [1] 62.99751</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 63.06318</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span> <span class="co"># this is smaller, so this is better</span></span>
+<span><span class="co">#&gt; [1] 62.78115</span></span></code></pre></div>
+<p>We will consider a <code>g_map</code> better model both in terms of
+the AIC and the BIC.</p>
 </div>
 </div>
 <div class="section level2">
@@ -510,6 +664,9 @@ than from model
 “Model selection in the space of Gaussian models invariant by symmetry.”
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
+<p>[2] “Learning permutation symmetries with gips in R” by
+<code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
+Kołodziejek, available on <a href="https://arxiv.org/abs/2307.00790" class="external-link">arXiv:2307.00790</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -518,7 +675,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
+  <p>Developed by Adam Przemysław Chojecki, Paweł Morgen, Bartosz Kołodziejek.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -1,7 +1,7 @@
 # A log of a posteriori that the covariance matrix is invariant under permutation
 
 More precisely, it is the logarithm of an unnormalized posterior
-probability. It is the goal function for optimization algorithms in
+probability. It is the goal function for optimization algorithms in the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
 function. The `perm_proposal` that maximizes this function is the
 Maximum A Posteriori (MAP) Estimator.
@@ -16,7 +16,7 @@ log_posteriori_of_gips(g)
 
 - g:
 
-  An object of a `gips_perm` class.
+  An object of a `gips` class.
 
 ## Value
 
@@ -43,9 +43,16 @@ link](https://arxiv.org/abs/2004.03503);
   The function that calculates the value needed for
   `log_posteriori_of_gips()`.
 
+- [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md) -
+  The function that calculates the structure constants needed for
+  `log_posteriori_of_gips()`.
+
 - [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md) -
-  The functions that tries to optimize the `log_posteriori_of_gips`
-  function.
+  The function that optimizes the `log_posteriori_of_gips` function.
+
+- [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md) -
+  Uses `log_posteriori_of_gips()` to compare a posteriori of two
+  permutations.
 
 - [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or its [pkgdown
@@ -56,33 +63,41 @@ link](https://arxiv.org/abs/2004.03503);
 
 ``` r
 # In the space with p = 2, there is only 2 permutations:
-perm1 <- permutations::as.cycle(permutations::as.word(c(1, 2))) # (1)(2)
-perm2 <- permutations::as.cycle(permutations::as.word(c(2, 1))) # (1,2)
+perm1 <- permutations::as.cycle("(1)(2)")
+perm2 <- permutations::as.cycle("(1,2)")
 S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g1 <- gips(S1, 100, perm = perm1)
 g2 <- gips(S1, 100, perm = perm2)
-log_posteriori_of_gips(g1) # -136.6, this is the MAP Estimator
-#> [1] -135.3433
-log_posteriori_of_gips(g2) # -140.4
-#> [1] -139.0036
+log_posteriori_of_gips(g1) # -134.1615, this is the MAP Estimator
+#> [1] -134.1615
+log_posteriori_of_gips(g2) # -138.1695
+#> [1] -138.1695
 
-exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 41.3
-#> [1] 38.87122
-# g1 is over 40 times more likely than g2.
+exp(log_posteriori_of_gips(g1) - log_posteriori_of_gips(g2)) # 55.0
+#> [1] 55.03601
+# g1 is 55 times more likely than g2.
 # This is the expected outcome because S[1,1] significantly differs from S[2,2].
+
+compare_posteriories_of_perms(g1, g2)
+#> The permutation () is 55.036 times more likely than the (1,2) permutation.
+# The same result, but presented in a more pleasant way
 
 # ========================================================================
 
 S2 <- matrix(c(1, 0.5, 0.5, 1.1), nrow = 2, byrow = TRUE)
 g1 <- gips(S2, 100, perm = perm1)
 g2 <- gips(S2, 100, perm = perm2)
-log_posteriori_of_gips(g1) # -99.5
-#> [1] -98.54173
-log_posteriori_of_gips(g2) # -96.9, this is the MAP Estimator
-#> [1] -96.00429
+log_posteriori_of_gips(g1) # -98.40984
+#> [1] -98.40984
+log_posteriori_of_gips(g2) # -95.92039, this is the MAP Estimator
+#> [1] -95.92039
 
-exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.7
-#> [1] 12.64729
-# g2 is over 12 times more likely than g1.
+exp(log_posteriori_of_gips(g2) - log_posteriori_of_gips(g1)) # 12.05
+#> [1] 12.0546
+# g2 is 12 times more likely than g1.
 # This is the expected outcome because S[1,1] is very close to S[2,2].
+
+compare_posteriories_of_perms(g2, g1)
+#> The permutation (1,2) is 12.055 times more likely than the () permutation.
+# The same result, but presented in a more pleasant way
 ```

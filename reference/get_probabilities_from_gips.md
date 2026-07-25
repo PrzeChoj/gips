@@ -1,8 +1,7 @@
 # Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
 
-After the `gips` object was optimized with
-[`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
-function with `return_probabilities = TRUE`, then those calculated
+After the `gips` object was optimized with the
+`find_MAP(return_probabilities = TRUE)` function, then those calculated
 probabilities can be extracted with this function.
 
 ## Usage
@@ -15,15 +14,15 @@ get_probabilities_from_gips(g)
 
 - g:
 
-  An object of class "gips"; a result of a
+  An object of class `gips`. A result of a
   `find_MAP(return_probabilities = TRUE)`.
 
 ## Value
 
 Returns a numeric vector, calculated values of probabilities. Names
-contains permutations this probability represent. For `gips` object
-optimized with `find_MAP(return_probabilities = FALSE)`, returns a
-`NULL` object.
+contain permutations this probabilities represent. For `gips` object
+optimized with `find_MAP(return_probabilities = FALSE)`, it returns a
+`NULL` object. It is sorted according to the probability.
 
 ## See also
 
@@ -46,6 +45,6 @@ g_map <- find_MAP(g,
 )
 
 get_probabilities_from_gips(g_map)
-#>        ()     (1,2) 
-#> 0.1649846 0.8350154 
+#>     (1,2)        () 
+#> 0.8170484 0.1829516 
 ```

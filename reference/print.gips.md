@@ -8,7 +8,7 @@ Printing function for a `gips` class.
 # S3 method for class 'gips'
 print(
   x,
-  digits = Inf,
+  digits = 3,
   compare_to_original = TRUE,
   log_value = FALSE,
   oneline = FALSE,
@@ -39,9 +39,7 @@ print(
 
 - log_value:
 
-  A logical. Whether to print the value of a
-  [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
-  Default to `FALSE`.
+  A logical. Whether to print the logarithmic value. Default to `FALSE`.
 
 - oneline:
 
@@ -71,8 +69,7 @@ Returns an invisible `NULL`.
 
 ``` r
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
-g <- gips(S, 10)
-print(g, digits = 4)
-#> The permutation ()
-#>  - is 1 times more likely than the id, () permutation.
+g <- gips(S, 10, perm = "(12)")
+print(g, digits = 4, oneline = TRUE)
+#> The permutation (1,2): is 2.2801 times more likely than the () permutation.
 ```

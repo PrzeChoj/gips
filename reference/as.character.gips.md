@@ -21,7 +21,7 @@ as.character(x, ...)
 
 ## Value
 
-An object of a `character` type.
+Returns an object of a `character` type.
 
 ## See also
 

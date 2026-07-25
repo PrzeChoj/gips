@@ -13,7 +13,7 @@ forget_perms(g)
 
 - g:
 
-  An object of class "gips"; a result of a
+  An object of class `gips`. A result of a
   `find_MAP(save_all_perms = TRUE)`.
 
 ## Value
@@ -23,8 +23,8 @@ permutation list.
 
 ## Details
 
-For `perm_size = 150` and `max_iter = 150000` we checked it saves ~350
-MB.
+For example, `perm_size = 150` and `max_iter = 150000` we checked
+`forget_perms()` saves ~350 MB of RAM.
 
 ## See also
 
@@ -35,8 +35,8 @@ MB.
 ## Examples
 
 ``` r
-example_matrix <- matrix(rnorm(10 * 10), nrow = 10)
-S <- t(example_matrix) %*% example_matrix
+A <- matrix(rnorm(10 * 10), nrow = 10)
+S <- t(A) %*% A
 g <- gips(S, 13, was_mean_estimated = FALSE)
 g_map <- find_MAP(g,
   max_iter = 10, optimizer = "Metropolis_Hastings",
@@ -44,8 +44,8 @@ g_map <- find_MAP(g,
 )
 
 object.size(g_map) # ~18 KB
-#> 17688 bytes
+#> 20440 bytes
 g_map_slim <- forget_perms(g_map)
 object.size(g_map_slim) # ~8 KB
-#> 9008 bytes
+#> 10448 bytes
 ```

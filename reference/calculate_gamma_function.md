@@ -1,10 +1,9 @@
 # Calculate Gamma function
 
 It calculates the value of the integral defined in [Definition 11 from
-references](https://arxiv.org/abs/2004.03503). It is implementation of
-the [Theorem 8 from references](https://arxiv.org/abs/2004.03503) and is
-using the [formula (19) from
-references](https://arxiv.org/abs/2004.03503).
+references](https://arxiv.org/abs/2004.03503). It implements [Theorem 8
+from references](https://arxiv.org/abs/2004.03503) and uses the [formula
+(19) from references](https://arxiv.org/abs/2004.03503).
 
 ## Usage
 
@@ -16,7 +15,8 @@ calculate_gamma_function(perm, lambda)
 
 - perm:
 
-  An object of a `gips_perm` class.
+  An object of a `gips_perm` class. It can also be of a `gips` class,
+  but it will be interpreted as the underlying `gips_perm`.
 
 - lambda:
 
@@ -24,8 +24,8 @@ calculate_gamma_function(perm, lambda)
 
 ## Value
 
-Returns the value of the Gamma function of the colored cone (for
-definition of colored cone see **Basic definitions** section in
+Returns the value of the Gamma function of the colored cone (for the
+definition of the colored cone, see the **Basic definitions** section in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or in its [pkgdown
 page](https://przechoj.github.io/gips/articles/Theory.html)).
@@ -41,11 +41,10 @@ link](https://arxiv.org/abs/2004.03503);
 ## See also
 
 - [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md) -
-  The function useful inside the `calculate_gamma_function()` function.
+  The function useful inside the `calculate_gamma_function()`.
 
 - [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md) -
-  The function that uses the values of the gamma function calculable
-  with `calculate_gamma_function()`.
+  The function that uses the values of the gamma function.
 
 - [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or its [pkgdown
@@ -55,18 +54,18 @@ link](https://arxiv.org/abs/2004.03503);
 ## Examples
 
 ``` r
-id_perm <- gips_perm(permutations::id, 2)
+id_perm <- gips_perm("()", 2)
 calculate_gamma_function(id_perm, 0.5001) # 10.7...
 #> [1] 10.70139
 calculate_gamma_function(id_perm, 0.50000001) # 19.9...
 #> [1] 19.91198
 calculate_gamma_function(id_perm, 0.500000000001) # 29.1...
 #> [1] 29.12235
-# \donttest{
-try(calculate_gamma_function(id_perm, 0.5))
-#> Warning: Gamma integral is divergent for the given permutation and lambda value.
-#> ℹ Gamma(perm = (), lambda = 0.5) = Inf.
+
+oldw <- getOption("warn")
+options(warn = -1)
+calculate_gamma_function(id_perm, 0.5) # Inf
 #> [1] Inf
-# Error, integral diverges; returns Inf and warning
-# }
+# Integral diverges; returns Inf and warning
+options(warn = oldw)
 ```

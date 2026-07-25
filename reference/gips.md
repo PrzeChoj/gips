@@ -1,10 +1,10 @@
 # The constructor of a `gips` class.
 
-Create a `gips` object. This object will consist of data and all other
-information needed to find the most likely invariant permutation. The
-optimization itself will not be performed. One must call the
+Create a `gips` object. This object will contain initial data and all
+other information needed to find the most likely invariant permutation.
+It will not perform optimization. One must call the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
-function to do it. See examples below.
+function to do it. See the examples below.
 
 ## Usage
 
@@ -35,15 +35,15 @@ validate_gips(g)
 
 - S:
 
-  A matrix; estimated covariance matrix. When `Z` is the observed data:
+  A matrix; empirical covariance matrix. When `Z` is the observed data:
 
   - if one does not know the theoretical mean and has to estimate it
     with the observed mean, use `S = cov(Z)`, and leave parameter
-    `was_mean_estimated = TRUE` as default.
+    `was_mean_estimated = TRUE` as default;
 
   - if one know the theoretical mean is 0, use
     `S = (t(Z) %*% Z) / number_of_observations`, and set parameter
-    `was_mean_estimated = FALSE`;
+    `was_mean_estimated = FALSE`.
 
 - number_of_observations:
 
@@ -51,14 +51,15 @@ validate_gips(g)
 
 - delta:
 
-  A number, hyper-parameter of a Bayesian model. Has to be bigger
-  than 2. See **Hyperparameters** section bellow.
+  A number, hyper-parameter of a Bayesian model. It has to be strictly
+  bigger than 1. See the **Hyperparameters** section below.
 
 - D_matrix:
 
-  A symmetric, positive-definite matrix of the same size as `S`.
-  Hyper-parameter of a Bayesian model. When `NULL`, the identity matrix
-  is taken. See **Hyperparameters** section bellow.
+  Symmetric, positive-definite matrix of the same size as `S`.
+  Hyper-parameter of a Bayesian model. When `NULL`, the (hopefully)
+  reasonable one is derived from the data. For more details, see the
+  **Hyperparameters** section below.
 
 - was_mean_estimated:
 
@@ -72,10 +73,11 @@ validate_gips(g)
 
 - perm:
 
-  An optional permutation to be the base for the `gips` object. Can be
-  of a `gips_perm` or a `permutation` class, or anything the function
+  An optional permutation to be the base for the `gips` object. It can
+  be of a `gips_perm` or a `permutation` class, or anything the function
   [`permutations::permutation()`](https://robinhankin.github.io/permutations/reference/permutation.html)
-  can handle.
+  can handle. It can also be of a `gips` class, but it will be
+  interpreted as the underlying `gips_perm`.
 
 - list_of_gips_perm:
 
@@ -89,7 +91,7 @@ validate_gips(g)
 
 - g:
 
-  Object to be checked whether it is proper object of a `gips` class.
+  Object to be checked whether it is a proper object of a `gips` class.
 
 ## Value
 
@@ -103,9 +105,9 @@ a proper element of a `gips` class, it produces an error.
 
 ## Functions
 
-- `new_gips()`: Constructor. Only intended for low-level use.
+- `new_gips()`: Constructor. It is only intended for low-level use.
 
-- `validate_gips()`: Validator. Only intended for low-level use.
+- `validate_gips()`: Validator. It is only intended for low-level use.
 
 ## Methods for a `gips` class
 
@@ -115,23 +117,50 @@ a proper element of a `gips` class, it produces an error.
 
 - [`print.gips()`](https://przechoj.github.io/gips/reference/print.gips.md)
 
+- [`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md)
+
+- [`AIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
+
+- [`BIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md)
+
+- [`as.character.gips()`](https://przechoj.github.io/gips/reference/as.character.gips.md)
+
 ## Hyperparameters
+
+We encourage the user to try `D_matrix = d * I`, where `I` is an
+identity matrix of a size `p x p` and `d > 0` for some different `d`.
+When `d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
+bigger structures will be found. When `d` is big compared to the data
+(e.g., `d=100 * mean(diag(S))`), the posterior distribution does not
+depend on the data.
+
+Taking `D_matrix = d * I` is equivalent to setting `S <- S / d`.
+
+The default for `D_matrix` is `D_matrix = d * I`, where
+`d = mean(diag(S))`, which is equivalent to modifying `S` so that the
+mean value on the diagonal is 1.
 
 In the Bayesian model, the prior distribution for the covariance matrix
 is a generalized case of [Wishart
 distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
 
-For brief introduction, see **Bayesian model selection** section in
+For a brief introduction, see the **Bayesian model selection** section
+in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or in its [pkgdown
 page](https://przechoj.github.io/gips/articles/Theory.html)).
 
+For analysis of the Hyperparameters influence, see **Section 3.2.** of
+"Learning permutation symmetries with gips in R" by `gips` developers
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on
+[arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+
 ## See also
 
-- [`stats::cov()`](https://rdrr.io/r/stats/cor.html) - The `S` parameter
-  is most of the time an estimated covariance matrix, so a result of the
-  [`cov()`](https://rdrr.io/r/stats/cor.html) function. For more
-  information, see [Wikipedia - Estimation of covariance
+- [`stats::cov()`](https://rdrr.io/r/stats/cor.html) - The `S`
+  parameter, as an empirical covariance matrix, is most of the time a
+  result of the [`cov()`](https://rdrr.io/r/stats/cor.html) function.
+  For more information, see [Wikipedia - Estimation of covariance
   matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 
 - [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md) -
@@ -168,44 +197,53 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 g_map
-#> The permutation (1,4,2,5,3)
-#>  - was found after 120 log_posteriori calculations
-#>  - is 19478.229036143 times more likely than the starting, () permutation.
+#> The permutation (1,2,3,4,5):
+#>  - was found after 67 posteriori calculations;
+#>  - is 953.095 times more likely than the () permutation.
 
 summary(g_map)
 #> The optimized `gips` object.
 #> 
 #> Permutation:
-#>  (1,4,2,5,3)
+#>  (1,2,3,4,5)
 #> 
 #> Log_posteriori:
-#>  -14.2724
+#>  -0.5708509
 #> 
 #> Times more likely than starting permutation:
-#> 19478.229036143
+#>  953.095
 #> 
-#> Number of observations:
+#> The number of observations:
 #>  13
 #> 
-#> The mean in `S` matrix was estimated.
+#> The mean in the `S` matrix was estimated.
 #> Therefore, one degree of freedom was lost.
-#> There is 12 degrees of freedom left.
+#> There are 12 degrees of freedom left.
 #> 
 #> n0:
 #>  2
 #> 
-#> Number of observations is bigger than n0 for this permutaion,
+#> The number of observations is bigger than n0 for this permutation,
 #> so the gips model based on the found permutation does exist.
+#> 
+#> The number of free parameters in the covariance matrix:
+#>  3
+#> 
+#> BIC:
+#>  104.0469
+#> 
+#> AIC:
+#>  102.352
 #> 
 #> --------------------------------------------------------------------------------
 #> Optimization algorithm:
 #>  brute_force
 #> 
-#> Number of log_posteriori calls:
-#>  120
+#> The number of log_posteriori calls:
+#>  67
 #> 
 #> Optimization time:
-#>  0.1820033 secs
+#>  0.121953 secs
 
 if (require("graphics")) {
   plot(g_map, type = "both", logarithmic_x = TRUE)

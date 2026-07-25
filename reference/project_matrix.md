@@ -2,7 +2,7 @@
 
 After the MAP permutation was found with
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md),
-use this permutation to approximate the covariance matrix with larger
+use this permutation to approximate the covariance matrix with bigger
 statistical confidence.
 
 ## Usage
@@ -15,17 +15,19 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 
 - S:
 
-  A square matrix to be projected. The covariance estimator. (See the
-  same parameter in
+  A square matrix to be projected. The empirical covariance matrix. (See
+  the `S` parameter in the
   [`gips()`](https://przechoj.github.io/gips/reference/gips.md)
-  function).
+  function). When it is not positive semi-definite, it shows a warning
+  of a class `not_positive_semi_definite_matrix`.
 
 - perm:
 
-  A permutation. Generator of a permutation group. Either of a
-  `gips_perm` or a
-  [`permutations::cycle`](https://robinhankin.github.io/permutations/reference/permutation.html)
-  class.
+  A permutation to be projected on. An object of a `gips` class, a
+  `gips_perm` class, or anything that can be used as the `x` argument in
+  the
+  [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
+  function.
 
 - precomputed_equal_indices:
 
@@ -52,9 +54,9 @@ covariance
 matrices](https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices).
 
 The maximum likelihood estimator differs when one knows the covariance
-matrix is **invariant under some permutation**. This estimator will not
-only be symmetric but also have some values repeated (see examples and
-[Corollary 12 from references](https://arxiv.org/abs/2004.03503)).
+matrix is **invariant under some permutation**. This estimator will be
+symmetric AND have some values repeated (see examples and [Corollary 12
+from references](https://arxiv.org/abs/2004.03503)).
 
 The estimator will be invariant under the given permutation. Also, it
 will **need fewer observations** for the maximum likelihood estimator to
@@ -93,57 +95,56 @@ page](https://przechoj.github.io/gips/articles/Theory.html).
   Constructor for the `perm` parameter.
 
 - [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md) -
-  For `plot(g, type = 'heatmap')`, the `project_matrix()` is called (see
+  For `plot(g, type = "MLE")`, the `project_matrix()` is called (see
   examples).
 
 - [`summary.gips()`](https://przechoj.github.io/gips/reference/summary.gips.md) -
   Can calculate the `n0`, the minimal number of observations, so that
-  the projected matrix will be the MAP estimator of the covariance
+  the projected matrix will be the MLE estimator of the covariance
   matrix.
 
 ## Examples
 
 ``` r
 p <- 6
-gperm <- gips_perm(permutations::as.word(c(4, 3, 2, 1, 5)), p) # permutation (1,4)(2,3)(5)(6)
-
+my_perm <- "(14)(23)" # permutation (1,4)(2,3)(5)(6)
 number_of_observations <- 10
 X <- matrix(rnorm(p * number_of_observations), number_of_observations, p)
 S <- cov(X)
-projected_S <- project_matrix(S, perm = gperm)
+projected_S <- project_matrix(S, perm = my_perm)
 projected_S
-#>               [,1]        [,2]        [,3]          [,4]          [,5]
-#> [1,]  0.8086311544  0.29681429  0.10092552 -0.1988312804 -0.0003883379
-#> [2,]  0.2968142945  0.89291440  0.04239119  0.1009255196 -0.1804661453
-#> [3,]  0.1009255196  0.04239119  0.89291440  0.2968142945 -0.1804661453
-#> [4,] -0.1988312804  0.10092552  0.29681429  0.8086311544 -0.0003883379
-#> [5,] -0.0003883379 -0.18046615 -0.18046615 -0.0003883379  0.7047402649
-#> [6,] -0.1166160877 -0.07252189 -0.07252189 -0.1166160877 -0.1093664791
-#>             [,6]
-#> [1,] -0.11661609
-#> [2,] -0.07252189
-#> [3,] -0.07252189
-#> [4,] -0.11661609
-#> [5,] -0.10936648
-#> [6,]  0.75902337
+#>             [,1]        [,2]        [,3]        [,4]        [,5]       [,6]
+#> [1,]  1.30159005  0.09813094  0.19673234 -0.05767364  0.08905811  0.1245870
+#> [2,]  0.09813094  0.79179066 -0.19344899  0.19673234  0.10129907 -0.2163631
+#> [3,]  0.19673234 -0.19344899  0.79179066  0.09813094  0.10129907 -0.2163631
+#> [4,] -0.05767364  0.19673234  0.09813094  1.30159005  0.08905811  0.1245870
+#> [5,]  0.08905811  0.10129907  0.10129907  0.08905811  1.37839154 -0.1125674
+#> [6,]  0.12458697 -0.21636311 -0.21636311  0.12458697 -0.11256744  0.8315466
 # The value in [1,1] is the same as in [4,4]; also, [2,2] and [3,3];
-  # also [1,2] and [4,3]; also, [1,5] and [4,5]; and so on
+  # also [1,2] and [3,4]; also, [1,5] and [4,5]; and so on
 
 # Plot the projected matrix:
-g <- gips(S, number_of_observations, perm = gperm)
-plot(g, type = "heatmap")
+g <- gips(S, number_of_observations, perm = my_perm)
+plot(g, type = "MLE")
 
 
-# Find the MAP Estimator
+# Find the MAP Estimator of covariance
 g_MAP <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
-S_MAP <- project_matrix(S, perm = g_MAP[[1]])
+S_MAP <- project_matrix(attr(g, "S"), perm = g_MAP)
 S_MAP
-#>             [,1]        [,2]        [,3]        [,4]        [,5]        [,6]
-#> [1,]  0.83242290  0.14985340 -0.09770069 -0.09770069 -0.09421509  0.14985340
-#> [2,]  0.14985340  0.83242290 -0.09770069  0.14985340 -0.09421509 -0.09770069
-#> [3,] -0.09770069 -0.09770069  0.83242290  0.14985340 -0.09421509  0.14985340
-#> [4,] -0.09770069  0.14985340  0.14985340  0.83242290 -0.09421509 -0.09770069
-#> [5,] -0.09421509 -0.09421509 -0.09421509 -0.09421509  0.70474026 -0.09421509
-#> [6,]  0.14985340 -0.09770069  0.14985340 -0.09770069 -0.09421509  0.83242290
+#>              [,1]         [,2]         [,3]         [,4]         [,5]
+#> [1,]  1.066116592  0.004778138  0.300087462 -0.084288774 -0.084288774
+#> [2,]  0.004778138  1.066116592 -0.084288774  0.004778138  0.300087462
+#> [3,]  0.300087462 -0.084288774  1.066116592  0.004778138  0.004778138
+#> [4,] -0.084288774  0.004778138  0.004778138  1.066116592 -0.084288774
+#> [5,] -0.084288774  0.300087462  0.004778138 -0.084288774  1.066116592
+#> [6,]  0.004778138 -0.084288774 -0.084288774  0.300087462  0.004778138
+#>              [,6]
+#> [1,]  0.004778138
+#> [2,] -0.084288774
+#> [3,] -0.084288774
+#> [4,]  0.300087462
+#> [5,]  0.004778138
+#> [6,]  1.066116592
 plot(g_MAP, type = "heatmap")
 ```

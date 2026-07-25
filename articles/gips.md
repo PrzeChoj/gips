@@ -1,8 +1,8 @@
-# gips
+# A Gentle Introduction to Modeling with gips
 
 ## The problem
 
-Quite often, we have too little data to perform valid inference.
+Quite often, we have too little data to perform valid inferences.
 Consider the situation with multivariate Gaussian distribution, where we
 have few observations compared to the number of variables. For example,
 that’s the case for graphical models used in biology or medicine. In
@@ -11,12 +11,12 @@ maximum likelihood method) isn’t statistically applicable. What now?
 
 ## Invariance by permutation
 
-In some cases, the interchange of variables in the vector does not
-change its distribution. In the multivariate Gaussian case, it would
-mean that they have the same variances and covariances with other
-respective variables. For instance, in the following covariance matrix,
-variables X1 and X3 are interchangeable, meaning that vectors (X1, X2,
-X3) and (X3, X2, X1) have the same distribution.
+Sometimes, the interchange of variables in the vector does not change
+its distribution. In the multivariate Gaussian case, it would mean that
+they have the same variances and covariances with other respective
+variables. For instance, in the following covariance matrix, variables
+X1 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and
+(X3, X2, X1) have the same distribution.
 
 ![](gips_files/figure-html/symvariant_matrix-1.png)
 
@@ -45,26 +45,130 @@ used as a constraint in covariance matrix estimation. In this case,
 using a Wishart-like distribution on symmetric, positive definite
 matrices as a prior. The idea, exact formulas, and algorithm sketch are
 explored in another vignette that can be accessed by
-[`vignette("Theory")`](https://przechoj.github.io/gips/articles/Theory.md)
+[`vignette("Theory", package="gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or on its [pkgdown
 page](https://przechoj.github.io/gips/articles/Theory.html).
 
-## Example
+For an in-depth analysis of the package performance, capabilities, and
+comparison with other packages, see the article “Learning permutation
+symmetries with gips in R” by `gips`’ developers Adam Chojecki, Paweł
+Morgen, and Bartosz Kołodziejek, available on
+[arXiv:2307.00790](https://arxiv.org/abs/2307.00790).
+
+## Practical example
+
+Let’s examine 12 books’ thick, height, and breadth data:
 
 ``` r
 
-perm_size <- 5
-mu <- runif(5, -10, 10) # Assume we don't know the mean
-sigma_matrix <- matrix(c(7.5, 5,   0.5, 0.5, 0.5,
-                         5,   4.5, 0.3, 0.3, 0.3,
-                         0.5, 0.3, 1,   0.8, 0.8,
-                         0.5, 0.3, 0.8, 1,   0.8,
-                         0.5, 0.3, 0.8, 0.8, 1), ncol=5)
-# sigma_matrix is a matrix invariant under permutation (3,4,5)
+library(gips)
+
+Z <- DAAG::oddbooks[, c(1, 2, 3)]
+```
+
+We suspect books from this dataset were printed with $`\sqrt{2}`$ aspect
+ratio as in popular [A-series paper
+size](https://en.wikipedia.org/wiki/Paper_size#A_series). Therefore, we
+can use this expert knowledge in the analysis and unify the data for
+height and width:
+
+``` r
+
+Z$height <- Z$height / sqrt(2)
+```
+
+Now, let’s plot the data:
+
+``` r
+
+number_of_observations <- nrow(Z) # 12
+p <- ncol(Z) # 3
+
+S <- cov(Z)
+round(S, 1)
+#>         thick height breadth
+#> thick    72.7  -28.5   -31.7
+#> height  -28.5   12.7    14.6
+#> breadth -31.7   14.6    17.2
+g <- gips(S, number_of_observations)
+plot_cosmetic_modifications(plot(g, type = "heatmap")) +
+  ggplot2::ggtitle("Standard, MLE estimator\nof a covariance matrix")
+```
+
+![](gips_files/figure-html/change_D_matrix_example1_2-1.png)
+
+We can see similarities between columns 2 and 3, representing the book’s
+height and breadth. In particular, the covariance between \[1,2\] is
+very similar to \[1,3\], and the variance of \[2\] is similar to the
+variance of \[3\]. Those are not surprising, given the data
+interpretation (after the rescaling of height that we did).
+
+Let’s see what the `gips` will tell about this data:
+
+``` r
+
+g_map <- find_MAP(g,
+  optimizer = "brute_force",
+  return_probabilities = TRUE, save_all_perms = TRUE
+)
+#> ================================================================================
+#> ================================================================================
+#> ================================================================================
+
+g_map
+#> The permutation (2,3):
+#>  - was found after 5 posteriori calculations;
+#>  - is 1.305 times more likely than the () permutation.
+get_probabilities_from_gips(g_map)
+#>          (2,3)             ()          (1,3)        (1,2,3)          (1,2) 
+#> 0.566078057717 0.433908667868 0.000006728772 0.000004683290 0.000001862353
+```
+
+`find_MAP` found the symmetry represented by permutation (2,3).
+
+``` r
+
+plot_cosmetic_modifications(plot(g_map, type = "heatmap"))
+```
+
+![](gips_files/figure-html/change_D_matrix_example4-1.png)
+
+``` r
+
+round(project_matrix(S, g_map), 1)
+#>         thick height breadth
+#> thick    72.7  -30.1   -30.1
+#> height  -30.1   14.9    14.6
+#> breadth -30.1   14.6    14.9
+```
+
+The result depends on two input parameters, `delta` and `D_matrix`. By
+default, they are set to `3` and `diag(p) * d`, respectively, where
+`d = mean(diag(S))`. The method is not scale-invariant, so we recommend
+running gips for different values of `D_matrix` of the form
+`D_matrix = d * diag(p)`, where `d` $`\in \mathbb{R}^+`$). The impact
+analysis of those can be read in \[2\] in section *3.2. Hyperparameter’s
+influence*.
+
+## Theoretic example
+
+``` r
+
+p <- 5
 number_of_observations <- 4
-toy_example_data <- withr::with_seed(1234,
-    code = MASS::mvrnorm(number_of_observations,
-                         mu = mu, Sigma = sigma_matrix)
+mu <- runif(p, -10, 10) # Assume we don't know the mean
+sigma_matrix <- matrix(c(
+  8.4, 4.1, 1.9, 1.9, 1.9,
+  4.1, 3.5, 0.3, 0.3, 0.3,
+  1.9, 0.3, 1,   0.8, 0.8,
+  1.9, 0.3, 0.8, 1,   0.8,
+  1.9, 0.3, 0.8, 0.8, 1
+), ncol = p)
+# sigma_matrix is a matrix invariant under permutation (3,4,5)
+toy_example_data <- withr::with_seed(2022,
+  code = MASS::mvrnorm(number_of_observations,
+    mu = mu, Sigma = sigma_matrix
+  )
 )
 ```
 
@@ -76,15 +180,15 @@ library(gips)
 
 toy_example_data
 #>            [,1]     [,2]     [,3]      [,4]       [,5]
-#> [1,] -11.886380 4.753934 1.092400 -7.191882 -10.511253
-#> [2,]  -8.064560 7.955955 1.669257 -6.948952 -10.521423
-#> [3,]  -5.776251 9.079530 3.139842 -5.992006  -9.517660
-#> [4,] -15.261303 2.611751 1.976991 -7.597607  -9.065878
+#> [1,]  -5.554883 7.466693 2.444659 -5.757642  -9.374783
+#> [2,] -11.330708 1.700968 2.756588 -5.623130  -8.560550
+#> [3,] -10.579451 3.914784 2.327188 -7.085606 -10.115170
+#> [4,] -12.634411 4.881232 1.248641 -8.067525 -11.114509
 
 dim(toy_example_data)
 #> [1] 4 5
 number_of_observations <- nrow(toy_example_data) # 4
-perm_size <- ncol(toy_example_data) # 5
+p <- ncol(toy_example_data) # 5
 
 S <- cov(toy_example_data)
 
@@ -102,7 +206,7 @@ easier to estimate.
 
 ``` r
 
-g <- gips(S = S, number_of_observations = nrow(toy_example_data))
+g <- gips(S, number_of_observations)
 
 plot(g, type = "heatmap")
 ```
@@ -112,19 +216,19 @@ plot(g, type = "heatmap")
 Looking at the plot, one can see the similarities between columns 3, 4,
 and 5. They have similar variance and covariance to each other. The 3
 and 5 have similar covariance with columns 1 and 2. However, the 4 is
-not far from them.
+also close.
 
 Let’s see if `gips` will find the relationship:
 
 ``` r
 
-g_map <- find_MAP(g, optimizer = "brute_force",
-                  return_probabilities = TRUE, save_all_perms = TRUE)
+g_map <- find_MAP(g,
+  optimizer = "brute_force",
+  return_probabilities = TRUE, save_all_perms = TRUE
+)
 #> ================================================================================
 #> ================================================================================
-#> Warning: The found permutation has n0 = 5 which is bigger than the number_of_observations = 4.
-#> ℹ The covariance matrix invariant under the found permutation does not have the likelihood properly defined.
-#> ℹ For more in-depth explanation, see 'Project Matrix - Equation (6)' section in `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.
+#> ================================================================================
 
 plot(g_map, type = "heatmap")
 ```
@@ -137,154 +241,85 @@ Let’s see how much better it is:
 ``` r
 
 g_map
-#> The permutation (3,4)
-#>  - was found after 120 log_posteriori calculations
-#>  - is 3.79207316417081 times more likely than the starting, () permutation.
+#> The permutation (3,4,5):
+#>  - was found after 67 posteriori calculations;
+#>  - is 3.63 times more likely than the () permutation.
 ```
 
-This assumption is over two times more believable than making no
+This assumption is over 3 times more believable than making no
 assumption. Let’s examine how reasonable are other possible assumptions:
 
 ``` r
 
 get_probabilities_from_gips(g_map)
-#>             ()          (4,5)          (3,4)        (3,4,5)          (3,5) 
-#> 0.069068384307 0.060727414839 0.261912366623 0.197438701138 0.086934032936 
-#>          (2,3)     (2,3)(4,5)        (2,3,4)      (2,3,4,5)      (2,3,5,4) 
-#> 0.002520241430 0.006495999997 0.001182043961 0.000080031096 0.000234494736 
-#>        (2,3,5)          (2,4)        (2,4,5)     (2,4)(3,5)      (2,4,3,5) 
-#> 0.000410499786 0.002137051762 0.000410407100 0.004843578288 0.000065540223 
-#>          (2,5)     (2,5)(3,4)          (1,2)     (1,2)(4,5)     (1,2)(3,4) 
-#> 0.001009443542 0.001421639262 0.019092314439 0.033265194830 0.055875021388 
-#>   (1,2)(3,4,5)     (1,2)(3,5)        (1,2,3)   (1,2,3)(4,5)      (1,2,3,4) 
-#> 0.071376121642 0.057369194387 0.000213901332 0.000256492936 0.000100763693 
-#>    (1,2,3,4,5)    (1,2,3,5,4)      (1,2,3,5)      (1,2,4,3)    (1,2,4,5,3) 
-#> 0.000005822908 0.000327661509 0.000176796343 0.000052885180 0.000211582316 
-#>        (1,2,4)      (1,2,4,5)   (1,2,4)(3,5)    (1,2,4,3,5)    (1,2,5,4,3) 
-#> 0.000091830785 0.000011635176 0.000143967951 0.000009848927 0.000009992229 
-#>      (1,2,5,3)      (1,2,5,4)        (1,2,5)    (1,2,5,3,4)   (1,2,5)(3,4) 
-#> 0.003827744236 0.000300980514 0.000113543776 0.000025464602 0.000506120822 
-#>          (1,3)     (1,3)(4,5)        (1,3,4)      (1,3,4,5)      (1,3,5,4) 
-#> 0.000622993877 0.001543477661 0.000058544101 0.000002108636 0.000004421858 
-#>        (1,3,5)     (1,3)(2,4)   (1,3)(2,4,5)      (1,3,2,4)   (1,3,5)(2,4) 
-#> 0.000101638418 0.000995784985 0.000032602399 0.000478312732 0.000004978116 
-#>     (1,3)(2,5)      (1,3,2,5)   (1,3,4)(2,5)          (1,4)        (1,4,5) 
-#> 0.026206794910 0.005021800273 0.000010645580 0.000206209778 0.000047628153 
-#>     (1,4)(3,5)      (1,4,3,5)     (1,4)(2,3)   (1,4,5)(2,3)   (1,4)(2,3,5) 
-#> 0.000409718620 0.000001927521 0.000365234206 0.000017712903 0.000002866249 
-#>     (1,4)(2,5)      (1,4,2,5)          (1,5)     (1,5)(3,4)     (1,5)(2,3) 
-#> 0.000501465259 0.000237282418 0.000629620291 0.000683780081 0.020299482408 
-#>   (1,5)(2,3,4)     (1,5)(2,4) 
-#> 0.000081562806 0.001174652814
+#>      (3,4,5)      (2,4,5) (1,2)(3,4,5)    (2,3,5,4)        (4,5)        (3,5) 
+#>  0.061991931  0.056959514  0.048479131  0.040410788  0.038027185  0.037829891 
+#>        (3,4)    (2,3,4,5)    (2,4,3,5)   (2,4)(3,5)      (2,3,5)   (1,2)(3,5) 
+#>  0.035085538  0.034415530  0.033895061  0.031448291  0.029438098  0.026938644 
+#>   (1,2)(3,4)   (2,5)(3,4)   (1,2)(4,5)      (2,3,4)        (2,5)        (2,4) 
+#>  0.026167559  0.025906388  0.025384163  0.024145834  0.024081717  0.020399181 
+#> (1,2,4)(3,5)    (1,4,2,5)   (2,3)(4,5)           ()  (1,2,3,5,4)    (1,2,5,4) 
+#>  0.019323499  0.018904417  0.018141398  0.017079855  0.016588093  0.016298998 
+#> (1,2,5)(3,4)    (1,2,4,5)        (1,2) (1,4)(2,3,5)        (2,3)  (1,2,3,4,5) 
+#>  0.015996810  0.013635218  0.013223117  0.012292494  0.011350938  0.010572077 
+#>  (1,2,5,3,4) (1,2,3)(4,5)  (1,2,4,5,3)   (1,4)(2,5) (1,3)(2,4,5)  (1,2,4,3,5) 
+#>  0.010280022  0.010147160  0.009968266  0.009810562  0.009448103  0.009398996 
+#>    (1,2,3,5)      (1,2,4)      (1,2,5) (1,5)(2,3,4)    (1,3,2,5)    (1,2,3,4) 
+#>  0.009168309  0.009011297  0.008941143  0.008833158  0.008315048  0.008279742 
+#>  (1,2,5,4,3)    (1,3,2,4)   (1,4)(3,5)   (1,5)(2,4)    (1,2,5,3)      (1,2,3) 
+#>  0.008007561  0.006254947  0.005565898  0.005389584  0.004968273  0.004515910 
+#>   (1,4)(2,3)   (1,5)(2,3)    (1,2,4,3)   (1,3)(4,5)   (1,5)(3,4) (1,3,4)(2,5) 
+#>  0.004287814  0.004249572  0.003919107  0.003875914  0.003868923  0.003383014 
+#>        (1,4)   (1,3)(2,5)        (1,5) (1,3,5)(2,4)        (1,3)      (1,4,5) 
+#>  0.003272443  0.002762345  0.002701743  0.002404967  0.002143353  0.002045112 
+#> (1,4,5)(2,3)      (1,3,4)   (1,3)(2,4)      (1,3,5)    (1,3,5,4)    (1,4,3,5) 
+#>  0.001893502  0.001828460  0.001732156  0.001582799  0.001166460  0.001118505 
+#>    (1,3,4,5) 
+#>  0.001048474
 ```
 
-We see that assumption $`(3,4,5)`$ is the most likely with $`19.9\%`$
-posterior probability. However, the assumption $`(3,5)`$ is also
-reasonable, with a posterior probability of $`19.6\%`$. So it is up to
-us to decide which one to choose.
+We see that assumption $`(3,4,5)`$ is the most likely with a $`6.2\%`$
+posterior probability. 21 possible permutations are more likely than id.
 
-Remember that with the assumption $`(3,5)`$, the `n0` will be 4, which
-would be insufficient for us to estimate covariance correctly. The
-assumption $`(3,4,5)`$ will be just right:
+Remember that the `n0` could still be too big for your data. In this
+example, the assumptions with transpositions (like $`(3,5)`$) would
+yield the `n0` $`= 5`$, which would be insufficient for us to estimate
+covariance correctly. The assumption $`(3,4,5)`$ will be just right:
 
 ``` r
 
-S_projected <- project_matrix(S, g_map[[1]])
-sum(eigen(S_projected)$values > 0.00000001)
+summary(g_map)$n0 # n0 = 4 <= 4 = number_of_observations
 #> [1] 4
+
+S_projected <- project_matrix(S, g_map)
+S_projected
+#>          [,1]       [,2]       [,3]       [,4]       [,5]
+#> [1,] 9.601087  5.4152903  1.4727442  1.4727442  1.4727442
+#> [2,] 5.415290  5.7077767 -0.4783693 -0.4783693 -0.4783693
+#> [3,] 1.472744 -0.4783693  0.9870649  0.8600285  0.8600285
+#> [4,] 1.472744 -0.4783693  0.8600285  0.9870649  0.8600285
+#> [5,] 1.472744 -0.4783693  0.8600285  0.8600285  0.9870649
+sum(eigen(S_projected)$values > 0.00000001)
+#> [1] 5
 ```
 
 Now, the estimated covariance matrix is of full rank (5).
-
-## Practical example
-
-Let’s examine 12 books’ thick, height, and breadth data:
-
-``` r
-
-library(gips)
-
-Z <-DAAG::oddbooks[,c(1,2,3)]
-
-number_of_observations <- nrow(Z) # 12
-p <- ncol(Z) # 3
-
-S <- cov(Z)
-S
-#>             thick    height   breadth
-#> thick    72.69697 -40.33485 -31.74242
-#> height  -40.33485  25.36992  20.58576
-#> breadth -31.74242  20.58576  17.18424
-g <- gips(S, number_of_observations, D_matrix=diag(p)) # the default D_matrix
-plot(g, type = "heatmap")
-```
-
-![](gips_files/figure-html/change_D_matrix_example1-1.png)
-
-We can see similarities between columns 2 and 3, representing the book’s
-height and breadth. In particular, the covariance between \[1,2\] is
-very similar to \[1,3\], and the variance if \[2\] is similar to the
-variance of \[3\]. Those are not surprising, given the interpretation of
-the data.
-
-``` r
-
-g_map <- find_MAP(g, optimizer = "brute_force",
-                  return_probabilities = TRUE, save_all_perms = TRUE)
-#> ================================================================================
-#> ================================================================================
-
-g_map
-#> The permutation ()
-#>  - was found after 6 log_posteriori calculations
-#>  - is 1 times more likely than the starting, () permutation.
-get_probabilities_from_gips(g_map)
-#>                   ()                (2,3)                (1,2) 
-#> 0.917699644399123216 0.082300333638115772 0.000000000064309861 
-#>              (1,2,3)                (1,3) 
-#> 0.000000021892918704 0.000000000005532453
-```
-
-We see the search was too restrictive and did not find the permutation.
-We will weaken the restrictions by changing the `D_matrix` parameter.
-
-``` r
-
-g <- gips(S, number_of_observations, D_matrix=0.05*diag(p))
-g_map <- find_MAP(g, optimizer = "brute_force",
-                  return_probabilities = TRUE, save_all_perms = TRUE)
-#> ================================================================================
-#> ================================================================================
-
-g_map
-#> The permutation (2,3)
-#>  - was found after 6 log_posteriori calculations
-#>  - is 3.5796631131816 times more likely than the starting, () permutation.
-get_probabilities_from_gips(g_map)
-#>                  ()               (2,3)               (1,2)             (1,2,3) 
-#> 0.21834865211409399 0.78161461578574387 0.00000000027813589 0.00003673179839076 
-#>               (1,3) 
-#> 0.00000000002363545
-```
-
-`find_MAP` found the symmetry represented by permutation (2,3). The
-result depends on two input parameters, `delta` and `D_matrix`. By
-default they are set to `3` and `diag(p)`, respectively.
-
-The method is not scale-invariant and therefore we recommend to run gips
-for different values of `D_matrix` (typically, of the form
-`C * diag(p)`).
 
 ## Further reading
 
 1.  To learn more about the available optimizers in
     [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
     and how to use those, see
-    [`vignette("Optimizers")`](https://przechoj.github.io/gips/articles/Optimizers.md)
+    [`vignette("Optimizers", package="gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
     or its [pkgdown
     page](https://przechoj.github.io/gips/articles/Optimizers.html).
 2.  To learn more about the math and theory behind the `gips` package,
     see
-    [`vignette("Theory")`](https://przechoj.github.io/gips/articles/Theory.md)
+    [`vignette("Theory", package="gips")`](https://przechoj.github.io/gips/articles/Theory.md)
     or its [pkgdown
     page](https://przechoj.github.io/gips/articles/Theory.html).
+3.  For an in-depth analysis of the package performance, capabilities,
+    and comparison with other packages, see the article “Learning
+    permutation symmetries with gips in R” by `gips` developers Adam
+    Chojecki, Paweł Morgen, and Bartosz Kołodziejek, available on
+    [arXiv:2307.00790](https://arxiv.org/abs/2307.00790).

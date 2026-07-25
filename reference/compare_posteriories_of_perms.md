@@ -13,7 +13,8 @@ compare_posteriories_of_perms(
   delta = 3,
   D_matrix = NULL,
   was_mean_estimated = TRUE,
-  print_output = TRUE
+  print_output = TRUE,
+  digits = 3
 )
 
 compare_log_posteriories_of_perms(
@@ -24,7 +25,8 @@ compare_log_posteriories_of_perms(
   delta = 3,
   D_matrix = NULL,
   was_mean_estimated = TRUE,
-  print_output = TRUE
+  print_output = TRUE,
+  digits = 3
 )
 ```
 
@@ -33,8 +35,8 @@ compare_log_posteriories_of_perms(
 - perm1, perm2:
 
   Permutations to compare. How many times `perm1` is more likely than
-  `perm2`? Those can be provided as the `gips` object, the `gips_perm`
-  object or anything that can be used as the `x` parameter in the
+  `perm2`? Those can be provided as the `gips` objects, the `gips_perm`
+  objects, or anything that can be used as the `x` parameter in the
   [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
   function. They do not have to be of the same class.
 
@@ -42,27 +44,33 @@ compare_log_posteriories_of_perms(
 
   The same parameters as in the
   [`gips()`](https://przechoj.github.io/gips/reference/gips.md)
-  function. If at least one of `perm1` or `perm2` is of a `gips` class,
-  they overwritten with those from `gips` object.
+  function. If at least one of `perm1` or `perm2` is a `gips` object,
+  they are overwritten with those from the `gips` object.
 
 - print_output:
 
-  A boolean. When TRUE, the computed value will be printed with
-  additional text and returned invisibly. When FALSE, the computed value
-  will be returned visibly.
+  A boolean. When `TRUE` (default), the computed value will be printed
+  with additional text and returned invisibly. When `FALSE`, the
+  computed value will be returned visibly.
+
+- digits:
+
+  Integer. Only used when `print_output = TRUE`. The number of digits
+  after the comma to print. It can be negative, can be `+Inf`. It is
+  passed to [`base::round()`](https://rdrr.io/r/base/Round.html).
 
 ## Value
 
-`compare_posteriories_of_perms` returns the value of how many times the
-`perm1` is more likely than `perm2`.
+The function `compare_posteriories_of_perms()` returns the value of how
+many times the `perm1` is more likely than `perm2`.
 
-`compare_log_posteriories_of_perms` returns the logarithm of how many
-times the `perm1` is more likely than `perm2`.
+The function `compare_log_posteriories_of_perms()` returns the logarithm
+of how many times the `perm1` is more likely than `perm2`.
 
 ## Functions
 
 - `compare_log_posteriories_of_perms()`: More stable, logarithmic
-  version of `compare_posteriories_of_perms`. The natural logarithm is
+  version of `compare_posteriories_of_perms()`. The natural logarithm is
   used.
 
 ## See also
@@ -75,6 +83,13 @@ times the `perm1` is more likely than `perm2`.
   The function that calculates the posterior of the optimized `gips`
   object compared to the starting permutation.
 
+- [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md) -
+  The function that finds the permutation that maximizes
+  [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
+
+- [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md) -
+  The function this `compare_posteriories_of_perms()` calls underneath.
+
 ## Examples
 
 ``` r
@@ -85,12 +100,12 @@ perm_size <- 6
 mu <- runif(6, -10, 10) # Assume we don't know the mean
 sigma_matrix <- matrix(
   data = c(
-    1.0, 0.8, 0.6, 0.4, 0.6, 0.8,
-    0.8, 1.0, 0.8, 0.6, 0.4, 0.6,
-    0.6, 0.8, 1.0, 0.8, 0.6, 0.4,
-    0.4, 0.6, 0.8, 1.0, 0.8, 0.6,
-    0.6, 0.4, 0.6, 0.8, 1.0, 0.8,
-    0.8, 0.6, 0.4, 0.6, 0.8, 1.0
+    1.05, 0.8, 0.6, 0.4, 0.6, 0.8,
+    0.8, 1.05, 0.8, 0.6, 0.4, 0.6,
+    0.6, 0.8, 1.05, 0.8, 0.6, 0.4,
+    0.4, 0.6, 0.8, 1.05, 0.8, 0.6,
+    0.6, 0.4, 0.6, 0.8, 1.05, 0.8,
+    0.8, 0.6, 0.4, 0.6, 0.8, 1.05
   ),
   nrow = perm_size, byrow = TRUE
 ) # sigma_matrix is a matrix invariant under permutation (1,2,3,4,5,6)
@@ -101,8 +116,8 @@ S <- cov(Z) # Assume we have to estimate the mean
 g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 
-compare_posteriories_of_perms(g_map, g, print_output = FALSE)
-#> [1] 7.536736
-compare_log_posteriories_of_perms(g_map, g, print_output = FALSE)
-#> [1] 2.019789
+compare_posteriories_of_perms(g_map, g, print_output = TRUE)
+#> The permutation () is 1 times more likely than the () permutation.
+exp(compare_log_posteriories_of_perms(g_map, g, print_output = FALSE))
+#> [1] 1
 ```

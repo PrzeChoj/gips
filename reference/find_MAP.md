@@ -23,58 +23,60 @@ find_MAP(
 
 - g:
 
-  Object of a `gips` class
+  Object of a `gips` class.
 
 - max_iter:
 
-  Number of iterations for an algorithm to perform. At least 2. For
-  `optimizer="MH"` it has to be finite; for `optimizer="HC"` it can be
-  infinite; for `optimizer="BF"` it is not used.
+  The number of iterations for an algorithm to perform. At least 2. For
+  `optimizer = "BF"`, it is not used; for `optimizer = "MH"`, it has to
+  be finite; for `optimizer = "HC"`, it can be infinite.
 
 - optimizer:
 
-  The optimizer for the search of the maximum posteriori.
+  The optimizer for the search of the maximum posteriori:
 
-  - `"MH"` (the default for unoptimized `g`) - Metropolis-Hastings
+  - `"BF"` (the default for unoptimized `g` with `perm size <= 9`) -
+    Brute Force;
 
-  - `"HC"` - Hill Climbing
+  - `"MH"` (the default for unoptimized `g` with `perm size > 10`) -
+    Metropolis-Hastings;
 
-  - `"BF"` - Brute Force
+  - `"HC"` - Hill Climbing;
 
   - `"continue"` (the default for optimized `g`) - The same as the `g`
     was optimized by (see Examples).
 
-  For more details, see the "**Possible algorithms to use as
-  optimizers**" section below.
+  See the **Possible algorithms to use as optimizers** section below for
+  more details.
 
 - show_progress_bar:
 
-  A boolean. Indicate whether or not to show the progress bar.
+  A boolean. Indicate whether or not to show the progress bar:
 
-  - When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`.
+  - When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 
-  - When `return_probabilities=TRUE`, then shows an additional progress
-    bar for the time when the probabilities are calculated
+  - When `return_probabilities = TRUE`, then shows an additional
+    progress bar for the time when the probabilities are calculated.
 
 - save_all_perms:
 
-  A boolean. `TRUE` indicates to save a list of all permutations that
-  were visited during optimization. This can be useful, but need a lot
-  more RAM.
+  A boolean. `TRUE` indicates saving a list of all permutations visited
+  during optimization. This can be useful sometimes but needs a lot more
+  RAM.
 
 - return_probabilities:
 
-  A boolean. `TRUE` can only be provided when `save_all_perms` is `TRUE`
-  and for:
+  A boolean. `TRUE` can only be provided only when
+  `save_all_perms = TRUE`. For:
 
-  - `optimizer="MH"` - use Metropolis-Hastings results to estimate
-    posterior probabilities
+  - `optimizer = "MH"` - use Metropolis-Hastings results to estimate
+    posterior probabilities;
 
-  - `optimizer="BF"` - use brute force results to calculate exact
-    posterior probabilities
+  - `optimizer = "BF"` - use brute force results to calculate exact
+    posterior probabilities.
 
-  This additional calculations are costly, so second progress bar is
-  shown (when `show_progress_bar` is `TRUE`).
+  These additional calculations are costly, so a second and third
+  progress bar is shown (when `show_progress_bar = TRUE`).
 
   To examine probabilities after optimization, call
   [`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md).
@@ -85,26 +87,36 @@ Returns an optimized object of a `gips` class.
 
 ## Details
 
-`find_MAP` can produce a warning when:
+`find_MAP()` can produce a warning when:
 
 - the optimizer "hill_climbing" gets to the end of its `max_iter`
   without converging.
 
 - the optimizer will find the permutation with smaller `n0` than
   `number_of_observations` (for more information on what it means, see
-  **\\C\sigma\\ and `n0`** section in
+  **\\C\_\sigma\\ and `n0`** section in the
   [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or in its [pkgdown
   page](https://przechoj.github.io/gips/articles/Theory.html)).
 
 ## Possible algorithms to use as optimizers
 
-For a more in-depth explanations, see
+For an in-depth explanation, see in the
 [`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
 or in its [pkgdown
-page](https://przechoj.github.io/gips/articles/Optimizers.html)).
+page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 For every algorithm, there are some aliases available.
+
+- `"brute_force"`, `"BF"`, `"full"` - use the **Brute Force** algorithm
+  that checks the whole permutation space of a given size. This
+  algorithm will find the actual Maximum A Posteriori Estimation, but it
+  is very computationally expensive for bigger spaces. We recommend
+  Brute Force only for `p <= 9`. For the time the Brute Force takes on
+  our machines, see in the
+  [`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
+  or in its [pkgdown
+  page](https://przechoj.github.io/gips/articles/Optimizers.html).
 
 - `"Metropolis_Hastings"`, `"MH"` - use the **Metropolis-Hastings**
   algorithm; [see
@@ -112,10 +124,10 @@ For every algorithm, there are some aliases available.
   The algorithm will draw a random transposition in every iteration and
   consider changing the current state (permutation). When the `max_iter`
   is reached, the algorithm will return the best permutation calculated
-  so far as the MAP Estimator. This implements the [*Second approach*
-  from references, section 4.1.2](https://arxiv.org/abs/2004.03503).
-  This algorithm used in this context is a special case of the
-  **Simulated Annealing** the reader may be more familiar with; [see
+  as the MAP Estimator. This implements the [*Second approach* from
+  references, section 4.1.2](https://arxiv.org/abs/2004.03503). This
+  algorithm used in this context is a special case of the **Simulated
+  Annealing** the user may be more familiar with; [see
   Wikipedia](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 - `"hill_climbing"`, `"HC"` - use the **hill climbing** algorithm; [see
@@ -124,14 +136,10 @@ For every algorithm, there are some aliases available.
   with the biggest a posteriori value. The optimization ends when all
   *neighbors* will have a smaller a posteriori value. If the `max_iter`
   is reached before the end, then the warning is shown, and it is
-  recommended to start the optimization again on the output of the
-  `find_MAP()`. Remember that there are `p*(p-1)/2` transpositions to be
-  checked in every iteration. For bigger `p`, this may be costly.
-
-- `"brute_force"`, `"BF"`, `"full"` - use the **Brute Force** algorithm
-  that checks the whole permutation space of a given size. This
-  algorithm will definitely find the actual Maximum A Posteriori
-  Estimation but is very computationally expensive for bigger spaces.
+  recommended to continue the optimization on the output of the
+  `find_MAP()` with `optimizer = "continue"`; see examples. Remember
+  that `p*(p-1)/2` transpositions will be checked in every iteration.
+  For bigger `p`, this may be costly.
 
 ## References
 
@@ -145,17 +153,21 @@ link](https://arxiv.org/abs/2004.03503);
 
 - [`gips()`](https://przechoj.github.io/gips/reference/gips.md) - The
   constructor of a `gips` class. The `gips` object is used as the `g`
-  parameter.
+  parameter of `find_MAP()`.
 
 - [`plot.gips()`](https://przechoj.github.io/gips/reference/plot.gips.md) -
   Practical plotting function for visualizing the optimization process.
 
 - [`summary.gips()`](https://przechoj.github.io/gips/reference/summary.gips.md) -
-  The function that summarizes the output of optimization.
+  Summarize the output of optimization.
+
+- [`AIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md),
+  [`BIC.gips()`](https://przechoj.github.io/gips/reference/AIC.gips.md) -
+  Get the Information Criterion of the found model.
 
 - [`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md) -
-  When `find_MAP(return_probabilities = TRUE)` was called, then those
-  probabilities can be extracted with this function.
+  When `find_MAP(return_probabilities = TRUE)` was called, probabilities
+  can be extracted with this function.
 
 - [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md) -
   The function that the optimizers of `find_MAP()` tries to find the
@@ -164,17 +176,19 @@ link](https://arxiv.org/abs/2004.03503);
 - [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md) -
   When the `gips` object was optimized with
   `find_MAP(save_all_perms = TRUE)`, it will be of considerable size in
-  RAM. `forget_perms` can make such an object lighter in memory by
-  forgetting the permutations that it was in.
+  RAM.
+  [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md)
+  can make such an object lighter in memory by forgetting the
+  permutations it visited.
 
 - [`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
   or its [pkgdown
-  page](https://przechoj.github.io/gips/articles/Optimizers.html)) - A
+  page](https://przechoj.github.io/gips/articles/Optimizers.html) - A
   place to learn more about the available optimizers.
 
 - [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or its [pkgdown
-  page](https://przechoj.github.io/gips/articles/Theory.html)) - A place
+  page](https://przechoj.github.io/gips/articles/Theory.html) - A place
   to learn more about the math behind the `gips` package.
 
 ## Examples
@@ -202,9 +216,9 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 g_map
-#> The permutation (1,3,5)(2,4)
-#>  - was found after 5 log_posteriori calculations
-#>  - is 42.421382130987 times more likely than the starting, () permutation.
+#> The permutation (1,2):
+#>  - was found after 5 posteriori calculations;
+#>  - is 2.337 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
 
@@ -221,31 +235,40 @@ summary(g_map_BF)
 #>  (1,2,3,4,5)
 #> 
 #> Log_posteriori:
-#>  -16.56393
+#>  -15.1521
 #> 
 #> Times more likely than starting permutation:
-#> 1659.95151319896
+#>  414.386
 #> 
-#> Number of observations:
+#> The number of observations:
 #>  13
 #> 
-#> The mean in `S` matrix was estimated.
+#> The mean in the `S` matrix was estimated.
 #> Therefore, one degree of freedom was lost.
-#> There is 12 degrees of freedom left.
+#> There are 12 degrees of freedom left.
 #> 
 #> n0:
 #>  2
 #> 
-#> Number of observations is bigger than n0 for this permutaion,
+#> The number of observations is bigger than n0 for this permutation,
 #> so the gips model based on the found permutation does exist.
+#> 
+#> The number of free parameters in the covariance matrix:
+#>  3
+#> 
+#> BIC:
+#>  129.0236
+#> 
+#> AIC:
+#>  127.3288
 #> 
 #> --------------------------------------------------------------------------------
 #> Optimization algorithm:
 #>  brute_force
 #> 
-#> Number of log_posteriori calls:
-#>  120
+#> The number of log_posteriori calls:
+#>  67
 #> 
 #> Optimization time:
-#>  0.1652229 secs
+#>  0.1278954 secs
 ```
