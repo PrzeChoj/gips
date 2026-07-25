@@ -151,8 +151,8 @@ page](https://przechoj.github.io/gips/articles/Theory.html)).
 
 For analysis of the Hyperparameters influence, see **Section 3.2.** of
 "Learning permutation symmetries with gips in R" by `gips` developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of
-Statistical Software](https://doi.org/10.18637/jss.v112.i07);
+Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, Journal of
+Statistical Software;
 [doi:10.18637/jss.v112.i07](https://doi.org/10.18637/jss.v112.i07) .
 
 ## See also
@@ -246,6 +246,6 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04508257 secs
+#>  0.04531717 secs
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```

@@ -26,7 +26,7 @@ evaluated on 1000 random permutations of a given size:
 | v1.2.3           | 2.31 s | 2.31 s | 11.70 s | 46.49 s | 110.17 s |
 | v1.2.3.9000      | 0.84 s | 1.26 s |  3.24 s | 15.73 s |  39.47 s |
 
-The above tables based on the code from [Pull
+The above tables are based on the code from [Pull
 Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
 [\#99](https://github.com/PrzeChoj/gips/issues/99).
 
@@ -53,7 +53,7 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
   The `precomputed_equal_indices` parameter is no longer used and will
   be removed in v1.4.0.
 
-#### Bugfix:
+#### Bugfixes:
 
 - Documentation improvements: grammar and style corrections in roxygen
   comments, vignettes, and error messages.
@@ -96,7 +96,7 @@ For 1000 random permutations of a given size:
 
 ## gips 1.2.2
 
-#### Bugfix:
+#### Bugfixes:
 
 - [`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md)
   will return an object of class `logLik`;
