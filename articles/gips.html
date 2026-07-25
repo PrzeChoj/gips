@@ -65,7 +65,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>A Gentle Introduction to Modeling with gips</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/main/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/PrzeChoj/gips/blob/v1.3.0/vignettes/gips.Rmd" class="external-link"><code>vignettes/gips.Rmd</code></a></small>
       <div class="d-none name"><code>gips.Rmd</code></div>
     </div>
 
@@ -418,12 +418,12 @@ matrices:</p>
 <span><span class="co">#&gt;  - is 2147633.177 times more likely than the () permutation.</span></span>
 <span><span class="va">multi_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_multi_map</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">multi_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)        (1,3)   (1,5)(2,3) </span></span>
-<span><span class="co">#&gt; 0.5623733798 0.4330643758 0.0029614554 0.0006747875 0.0003612172</span></span></code></pre></div>
+<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) </span></span>
+<span><span class="co">#&gt;  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919</span></span></code></pre></div>
 <p>The MAP symmetry is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>,
 matching the shared symmetry used to generate both groups. Its posterior
-probability is about 56.2%. The projected covariance estimate is also
+probability is about 93.7%. The projected covariance estimate is also
 returned as one matrix per group:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_multi_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S_by_group</span>, <span class="va">g_multi_map</span><span class="op">)</span></span>
@@ -437,11 +437,11 @@ returned as one matrix per group:</p>
 <span><span class="co">#&gt; hy -0.26 -0.26 -0.26 0.08  0.61</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_multi_projected</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       he    ha    hi    hu    hy</span></span>
-<span><span class="co">#&gt; he  2.40  1.62  1.62 -0.51  0.28</span></span>
-<span><span class="co">#&gt; ha  1.62  2.40  1.62 -0.51  0.28</span></span>
-<span><span class="co">#&gt; hi  1.62  1.62  2.40 -0.51  0.28</span></span>
-<span><span class="co">#&gt; hu -0.51 -0.51 -0.51  1.01 -0.73</span></span>
-<span><span class="co">#&gt; hy  0.28  0.28  0.28 -0.73  2.22</span></span>
+<span><span class="co">#&gt; he  2.13  1.35  1.35 -0.06  0.95</span></span>
+<span><span class="co">#&gt; ha  1.35  2.13  1.35 -0.06  0.95</span></span>
+<span><span class="co">#&gt; hi  1.35  1.35  2.13 -0.06  0.95</span></span>
+<span><span class="co">#&gt; hu -0.06 -0.06 -0.06  0.78 -0.66</span></span>
+<span><span class="co">#&gt; hy  0.95  0.95  0.95 -0.66  3.24</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/multi_sample_example_project-1.png" class="r-plt" alt="" width="700"></p>
@@ -467,14 +467,14 @@ clear:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">group_1_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) </span></span>
-<span><span class="co">#&gt;   0.49565042   0.23330543   0.04511523   0.03684306   0.02882993</span></span>
+<span><span class="co">#&gt;   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">group_2_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; (1,2,3)(4,5)      (1,2,3)      (1,3,5)        (2,3)        (1,3) </span></span>
-<span><span class="co">#&gt;   0.52524938   0.32106074   0.04231691   0.02906696   0.01401196</span></span></code></pre></div>
+<span><span class="co">#&gt;    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) </span></span>
+<span><span class="co">#&gt; 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413</span></span></code></pre></div>
 <p>The separate analyses are more ambiguous. The true
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
-permutation has posterior probability about 49.6% in the first sample
-and only about 32.1% in the second sample. The multi-sample fit combines
+permutation has posterior probability about 48.7% in the first sample
+and only about 34.9% in the second sample. The multi-sample fit combines
 evidence from both groups while requiring one shared permutation
 symmetry.</p>
 </div>
