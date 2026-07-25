@@ -1,21 +1,31 @@
 ## Test environments
 
-GitHub Actions using `usethis::use_github_actions_check_standard()`
+GitHub Actions using the standard R CMD check workflow:
 
-* MacOS-latest (release)
-* Windows-latest (release)
-* Ubuntu-latest (oldrel-1, release, devel)
-
-Testing with `devtools::check_win_devel()` - no Errors, no Warnings, one Note (possibly invalid DOI -- for a new JSS publication that will be registered after publication on CRAN.)
-
+* macOS-latest (release)
+* windows-latest (release)
+* ubuntu-latest (oldrel-1)
+* ubuntu-latest (release)
+* ubuntu-latest (devel)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
 
-R CMD check succeeded
+## Resolved CRAN check issues
 
+This release resolves both issues reported for the CRAN version of gips
+(1.2.3):
 
-## Citation Information
+* Replaced the deprecated `.Dim` argument to `structure()` with `dim`,
+  resolving the R-devel NOTE.
+* Made the exact-probability test independent of the relative ordering of tied
+  probabilities, resolving the test failure under Intel MKL.
 
-The DOI in the CITATION is for a new JSS publication that will be registered after publication on CRAN.
+## Reverse dependencies
+
+We checked the one reverse dependency, `gipsDA`, comparing R CMD check results
+with the CRAN version of gips (1.2.3) and this version (1.3.0).
+
+* We saw 0 new problems.
+* We failed to check 0 packages.
