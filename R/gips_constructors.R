@@ -91,7 +91,10 @@
 #' g <- gips(list(S1, S2, S3), c(n1, n2, n3))
 #' ```
 #'
-#' All matrices in `S` must be square covariance matrices of the same size.
+#' All matrices in `S` must be square covariance matrices of the same size,
+#' and their rows and columns must refer to the same variables in the same
+#' order. `gips()` applies one shared permutation to matching matrix indices;
+#' it does not match or reorder variables using matrix names.
 #' `D_matrix` should then be a list of G positive-definite matrices
 #' (defaulting to `diag(mean(diag(S_g)), p)` for each group).
 #' `delta` can be a scalar (broadcast to all groups) or a vector of length G

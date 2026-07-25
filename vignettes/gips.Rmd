@@ -242,6 +242,10 @@ permutation symmetry, while each group has its own covariance matrix. In this
 case, pass a list of covariance matrices as `S` and a vector of sample sizes as
 `number_of_observations`.
 
+Every matrix must describe the same variables in the same row and column order.
+`gips` applies a shared permutation to matching matrix indices; it does not
+match or reorder variables using matrix names.
+
 The two covariance matrices below are different, but both are invariant under
 the permutation $(1,2,3)$:
 
