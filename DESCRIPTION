@@ -1,7 +1,7 @@
 Type: Package
 Package: gips
 Title: Gaussian Model Invariant by Permutation Symmetry
-Version: 1.2.3.9000
+Version: 1.2.4
 Authors@R: c(
     person(c("Adam", "Przemysław"), "Chojecki", , "adam.prze.choj@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0008-2902-4096")),
@@ -55,4 +55,3 @@ Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-LazyData: true

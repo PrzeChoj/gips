@@ -76,8 +76,7 @@
 #' For analysis of the Hyperparameters influence, see **Section 3.2.**
 #' of "Learning permutation symmetries with gips in R"
 #' by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
-#' [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07);
-#' \doi{10.18637/jss.v112.i07}.
+#' Journal of Statistical Software; \doi{10.18637/jss.v112.i07}.
 #'
 #' @section Multi-sample:
 #' The usual and recommended starting point is the single-sample call
