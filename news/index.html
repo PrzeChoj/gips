@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,9 +38,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.4.9000" id="gips-1249000">gips 1.2.4.9000<a class="anchor" aria-label="anchor" href="#gips-1249000"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.3.0" id="gips-130">gips 1.3.0<a class="anchor" aria-label="anchor" href="#gips-130"></a></h2>
 <div class="section level4">
-<h4 id="multi-sample-support-1-2-4-9000">Multi-sample support<a class="anchor" aria-label="anchor" href="#multi-sample-support-1-2-4-9000"></a></h4>
+<h4 id="multi-sample-support-1-3-0">Multi-sample support<a class="anchor" aria-label="anchor" href="#multi-sample-support-1-3-0"></a></h4>
 <p><code><a href="../reference/gips.html">gips()</a></code> now accepts a <strong>list of covariance matrices</strong> and a vector of sample sizes, enabling Bayesian model selection with a shared permutation symmetry across G independent groups:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">S1</span>, <span class="va">S2</span>, <span class="va">S3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n1</span>, <span class="va">n2</span>, <span class="va">n3</span><span class="op">)</span><span class="op">)</span></span>

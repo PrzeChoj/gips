@@ -1,6 +1,6 @@
 # Changelog
 
-## gips 1.2.4.9000
+## gips 1.3.0
 
 #### Multi-sample support
 
