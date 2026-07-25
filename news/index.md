@@ -51,7 +51,7 @@ Request](https://github.com/PrzeChoj/gips/pull/99#issuecomment-4847288063)
   for large iteration counts.
 - [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md):
   The `precomputed_equal_indices` parameter is no longer used and will
-  be removed in v1.3.0.
+  be removed in v1.4.0.
 
 #### Bugfix:
 

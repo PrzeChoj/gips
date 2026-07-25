@@ -31,7 +31,7 @@ project_matrix(S, perm, precomputed_equal_indices = NULL)
 
 - precomputed_equal_indices:
 
-  This parameter is no longer used and will be deleted in v1.3.0.
+  This parameter is no longer used and will be deleted in v1.4.0.
 
 ## Value
 
