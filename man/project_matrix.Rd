@@ -18,7 +18,7 @@ An object of a \code{gips} class,
 a \code{gips_perm} class, or anything that can be used
 as the \code{x} argument in the \code{gips_perm()} function.}
 
-\item{precomputed_equal_indices}{This parameter is no longer used and will be deleted in v1.3.0.}
+\item{precomputed_equal_indices}{This parameter is no longer used and will be deleted in v1.4.0.}
 }
 \value{
 The matrix \code{S} projected on the space of symmetrical matrices invariant
