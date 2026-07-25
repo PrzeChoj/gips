@@ -105,6 +105,39 @@ test_that("plot() with larger multi-sample works (p=3, G=3)", {
 })
 
 
+test_that("multi-sample heatmaps handle group names safely", {
+  matrices <- list(diag(2), 2 * diag(2))
+
+  expect_equal(
+    get_multi_group_labels(matrices),
+    c("Group 1", "Group 2")
+  )
+
+  names(matrices) <- c("control", "treatment")
+  expect_equal(
+    get_multi_group_labels(matrices),
+    c("control", "treatment")
+  )
+
+  names(matrices) <- c("same", "same")
+  expect_equal(
+    get_multi_group_labels(matrices),
+    c("same (Group 1)", "same (Group 2)")
+  )
+
+  g <- gips(matrices, c(10L, 12L))
+  expect_no_error(p <- plot(g, type = "heatmap"))
+  expect_s3_class(p, "ggplot")
+  expect_equal(levels(p$data$group), c("1", "2"))
+
+  names(matrices) <- c("", NA_character_)
+  expect_equal(
+    get_multi_group_labels(matrices),
+    c("Group 1", "Group 2")
+  )
+})
+
+
 test_that("plot() with larger optimized multi-sample works (p=3, G=3, BF)", {
   g <- gips(list(diag(2), 2*diag(2), 4*diag(2)), c(20L, 25L, 30L))
   g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)

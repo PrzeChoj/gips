@@ -334,8 +334,12 @@ plot_gips_heatmap_multi <- function(x, type) {
   col_labels <- if (!is.null(colnames(matrices[[1]]))) colnames(matrices[[1]]) else as.character(seq_len(p))
   row_labels <- if (!is.null(rownames(matrices[[1]]))) rownames(matrices[[1]]) else as.character(seq_len(p))
 
-  # Facet labels
-  group_labels <- if (!is.null(names(S_list))) names(S_list) else paste0("Group ", seq_len(G))
+  # Facet labels and stable internal identifiers
+  group_labels <- get_multi_group_labels(S_list)
+  group_ids <- as.character(seq_len(G))
+  group_labeller <- ggplot2::as_labeller(
+    stats::setNames(group_labels, group_ids)
+  )
 
   # R CMD check: no visible binding for global variable
   col_id <- covariance <- row_id <- group <- NULL
@@ -348,12 +352,12 @@ plot_gips_heatmap_multi <- function(x, type) {
     df <- tibble::rownames_to_column(as.data.frame(mat), "row_id")
     df <- tidyr::pivot_longer(df, -row_id, names_to = "col_id", values_to = "covariance")
     df <- dplyr::mutate(df, col_id = as.numeric(col_id), row_id = as.numeric(row_id))
-    df[["group"]] <- group_labels[g_idx]
+    df[["group"]] <- group_ids[g_idx]
     df
   })
 
   combined_df <- do.call(rbind, df_list)
-  combined_df[["group"]] <- factor(combined_df[["group"]], levels = group_labels)
+  combined_df[["group"]] <- factor(combined_df[["group"]], levels = group_ids)
 
   ggplot2::ggplot(
     combined_df,
@@ -363,12 +367,43 @@ plot_gips_heatmap_multi <- function(x, type) {
     ggplot2::scale_fill_viridis_c(na.value = "white") +
     ggplot2::scale_x_continuous(breaks = seq_len(p), labels = col_labels) +
     ggplot2::scale_y_reverse(breaks = seq_len(p), labels = row_labels) +
-    ggplot2::facet_wrap(ggplot2::vars(group)) +
+    ggplot2::facet_wrap(
+      ggplot2::vars(group),
+      labeller = ggplot2::labeller(group = group_labeller)
+    ) +
     ggplot2::theme_bw() +
     ggplot2::labs(
       title = paste0("Estimated covariance matrices\nprojected on permutation ", perm),
       x = "", y = ""
     )
+}
+
+
+#' Create display labels for multi-sample groups
+#'
+#' @param S_list A non-empty list of covariance matrices.
+#'
+#' @returns A character vector with one display label per group.
+#'
+#' @noRd
+get_multi_group_labels <- function(S_list) {
+  G <- length(S_list)
+  group_labels <- names(S_list)
+  if (is.null(group_labels)) {
+    group_labels <- rep("", G)
+  }
+
+  missing_labels <- is.na(group_labels) | trimws(group_labels) == ""
+  group_labels[missing_labels] <- paste0("Group ", which(missing_labels))
+
+  duplicate_labels <- duplicated(group_labels) |
+    duplicated(group_labels, fromLast = TRUE)
+  group_labels[duplicate_labels] <- paste0(
+    group_labels[duplicate_labels],
+    " (Group ", which(duplicate_labels), ")"
+  )
+
+  group_labels
 }
 
 

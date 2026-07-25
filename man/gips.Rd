@@ -158,13 +158,17 @@ assumed to share the same permutation symmetry, while each group keeps its
 own covariance matrix and sample size. Pass a list of G covariance matrices
 as \code{S} and a numeric vector of length G as \code{number_of_observations}:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{S_by_group <- list(control = S1, treatment = S2, follow_up = S3)
+g <- gips(S_by_group, c(n1, n2, n3))
 }\if{html}{\out{</div>}}
 
 All matrices in \code{S} must be square covariance matrices of the same size,
 and their rows and columns must refer to the same variables in the same
 order. \code{gips()} applies one shared permutation to matching matrix indices;
 it does not match or reorder variables using matrix names.
+Names of the list elements can identify groups, while matching row and
+column names on the matrices can identify variables. These names are used
+as labels in multi-sample heatmaps in \code{plot.gips()}.
 \code{D_matrix} should then be a list of G positive-definite matrices
 (defaulting to \code{diag(mean(diag(S_g)), p)} for each group).
 \code{delta} can be a scalar (broadcast to all groups) or a vector of length G

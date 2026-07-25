@@ -88,13 +88,17 @@
 #' as `S` and a numeric vector of length G as `number_of_observations`:
 #'
 #' ```r
-#' g <- gips(list(S1, S2, S3), c(n1, n2, n3))
+#' S_by_group <- list(control = S1, treatment = S2, follow_up = S3)
+#' g <- gips(S_by_group, c(n1, n2, n3))
 #' ```
 #'
 #' All matrices in `S` must be square covariance matrices of the same size,
 #' and their rows and columns must refer to the same variables in the same
 #' order. `gips()` applies one shared permutation to matching matrix indices;
 #' it does not match or reorder variables using matrix names.
+#' Names of the list elements can identify groups, while matching row and
+#' column names on the matrices can identify variables. These names are used
+#' as labels in multi-sample heatmaps in `plot.gips()`.
 #' `D_matrix` should then be a list of G positive-definite matrices
 #' (defaulting to `diag(mean(diag(S_g)), p)` for each group).
 #' `delta` can be a scalar (broadcast to all groups) or a vector of length G
