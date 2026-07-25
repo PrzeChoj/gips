@@ -13,7 +13,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/PrzeChoj/gips/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/PrzeChoj/gips/blob/v1.2.4/inst/CITATION)
 
 Chojecki A, Morgen P, Kołodziejek B (2025). “Learning Permutation
 Symmetry of a Gaussian Vector with gips in R.” *Journal of Statistical
