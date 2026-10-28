@@ -45,6 +45,29 @@ test_that("log_posteriori_of_gips returns proper values", {
   )
 })
 
+test_that("log_posteriori_of_gips matches the p=5 closed-form integral ratio", {
+  # Chojecki et al., "A new class of colored Gaussian graphical models with
+  # explicit normalizing constants", arXiv:2601.16945.
+  # EJS_2026.pdf, p. 65, equations (35)-(36):
+  # I(delta + n, D + U) / I(delta, D) = 5^(-5/2).
+  # This checks the full normalizing-constant ratio, not just its Gamma part.
+  Z <- rbind(
+    c(1, 1, 1, 1, 1),
+    c(1, -1, 1, -1, 0)
+  )
+  n <- nrow(Z)
+  g <- gips(
+    S = crossprod(Z) / n,
+    number_of_observations = n,
+    delta = 3,
+    D_matrix = diag(5),
+    was_mean_estimated = FALSE,
+    perm = "(1,2,3,4)(5)"
+  )
+
+  expect_equal(log_posteriori_of_gips(g), -5 / 2 * log(5), tolerance = 1e-12)
+})
+
 test_that("log_posteriori_of_perm returns proper values", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE) / 100
 
