@@ -1,6 +1,10 @@
 # Changelog
 
+## gips 1.3.0.9000
+
 ## gips 1.3.0
+
+CRAN release: 2026-07-26
 
 #### Multi-sample support
 
