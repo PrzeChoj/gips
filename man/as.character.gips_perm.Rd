@@ -25,7 +25,7 @@ as.character(g_perm)
 \itemize{
 \item \code{\link[=as.character.gips]{as.character.gips()}} - The underlying \code{gips_perm} of
 the \code{gips} object is passed to \code{\link[=as.character.gips_perm]{as.character.gips_perm()}}.
-\item \code{\link[permutations:print]{permutations::as.character.cycle()}} - The underlying permutation of
-the \code{gips} object is passed to \code{\link[permutations:print]{permutations::as.character.cycle()}}.
+\item \code{\link[permutations:as.character.cycle]{permutations::as.character.cycle()}} - The underlying permutation of
+the \code{gips} object is passed to \code{\link[permutations:as.character.cycle]{permutations::as.character.cycle()}}.
 }
 }

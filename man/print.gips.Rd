@@ -18,7 +18,7 @@
 
 \item{digits}{The number of decimal places for
 the posterior probability. It can be negative.
-By default, \code{Inf}. It is passed to \code{\link[base:Round]{base::round()}}.}
+By default, \code{Inf}. It is passed to \code{\link[base:round]{base::round()}}.}
 
 \item{compare_to_original}{A logical. Whether to print how many
 times more likely the current permutation is compared to:

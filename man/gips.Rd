@@ -62,7 +62,7 @@ For multi-sample input, use a list of matrices; see the
 \item{was_mean_estimated}{A boolean.
 \itemize{
 \item Set \code{TRUE} (default) when your \code{S} parameter is a result of
-a \code{\link[stats:cor]{stats::cov()}} function.
+a \code{\link[stats:cov]{stats::cov()}} function.
 \item Set \code{FALSE} when your \code{S} parameter is a result of
 a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
 }}
@@ -208,7 +208,7 @@ plot(g_map, type = "both", logarithmic_x = TRUE)
 }
 \seealso{
 \itemize{
-\item \code{\link[stats:cor]{stats::cov()}} - The \code{S} parameter, as an empirical covariance matrix,
+\item \code{\link[stats:cov]{stats::cov()}} - The \code{S} parameter, as an empirical covariance matrix,
 is most of the time a result of the \code{cov()} function.
 For more information, see
 \href{https://en.wikipedia.org/wiki/Estimation_of_covariance_matrices}{Wikipedia - Estimation of covariance matrices}.

@@ -52,7 +52,7 @@ This value will be used in calculations of
 the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item \code{TRUE} means the \code{S} parameter was the output of \code{\link[stats:cor]{stats::cov()}} function;
+\item \code{TRUE} means the \code{S} parameter was the output of \code{\link[stats:cov]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
 \code{S = t(X) \%*\% X / number_of_observations}.
 }
@@ -98,7 +98,7 @@ This value will be used in calculations of
 the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
-\item \code{TRUE} means the \code{S} parameter was output of the \code{\link[stats:cor]{stats::cov()}} function;
+\item \code{TRUE} means the \code{S} parameter was output of the \code{\link[stats:cov]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
 \code{S = t(X) \%*\% X / number_of_observations}.
 }

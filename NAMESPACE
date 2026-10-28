@@ -27,8 +27,10 @@ export(project_matrix)
 export(validate_gips)
 export(validate_gips_perm)
 importFrom(Rcpp,sourceCpp)
-importFrom(stats,AIC)
-importFrom(stats,BIC)
-importFrom(stats,logLik)
-importFrom(stats,pchisq)
+importFrom(stats,
+  AIC,
+  BIC,
+  logLik,
+  pchisq
+)
 useDynLib(gips, .registration = TRUE)
