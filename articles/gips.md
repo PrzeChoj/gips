@@ -391,12 +391,12 @@ g_multi_map
 #>  - is 2147633.177 times more likely than the () permutation.
 multi_probabilities <- get_probabilities_from_gips(g_multi_map)
 head(multi_probabilities, 5)
-#>      (1,2,3) (1,2,3)(4,5)        (2,3)        (1,3)   (1,5)(2,3) 
-#> 0.5623733798 0.4330643758 0.0029614554 0.0006747875 0.0003612172
+#>      (1,2,3) (1,2,3)(4,5)        (2,3)   (1,5)(2,3)        (1,3) 
+#>  0.936664860  0.054381324  0.003776752  0.003231793  0.001444919
 ```
 
 The MAP symmetry is $`(1,2,3)`$, matching the shared symmetry used to
-generate both groups. Its posterior probability is about 56.2%. The
+generate both groups. Its posterior probability is about 93.7%. The
 projected covariance estimate is also returned as one matrix per group:
 
 ``` r
@@ -412,11 +412,11 @@ round(S_multi_projected[[1]], 2)
 #> hy -0.26 -0.26 -0.26 0.08  0.61
 round(S_multi_projected[[2]], 2)
 #>       he    ha    hi    hu    hy
-#> he  2.40  1.62  1.62 -0.51  0.28
-#> ha  1.62  2.40  1.62 -0.51  0.28
-#> hi  1.62  1.62  2.40 -0.51  0.28
-#> hu -0.51 -0.51 -0.51  1.01 -0.73
-#> hy  0.28  0.28  0.28 -0.73  2.22
+#> he  2.13  1.35  1.35 -0.06  0.95
+#> ha  1.35  2.13  1.35 -0.06  0.95
+#> hi  1.35  1.35  2.13 -0.06  0.95
+#> hu -0.06 -0.06 -0.06  0.78 -0.66
+#> hy  0.95  0.95  0.95 -0.66  3.24
 
 plot(g_multi_map, type = "MLE")
 ```
@@ -447,15 +447,15 @@ group_2_probabilities <- get_probabilities_from_gips(g_2_map)
 
 head(group_1_probabilities, 5)
 #>      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) 
-#>   0.49565042   0.23330543   0.04511523   0.03684306   0.02882993
+#>   0.48653674   0.22901557   0.05590981   0.03921633   0.03277839
 head(group_2_probabilities, 5)
-#> (1,2,3)(4,5)      (1,2,3)      (1,3,5)        (2,3)        (1,3) 
-#>   0.52524938   0.32106074   0.04231691   0.02906696   0.01401196
+#>    (1,2,3)    (1,3,5)  (1,2,3,5)  (1,3,2,5)  (1,2,5,3) 
+#> 0.34904106 0.20663953 0.08857119 0.08052969 0.07791413
 ```
 
 The separate analyses are more ambiguous. The true $`(1,2,3)`$
-permutation has posterior probability about 49.6% in the first sample
-and only about 32.1% in the second sample. The multi-sample fit combines
+permutation has posterior probability about 48.7% in the first sample
+and only about 34.9% in the second sample. The multi-sample fit combines
 evidence from both groups while requiring one shared permutation
 symmetry.
 
