@@ -68,6 +68,53 @@ test_that("log_posteriori_of_gips matches the p=5 closed-form integral ratio", {
   expect_equal(log_posteriori_of_gips(g), -5 / 2 * log(5), tolerance = 1e-12)
 })
 
+test_that("posterior ratios with a non-scalar prior are invariant to common scaling", {
+  S <- diag(c(1, 2.4))
+  priors <- list(
+    unequal_diagonal = diag(c(1, 2)),
+    off_diagonal = matrix(c(2, 0.5, 0.5, 1), nrow = 2)
+  )
+  log_ratio <- function(S, D) {
+    log_weights <- vapply(c("()", "(1,2)"), function(perm) {
+      g <- gips(S, 20, D_matrix = D, perm = perm, was_mean_estimated = TRUE)
+      log_posteriori_of_gips(g)
+    }, numeric(1))
+    unname(log_weights[1] - log_weights[2])
+  }
+
+  for (D in priors) {
+    reference <- log_ratio(S, D)
+    for (scale in c(1e-8, 1e-6, 1e6, 1e8)) {
+      expect_equal(
+        log_ratio(S * scale, D * scale), reference,
+        tolerance = 1e-10, info = paste("scale =", scale)
+      )
+    }
+  }
+})
+
+test_that("the scalar-prior shortcut agrees with the general calculation", {
+  # Force the general path in a local copy without changing the namespace.
+  general_phi_part <- calculate_phi_part
+  environment(general_phi_part) <- list2env(
+    list(is_scalar_identity_matrix = function(...) FALSE),
+    parent = environment(calculate_phi_part)
+  )
+  perm <- gips_perm("(1,2,3,4)(5)", 5)
+  constants <- get_structure_constants(perm)
+  Z <- rbind(c(1, 1, 1, 1, 1), c(1, -1, 1, -1, 0))
+
+  for (scale in c(1e-8, 1, 1e8)) {
+    U <- crossprod(Z) * scale
+    D <- diag(5) * scale
+    expect_equal(
+      calculate_phi_part(perm, 2, U, 3, D, constants),
+      general_phi_part(perm, 2, U, 3, D, constants),
+      tolerance = 1e-12, info = paste("scale =", scale)
+    )
+  }
+})
+
 test_that("log_posteriori_of_perm returns proper values", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE) / 100
 

@@ -68,6 +68,31 @@ test_that("is_scalar_identity_matrix works", {
   expect_false(is_scalar_identity_matrix(matrix_outside_tolerance))
 })
 
+test_that("scalar identity detection uses relative tolerance at different scales", {
+  near_scalar <- diag(c(1, 1, 1 + 1e-7))
+  near_scalar[1, 2] <- near_scalar[2, 1] <- 1e-7
+  early_off_diagonal <- diag(3)
+  early_off_diagonal[1, 2] <- early_off_diagonal[2, 1] <- 0.1
+  late_off_diagonal <- diag(3)
+  late_off_diagonal[2, 3] <- late_off_diagonal[3, 2] <- 0.1
+  matrices <- list(
+    zero = matrix(0, 3, 3),
+    scalar = diag(3, 3),
+    near_scalar = near_scalar,
+    unequal_diagonal = diag(c(1, 2, 3)),
+    early_off_diagonal = early_off_diagonal,
+    late_off_diagonal = late_off_diagonal
+  )
+  expected <- c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)
+
+  for (scale in c(1e-12, 1e-6, 1, 1e6, 1e12)) {
+    actual <- vapply(matrices, function(x) {
+      is_scalar_identity_matrix(x * scale)
+    }, logical(1))
+    expect_identical(unname(actual), expected, info = paste("scale =", scale))
+  }
+})
+
 test_that("change_log_probabilities_unnorm_to_probabilities forks as intendent", {
   desired_probs <- c(0.1, 0.2, 0.3, 0.4)
   changed_probs <- log(desired_probs) + runif(1, -1000, 1000)

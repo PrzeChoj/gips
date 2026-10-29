@@ -80,6 +80,13 @@ is_scalar_identity_matrix <- function(matrix_of_interest, tolerance = 1e-06) {
   if (nrow(matrix_of_interest) <= 1) {
     return(TRUE)
   }
+
+  # Make the tolerance relative to the matrix scale.
+  matrix_scale <- max(abs(matrix_of_interest))
+  if (matrix_scale == 0) {
+    return(TRUE)
+  }
+  tolerance <- tolerance * matrix_scale
   
   # fast check
   if (abs(matrix_of_interest[1, 2]) > tolerance) {

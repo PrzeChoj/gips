@@ -1,5 +1,9 @@
 # gips 1.3.0.9000
 
+### Bugfixes:
+
+* Fixed incorrect posterior comparisons for small non-scalar `D_matrix` values.
+
 # gips 1.3.0
 
 ### Multi-sample support
