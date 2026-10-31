@@ -287,7 +287,7 @@ For more information about continuing the optimization, see the
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 50
@@ -323,9 +323,9 @@ suppressMessages( # message from ggplot2
 g_map <- find_MAP(g, max_iter = 150, optimizer = "Metropolis_Hastings")
 #> ===============================================================================
 g_map
-#> The permutation (1,34,64,27,60,24,30,46,57,38,16,23,18,20,10,59,35,66,52,40,26,70,69,54,58,49,37,45,50,51,4,36,56,25,39,5,67,32,29,48,6,61,15,47,33,2,42,17,41,21,7,68,3,63,43,9,14,8,31,11,19,44,55,13,53,62,22):
+#> The permutation (1,34,48,6,9,4,46,17,2,58,32,69,54,42,57,38,16,23,18,10,59,35,49,66,52,40,26,70,61,15,47,37,45,50,51,3,63,43,68,20,33,41,30,24,60,36,56,25,39,5,29,64,27,21,7,67,14,8,31,11,19,44,55,13,53,62,22):
 #>  - was found after 150 posteriori calculations;
-#>  - is 1.75e+646 times more likely than the () permutation.
+#>  - is 6.444e+643 times more likely than the () permutation.
 ```
 
 After just 150 iterations, the found permutation is unimaginably more
@@ -428,7 +428,7 @@ Show/hide pseudocode
 perm_size <- 25
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 20
@@ -465,9 +465,9 @@ g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 #> ℹ The covariance matrix invariant under the found permutation does not have the likelihood properly defined.
 #> ℹ For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.
 g_map
-#> The permutation (5,6)(19,25):
+#> The permutation (5,6)(8,11):
 #>  - was found after 601 posteriori calculations;
-#>  - is 8.334e+9 times more likely than the () permutation.
+#>  - is 3.203e+10 times more likely than the () permutation.
 plot(g_map, type = "best")
 ```
 
@@ -489,7 +489,7 @@ can continue the optimization, as shown below.
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 50

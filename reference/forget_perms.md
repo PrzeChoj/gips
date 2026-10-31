@@ -35,7 +35,7 @@ For example, `perm_size = 150` and `max_iter = 150000` we checked
 
 ``` r
 A <- matrix(rnorm(10 * 10), nrow = 10)
-S <- t(A) %*% A
+S <- crossprod(A)
 g <- gips(S, 13, was_mean_estimated = FALSE)
 g_map <- find_MAP(g,
   max_iter = 10, optimizer = "Metropolis_Hastings",

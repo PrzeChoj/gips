@@ -413,7 +413,7 @@ could mean
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
@@ -446,9 +446,9 @@ process:</p>
 <code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,34,64,27,60,24,30,46,57,38,16,23,18,20,10,59,35,66,52,40,26,70,69,54,58,49,37,45,50,51,4,36,56,25,39,5,67,32,29,48,6,61,15,47,33,2,42,17,41,21,7,68,3,63,43,9,14,8,31,11,19,44,55,13,53,62,22):</span></span>
+<span><span class="co">#&gt; The permutation (1,34,48,6,9,4,46,17,2,58,32,69,54,42,57,38,16,23,18,10,59,35,49,66,52,40,26,70,61,15,47,37,45,50,51,3,63,43,68,20,33,41,30,24,60,36,56,25,39,5,29,64,27,21,7,67,14,8,31,11,19,44,55,13,53,62,22):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.75e+646 times more likely than the () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 6.444e+643 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After just 150 iterations, the found permutation is unimaginably more
 likely than the $_0 = $ <code>()</code> permutation.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -552,7 +552,7 @@ Show/hide pseudocode
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
@@ -586,9 +586,9 @@ process:</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance matrix invariant under the found permutation does not have the likelihood properly defined.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (5,6)(19,25):</span></span>
+<span><span class="co">#&gt; The permutation (5,6)(8,11):</span></span>
 <span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 8.334e+9 times more likely than the () permutation.</span></span>
+<span><span class="co">#&gt;  - is 3.203e+10 times more likely than the () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" class="r-plt" alt="" width="700"></p>
 <p>The above warnings are expected.</p>
@@ -609,7 +609,7 @@ necessary, users can continue the optimization, as shown below.</p>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
 <span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
 <span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>

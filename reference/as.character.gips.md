@@ -37,7 +37,7 @@ An object of a `character` type.
 
 ``` r
 A <- matrix(rnorm(4 * 4), nrow = 4)
-S <- t(A) %*% A
+S <- crossprod(A)
 g <- gips(S, 14, perm = "(123)")
 as.character(g)
 #> [1] "(1,2,3)"

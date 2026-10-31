@@ -45,7 +45,7 @@ validate_gips(g)
     `was_mean_estimated = TRUE` as default;
 
   - if one knows the theoretical mean is 0, use
-    `S = (t(Z) %*% Z) / number_of_observations`, and set parameter
+    `S = crossprod(Z) / number_of_observations`, and set parameter
     `was_mean_estimated = FALSE`.
 
 - number_of_observations:
@@ -79,7 +79,7 @@ validate_gips(g)
     [`stats::cov()`](https://rdrr.io/r/stats/cor.html) function.
 
   - Set `FALSE` when your `S` parameter is a result of a
-    `(t(Z) %*% Z) / number_of_observations` calculation.
+    `crossprod(Z) / number_of_observations` calculation.
 
 - perm:
 
@@ -286,6 +286,6 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.03204417 secs
+#>  0.04773164 secs
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```
