@@ -415,6 +415,7 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
 
     if (is.null(D_matrix)) {
       D_matrix <- lapply(S, function(y) diag(x = mean(diag(y)), nrow = ncol(y)))
+      abort_on_argument_problems(check_multi_D_matrices(D_matrix, S))
     }
 
     return(invisible(list(

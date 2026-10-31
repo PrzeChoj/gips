@@ -528,6 +528,39 @@ test_that("compare_log_posteriories_of_perms() validates standalone multi-sample
 })
 
 
+test_that("standalone multi-sample comparisons validate default D_matrix", {
+  S <- list(diag(2), matrix(0, 2, 2))
+
+  for (compare in list(compare_log_posteriories_of_perms, compare_posteriories_of_perms)) {
+    expect_error(
+      compare(
+        "(1,2)", "()", S = S, number_of_observations = c(10L, 12L),
+        was_mean_estimated = FALSE, print_output = FALSE
+      ),
+      "`D_matrix` must either be `NULL` or a positive-definite matrix.",
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
+test_that("standalone multi-sample comparisons allow zero S with positive-definite D_matrix", {
+  S <- list(diag(2), matrix(0, 2, 2))
+  n <- c(10L, 12L)
+  D <- list(diag(2), diag(2))
+  g1 <- gips(S, n, perm = "(1,2)", D_matrix = D, was_mean_estimated = FALSE)
+  g2 <- gips(S, n, perm = "()", D_matrix = D, was_mean_estimated = FALSE)
+
+  for (compare in list(compare_log_posteriories_of_perms, compare_posteriories_of_perms)) {
+    result <- compare(
+      "(1,2)", "()", S = S, number_of_observations = n,
+      D_matrix = D, was_mean_estimated = FALSE, print_output = FALSE
+    )
+
+    expect_true(is.finite(result))
+    expect_equal(result, compare(g1, g2, print_output = FALSE), tolerance = 1e-10)
+  }
+})
+
 test_that("single-sample gips() is unaffected by multi-sample changes", {
   S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   g <- gips(S, 10L)
