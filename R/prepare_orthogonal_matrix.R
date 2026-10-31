@@ -65,6 +65,7 @@ prepare_orthogonal_matrix <- function(perm, perm_size = NULL, basis = NULL) {
   if (!inherits(perm, "gips_perm")) {
     perm <- gips_perm(perm, perm_size)
   }
+  validate_gips_perm(perm)
   if (is.null(basis)) {
     return(prepare_orthogonal_matrix_default_fast_(perm))
   }

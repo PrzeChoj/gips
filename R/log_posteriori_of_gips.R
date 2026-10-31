@@ -192,7 +192,7 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   Uc <- Uc / 2
 
   # diagonalization
-  diagonalising_matrix <- prepare_orthogonal_matrix(perm_proposal)
+  diagonalising_matrix <- prepare_orthogonal_matrix_default_fast_(perm_proposal)
   Dc_diagonalised <- if (is_D_matrix_scalar_identity_matrix) {
     Dc
   } else {

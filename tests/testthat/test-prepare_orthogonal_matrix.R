@@ -143,6 +143,22 @@ test_that("gips object can be passed as perm", {
   expect_equal(U_Gamma1, U_Gamma2)
 })
 
+test_that("prepare_orthogonal_matrix requires complete permutations for either basis path", {
+  incomplete <- new_gips_perm(list(1:2), 3)
+  complete <- gips_perm("(1,2)", 3)
+
+  for (basis in list(NULL, diag(3))) {
+    expect_error(
+      prepare_orthogonal_matrix(incomplete, basis = basis), "complete permutation",
+      fixed = TRUE, class = "rlang_error"
+    )
+
+    U <- prepare_orthogonal_matrix(complete, basis = basis)
+    expect_equal(dim(U), c(3L, 3L))
+    expect_equal(crossprod(U), diag(3))
+  }
+})
+
 test_that("default fast path agrees with the identity-basis implementation", {
   perms <- list(
     gips_perm("()", 5),
