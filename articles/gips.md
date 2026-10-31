@@ -125,7 +125,10 @@ get_probabilities_from_gips(g_map)
 ```
 
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
-found the symmetry represented by permutation (2,3).
+found the symmetry represented by permutation (2,3). Here BF gives the
+full posterior over cyclic groups. See
+[`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
+for discussion on how to use it with MH.
 
 ``` r
 
@@ -281,7 +284,7 @@ toy_probabilities
 ```
 
 We see that assumption $`(3,4,5)`$ is the most likely with a 6.2%
-posterior probability. 21 possible permutations are more likely than id.
+posterior probability. 21 cyclic groups are more likely than id.
 
 Remember that the `n0` could still be too big for your data. In this
 example, the assumptions with transpositions (like $`(3,5)`$) would

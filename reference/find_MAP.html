@@ -108,12 +108,14 @@ This can be useful sometimes but needs a lot more RAM.</p></dd>
 
 <dt id="arg-return-probabilities">return_probabilities<a class="anchor" aria-label="anchor" href="#arg-return-probabilities"></a></dt>
 <dd><p>A boolean. <code>TRUE</code> can only be provided
-when <code>save_all_perms = TRUE</code>. For:</p><ul><li><p><code>optimizer = "MH"</code> - use Metropolis-Hastings results to
-estimate posterior probabilities;</p></li>
-<li><p><code>optimizer = "BF"</code> - use brute force results to
-calculate exact posterior probabilities.</p></li>
-</ul><p>These additional calculations are costly, so a second and third
-progress bars are shown (when <code>show_progress_bar = TRUE</code>).</p>
+when <code>save_all_perms = TRUE</code>. For:</p><ul><li><p><code>optimizer = "MH"</code> - normalize posterior weights over distinct
+visited cyclic groups, giving probabilities conditional on that set;</p></li>
+<li><p><code>optimizer = "BF"</code> - calculate the full posterior over all cyclic groups.</p></li>
+</ul><p>Each group contributes one weight, regardless of visit counts or the
+number of its generators encountered. MH continuation includes earlier
+MH and HC visits; keep <code>save_all_perms = TRUE</code> in every stage.
+Standalone HC does not support this option. Histories mixing BF with
+other optimizers do not retain a probability vector.</p>
 <p>To examine probabilities after optimization,
 call <code><a href="get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code>.</p></dd>
 
@@ -299,7 +301,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04614902 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04631066 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

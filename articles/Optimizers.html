@@ -404,13 +404,6 @@ could mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10000</mn><annotation encoding="application/x-tex">10000</annotation></semantics></math><strong>times</strong> the change in A Posteriori.</p>
 <p>For more information about continuing the optimization, see the
 <strong>Continuing the optimization</strong> section below.</p>
-<p>This algorithm has been analyzed extensively by statisticians. Thanks
-to the ergodic theorem, the frequency of visits to a given state
-converges almost surely to the probability of that state. This is the
-approach explained in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,
-Sec.4.1.2]</a> and shown in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec. 5.2]</a>. One can
-obtain estimates of posterior probabilities by setting
-<code>return_probabilities = TRUE</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
@@ -658,9 +651,9 @@ times the posteriori.</p>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
 </h2>
-<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function has two additional parameters:
-<code>show_progress_bar</code> and <code>save_all_perms</code>, which
-can be set to <code>TRUE</code> or <code>FALSE</code>.</p>
+<p>The <code><a href="../reference/find_MAP.html">find_MAP()</a></code> function has three additional logical
+parameters: <code>show_progress_bar</code>, <code>save_all_perms</code>,
+and <code>return_probabilities</code>.</p>
 <p>When <code>show_progress_bar = TRUE</code>, <code>gips</code> will
 print “=” characters on the console during optimization. Remember that
 when the user sets the <code>return_probabilities = TRUE</code>, a
@@ -675,6 +668,35 @@ whereas <code>save_all_perms = FALSE</code> only required 2 MB. However,
 <code>save_all_perms = TRUE</code> is necessary for
 <code>return_probabilities = TRUE</code> or more complex path
 analysis.</p>
+<p>With <code>return_probabilities = TRUE</code>, probabilities are
+calculated from unnormalized posterior weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w(\Gamma)</annotation></semantics></math>,
+conditional on the set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+of distinct visited cyclic groups:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo>∣</mo><mi>Z</mi><mo>,</mo><mi mathvariant="normal">Γ</mi><mo>∈</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mrow><mi>H</mi><mo>∈</mo><mi>V</mi></mrow></munder><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi>H</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">P(\Gamma \mid Z,\Gamma\in V)=\frac{w(\Gamma)}{\sum_{H\in V}w(H)}.</annotation></semantics></math></p>
+<p>Each group contributes one weight, regardless of repeated visits or
+different generators. BF uses all cyclic groups and gives the full
+posterior. A high conditional probability after MH does not establish
+that all important groups were found.</p>
+<p><code><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code> only reads the stored
+probabilities; saving permutations alone is not enough.</p>
+<p>Probabilities after MH continuation or HC followed by MH use the
+combined saved visited groups. Keep <code>save_all_perms = TRUE</code>
+in every stage, and request probabilities in the final MH call:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1.4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="fl">8</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">g_hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_small</span>, optimizer <span class="op">=</span> <span class="st">"HC"</span>, max_iter <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">g_mh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_hc</span>, optimizer <span class="op">=</span> <span class="st">"MH"</span>, max_iter <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>, return_probabilities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_mh</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     (1,2,3)       (2,3)          () </span></span>
+<span><span class="co">#&gt; 0.905590568 0.089759534 0.004649898</span></span></code></pre></div>
+<p>Standalone HC does not support
+<code>return_probabilities = TRUE</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>

@@ -280,14 +280,6 @@ $`10000`$**times** the change in A Posteriori.
 For more information about continuing the optimization, see the
 **Continuing the optimization** section below.
 
-This algorithm has been analyzed extensively by statisticians. Thanks to
-the ergodic theorem, the frequency of visits to a given state converges
-almost surely to the probability of that state. This is the approach
-explained in [\[1, Sec.4.1.2\]](https://arxiv.org/abs/2004.03503) and
-shown in [\[1, Sec. 5.2\]](https://arxiv.org/abs/2004.03503). One can
-obtain estimates of posterior probabilities by setting
-`return_probabilities = TRUE`.
-
 #### Example
 
 ``` r
@@ -546,8 +538,8 @@ times the posteriori.
 
 The
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
-function has two additional parameters: `show_progress_bar` and
-`save_all_perms`, which can be set to `TRUE` or `FALSE`.
+function has three additional logical parameters: `show_progress_bar`,
+`save_all_perms`, and `return_probabilities`.
 
 When `show_progress_bar = TRUE`, `gips` will print “=” characters on the
 console during optimization. Remember that when the user sets the
@@ -560,6 +552,43 @@ instance, with $`p=150`$ and `max_iter = 150000`, we needed 400 MB to
 store it, whereas `save_all_perms = FALSE` only required 2 MB. However,
 `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE`
 or more complex path analysis.
+
+With `return_probabilities = TRUE`, probabilities are calculated from
+unnormalized posterior weights $`w(\Gamma)`$, conditional on the set
+$`V`$ of distinct visited cyclic groups:
+
+``` math
+P(\Gamma \mid Z,\Gamma\in V)=\frac{w(\Gamma)}{\sum_{H\in V}w(H)}.
+```
+
+Each group contributes one weight, regardless of repeated visits or
+different generators. BF uses all cyclic groups and gives the full
+posterior. A high conditional probability after MH does not establish
+that all important groups were found.
+
+[`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md)
+only reads the stored probabilities; saving permutations alone is not
+enough.
+
+Probabilities after MH continuation or HC followed by MH use the
+combined saved visited groups. Keep `save_all_perms = TRUE` in every
+stage, and request probabilities in the final MH call:
+
+``` r
+
+g_small <- gips(diag(c(1, 1.4, 2)), 8, was_mean_estimated = FALSE)
+g_hc <- find_MAP(g_small, optimizer = "HC", max_iter = Inf,
+  save_all_perms = TRUE, show_progress_bar = FALSE)
+set.seed(1)
+g_mh <- find_MAP(g_hc, optimizer = "MH", max_iter = 10,
+  save_all_perms = TRUE, return_probabilities = TRUE,
+  show_progress_bar = FALSE)
+get_probabilities_from_gips(g_mh)
+#>     (1,2,3)       (2,3)          () 
+#> 0.905590568 0.089759534 0.004649898
+```
+
+Standalone HC does not support `return_probabilities = TRUE`.
 
 ## Discussion
 
