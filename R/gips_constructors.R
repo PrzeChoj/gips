@@ -491,6 +491,16 @@ check_S_matrix <- function(S) {
     ))
   }
 
+  if (any(!is.finite(S))) {
+    return(list(
+      abort_text = c(
+        "i" = "`S` matrix must contain only finite values.",
+        "x" = "You provided `S` with `NA`, `NaN` or infinite values."
+      ),
+      additional_info = 0
+    ))
+  }
+
   if (!all(abs(S - t(S)) < 0.000001)) {
     return(list(
       abort_text = c(
