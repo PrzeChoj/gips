@@ -20,6 +20,8 @@
   now use Cholesky factorization to check positive definiteness and compute
   log-determinants.
 * `validate_gips_perm()` now rejects incomplete permutations and invalid sizes.
+  `gips_perm()` now rejects invalid sizes during construction and correctly handles
+  size-zero identities.
 * `get_structure_constants()`, `prepare_orthogonal_matrix()`, and `project_matrix()`
   now validate permutations before calculations.
 * When `D_matrix` is a list (for multi-sample input), it must not contain `NULL` elements.

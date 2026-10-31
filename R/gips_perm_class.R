@@ -44,6 +44,26 @@
 #'
 #' @export
 gips_perm <- function(x, size) {
+  if (rlang::is_missing(size)) {
+    rlang::abort(c("There was a problem identified with provided argument:",
+      "i" = "`size` argument must be provided.",
+      "x" = "You did not provide the `size` argument."
+    ))
+  }
+  if (length(size) > 1) {
+    rlang::warn(c("Passing multiple sizes to `gips_perm()` is not supported. Taking only the first one.",
+      "i" = paste0("You provided ", length(size), " sizes.")
+    ))
+    size <- size[1]
+  }
+  if (length(size) != 1L || !is.numeric(size) || is.complex(size) ||
+      !is.finite(size) || size < 0 || size != floor(size)) {
+    rlang::abort(c("There was a problem identified with provided argument:",
+      "i" = "`size` must be a single finite non-negative integer.",
+      "x" = paste0("You provided `size == ", size, "`.")
+    ))
+  }
+
   if (inherits(x, "gips")) {
     validate_gips(x)
     if (attr(x[[1]], "size") != size) {
@@ -67,24 +87,6 @@ gips_perm <- function(x, size) {
       ))
     }
   }
-  if (rlang::is_missing(size)) {
-    rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "`size` argument must be provided.",
-      "x" = "You did not provide the `size` argument."
-    ))
-  }
-  if (length(size) > 1) {
-    rlang::warn(c("Passing multiple sizes to `gips_perm()` is not supported. Taking only the first one.",
-      "i" = paste0("You provided ", length(size), " sizes.")
-    ))
-    size <- size[1]
-  }
-  if (!is.wholenumber(size)) {
-    rlang::abort(c("There was a problem identified with provided argument:",
-      "i" = "`size` must be a whole number.",
-      "x" = paste0("You provided `size == ", size, "`.")
-    ))
-  }
   x <- permutations::as.cycle(x)
 
   if (length(unclass(x)) > 1) { # this could be checked prior to `permutations::permutation()`, but I think this will almost never be a problem
@@ -99,7 +101,7 @@ gips_perm <- function(x, size) {
   }
 
   if (permutations::is.id(x)) {
-    x <- as.list(1:size)
+    x <- as.list(seq_len(size))
     return(new_gips_perm(x, size)) # rearrange_cycles is not needed, because `identical(rearrange_cycles(x), x)`
   }
 

@@ -48,6 +48,16 @@ test_that("gips_perm works for identity", {
   )
 })
 
+test_that("gips_perm constructs valid identities of sizes zero and one", {
+  empty <- gips_perm("()", 0)
+  expect_equal(empty, new_gips_perm(list(), 0))
+  expect_silent(validate_gips_perm(empty))
+
+  singleton <- gips_perm("()", 1)
+  expect_equal(singleton, new_gips_perm(list(1L), 1))
+  expect_silent(validate_gips_perm(singleton))
+})
+
 test_that("gips_perm gives the same output for different type of input", {
   gperm1 <- gips_perm("(12)(45)", 5)
   gperm2 <- gips_perm("(1,2)(4,5)", 5)
@@ -191,6 +201,37 @@ test_that("gips_perm handles bad arguments", {
   )
 })
 
+
+test_that("gips_perm rejects invalid sizes before returning an object", {
+  inputs <- list("()", "(1,2)", permutations::nullword, gips(diag(3), 10))
+  invalid_sizes <- list(
+    NULL, numeric(0), NA_real_, NaN, Inf, -Inf,
+    -1, 3.5, 3 + 1e-9, "3", 3 + 0i, TRUE
+  )
+
+  for (x in inputs) {
+    for (size in invalid_sizes) {
+      expect_error(
+        perm <- gips_perm(x, size),
+        "`size` must be a single finite non-negative integer.",
+        fixed = TRUE, class = "rlang_error"
+      )
+    }
+  }
+})
+
+test_that("gips_perm handles size before returning a gips object's permutation", {
+  g <- gips(diag(3), 10)
+  expect_error(
+    perm <- gips_perm(g), "You did not provide the `size` argument.",
+    fixed = TRUE, class = "rlang_error"
+  )
+  expect_warning(
+    perm <- gips_perm(g, c(3, 4)), "Taking only the first one.",
+    fixed = TRUE
+  )
+  expect_identical(perm, g[[1]])
+})
 
 test_that("validate_gips works properly", {
   not_gips_perm <- "A"
