@@ -964,6 +964,35 @@ test_that("summary.gips() calculates the LRT from both covariance determinants",
   expect_null(identity_result$likelihood_ratio_test_p_value)
 })
 
+test_that("summary.gips() requires enough observations for the full-model LRT", {
+  for (was_mean_estimated in c(FALSE, TRUE)) {
+    n_boundary <- 3 + as.integer(was_mean_estimated)
+    g_below <- gips(
+      diag(c(1, 2, 3)), n_boundary - 1, perm = "(1,2,3)",
+      was_mean_estimated = was_mean_estimated
+    )
+    below <- summary(g_below)
+    expect_null(below$likelihood_ratio_test_statistics)
+    expect_null(below$likelihood_ratio_test_p_value)
+    # The symmetry-constrained model can still be fitted below the full-model threshold.
+    expect_true(is.finite(as.numeric(logLik(g_below))))
+
+    boundary <- summary(gips(
+      diag(c(1, 2, 3)), n_boundary, perm = "(1,2,3)",
+      was_mean_estimated = was_mean_estimated
+    ))
+    expected_statistic <- 3 * log(8 / 6)
+    expect_equal(boundary$likelihood_ratio_test_statistics, expected_statistic)
+    expect_equal(boundary$likelihood_ratio_test_p_value, 1 - pchisq(expected_statistic, 4))
+  }
+})
+
+test_that("summary.gips() applies the mean correction once at the identity boundary", {
+  result <- summary(gips(diag(c(1, 2, 3)), 4, was_mean_estimated = TRUE))
+  expect_equal(result$likelihood_ratio_test_statistics, 0)
+  expect_null(result$likelihood_ratio_test_p_value)
+})
+
 test_that("summary.gips() leaves the LRT unavailable when only the projection is PD", {
   g <- gips(diag(c(1, 0)), 10, perm = "(1,2)", was_mean_estimated = FALSE)
   result <- summary(g)

@@ -12,6 +12,8 @@
 
 ### Bugfixes:
 
+* The likelihood-ratio test in `summary()` now requires at least `p` effective
+  observations to compare with the unrestricted model.
 * `logLik()`, the likelihood-ratio test in `summary()`, and posterior calculations
   now use Cholesky factorization to check positive definiteness and compute
   log-determinants.

@@ -191,7 +191,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       the H_0 is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under the given permutation.
 #'       The p-value is calculated from the asymptotic distribution.
-#'       Note that this is sensibly defined only for \eqn{n \ge p}.
+#'       Comparison with the unrestricted model requires \eqn{n \ge p},
+#'       or \eqn{n \ge p + 1} when the mean was estimated.
 #'   7. `n0` - the minimum number of observations needed for
 #'       the covariance matrix's maximum likelihood estimator
 #'       (corresponding to a MAP) to exist. See **\eqn{C\sigma} and `n0`**
@@ -233,7 +234,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       the H_0 is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under `found_permutation`.
 #'       The p-value is calculated from the asymptotic distribution.
-#'       Note that this is sensibly defined only for \eqn{n \ge p}.
+#'       Comparison with the unrestricted model requires \eqn{n \ge p},
+#'       or \eqn{n \ge p + 1} when the mean was estimated.
 #'   9. `n0` - the minimal number of observations needed for the existence of
 #'       the maximum likelihood estimator (corresponding to a MAP) of
 #'       the covariance matrix (see **\eqn{C\sigma} and `n0`**
@@ -341,7 +343,7 @@ summary.gips <- function(object, ...) {
   # Likelihood-Ratio test:
   chol_S <- NULL
   chol_projected <- NULL
-  if (edited_number_of_observations >= n0) {
+  if (edited_number_of_observations >= ncol(attr(object, "S"))) {
     chol_S <- tryCatch(
       chol(attr(object, "S"), pivot = FALSE),
       error = function(e) NULL

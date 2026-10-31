@@ -37,7 +37,8 @@ statistics and p-value of Likelihood Ratio test, where
 the H_0 is that the data was drawn from the normal distribution
 with Covariance matrix invariant under the given permutation.
 The p-value is calculated from the asymptotic distribution.
-Note that this is sensibly defined only for \eqn{n \ge p}.
+Comparison with the unrestricted model requires \eqn{n \ge p},
+or \eqn{n \ge p + 1} when the mean was estimated.
 \item \code{n0} - the minimum number of observations needed for
 the covariance matrix's maximum likelihood estimator
 (corresponding to a MAP) to exist. See \strong{\eqn{C\sigma} and \code{n0}}
@@ -83,7 +84,8 @@ statistics and p-value of Likelihood Ratio test, where
 the H_0 is that the data was drawn from the normal distribution
 with Covariance matrix invariant under \code{found_permutation}.
 The p-value is calculated from the asymptotic distribution.
-Note that this is sensibly defined only for \eqn{n \ge p}.
+Comparison with the unrestricted model requires \eqn{n \ge p},
+or \eqn{n \ge p + 1} when the mean was estimated.
 \item \code{n0} - the minimal number of observations needed for the existence of
 the maximum likelihood estimator (corresponding to a MAP) of
 the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
