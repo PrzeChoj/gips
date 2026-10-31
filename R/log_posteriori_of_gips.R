@@ -399,7 +399,11 @@ check_compare_posteriories_arguments <- function(S, number_of_observations,
     additional_info <- 0
 
     for (i in seq_len(G)) {
-      S_check <- check_S_matrix(S[[i]])
+      S_name <- paste0("S[[", i, "]]")
+      S_check <- check_S_matrix(S[[i]], name = S_name)
+      if (length(S_check$abort_text) > 0) {
+        S_check$abort_text[1] <- paste0("In `", S_name, "`: ", S_check$abort_text[1])
+      }
       abort_text <- c(abort_text, S_check$abort_text)
       additional_info <- additional_info + S_check$additional_info
     }

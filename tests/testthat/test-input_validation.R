@@ -61,6 +61,57 @@ test_that("validate_gips rejects nonfinite S after an attribute change", {
   }
 })
 
+test_that("multi-sample S errors identify the invalid matrix", {
+  n <- c(10, 12)
+  g <- gips(list(diag(2), diag(2)), n)
+
+  for (i in 1:2) {
+    S <- list(diag(2), diag(2))
+    S[[i]][1, 1] <- NA_real_
+    attr(g, "S") <- S
+    errors <- list(
+      tryCatch(gips(S, n), error = identity),
+      tryCatch(validate_gips(g), error = identity),
+      tryCatch(compare_log_posteriories_of_perms(
+        "(1,2)", "()", S = S, number_of_observations = n,
+        print_output = FALSE
+      ), error = identity)
+    )
+
+    for (err in errors) {
+      expect_s3_class(err, "rlang_error")
+      expect_match(
+        conditionMessage(err),
+        paste0("In `S[[", i, "]]`: `S` matrix must contain only finite values."),
+        fixed = TRUE
+      )
+    }
+  }
+})
+
+test_that("multi-sample S symmetrization hints refer to the affected matrix", {
+  S <- list(diag(2), diag(2))
+  n <- c(10, 12)
+  g <- gips(S, n)
+  S[[2]][1, 2] <- 0.005
+  attr(g, "S") <- S
+  errors <- list(
+    tryCatch(gips(S, n), error = identity),
+    tryCatch(validate_gips(g), error = identity),
+    tryCatch(compare_log_posteriories_of_perms(
+      "(1,2)", "()", S = S, number_of_observations = n,
+      print_output = FALSE
+    ), error = identity)
+  )
+
+  for (err in errors) {
+    expect_s3_class(err, "rlang_error")
+    expect_match(conditionMessage(err), "In `S[[2]]`:", fixed = TRUE)
+    expect_match(conditionMessage(err), "S[[2]] <- (S[[2]] + t(S[[2]]))/2", fixed = TRUE)
+    expect_match(conditionMessage(err), "1 problems identified", fixed = TRUE)
+  }
+})
+
 test_that("multi-sample D_matrix defaults and complete lists remain valid", {
   S <- list(diag(c(1, 3)), diag(c(4, 8)))
   n <- c(10, 12)

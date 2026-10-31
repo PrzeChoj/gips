@@ -465,7 +465,7 @@ check_number_of_observations <- function(number_of_observations,
   character(0)
 }
 
-check_S_matrix <- function(S) {
+check_S_matrix <- function(S, name = "S") {
   if (ncol(S) != nrow(S)) {
     return(list(
       abort_text = c(
@@ -519,7 +519,10 @@ check_S_matrix <- function(S) {
         "i" = "`S` matrix must be a symmetric matrix.",
         "x" = "You provided `S` as a matrix, but a non-symmetric one.",
         if (show_symmetrization_hint) c(
-          "i" = "If the asymmetry is due to numerical rounding, try `S <- (S + t(S))/2`."
+          "i" = paste0(
+            "If the asymmetry is due to numerical rounding, try `",
+            name, " <- (", name, " + t(", name, "))/2`."
+          )
         )
       ),
       additional_info = as.integer(show_symmetrization_hint)
@@ -1057,7 +1060,11 @@ check_gips_mult_arguments <- function(Ss, numbers_of_observations, delta,
   additional_info <- 0
 
   for (i in seq_len(G)) {
-    S_check <- check_S_matrix(Ss[[i]])
+    S_name <- paste0("S[[", i, "]]")
+    S_check <- check_S_matrix(Ss[[i]], name = S_name)
+    if (length(S_check$abort_text) > 0) {
+      S_check$abort_text[1] <- paste0("In `", S_name, "`: ", S_check$abort_text[1])
+    }
     abort_text <- c(abort_text, S_check$abort_text)
     additional_info <- additional_info + S_check$additional_info
   }
