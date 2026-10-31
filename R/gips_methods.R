@@ -1072,8 +1072,9 @@ BIC.gips <- function(object, ...) {
 #' get_probabilities_from_gips(g_map)
 get_probabilities_from_gips <- function(g) {
   validate_gips(g)
+  optimization_info <- attr(g, "optimization_info")
 
-  if (is.null(attr(g, "optimization_info"))) {
+  if (is.null(optimization_info)) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`gips` object has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
       "x" = "You did not optimize `g`.",
@@ -1082,17 +1083,31 @@ get_probabilities_from_gips <- function(g) {
     ))
   }
 
-  if (is.null(attr(g, "optimization_info")[["post_probabilities"]])) {
+  probabilities <- optimization_info[["post_probabilities"]]
+  if (is.null(probabilities)) {
+    # TODO (1.4.0): calculate missing probabilities on demand from saved
+    # models and log weights, without rerunning the optimizer.
     rlang::inform(c(
       "You called `get_probabilities_from_gips(g)` on the `gips` object that does not have saved probabilities.",
       "x" = "`NULL` will be returned",
       "i" = "Did You use the wrong `g` as an argument for this function?",
-      "i" = "Did You forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?",
-      "i" = "Did You unintentionally use `g <- forget_perms(g)`?"
+      "i" = "Did You forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?"
     ))
+    return(NULL)
   }
 
-  attr(g, "optimization_info")[["post_probabilities"]]
+  algorithms <- optimization_info[["optimization_algorithm_used"]]
+  if (is.null(optimization_info[["post_probabilities_method"]]) &&
+      length(algorithms) > 0L &&
+      isTRUE(all(algorithms == "Metropolis_Hastings"))) {
+    rlang::warn(c(
+      "These legacy MH probabilities are visit-frequency estimates.",
+      "i" = "They are returned unchanged, not recalculated from posterior weights.",
+      "i" = "Run a new optimization to obtain probabilities calculated from posterior weights."
+    ), class = "gips_legacy_probabilities")
+  }
+
+  probabilities
 }
 
 
@@ -1136,13 +1151,16 @@ forget_perms <- function(g) {
       "Provided `g` is a `gips` object, but it was not optimized yet.",
       "i" = "Did You provide the wrong `gips` object?"
     ))
-  } else if (all(is.na(optimization_info[["visited_perms"]]))) {
-    rlang::inform(c(
-      "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
-      "i" = "Did You provide the wrong `gips` object?"
-    ))
   } else {
-    optimization_info[["visited_perms"]] <- I(NA)
+    if (all(is.na(optimization_info[["visited_perms"]]))) {
+      rlang::inform(c(
+        "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
+        "i" = "Did You provide the wrong `gips` object?"
+      ))
+    } else {
+      optimization_info[["visited_perms"]] <- I(NA)
+    }
+    optimization_info[["visited_log_posteriori_values"]] <- NULL
     attr(g, "optimization_info") <- optimization_info
   }
 

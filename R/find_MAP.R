@@ -263,7 +263,35 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     ))
   }
 
-  return(combine_gips(g, gips_optimized))
+  g_out <- combine_gips(g, gips_optimized)
+  optimization_info <- attr(g_out, "optimization_info")
+  # BF retains its exact calculation. For MH/HC histories, normalize only
+  # after combining all saved visits, including visits made during HC.
+  if (return_probabilities && optimizer %in% c("MH", "Metropolis_Hastings") &&
+    all(optimization_info[["optimization_algorithm_used"]] %in%
+      c("Metropolis_Hastings", "hill_climbing")) &&
+    !all(is.na(optimization_info[["visited_perms"]]))) {
+    probability_start_time <- Sys.time()
+    log_weights <- restore_visited_log_weights(g_out)
+    optimization_info[["visited_log_posteriori_values"]] <- log_weights
+    optimization_info[["post_probabilities"]] <- calculate_visited_probabilities(
+      optimization_info[["visited_perms"]], log_weights,
+      show_progress_bar = show_progress_bar
+    )
+    optimization_info[["post_probabilities_method"]] <- "posterior_weights"
+    optimization_info[["post_probabilities_scope"]] <- "visited_groups"
+    # Include the final probability calculation in the latest stage's timing,
+    # as when it was performed inside the MH optimizer (and still is in BF).
+    probability_time <- Sys.time() - probability_start_time
+    stage_times <- optimization_info[["optimization_time"]]
+    stage_times[length(stage_times)] <- stage_times[length(stage_times)] + probability_time
+    optimization_info[["optimization_time"]] <- stage_times
+    optimization_info[["whole_optimization_time"]] <-
+      optimization_info[["whole_optimization_time"]] + probability_time
+    attr(g_out, "optimization_info") <- optimization_info
+  }
+
+  g_out
 }
 
 
@@ -554,24 +582,17 @@ Metropolis_Hastings_optimizer <- function(
 
   function_calls <- length(log_posteriori_values)
 
-  # visited_perms are already either a list of things or a `NULL` object
-
-  if (return_probabilities) {
-    probabilities <- estimate_probabilities(visited_perms, show_progress_bar)
-  } else {
-    probabilities <- NULL
-  }
-
   optimization_info <- list(
     "acceptance_rate" = mean(acceptance),
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
+    "visited_log_posteriori_values" = if (save_all_perms) log_posteriori_values else NULL,
     "start_perm" = start_perm,
     "last_perm" = current_perm,
     "last_perm_log_posteriori" = log_posteriori_values[function_calls],
     "iterations_performed" = i,
     "optimization_algorithm_used" = "Metropolis_Hastings",
-    "post_probabilities" = probabilities,
+    "post_probabilities" = NULL, # Calculated by find_MAP() after combining histories.
     "did_converge" = NULL, # TODO: Maybe it should be TRUE when the early stopping from cache?
     "best_perm_log_posteriori" = found_perm_log_posteriori,
     "optimization_time" = NA,
@@ -718,6 +739,7 @@ hill_climbing_optimizer <- function(
     "acceptance_rate" = 1 / choose(perm_size, 2),
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
+    "visited_log_posteriori_values" = if (save_all_perms) goal_function_best_logvalues else NULL,
     "start_perm" = start_perm,
     "last_perm" = last_perm,
     "last_perm_log_posteriori" = goal_function_best_logvalues[iteration],
@@ -864,6 +886,8 @@ brute_force_optimizer <- function(
     "iterations_performed" = iterations_to_perform,
     "optimization_algorithm_used" = "brute_force",
     "post_probabilities" = probabilities,
+    "post_probabilities_method" = if (return_probabilities) "posterior_weights" else NULL,
+    "post_probabilities_scope" = if (return_probabilities) "all_groups" else NULL,
     "did_converge" = TRUE,
     "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,
@@ -919,11 +943,13 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   }
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
 
-  if (all(optimization_algorithm_used == "Metropolis_Hastings") &&
-    !is.null(optimization_info2[["post_probabilities"]])) {
-    post_probabilities <- estimate_probabilities(visited_perms, show_progress_bar) # TODO(This can be combined more optimally when !is.null(optimization_info1[["post_probabilities"]]). It is significant, because those calculations are like the same speed as the MH itself. However, I (Adam) think this will be rarely done nevertheless.)
-  } else {
-    post_probabilities <- NULL
+  visited_log_weights <- NULL
+  if (!all(is.na(visited_perms)) &&
+    all(optimization_algorithm_used %in% c("Metropolis_Hastings", "hill_climbing"))) {
+    visited_log_weights <- c(
+      get_saved_visited_log_weights(optimization_info1),
+      get_saved_visited_log_weights(optimization_info2)
+    )
   }
 
   optimization_info_new <- list(
@@ -931,12 +957,13 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
+    "visited_log_posteriori_values" = visited_log_weights,
     "start_perm" = optimization_info1[["start_perm"]],
     "last_perm" = optimization_info2[["last_perm"]],
     "last_perm_log_posteriori" = optimization_info2[["last_perm_log_posteriori"]],
     "iterations_performed" = c(optimization_info1[["iterations_performed"]], optimization_info2[["iterations_performed"]]),
     "optimization_algorithm_used" = optimization_algorithm_used,
-    "post_probabilities" = post_probabilities,
+    "post_probabilities" = NULL, # Any previous normalization is now stale.
     "did_converge" = optimization_info2[["did_converge"]],
     "best_perm_log_posteriori" = max(optimization_info1[["best_perm_log_posteriori"]], optimization_info2[["best_perm_log_posteriori"]]),
     "optimization_time" = c(optimization_info1[["optimization_time"]], optimization_info2[["optimization_time"]]),
@@ -953,4 +980,65 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   attr(g_out, "optimization_info") <- optimization_info_new
 
   g_out
+}
+
+
+# Read weights aligned with visits without evaluating any posterior. Older HC
+# and mixed histories need explicit missing entries: their evaluation logs
+# cannot be paired with visited_perms by index.
+get_saved_visited_log_weights <- function(optimization_info) {
+  n_visits <- length(optimization_info[["visited_perms"]])
+  log_weights <- optimization_info[["visited_log_posteriori_values"]]
+  if (!is.null(log_weights)) {
+    if (!is.numeric(log_weights) || length(log_weights) != n_visits) {
+      rlang::abort("Saved visited log weights must match the visited permutation history.")
+    }
+    return(log_weights)
+  }
+
+  algorithms <- optimization_info[["optimization_algorithm_used"]]
+  old_log_weights <- optimization_info[["log_posteriori_values"]]
+  if (length(algorithms) > 0L && all(algorithms == "Metropolis_Hastings") &&
+    is.numeric(old_log_weights) && length(old_log_weights) == n_visits) {
+    return(old_log_weights)
+  }
+
+  rep(NA_real_, n_visits)
+}
+
+
+# Compatibility for older saved objects. Called only for an explicit request
+# for probabilities in find_MAP(); the getter does not calculate on demand.
+restore_visited_log_weights <- function(g) {
+  optimization_info <- attr(g, "optimization_info")
+  perms <- optimization_info[["visited_perms"]]
+  log_weights <- get_saved_visited_log_weights(optimization_info)
+  missing <- which(is.na(log_weights))
+  if (length(missing) == 0L) {
+    return(log_weights)
+  }
+
+  keys <- vapply(perms, get_permutation_key, character(1))
+  known <- which(!is.na(log_weights))
+  matches <- match(keys[missing], keys[known])
+  reusable <- !is.na(matches)
+  log_weights[missing[reusable]] <- log_weights[known[matches[reusable]]]
+  missing <- which(is.na(log_weights))
+
+  if (length(missing) > 0L) {
+    first_missing <- missing[!duplicated(keys[missing])]
+    n <- attr(g, "number_of_observations")
+    if (attr(g, "was_mean_estimated")) {
+      n <- n - 1
+    }
+    recovered <- vapply(perms[first_missing], function(perm) {
+      log_posteriori_of_perm(perm,
+        S = attr(g, "S"), number_of_observations = n,
+        delta = attr(g, "delta"), D_matrix = attr(g, "D_matrix")
+      )
+    }, numeric(1))
+    log_weights[missing] <- recovered[match(keys[missing], keys[first_missing])]
+  }
+
+  log_weights
 }
