@@ -12,10 +12,9 @@
 
 ### Bugfixes:
 
-* Posterior calculations now use Cholesky factorization and report an error
-  when a required matrix block is not numerically positive definite.
-* `logLik()` now uses Cholesky factorization to check positive definiteness
-  of projected covariance matrices and compute their log-determinants.
+* `logLik()`, the likelihood-ratio test in `summary()`, and posterior calculations
+  now use Cholesky factorization to check positive definiteness and compute
+  log-determinants.
 * `validate_gips_perm()` now rejects incomplete permutations and invalid sizes.
 * `get_structure_constants()`, `prepare_orthogonal_matrix()`, and `project_matrix()`
   now validate permutations before calculations.

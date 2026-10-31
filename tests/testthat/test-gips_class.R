@@ -856,7 +856,8 @@ test_that("summary.gips() works", {
     BIC = BIC(g1)
   ), class = "summary.gips")
 
-  expect_identical(summary(g1), my_sum) # all in my_sum is calculated by the same functions the summary should use
+  # The determinant-based reference may differ from Cholesky by rounding.
+  expect_equal(summary(g1), my_sum)
 
   expect_output(
     print(summary(g1)),
@@ -950,6 +951,44 @@ test_that("start_permutation_log_posteriori was calculated correctly", {
   )
 })
 
+test_that("summary.gips() calculates the LRT from both covariance determinants", {
+  g <- gips(diag(c(1, 3)), 10, perm = "(1,2)", was_mean_estimated = FALSE)
+  result <- summary(g)
+  # The projection is 2 * I: its determinant is 4, while det(S) = 3.
+  expected_statistic <- 10 * log(4 / 3)
+  expect_equal(result$likelihood_ratio_test_statistics, expected_statistic)
+  expect_equal(result$likelihood_ratio_test_p_value, 1 - pchisq(expected_statistic, 1))
+
+  identity_result <- summary(gips(diag(c(1, 3)), 10, was_mean_estimated = FALSE))
+  expect_equal(identity_result$likelihood_ratio_test_statistics, 0)
+  expect_null(identity_result$likelihood_ratio_test_p_value)
+})
+
+test_that("summary.gips() leaves the LRT unavailable when only the projection is PD", {
+  g <- gips(diag(c(1, 0)), 10, perm = "(1,2)", was_mean_estimated = FALSE)
+  result <- summary(g)
+  expect_null(result$likelihood_ratio_test_statistics)
+  expect_null(result$likelihood_ratio_test_p_value)
+  expect_output(
+    print(result),
+    "Likelihood-Ratio test cannot be performed: insufficient observations or S or its projection is not numerically positive definite.",
+    fixed = TRUE
+  )
+})
+
+test_that("summary.gips() handles a numerically non-PD projection", {
+  # Simulate numerical projection failure in a local copy, leaving the namespace intact.
+  local_summary <- summary.gips
+  environment(local_summary) <- list2env(
+    list(project_matrix = function(...) diag(c(1, 0))),
+    parent = environment(summary.gips)
+  )
+  g <- gips(diag(c(1, 3)), 10, perm = "(1,2)", was_mean_estimated = FALSE)
+  expect_silent(result <- local_summary(g))
+  expect_null(result$likelihood_ratio_test_statistics)
+  expect_null(result$likelihood_ratio_test_p_value)
+})
+
 test_that("summary.gips() returns proper n0 for estimated and unestimated mean", {
   g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
@@ -982,6 +1021,8 @@ test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
   expect_silent(my_sum <- summary.gips(g))
   expect_null(my_sum$AIC)
   expect_null(my_sum$BIC)
+  expect_null(my_sum$likelihood_ratio_test_statistics)
+  expect_null(my_sum$likelihood_ratio_test_p_value)
   
   expect_output(print(my_sum), "BIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")
   expect_output(print(my_sum), "AIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")

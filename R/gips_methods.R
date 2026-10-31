@@ -339,12 +339,30 @@ summary.gips <- function(object, ...) {
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
   
   # Likelihood-Ratio test:
-  if (edited_number_of_observations < n0 || !is.positive.definite.matrix(attr(object, "S"))) {
+  chol_S <- NULL
+  chol_projected <- NULL
+  if (edited_number_of_observations >= n0) {
+    chol_S <- tryCatch(
+      chol(attr(object, "S"), pivot = FALSE),
+      error = function(e) NULL
+    )
+    if (!is.null(chol_S)) {
+      projected_cov <- project_matrix(attr(object, "S"), object[[1]])
+      chol_projected <- tryCatch(
+        chol(projected_cov, pivot = FALSE),
+        error = function(e) NULL
+      )
+    }
+  }
+
+  if (is.null(chol_projected)) {
     likelihood_ratio_test_statistics <- NULL
     likelihood_ratio_test_p_value <- NULL
   } else {
-    likelihood_ratio_test_statistics <- edited_number_of_observations*(determinant(project_matrix(attr(object, "S"), object[[1]]))$modulus - determinant(attr(object, "S"))$modulus)
-    attributes(likelihood_ratio_test_statistics) <- NULL
+    log_det_S <- 2 * sum(log(diag(chol_S)))
+    log_det_projected <- 2 * sum(log(diag(chol_projected)))
+    likelihood_ratio_test_statistics <- edited_number_of_observations *
+      (log_det_projected - log_det_S)
     p <- attr(object[[1]], "size")
     df_chisq <- p*(p+1)/2 - n_parameters
     if (df_chisq == 0) {
@@ -495,10 +513,7 @@ print.summary.gips <- function(x, ...) {
       "\n\nLikelihood-Ratio test: not available for multi-sample `gips` objects"
     } else {
       ifelse(is.null(x[["likelihood_ratio_test_statistics"]]),
-        ifelse(!is.positive.definite.matrix(x[["S_matrix"]]),
-          "\n\ndet(S) == 0, so Likelihood-Ratio test cannot be performed",
-          "\n\nn0 > number_of_observations, so Likelihood-Ratio test cannot be performed"
-        ),
+        "\n\nLikelihood-Ratio test cannot be performed: insufficient observations or S or its projection is not numerically positive definite.",
         ifelse(is.null(x[["likelihood_ratio_test_p_value"]]),
           "\n\nThe current permutation is id, so Likelihood-Ratio test cannot be performed (there is nothing to compare)",
           paste0("\n\nThe p-value of Likelihood-Ratio test:\n ", format(x[["likelihood_ratio_test_p_value"]], digits = 4)))
