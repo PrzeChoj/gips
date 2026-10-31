@@ -97,7 +97,7 @@ test_that("scalar identity detection distinguishes nearly scalar matrices at dif
   for (scale in c(1e-12, 1e-6, 1, 1e6, 1e12)) {
     actual <- vapply(matrices, function(x) {
       is_scalar_identity_matrix(x * scale)
-    }, logical(1))
+    }, FALSE)
     expect_identical(unname(actual), expected, info = paste("scale =", scale))
   }
 })

@@ -910,7 +910,7 @@ check_multi_S_list <- function(Ss) {
   }
 
   first_dim <- dim(Ss[[1]])
-  same_dimensions <- all(vapply(Ss, function(S) identical(dim(S), first_dim), logical(1)))
+  same_dimensions <- all(vapply(Ss, function(S) identical(dim(S), first_dim), FALSE))
   if (!same_dimensions) {
     rlang::abort(c(
       "There was a problem identified with the provided S argument:",
