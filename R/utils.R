@@ -37,71 +37,61 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
   abs(x - round(x)) < tol
 }
 
-#' Is matrix symmetric
+#' Check positive semidefiniteness of a previously validated matrix
 #'
-#' We did not use the `matrixcalc::is.positive.semi.definite` function, because
-#' here we have no checks(because they were done before) and the `tol`
-#' argument there is taken relative, but we want the absolute.
-#' Also, the default of the `tolerance` argument here is `1e-06`,
-#' which is the same as in the `MASS::mvrnorm` function.
-#'
-#' Watch out that this function does NOT checks weather
-#' the `matrix_of_interest` is indeed a matrix.
+#' The tolerance is relative to the largest absolute matrix entry.
+#' This helper does not check the matrix type, dimensions, finiteness or symmetry.
 #'
 #' @noRd
-is.positive.semi.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
+is.positive.semi.definite.matrix <- function(
+    matrix_of_interest, tolerance = sqrt(.Machine$double.eps)) {
   eigenvalues <- eigen(
     matrix_of_interest,
     symmetric = TRUE,
     only.values = TRUE
   )[["values"]]
 
-  return(all(eigenvalues >= -tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
+  return(all(eigenvalues >= -tolerance * max(abs(matrix_of_interest))))
 }
 
-#' Same as for is.positive.semi.definite.matrix
-#' 
+#' Check positive definiteness of a previously validated symmetric matrix
+#'
+#' Cholesky tests factorization without imposing a minimum relative eigenvalue.
+#' Matrix type, dimensions, finiteness and symmetry must be checked by callers.
+#'
 #' @noRd
-is.positive.definite.matrix <- function(matrix_of_interest, tolerance = 1e-06) {
-  eigenvalues <- eigen(
-    matrix_of_interest,
-    symmetric = TRUE,
-    only.values = TRUE
-  )[["values"]]
-  
-  return(all(eigenvalues >= tolerance * abs(eigenvalues[1]))) # 1st is the biggest eigenvalue
+is.positive.definite.matrix <- function(matrix_of_interest) {
+  tryCatch(
+    {
+      chol(matrix_of_interest, pivot = FALSE)
+      TRUE
+    },
+    error = function(e) FALSE
+  )
 }
 
-is_scalar_identity_matrix <- function(matrix_of_interest, tolerance = 1e-06) {
+is_scalar_identity_matrix <- function(matrix_of_interest) {
   if (nrow(matrix_of_interest) != ncol(matrix_of_interest)) {
     return(FALSE)
   }
-  
+
   if (nrow(matrix_of_interest) <= 1) {
     return(TRUE)
   }
 
-  # Make the tolerance relative to the matrix scale.
-  matrix_scale <- max(abs(matrix_of_interest))
-  if (matrix_scale == 0) {
-    return(TRUE)
-  }
-  tolerance <- tolerance * matrix_scale
-  
-  # fast check
-  if (abs(matrix_of_interest[1, 2]) > tolerance) {
+  # Only exact scalar matrices may use the simplified posterior calculation.
+  if (matrix_of_interest[1, 2] != 0) {
     return(FALSE)
   }
-  
+
   # fast diagonal check
   diagonals <- diag(matrix_of_interest)
-  # Use the mean of numerically equal diagonal values as the scalar.
-  d <- mean(diagonals)
-  if (any(abs(diagonals - d) > tolerance)) {
+  d <- diagonals[1]
+  if (any(diagonals != d)) {
     return(FALSE)
   }
-  
-  all(abs(matrix_of_interest - diag(d, nrow(matrix_of_interest))) <= tolerance)
+
+  all(matrix_of_interest == diag(d, nrow(matrix_of_interest)))
 }
 
 wrong_argument_abort <- function(i, x = "") {

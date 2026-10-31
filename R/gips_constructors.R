@@ -502,7 +502,7 @@ check_S_matrix <- function(S) {
     ))
   }
 
-  if (!is.positive.semi.definite.matrix(S, tolerance = 1e-06)) {
+  if (!is.positive.semi.definite.matrix(S)) {
     return(list(
       abort_text = c(
         "i" = "`S` matrix must be positive semi-definite matrix.",
@@ -607,7 +607,7 @@ check_D_matrix <- function(D_matrix, p) {
     ))
   }
   
-  if (!(is.null(D_matrix) || is.positive.definite.matrix(D_matrix, tolerance = 1e-06))) {
+  if (!(is.null(D_matrix) || is.positive.definite.matrix(D_matrix))) {
     return(c(
       "i" = "`D_matrix` must either be `NULL` or a positive-definite matrix.",
       "x" = "You provided `D_matrix` as a matrix, but a non-positive-definite one."

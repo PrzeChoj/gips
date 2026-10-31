@@ -1118,7 +1118,7 @@ test_that("logLik.gips() works", {
 
   # ==================
   # -Inf:
-  g <- gips(diag(0, 4), n)
+  g <- gips(diag(0, 4), n, D_matrix = diag(4))
   expect_warning(
     expect_equal(logLik(g), -Inf),
     class = "singular_matrix"
@@ -1161,7 +1161,7 @@ test_that("AIC.gips() works", {
 
   # ==================
   # Inf
-  g <- gips(diag(0, 4), n)
+  g <- gips(diag(0, 4), n, D_matrix = diag(4))
   expect_warning(expect_equal(AIC(g), Inf), class = "singular_matrix")
   expect_warning(expect_equal(BIC(g), Inf), class = "singular_matrix")
 })

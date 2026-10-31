@@ -115,6 +115,29 @@ test_that("the scalar-prior shortcut agrees with the general calculation", {
   }
 })
 
+test_that("nearly scalar priors retain their full posterior contribution", {
+  general_phi_part <- calculate_phi_part
+  environment(general_phi_part) <- list2env(
+    list(is_scalar_identity_matrix = function(...) FALSE),
+    parent = environment(calculate_phi_part)
+  )
+  perm <- gips_perm("(1,2,3,4)(5)", 5)
+  constants <- get_structure_constants(perm)
+  n <- 1000
+
+  for (scale in c(1e-6, 1, 1e6)) {
+    U <- n * diag(5) * scale
+    D <- diag(c(1, 1, 1, 1, 1 + 8e-7)) * scale
+    actual <- calculate_phi_part(perm, n, U, 3, D, constants)
+    expected <- general_phi_part(perm, n, U, 3, D, constants)
+
+    # Check absolute error: the large log values would hide this difference
+    # under a relative tolerance.
+    expect_equal(actual - expected, 0, tolerance = 1e-10,
+                 info = paste("scale =", scale))
+  }
+})
+
 test_that("log_posteriori_of_perm returns proper values", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE) / 100
 

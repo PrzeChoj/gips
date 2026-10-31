@@ -41,7 +41,18 @@ test_that("is.positive.semi.definite.matrix works", {
   expect_false(is.positive.semi.definite.matrix(random_matrix - diag(p) * (10.01))) # the smallest eigen value is very close to -0.01
 })
 
-test_that("is_scalar_identity_matrix works", {
+test_that("positive definiteness does not impose a relative eigenvalue cutoff", {
+  for (scale in c(1e-12, 1, 1e12)) {
+    expect_true(is.positive.definite.matrix(diag(c(1, 1e-12)) * scale))
+    expect_false(is.positive.definite.matrix(diag(c(1, 0)) * scale))
+    expect_false(is.positive.definite.matrix(diag(c(1, -1e-12)) * scale))
+    expect_true(is.positive.definite.matrix(matrix(c(2, 1, 1, 2), 2) * scale))
+    expect_false(is.positive.definite.matrix(matrix(1, 2, 2) * scale))
+  }
+  expect_false(is.positive.definite.matrix(matrix(0, 2, 2)))
+})
+
+test_that("is_scalar_identity_matrix requires exact scalar structure", {
   expect_true(is_scalar_identity_matrix(diag(5)))
   expect_true(is_scalar_identity_matrix(diag(3, 5)))
   expect_true(is_scalar_identity_matrix(matrix(7, nrow = 1, ncol = 1)))
@@ -57,18 +68,16 @@ test_that("is_scalar_identity_matrix works", {
   matrix_with_late_off_diagonal[3, 4] <- 1e-4
   expect_false(is_scalar_identity_matrix(matrix_with_late_off_diagonal))
 
-  matrix_within_tolerance <- diag(3)
-  matrix_within_tolerance[1, 2] <- 1e-7
-  matrix_within_tolerance[2, 1] <- -1e-7
-  matrix_within_tolerance[3, 3] <- 1 + 1e-7
-  expect_true(is_scalar_identity_matrix(matrix_within_tolerance))
+  nearly_scalar <- diag(3)
+  nearly_scalar[3, 3] <- 1 + .Machine$double.eps
+  expect_false(is_scalar_identity_matrix(nearly_scalar))
 
-  matrix_outside_tolerance <- diag(3)
-  matrix_outside_tolerance[3, 3] <- 1 + 1.1e-4
-  expect_false(is_scalar_identity_matrix(matrix_outside_tolerance))
+  tiny_off_diagonal <- diag(3)
+  tiny_off_diagonal[2, 3] <- tiny_off_diagonal[3, 2] <- .Machine$double.eps
+  expect_false(is_scalar_identity_matrix(tiny_off_diagonal))
 })
 
-test_that("scalar identity detection uses relative tolerance at different scales", {
+test_that("scalar identity detection distinguishes nearly scalar matrices at different scales", {
   near_scalar <- diag(c(1, 1, 1 + 1e-7))
   near_scalar[1, 2] <- near_scalar[2, 1] <- 1e-7
   early_off_diagonal <- diag(3)
@@ -83,7 +92,7 @@ test_that("scalar identity detection uses relative tolerance at different scales
     early_off_diagonal = early_off_diagonal,
     late_off_diagonal = late_off_diagonal
   )
-  expected <- c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)
+  expected <- c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)
 
   for (scale in c(1e-12, 1e-6, 1, 1e6, 1e12)) {
     actual <- vapply(matrices, function(x) {
