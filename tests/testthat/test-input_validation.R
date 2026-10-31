@@ -90,3 +90,33 @@ test_that("gips and validate_gips reject infinite delta", {
     }
   }
 })
+
+test_that("gips and validate_gips reject nonnumeric D_matrix", {
+  invalid_D <- list(
+    matrix("x", 2, 2),
+    matrix(list(2, 1, 1, 2), 2)
+  )
+  
+  for (multi in c(FALSE, TRUE)) {
+    S <- if (multi) list(diag(2), diag(2)) else diag(2)
+    n <- if (multi) c(10, 12) else 10
+    g <- gips(S, n, D_matrix = NULL)
+    
+    for (D in invalid_D) {
+      if (multi) D <- list(diag(2), D)
+      
+      expect_error(
+        gips(S, n, D_matrix = D),
+        "`D_matrix` must be a numeric matrix.",
+        fixed = TRUE, class = "rlang_error"
+      )
+      
+      attr(g, "D_matrix") <- D
+      expect_error(
+        validate_gips(g),
+        "`D_matrix` must be a numeric matrix.",
+        fixed = TRUE, class = "rlang_error"
+      )
+    }
+  }
+})

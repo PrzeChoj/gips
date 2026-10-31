@@ -582,6 +582,13 @@ check_D_matrix <- function(D_matrix, p) {
     ))
   }
 
+  if (!is.null(D_matrix) && !is.numeric(D_matrix)) {
+    return(c(
+      "i" = "`D_matrix` must be a numeric matrix.",
+      "x" = paste0("You provided `D_matrix` with type ", typeof(D_matrix), ".")
+    ))
+  }
+
   if (!(is.null(D_matrix) || ncol(D_matrix) == nrow(D_matrix))) {
     return(c(
       "i" = "`D_matrix` must either be `NULL` or a square matrix.",
