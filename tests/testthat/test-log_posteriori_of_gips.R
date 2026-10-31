@@ -227,6 +227,48 @@ test_that("calculate_block_determinants returns proper values", {
   )
 })
 
+test_that("block log-determinants reject non-positive-definite later blocks", {
+  for (diagonal in list(c(1, 0), c(1, -1e-8), c(-1e-8, -1e-8))) {
+    # The last case has a positive determinant despite not being positive definite.
+    expect_error(
+      calculate_log_determinants_of_block_matrices(
+        diag(c(2, diagonal)), c(1, 3)
+      ),
+      "Block 2 of the supplied matrix",
+      class = "not_positive_definite_block"
+    )
+  }
+})
+
+test_that("block log-determinants accept small positive eigenvalues", {
+  expect_equal(
+    calculate_log_determinants_of_block_matrices(
+      diag(c(2, 1, 1e-12)), c(1, 3)
+    ),
+    c(log(2), log(1e-12))
+  )
+})
+
+test_that("posterior calculation rejects non-positive-definite D + U", {
+  # S passes PSD tolerance, but this small prior cannot offset its negative part.
+  g <- gips(
+    diag(c(1, -1e-8)), 10, D_matrix = 1e-10 * diag(2),
+    was_mean_estimated = FALSE
+  )
+  expect_error(
+    log_posteriori_of_gips(g),
+    "projected \\(D \\+ U\\) / 2",
+    class = "not_positive_definite_block"
+  )
+})
+
+test_that("posterior calculation allows singular S with a positive definite prior", {
+  g <- gips(
+    diag(c(1, 0)), 10, D_matrix = diag(2), was_mean_estimated = FALSE
+  )
+  expect_true(is.finite(log_posteriori_of_gips(g)))
+})
+
 test_that("compare_posteriories_of_perms properly calculates", {
   gips_example_perm <- gips_perm(example_perm, 6)
   gips_example_perm2 <- gips_perm(example_perm2, 6)

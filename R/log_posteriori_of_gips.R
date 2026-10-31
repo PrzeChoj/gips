@@ -207,12 +207,14 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
   } else {
     calculate_log_determinants_of_block_matrices(
       Dc_diagonalised,
-      block_ends
+      block_ends,
+      matrix_name = "projected D / 2"
     )
   }
   DcUc_block_log_dets <- calculate_log_determinants_of_block_matrices(
     DcUc_diagonalised,
-    block_ends
+    block_ends,
+    matrix_name = "projected (D + U) / 2"
   )
   Dc_exponent <- (delta - 2) / 2 + structure_constants[["dim_omega"]] /
     (structure_constants[["r"]] * structure_constants[["k"]])
@@ -231,18 +233,33 @@ calculate_phi_part <- function(perm_proposal, number_of_observations, U,
 #' @param diagonalized_matrix A middle matrix from decomposition 1.
 #' @param block_ends The indices of last columns of block matrices.
 #' Last element equals size of matrix.
+#' @param matrix_name A label identifying the projected matrix in error messages.
 #'
 #' @returns A numeric vector.
 #' @noRd
 calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
-                                                         block_ends) {
+                                                         block_ends,
+                                                         matrix_name = "the supplied matrix") {
   block_starts <- c(1, block_ends[-length(block_ends)] + 1)
   out <- numeric(length(block_starts))
   
   for (i in seq_along(block_starts)) {
     slice <- block_starts[i]:block_ends[i]
     block_matrix <- diagonalised_matrix[slice, slice, drop = FALSE]
-    out[i] <- determinant(block_matrix, logarithm = TRUE)[["modulus"]]
+    # Blocks are symmetric by construction; chol() uses the upper triangle.
+    block_chol <- tryCatch(
+      chol(block_matrix, pivot = FALSE),
+      error = function(e) {
+        rlang::abort(c(
+          "Cannot calculate the posterior.",
+          "x" = paste0(
+            "Block ", i, " of ", matrix_name,
+            " is not numerically positive definite."
+          )
+        ), class = "not_positive_definite_block")
+      }
+    )
+    out[i] <- 2 * sum(log(diag(block_chol)))
   }
   
   out
