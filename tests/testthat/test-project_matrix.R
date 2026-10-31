@@ -44,6 +44,44 @@ test_that("project_matrix gives errors", {
   )
 })
 
+test_that("project_matrix validates permutations before checking their size", {
+  incomplete <- new_gips_perm(list(1:2), 3)
+  duplicate <- new_gips_perm(list(1:2, 2:3), 3)
+  invalid_size <- gips_perm("(1,2)", 3)
+  attr(invalid_size, "size") <- NA_real_
+
+  for (S in list(diag(3), list(diag(3), 2 * diag(3)))) {
+    expect_error(
+      project_matrix(S, incomplete), "complete permutation",
+      fixed = TRUE, class = "rlang_error"
+    )
+    expect_error(
+      project_matrix(S, duplicate), "must not repeat",
+      fixed = TRUE, class = "rlang_error"
+    )
+    expect_error(
+      project_matrix(S, invalid_size), "single finite non-negative integer",
+      fixed = TRUE, class = "rlang_error"
+    )
+    expect_error(
+      project_matrix(S, gips_perm("()", 4)), "Size of `perm` must be equal",
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
+test_that("project_matrix preserves valid single- and multi-sample projections", {
+  S <- diag(c(1, 3, 5))
+  expected <- diag(c(2, 2, 5))
+  for (perm in list("(1,2)", gips_perm("(1,2)", 3))) {
+    expect_equal(project_matrix(S, perm), expected)
+    expect_equal(
+      project_matrix(list(S, 2 * S), perm),
+      list(expected, 2 * expected)
+    )
+  }
+})
+
 test_that("project_matrix can get gips as per", {
   p <- 6
   my_perm <- "(14)(23)"

@@ -135,7 +135,9 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
   perm_size <- ncol(S)
   if (!inherits(perm, "gips_perm")) {
     perm <- gips_perm(perm, perm_size)
-  } else if (attr(perm, "size") != ncol(S)) {
+  }
+  validate_gips_perm(perm)
+  if (attr(perm, "size") != ncol(S)) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Size of `perm` must be equal to number of columns and rows of `S`.",
       "x" = paste0(
