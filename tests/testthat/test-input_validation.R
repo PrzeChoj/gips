@@ -61,6 +61,69 @@ test_that("validate_gips rejects nonfinite S after an attribute change", {
   }
 })
 
+test_that("list matrices with scalar numbers get a conversion hint", {
+  A <- matrix(list(2, 1, 1, 2), nrow = 2)
+
+  for (multi in c(FALSE, TRUE)) {
+    S <- if (multi) list(diag(2), A) else A
+    n <- if (multi) c(10, 12) else 10
+    conversion <- if (multi) {
+      "S[[2]] <- matrix(unlist(S[[2]]), nrow = nrow(S[[2]]), dimnames = dimnames(S[[2]]))"
+    } else {
+      "S <- matrix(unlist(S), nrow = nrow(S), dimnames = dimnames(S))"
+    }
+    g <- gips(if (multi) list(diag(2), diag(2)) else diag(2), n)
+    attr(g, "S") <- S
+    errors <- list(
+      tryCatch(gips(S, n), error = identity),
+      tryCatch(validate_gips(g), error = identity),
+      tryCatch(find_MAP(g, optimizer = "MH", max_iter = 2, show_progress_bar = FALSE),
+               error = identity),
+      tryCatch(compare_log_posteriories_of_perms(
+        "(1,2)", "()", S = S, number_of_observations = n,
+        print_output = FALSE
+      ), error = identity)
+    )
+
+    for (err in errors) {
+      expect_s3_class(err, "rlang_error")
+      message <- conditionMessage(err)
+      expect_match(message, "storage type `list`", fixed = TRUE)
+      expect_match(message, conversion, fixed = TRUE)
+      expect_match(message, "1 problems identified", fixed = TRUE)
+      expect_false(grepl("non-numeric values", message, fixed = TRUE))
+    }
+  }
+})
+
+test_that("optimizer argument validation recognizes a list matrix", {
+  expect_error(
+    check_find_MAP_arguments(
+      S = matrix(list(2, 1, 1, 2), nrow = 2), number_of_observations = 10,
+      max_iter = 2, start_perm = gips_perm("()", 2), delta = 3,
+      D_matrix = diag(2), was_mean_estimated = FALSE,
+      return_probabilities = FALSE, save_all_perms = FALSE, show_progress_bar = FALSE
+    ),
+    "unlist(S)", fixed = TRUE, class = "rlang_error"
+  )
+})
+
+test_that("list matrix conversion hints require finite real scalar numbers", {
+  invalid_entries <- list(c(1, 2), NULL, "1", list(1), TRUE, NA_real_, NaN, Inf, -Inf, 1i)
+  for (entry in invalid_entries) {
+    A <- matrix(list(2, 1, 1, entry), nrow = 2)
+    err <- tryCatch(gips(A, 14), error = identity)
+    expect_s3_class(err, "rlang_error")
+    expect_match(conditionMessage(err), "storage type `list`", fixed = TRUE)
+    expect_false(grepl("unlist", conditionMessage(err), fixed = TRUE))
+  }
+
+  empty <- matrix(list(), nrow = 0, ncol = 0)
+  err <- tryCatch(gips(empty, 14), error = identity)
+  expect_s3_class(err, "rlang_error")
+  expect_false(grepl("unlist", conditionMessage(err), fixed = TRUE))
+})
+
 test_that("multi-sample S errors identify the invalid matrix", {
   n <- c(10, 12)
   g <- gips(list(diag(2), diag(2)), n)

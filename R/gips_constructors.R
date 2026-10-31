@@ -160,7 +160,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     perm <- permutations::permutation(perm)
   }
 
-  if (is.list(S)) {
+  if (is.list(S) && !is.matrix(S)) {
     # Multi-sample path
     G <- length(S)
     
@@ -332,7 +332,7 @@ validate_gips <- function(g) {
     }
   )
 
-  if (is.list(S)) {
+  if (is.list(S) && !is.matrix(S)) {
     check_gips_mult_arguments(
       Ss = S, numbers_of_observations = number_of_observations,
       delta = delta, D_matrices = D_matrix,
@@ -477,6 +477,24 @@ check_S_matrix <- function(S, name = "S") {
       ),
       additional_info = 0
     ))
+  }
+
+  if (is.list(S)) {
+    abort_text <- c(
+      "i" = "`S` matrix must be a numeric matrix.",
+      "x" = "You supplied a matrix with storage type `list`."
+    )
+    can_unlist <- length(S) > 0 && all(vapply(S, function(x) {
+      is.numeric(x) && !is.complex(x) && length(x) == 1 && is.finite(x)
+    }, FALSE))
+    if (can_unlist) {
+      abort_text <- c(abort_text, "i" = paste0(
+        "Each entry is a single number. Convert it with `", name,
+        " <- matrix(unlist(", name, "), nrow = nrow(", name,
+        "), dimnames = dimnames(", name, "))`."
+      ))
+    }
+    return(list(abort_text = abort_text, additional_info = as.integer(can_unlist)))
   }
 
   if (!is.numeric(S)) {
@@ -829,7 +847,7 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
   }
 
   # For multi-sample (list S), the detailed validation was done in gips().
-  if (is.list(S)) {
+  if (is.list(S) && !is.matrix(S)) {
     abort_text <- character(0)
     abort_text <- c(abort_text, check_max_iter(max_iter))
     abort_text <- c(abort_text, check_logical_flag(was_mean_estimated, "was_mean_estimated"))

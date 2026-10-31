@@ -392,7 +392,7 @@ compare_posteriories_of_perms <- function(perm1, perm2 = "()", S = NULL,
 check_compare_posteriories_arguments <- function(S, number_of_observations,
                                                  delta, D_matrix,
                                                  was_mean_estimated) {
-  if (is.list(S)) {
+  if (is.list(S) && !is.matrix(S)) {
     check_multi_S_list(S)
     G <- length(S)
     abort_text <- character(0)
