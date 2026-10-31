@@ -52,12 +52,13 @@ See the \strong{Hyperparameters} section below.
 For multi-sample input, it can also be a numeric vector with one value
 per matrix in \code{S}; see the \strong{Multi-sample} section below.}
 
-\item{D_matrix}{Symmetric, positive-definite matrix of the same size as \code{S}.
-Hyper-parameter of a Bayesian model.
-When \code{NULL}, the (hopefully) reasonable one is derived from the data.
-For more details, see the \strong{Hyperparameters} section below.
-For multi-sample input, use a list of matrices; see the
-\strong{Multi-sample} section below.}
+\item{D_matrix}{Hyper-parameter of a Bayesian model. Either \code{NULL} (default),
+a symmetric, positive-definite matrix of the same size as \code{S} for
+single-sample input, or a list of such matrices (one per matrix in \code{S})
+for multi-sample input. List elements cannot be \code{NULL}.
+When \code{NULL}, defaults are derived from the data separately for each sample.
+For more details, see the \strong{Hyperparameters} and \strong{Multi-sample}
+sections below.}
 
 \item{was_mean_estimated}{A boolean.
 \itemize{

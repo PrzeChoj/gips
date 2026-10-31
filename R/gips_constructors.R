@@ -25,12 +25,13 @@
 #'     See the **Hyperparameters** section below.
 #'     For multi-sample input, it can also be a numeric vector with one value
 #'     per matrix in `S`; see the **Multi-sample** section below.
-#' @param D_matrix Symmetric, positive-definite matrix of the same size as `S`.
-#'     Hyper-parameter of a Bayesian model.
-#'     When `NULL`, the (hopefully) reasonable one is derived from the data.
-#'     For more details, see the **Hyperparameters** section below.
-#'     For multi-sample input, use a list of matrices; see the
-#'     **Multi-sample** section below.
+#' @param D_matrix Hyper-parameter of a Bayesian model. Either `NULL` (default),
+#'     a symmetric, positive-definite matrix of the same size as `S` for
+#'     single-sample input, or a list of such matrices (one per matrix in `S`)
+#'     for multi-sample input. List elements cannot be `NULL`.
+#'     When `NULL`, defaults are derived from the data separately for each sample.
+#'     For more details, see the **Hyperparameters** and **Multi-sample**
+#'     sections below.
 #' @param was_mean_estimated A boolean.
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
@@ -1027,7 +1028,15 @@ check_multi_D_matrices <- function(D_matrices, Ss) {
   }
 
   unlist(
-    lapply(seq_len(G), function(i) check_D_matrix(D_matrices[[i]], ncol(Ss[[i]]))),
+    lapply(seq_len(G), function(i) {
+      if (is.null(D_matrices[[i]])) {
+        return(c(
+          "i" = "Each element of `D_matrix` must be a matrix.",
+          "x" = paste0("You provided `D_matrix[[", i, "]]` as `NULL`.")
+        ))
+      }
+      check_D_matrix(D_matrices[[i]], ncol(Ss[[i]]))
+    }),
     use.names = TRUE
   )
 }

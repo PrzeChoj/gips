@@ -12,6 +12,7 @@
 
 ### Bugfixes:
 
+* When `D_matrix` is a list (for multi-sample input), it must not contain `NULL` elements.
 * Fixed incorrect posterior comparisons for small non-scalar `D_matrix` values.
 * Fixed rejection of positive-definite prior matrices with small eigenvalues
   and corrected posterior calculations for nearly scalar priors.

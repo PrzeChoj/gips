@@ -61,6 +61,41 @@ test_that("validate_gips rejects nonfinite S after an attribute change", {
   }
 })
 
+test_that("multi-sample D_matrix defaults and complete lists remain valid", {
+  S <- list(diag(c(1, 3)), diag(c(4, 8)))
+  n <- c(10, 12)
+  expect_silent(g <- gips(S, n, D_matrix = NULL))
+  expect_equal(attr(g, "D_matrix"), list(2 * diag(2), 6 * diag(2)))
+  expect_silent(validate_gips(g))
+
+  D <- list(diag(2), 3 * diag(2))
+  expect_silent(g <- gips(S, n, D_matrix = D))
+  expect_equal(attr(g, "D_matrix"), D)
+  expect_silent(validate_gips(g))
+})
+
+test_that("gips and validate_gips reject NULL elements in a D_matrix list", {
+  S <- list(diag(2), 4 * diag(2))
+  n <- c(10, 12)
+  g <- gips(S, n)
+
+  for (i in seq_along(S)) {
+    D <- list(diag(2), 4 * diag(2))
+    D[i] <- list(NULL)
+    expected_message <- paste0("You provided `D_matrix[[", i, "]]` as `NULL`.")
+    expect_error(
+      gips(S, n, D_matrix = D), expected_message,
+      fixed = TRUE, class = "rlang_error"
+    )
+
+    attr(g, "D_matrix") <- D
+    expect_error(
+      validate_gips(g), expected_message,
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
 test_that("gips rejects NA in D_matrix with a clear error", {
   for (multi in c(FALSE, TRUE)) {
     S <- if (multi) list(diag(2), diag(2)) else diag(2)
