@@ -96,6 +96,23 @@ test_that("gips and validate_gips reject NULL elements in a D_matrix list", {
   }
 })
 
+test_that("multi-sample D_matrix errors identify the invalid matrix", {
+  S <- list(diag(2), diag(2))
+
+  for (i in seq_along(S)) {
+    D <- list(diag(2), diag(2))
+    D[[i]] <- diag(c(1, 0))
+    expect_error(
+      gips(S, c(10, 12), D_matrix = D),
+      paste0(
+        "In `D_matrix[[", i, "]]`: ",
+        "`D_matrix` must either be `NULL` or a positive-definite matrix."
+      ),
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
 test_that("gips rejects NA in D_matrix with a clear error", {
   for (multi in c(FALSE, TRUE)) {
     S <- if (multi) list(diag(2), diag(2)) else diag(2)

@@ -1035,7 +1035,11 @@ check_multi_D_matrices <- function(D_matrices, Ss) {
           "x" = paste0("You provided `D_matrix[[", i, "]]` as `NULL`.")
         ))
       }
-      check_D_matrix(D_matrices[[i]], ncol(Ss[[i]]))
+      problems <- check_D_matrix(D_matrices[[i]], ncol(Ss[[i]]))
+      if (length(problems) > 0) {
+        problems[1] <- paste0("In `D_matrix[[", i, "]]`: ", problems[1])
+      }
+      problems
     }),
     use.names = TRUE
   )
