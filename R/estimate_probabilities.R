@@ -78,9 +78,7 @@ calculate_visited_probabilities <- function(perms, log_weights, show_progress_ba
 get_permutation_key <- function(perm) {
   validate_gips_perm(perm)
   size <- attr(perm, "size")
-  elements <- unlist(perm, use.names = FALSE)
-  if (!is.finite(size) || size < 1 || length(elements) != size ||
-      !setequal(elements, seq_len(size))) {
+  if (size < 1) {
     rlang::abort("`perm` must contain a complete permutation of 1, ..., size.")
   }
 

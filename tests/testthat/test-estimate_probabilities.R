@@ -129,6 +129,18 @@ test_that("exact permutation keys and group deduplication ignore display labels"
   expect_identical(get_permutation_key(gips_perm("()", 4)), "1,2,3,4")
 })
 
+test_that("exact permutation keys reject size zero", {
+  expect_error(
+    get_permutation_key(gips_perm("()", 0)),
+    "`perm` must contain a complete permutation of 1, ..., size.",
+    fixed = TRUE, class = "rlang_error"
+  )
+})
+
+test_that("exact permutation keys support size one", {
+  expect_identical(get_permutation_key(gips_perm("()", 1)), "1")
+})
+
 test_that("group representatives are calculated once per distinct permutation", {
   perms <- probability_test_perms(c("(1,2,3)", "(1,3,2)", "(1,2)"))
   visits <- c(rep(1L, 20), rep(2L, 10), rep(3L, 5))
