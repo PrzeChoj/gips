@@ -45,6 +45,12 @@ get_structure_constants <- function(perm) {
     )
   }
 
+  validate_gips_perm(perm)
+  get_structure_constants_no_checks(perm)
+}
+
+# Internal calculations for valid permutations; public inputs must be validated first.
+get_structure_constants_no_checks <- function(perm) {
   perm_size <- attr(perm, "size")
   l <- get_cycle_representatives_and_lengths(perm)
   representatives <- l[["representatives"]]

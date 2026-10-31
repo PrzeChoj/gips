@@ -70,6 +70,17 @@ test_that("get_structure_constants checks for proper argument", {
   )
 })
 
+test_that("get_structure_constants rejects permutations with missing fixed points", {
+  incomplete <- new_gips_perm(list(1:2), 3)
+  expect_error(
+    get_structure_constants(incomplete), "complete permutation",
+    fixed = TRUE, class = "rlang_error"
+  )
+
+  complete <- gips_perm("(1,2)", 3)
+  expect_equal(sum(get_structure_constants(complete)$dim_omega), 4)
+})
+
 test_that("get_structure_constants can get a gips as perm", {
   perm <- gips_perm(permutations::as.word(c(1, 2, 3, 5, 4)), 5)
   expect_silent(constants1 <- get_structure_constants(perm))

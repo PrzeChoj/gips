@@ -128,7 +128,8 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
     D_matrix <- diag(nrow = perm_size) # identity matrix
   }
 
-  structure_constants <- get_structure_constants(perm_proposal)
+  # Avoid repeating input validation for every optimization candidate.
+  structure_constants <- get_structure_constants_no_checks(perm_proposal)
 
   # Ac_part
   Ac <- sum(structure_constants[["r"]] * structure_constants[["k"]] * log(structure_constants[["k"]])) # (20)

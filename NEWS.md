@@ -13,6 +13,7 @@
 ### Bugfixes:
 
 * `validate_gips_perm()` now rejects incomplete permutations and invalid sizes.
+* `get_structure_constants()` now validates permutations before calculating constants.
 * When `D_matrix` is a list (for multi-sample input), it must not contain `NULL` elements.
 * Fixed incorrect posterior comparisons for small non-scalar `D_matrix` values.
 * Fixed rejection of positive-definite prior matrices with small eigenvalues
