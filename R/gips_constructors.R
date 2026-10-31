@@ -491,6 +491,16 @@ check_S_matrix <- function(S) {
     ))
   }
 
+  if (nrow(S) < 2) {
+    return(list(
+      abort_text = c(
+        "i" = "Models in `gips` require at least two variables (p >= 2).",
+        "x" = paste0("You provided `S` with dimensions ", nrow(S), " x ", ncol(S), ".")
+      ),
+      additional_info = 0
+    ))
+  }
+
   if (any(!is.finite(S))) {
     return(list(
       abort_text = c(

@@ -1,3 +1,30 @@
+test_that("gips and validate_gips require at least two variables", {
+  for (multi in c(FALSE, TRUE)) {
+    S <- if (multi) list(diag(2), diag(2)) else diag(2)
+    n <- if (multi) c(10, 12) else 10
+    expect_silent(g <- gips(S, n))
+    expect_silent(validate_gips(g))
+
+    for (p in 0:1) {
+      S <- diag(p)
+      if (multi) S <- list(S, S)
+
+      expect_error(
+        gips(S, n),
+        "at least two variables (p >= 2)",
+        fixed = TRUE, class = "rlang_error"
+      )
+
+      attr(g, "S") <- S
+      expect_error(
+        validate_gips(g),
+        "at least two variables (p >= 2)",
+        fixed = TRUE, class = "rlang_error"
+      )
+    }
+  }
+})
+
 test_that("gips rejects nonfinite S with a clear error", {
   for (multi in c(FALSE, TRUE)) {
     for (value in c(NA_real_, NaN, Inf, -Inf)) {
