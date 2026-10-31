@@ -130,6 +130,10 @@ in an iteration.
 }
 }
 
+Both summaries also contain \code{MLE_available}: whether the sample-size
+requirement is met and all projected covariance matrices pass the numerical
+positive-definiteness check used by \code{\link[=logLik]{logLik()}}.
+
 The function \code{print.summary.gips()} returns an invisible \code{NULL}.
 }
 \description{

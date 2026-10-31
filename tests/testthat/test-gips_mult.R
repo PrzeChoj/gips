@@ -350,6 +350,25 @@ test_that("summary() does not error on multi-sample gips and returns correct fie
 })
 
 
+test_that("summary() requires positive definite fitted projections in every group", {
+  S <- list(diag(c(1, 3)), diag(c(1, 0)))
+  g_identity <- gips(S, c(10L, 12L), was_mean_estimated = FALSE)
+  expect_silent(identity_result <- summary(g_identity))
+  expect_false(identity_result$MLE_available)
+  expect_equal(identity_result$AIC, Inf)
+  expect_equal(identity_result$BIC, Inf)
+  expect_output(print(identity_result), "at least one projected covariance matrix is not numerically positive definite")
+
+  swap_result <- summary(gips(
+    S, c(10L, 12L), perm = "(1,2)", was_mean_estimated = FALSE
+  ))
+  expect_true(swap_result$MLE_available)
+  expect_true(is.finite(swap_result$AIC))
+  expect_true(is.finite(swap_result$BIC))
+  expect_output(print(swap_result), "The MLE estimator based on the found permutation does exist")
+})
+
+
 test_that("summary() displays correct degrees of freedom for multi-sample with different group sizes", {
   # Regression test for bug where degrees of freedom only considered first group
   S1 <- diag(3)

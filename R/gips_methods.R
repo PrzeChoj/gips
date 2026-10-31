@@ -275,6 +275,10 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   21. `acceptance_rate` - only interesting for `optimizer = "MH"`.
 #'       How often was the algorithm accepting the change of permutation
 #'       in an iteration.
+#'
+#' Both summaries also contain `MLE_available`: whether the sample-size
+#' requirement is met and all projected covariance matrices pass the numerical
+#' positive-definiteness check used by [logLik()].
 #' @export
 #' 
 #' @section Multi-sample:
@@ -339,6 +343,12 @@ summary.gips <- function(object, ...) {
   edited_number_of_observations <- tmp[2]
   
   n_parameters <- sum(get_structure_constants(object[[1]])[["dim_omega"]])
+
+  MLE_available <- attr(object, "number_of_observations") >= n0
+  aic_value <- suppressWarnings(withCallingHandlers(
+    AIC(object),
+    singular_matrix = function(w) MLE_available <<- FALSE
+  ), classes = c("singular_matrix", "likelihood_does_not_exists"))
   
   # Likelihood-Ratio test:
   chol_S <- NULL
@@ -397,7 +407,7 @@ summary.gips <- function(object, ...) {
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
-      AIC = suppressWarnings(AIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))), # warning for NA and NULL
+      AIC = aic_value,
       BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))) # warning for NA and NULL
     )
   } else {
@@ -445,7 +455,7 @@ summary.gips <- function(object, ...) {
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
-      AIC = suppressWarnings(AIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
+      AIC = aic_value,
       BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
@@ -456,6 +466,7 @@ summary.gips <- function(object, ...) {
     )
   }
 
+  summary_list[["MLE_available"]] <- MLE_available
   structure(summary_list,
     class = c("summary.gips")
   )
@@ -475,8 +486,8 @@ summary.gips <- function(object, ...) {
 #' g <- gips(S, 10)
 #' print(summary(g))
 print.summary.gips <- function(x, ...) {
-  # The MLE exists if n >= n0
-  MLE_exists <- x[["n0"]] <= min(x[["number_of_observations"]])
+  enough_observations <- x[["n0"]] <= min(x[["number_of_observations"]])
+  MLE_available <- x[["MLE_available"]]
 
   cat(
     ifelse(x[["optimized"]],
@@ -557,13 +568,22 @@ print.summary.gips <- function(x, ...) {
     if(isTRUE(x[["was_mean_estimated"]])){" + 1 (as the mean was estimated)"},
     ":\n ", x[["n0"]],
     "\n\n",
-    if (!MLE_exists) {
+    if (!enough_observations) {
       paste0(
         "The MLE estimator based on the found permutation does not exist,\n",
         "since the", if(isTRUE(x[["is_multi_sample"]])){" minimum"},
         " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"}, " (",
         min(x[["number_of_observations"]]),
         ") is smaller than n0 (", x[["n0"]], ")."
+      )
+    } else if (!MLE_available) {
+      paste0(
+        "The MLE estimator based on the found permutation cannot be computed numerically,\n",
+        if (isTRUE(x[["is_multi_sample"]])) {
+          "because at least one projected covariance matrix is not numerically positive definite."
+        } else {
+          "because the projected covariance matrix is not numerically positive definite."
+        }
       )
     } else {
       paste0(
@@ -572,15 +592,20 @@ print.summary.gips <- function(x, ...) {
         " number of observations", if(isTRUE(x[["is_multi_sample"]])){" across samples"},
         " (", min(x[["number_of_observations"]]), ") is ",
         if (x[["n0"]] == min(x[["number_of_observations"]])) {"equal to"} else {"bigger than"},
-        " n0 (", x[["n0"]], ")."
+        " n0 (", x[["n0"]], "),\n",
+        if (isTRUE(x[["is_multi_sample"]])) {
+          "and all projected covariance matrices are numerically positive definite."
+        } else {
+          "and the projected covariance matrix is numerically positive definite."
+        }
       )
     },
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
     if (isTRUE(x[["is_multi_sample"]])) paste0(" (", x[["n_parameters"]] / x[["G"]], " per group x ", x[["G"]], " groups)") else "",
-    "\n\nBIC:\n ", ifelse(!MLE_exists,
+    "\n\nBIC:\n ", ifelse(!enough_observations,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
     ),
-    "\n\nAIC:\n ", ifelse(!MLE_exists,
+    "\n\nAIC:\n ", ifelse(!enough_observations,
       "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
     ),
     sep = ""
@@ -648,6 +673,12 @@ summary_gips_mult <- function(object) {
   G <- length(ns)
   n_parameters <- G * sum(get_structure_constants(object[[1]])[["dim_omega"]])
 
+  MLE_available <- min(ns) >= n0
+  aic_value <- suppressWarnings(withCallingHandlers(
+    AIC(object),
+    singular_matrix = function(w) MLE_available <<- FALSE
+  ), classes = c("singular_matrix", "likelihood_does_not_exists"))
+
   if (is.null(attr(object, "optimization_info"))) {
     log_posteriori_id <- log_posteriori_of_perm(
       perm_proposal = "", S = attr(object, "S"),
@@ -670,7 +701,7 @@ summary_gips_mult <- function(object) {
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
-      AIC = suppressWarnings(AIC(object)),
+      AIC = aic_value,
       BIC = suppressWarnings(BIC(object)),
       is_multi_sample = TRUE,
       G = G
@@ -715,7 +746,7 @@ summary_gips_mult <- function(object) {
       delta = attr(object, "delta"),
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
-      AIC = suppressWarnings(AIC(object)),
+      AIC = aic_value,
       BIC = suppressWarnings(BIC(object)),
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
@@ -728,6 +759,7 @@ summary_gips_mult <- function(object) {
     )
   }
 
+  summary_list[["MLE_available"]] <- MLE_available
   structure(summary_list, class = "summary.gips")
 }
 

@@ -12,6 +12,8 @@
 
 ### Bugfixes:
 
+* Printed summaries now distinguish insufficient observations from projected
+  covariance matrices that are not numerically positive definite.
 * The likelihood-ratio test in `summary()` now requires at least `p` effective
   observations to compare with the unrestricted model.
 * `logLik()`, the likelihood-ratio test in `summary()`, and posterior calculations

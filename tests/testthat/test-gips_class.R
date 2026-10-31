@@ -853,7 +853,8 @@ test_that("summary.gips() works", {
     delta = 3, D_matrix = diag(6),
     n_parameters = 7,
     AIC = AIC(g1),
-    BIC = BIC(g1)
+    BIC = BIC(g1),
+    MLE_available = TRUE
   ), class = "summary.gips")
 
   # The determinant-based reference may differ from Cholesky by rounding.
@@ -949,6 +950,22 @@ test_that("start_permutation_log_posteriori was calculated correctly", {
       attr(g_map, "D_matrix")
     )
   )
+})
+
+test_that("summary.gips() reports MLE availability from the fitted projection", {
+  S <- diag(c(1, 0))
+  g_identity <- gips(S, 10, was_mean_estimated = FALSE)
+  expect_silent(identity_result <- summary(g_identity))
+  expect_false(identity_result$MLE_available)
+  expect_equal(identity_result$AIC, Inf)
+  expect_equal(identity_result$BIC, Inf)
+  expect_output(print(identity_result), "cannot be computed numerically")
+
+  swap_result <- summary(gips(S, 10, perm = "(1,2)", was_mean_estimated = FALSE))
+  expect_true(swap_result$MLE_available)
+  expect_true(is.finite(swap_result$AIC))
+  expect_true(is.finite(swap_result$BIC))
+  expect_output(print(swap_result), "The MLE estimator based on the found permutation does exist")
 })
 
 test_that("summary.gips() calculates the LRT from both covariance determinants", {
@@ -1050,6 +1067,7 @@ test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
   expect_silent(my_sum <- summary.gips(g))
   expect_null(my_sum$AIC)
   expect_null(my_sum$BIC)
+  expect_false(my_sum$MLE_available)
   expect_null(my_sum$likelihood_ratio_test_statistics)
   expect_null(my_sum$likelihood_ratio_test_p_value)
   
