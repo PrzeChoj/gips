@@ -1,5 +1,13 @@
 # gips 1.3.0.9000
 
+### Update to functions
+
+* `find_MAP(return_probabilities = TRUE)` is now faster and more accurate for MH.
+  It reuses computed posterior weights and normalizes them over distinct visited
+  cyclic groups instead of estimating probabilities from visit frequencies.
+  The result is conditional on those groups, including after MH continuation or
+  HC followed by MH; BF retains the full posterior (#120).
+
 ### Bugfixes:
 
 * Fixed incorrect posterior comparisons for small non-scalar `D_matrix` values.

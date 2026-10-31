@@ -1034,18 +1034,21 @@ BIC.gips <- function(object, ...) {
 
 #' Extract probabilities for `gips` object optimized with `return_probabilities = TRUE`
 #'
-#' After the `gips` object was optimized with
-#' the `find_MAP(return_probabilities = TRUE)` function, then
-#' those calculated probabilities can be extracted with this function.
+#' Read probabilities previously calculated by
+#' `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
+#' This function does not calculate missing probabilities.
+#' BF gives the full posterior over cyclic groups; MH gives the posterior
+#' conditional on the distinct visited groups. See [find_MAP()].
+#'
+#' Saved visit-frequency estimates from older MH objects are returned
+#' unchanged with a warning; run a new optimization for weight-based results.
 #'
 #' @param g An object of class `gips`.
 #'     A result of a `find_MAP(return_probabilities = TRUE)`.
 #'
-#' @returns A numeric vector of calculated probability values.
-#' Names contain the permutations that these probabilities represent.
-#' For `gips` object optimized with `find_MAP(return_probabilities = FALSE)`,
-#' it returns a `NULL` object.
-#' It is sorted according to the probability.
+#' @returns A numeric vector of probabilities sorted in decreasing order,
+#' named by representative generators of cyclic groups.
+#' Returns `NULL` with a message if the optimized object has no saved probabilities.
 #'
 #' @section Multi-sample:
 #' For multi-sample `gips` objects, these are probabilities of the shared

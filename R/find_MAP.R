@@ -83,13 +83,15 @@
 #'     This can be useful sometimes but needs a lot more RAM.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     when `save_all_perms = TRUE`. For:
-#'   * `optimizer = "MH"` - use Metropolis-Hastings results to
-#'       estimate posterior probabilities;
-#'   * `optimizer = "BF"` - use brute force results to
-#'       calculate exact posterior probabilities.
+#'   * `optimizer = "MH"` - normalize posterior weights over distinct
+#'       visited cyclic groups, giving probabilities conditional on that set;
+#'   * `optimizer = "BF"` - calculate the full posterior over all cyclic groups.
 #'
-#' These additional calculations are costly, so a second and third
-#'     progress bars are shown (when `show_progress_bar = TRUE`).
+#' Each group contributes one weight, regardless of visit counts or the
+#'     number of its generators encountered. MH continuation includes earlier
+#'     MH and HC visits; keep `save_all_perms = TRUE` in every stage.
+#'     Standalone HC does not support this option. Histories mixing BF with
+#'     other optimizers do not retain a probability vector.
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].

@@ -136,6 +136,7 @@ g_map
 get_probabilities_from_gips(g_map)
 ```
 `find_MAP()` found the symmetry represented by permutation (2,3).
+Here BF gives the full posterior over cyclic groups. See `vignette("Optimizers", package = "gips")` for discussion on how to use it with MH.
 
 ```{r change_D_matrix_example4}
 plot_cosmetic_modifications(plot(g_map, type = "heatmap"))
@@ -230,7 +231,7 @@ toy_probabilities
 ```
 We see that assumption $(3,4,5)$ is the most likely with a
 `r round(100 * toy_probabilities[["(3,4,5)"]], 1)`% posterior probability.
-`r sum(toy_probabilities > toy_probabilities[["()"]])` possible permutations
+`r sum(toy_probabilities > toy_probabilities[["()"]])` cyclic groups
 are more likely than id.
 
 Remember that the `n0` could still be too big for your data. In this example, the assumptions with transpositions (like $(3,5)$) would yield the `n0` $= 5$, which would be insufficient for us to estimate covariance correctly. The assumption $(3,4,5)$ will be just right:

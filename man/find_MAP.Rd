@@ -49,14 +49,16 @@ This can be useful sometimes but needs a lot more RAM.}
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
 when \code{save_all_perms = TRUE}. For:
 \itemize{
-\item \code{optimizer = "MH"} - use Metropolis-Hastings results to
-estimate posterior probabilities;
-\item \code{optimizer = "BF"} - use brute force results to
-calculate exact posterior probabilities.
+\item \code{optimizer = "MH"} - normalize posterior weights over distinct
+visited cyclic groups, giving probabilities conditional on that set;
+\item \code{optimizer = "BF"} - calculate the full posterior over all cyclic groups.
 }
 
-These additional calculations are costly, so a second and third
-progress bars are shown (when \code{show_progress_bar = TRUE}).
+Each group contributes one weight, regardless of visit counts or the
+number of its generators encountered. MH continuation includes earlier
+MH and HC visits; keep \code{save_all_perms = TRUE} in every stage.
+Standalone HC does not support this option. Histories mixing BF with
+other optimizers do not retain a probability vector.
 
 To examine probabilities after optimization,
 call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}
