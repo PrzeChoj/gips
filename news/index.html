@@ -43,10 +43,24 @@
 <h4 id="update-to-functions-1-3-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-3-0-9000"></a></h4>
 <ul><li>
 <code>find_MAP(return_probabilities = TRUE)</code> is now faster and more accurate for MH. It reuses computed posterior weights and normalizes them over distinct visited cyclic groups instead of estimating probabilities from visit frequencies. The result is conditional on those groups, including after MH continuation or HC followed by MH; BF retains the full posterior (<a href="https://github.com/PrzeChoj/gips/issues/120" class="external-link">#120</a>).</li>
+<li>
+<code>S</code> and <code>D_matrix</code> must now be exactly symmetric; approximate symmetry is no longer accepted.</li>
+<li>
+<code>p &lt;= 1</code> is rejected.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bugfixes-1-3-0-9000">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-3-0-9000"></a></h4>
-<ul><li>Fixed incorrect posterior comparisons for small non-scalar <code>D_matrix</code> values.</li>
+<ul><li>Fixed loss of precision for very small likelihood-ratio p-values in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</li>
+<li>Printed summaries now distinguish insufficient observations from projected covariance matrices that are not numerically positive definite.</li>
+<li>The likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now requires at least <code>p</code> effective observations to compare with the unrestricted model.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code>, the likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, and posterior calculations now use Cholesky factorization to check positive definiteness and compute log-determinants.</li>
+<li>
+<code><a href="../reference/gips_perm.html">validate_gips_perm()</a></code> now rejects incomplete permutations and invalid sizes. <code><a href="../reference/gips_perm.html">gips_perm()</a></code> now rejects invalid sizes during construction and correctly handles size-zero identities.</li>
+<li>
+<code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code>, <code><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix()</a></code>, and <code><a href="../reference/project_matrix.html">project_matrix()</a></code> now validate permutations before calculations.</li>
+<li>When <code>D_matrix</code> is a list (for multi-sample input), it must not contain <code>NULL</code> elements.</li>
+<li>Fixed incorrect posterior comparisons for small non-scalar <code>D_matrix</code> values.</li>
 <li>Fixed rejection of positive-definite prior matrices with small eigenvalues and corrected posterior calculations for nearly scalar priors.</li>
 </ul></div>
 </div>

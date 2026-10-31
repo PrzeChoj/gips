@@ -63,11 +63,13 @@ validate_gips(g)
 
 - D_matrix:
 
-  Symmetric, positive-definite matrix of the same size as `S`.
-  Hyper-parameter of a Bayesian model. When `NULL`, the (hopefully)
-  reasonable one is derived from the data. For more details, see the
-  **Hyperparameters** section below. For multi-sample input, use a list
-  of matrices; see the **Multi-sample** section below.
+  Hyper-parameter of a Bayesian model. Either `NULL` (default), a
+  symmetric, positive-definite matrix of the same size as `S` for
+  single-sample input, or a list of such matrices (one per matrix in
+  `S`) for multi-sample input. List elements cannot be `NULL`. When
+  `NULL`, defaults are derived from the data separately for each sample.
+  For more details, see the **Hyperparameters** and **Multi-sample**
+  sections below.
 
 - was_mean_estimated:
 
@@ -264,7 +266,8 @@ summary(g_map)
 #>  2
 #> 
 #> The MLE estimator based on the found permutation does exist,
-#> since the number of observations (13) is bigger than n0 (2).
+#> since the number of observations (13) is bigger than n0 (2),
+#> and the projected covariance matrix is numerically positive definite.
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3
@@ -283,6 +286,6 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04525757 secs
+#>  0.03204417 secs
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```

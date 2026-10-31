@@ -55,8 +55,9 @@ statistics of the given `gips` object. Those are:
       Likelihood Ratio test, where the H_0 is that the data was drawn
       from the normal distribution with Covariance matrix invariant
       under the given permutation. The p-value is calculated from the
-      asymptotic distribution. Note that this is sensibly defined only
-      for \\n \ge p\\.
+      asymptotic distribution. Comparison with the unrestricted model
+      requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
+      estimated.
 
   7.  `n0` - the minimum number of observations needed for the
       covariance matrix's maximum likelihood estimator (corresponding to
@@ -127,8 +128,9 @@ statistics of the given `gips` object. Those are:
       Likelihood Ratio test, where the H_0 is that the data was drawn
       from the normal distribution with Covariance matrix invariant
       under `found_permutation`. The p-value is calculated from the
-      asymptotic distribution. Note that this is sensibly defined only
-      for \\n \ge p\\.
+      asymptotic distribution. Comparison with the unrestricted model
+      requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
+      estimated.
 
   9.  `n0` - the minimal number of observations needed for the existence
       of the maximum likelihood estimator (corresponding to a MAP) of
@@ -194,6 +196,11 @@ statistics of the given `gips` object. Those are:
   21. `acceptance_rate` - only interesting for `optimizer = "MH"`. How
       often was the algorithm accepting the change of permutation in an
       iteration.
+
+Both summaries also contain `MLE_available`: whether the sample-size
+requirement is met and all projected covariance matrices pass the
+numerical positive-definiteness check used by
+[`logLik()`](https://rdrr.io/r/stats/logLik.html).
 
 The function `print.summary.gips()` returns an invisible `NULL`.
 
@@ -276,12 +283,12 @@ unclass(summary(g))
 #> 
 #> $S_matrix
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 1.0494842 1.1827957 1.0811047 0.6491538 0.5910505 0.7578313
-#> [2,] 1.1827957 1.5722816 1.1559233 0.5854755 0.2377610 0.7524728
-#> [3,] 1.0811047 1.1559233 1.5841572 0.9470600 0.7940677 0.5350399
-#> [4,] 0.6491538 0.5854755 0.9470600 1.0954129 0.9148409 0.6746779
-#> [5,] 0.5910505 0.2377610 0.7940677 0.9148409 1.5101372 0.7777238
-#> [6,] 0.7578313 0.7524728 0.5350399 0.6746779 0.7777238 1.0100209
+#> [1,] 1.3060491 0.7355463 0.6013214 0.7115236 0.9930262 1.1510631
+#> [2,] 0.7355463 0.9681647 0.7195897 0.7494904 0.5260805 0.7153404
+#> [3,] 0.6013214 0.7195897 1.4357251 1.0222094 0.7688303 0.1843507
+#> [4,] 0.7115236 0.7494904 1.0222094 0.9635875 0.9560790 0.6508404
+#> [5,] 0.9930262 0.5260805 0.7688303 0.9560790 1.6080945 1.1516877
+#> [6,] 1.1510631 0.7153404 0.1843507 0.6508404 1.1516877 1.5398730
 #> 
 #> $number_of_observations
 #> [1] 13
@@ -310,6 +317,9 @@ unclass(summary(g))
 #> $BIC
 #> [1] 175.3059
 #> 
+#> $MLE_available
+#> [1] TRUE
+#> 
 
 g_map <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 unclass(summary(g_map))
@@ -317,10 +327,10 @@ unclass(summary(g_map))
 #> [1] TRUE
 #> 
 #> $found_permutation
-#> [1] (12)(45)
+#> [1] (12)
 #> 
 #> $found_permutation_log_posteriori
-#> [1] -28.4427
+#> [1] -30.30832
 #> 
 #> $start_permutation
 #> [1] ()
@@ -329,28 +339,28 @@ unclass(summary(g_map))
 #> [1] -31.54222
 #> 
 #> $times_more_likely_than_start
-#> [1] 22.18745
+#> [1] 3.4346
 #> 
 #> $log_times_more_likely_than_start
-#> [1] 3.099527
+#> [1] 1.2339
 #> 
 #> $likelihood_ratio_test_statistics
-#> [1] 17.4246
+#> [1] 15.24271
 #> 
 #> $likelihood_ratio_test_p_value
-#> [1] 0.0259792
+#> [1] 0.009374079
 #> 
 #> $n0
-#> [1] 5
+#> [1] 6
 #> 
 #> $S_matrix
 #>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-#> [1,] 1.0494842 1.1827957 1.0811047 0.6491538 0.5910505 0.7578313
-#> [2,] 1.1827957 1.5722816 1.1559233 0.5854755 0.2377610 0.7524728
-#> [3,] 1.0811047 1.1559233 1.5841572 0.9470600 0.7940677 0.5350399
-#> [4,] 0.6491538 0.5854755 0.9470600 1.0954129 0.9148409 0.6746779
-#> [5,] 0.5910505 0.2377610 0.7940677 0.9148409 1.5101372 0.7777238
-#> [6,] 0.7578313 0.7524728 0.5350399 0.6746779 0.7777238 1.0100209
+#> [1,] 1.3060491 0.7355463 0.6013214 0.7115236 0.9930262 1.1510631
+#> [2,] 0.7355463 0.9681647 0.7195897 0.7494904 0.5260805 0.7153404
+#> [3,] 0.6013214 0.7195897 1.4357251 1.0222094 0.7688303 0.1843507
+#> [4,] 0.7115236 0.7494904 1.0222094 0.9635875 0.9560790 0.6508404
+#> [5,] 0.9930262 0.5260805 0.7688303 0.9560790 1.6080945 1.1516877
+#> [6,] 1.1510631 0.7153404 0.1843507 0.6508404 1.1516877 1.5398730
 #> 
 #> $number_of_observations
 #> [1] 13
@@ -371,13 +381,13 @@ unclass(summary(g_map))
 #> [6,] 0.000000 0.000000 0.000000 0.000000 0.000000 1.303582
 #> 
 #> $n_parameters
-#> [1] 13
+#> [1] 16
 #> 
 #> $AIC
-#> [1] 164.8666
+#> [1] 168.6847
 #> 
 #> $BIC
-#> [1] 172.211
+#> [1] 177.7239
 #> 
 #> $optimization_algorithm_used
 #> [1] "Metropolis_Hastings"
@@ -389,13 +399,16 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.005115271 secs
+#> Time difference of 0.004147291 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
 #> 
 #> $acceptance_rate
-#> [1] 0.2
+#> [1] 0.3
+#> 
+#> $MLE_available
+#> [1] TRUE
 #> 
 
 g_map2 <- find_MAP(g, max_iter = 10, show_progress_bar = FALSE, optimizer = "hill_climbing")
@@ -403,16 +416,16 @@ summary(g_map2)
 #> The optimized `gips` object.
 #> 
 #> Permutation:
-#>  (3,6)(4,5)
+#>  (1,2,4,5)(3,6)
 #> 
 #> Log_posteriori:
-#>  -25.37572
+#>  -23.55936
 #> 
 #> Times more likely than starting permutation:
-#>  476.515
+#>  2930.312
 #> 
 #> The p-value of Likelihood-Ratio test:
-#>  0.2636
+#>  0.02138
 #> 
 #> The number of observations:
 #>  13
@@ -422,32 +435,33 @@ summary(g_map2)
 #> There are 12 degrees of freedom left.
 #> 
 #> n0 = number of cycles in a permutation + 1 (as the mean was estimated):
-#>  5
+#>  3
 #> 
 #> The MLE estimator based on the found permutation does exist,
-#> since the number of observations (13) is bigger than n0 (5).
+#> since the number of observations (13) is bigger than n0 (3),
+#> and the projected covariance matrix is numerically positive definite.
 #> 
 #> The number of free parameters in the covariance matrix:
-#>  13
+#>  7
 #> 
 #> BIC:
-#>  164.8062
+#>  166.0458
 #> 
 #> AIC:
-#>  157.4618
+#>  162.0912
 #> 
 #> --------------------------------------------------------------------------------
 #> Optimization algorithm:
 #>  hill_climbing did converge
 #> 
 #> The number of log_posteriori calls:
-#>  46
+#>  76
 #> 
 #> Optimization time:
-#>  0.02285624 secs
+#>  0.03173614 secs
 #> 
 #> Log_posteriori calls after the found permutation:
-#>  17
+#>  18
 # ================================================================================
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
 g <- gips(S, 10)
@@ -473,7 +487,8 @@ print(summary(g))
 #>  3
 #> 
 #> The MLE estimator based on the found permutation does exist,
-#> since the number of observations (10) is bigger than n0 (3).
+#> since the number of observations (10) is bigger than n0 (3),
+#> and the projected covariance matrix is numerically positive definite.
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3

@@ -32,14 +32,12 @@ BIC(object, ...)
 
 `AIC.gips()` returns calculated Akaike's An Information Criterion
 
-When the multivariate normal model does not exist
-(`number_of_observations < n0`), it returns `NULL`. When the
-multivariate normal model cannot be reasonably approximated (output of
-[`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
-is singular), it returns `Inf`.
+If the sample-size requirement for the MLE is not met, it returns
+`NULL`. If a projected covariance matrix fails the numerical
+positive-definiteness check, it returns `Inf`.
 
 In both failure situations, shows a warning. More information can be
-found in the **Existence of likelihood** section of
+found in the **MLE availability** section of
 [`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md).
 
 `BIC.gips()` returns calculated Schwarz's Bayesian Information

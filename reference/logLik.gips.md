@@ -26,46 +26,37 @@ Log-Likelihood of the sample. Object of class `logLik`.
 
 Possible failure situations:
 
-- When the multivariate normal model does not exist
-  (`number_of_observations < n0`), it returns `NULL`.
+- If the sample-size requirement is not met, it returns `NULL`.
 
-- When the multivariate normal model cannot be reasonably approximated
-  (output of
-  [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
-  is singular), it returns `-Inf`.
+- If a projected covariance matrix fails the numerical
+  positive-definiteness check, it returns `-Inf`.
 
-In both failure situations, it shows a warning. More information can be
-found in the **Existence of likelihood** section below.
+In both failure situations, it shows a warning. Here, `-Inf` signals an
+unavailable result, not a calculated log-likelihood. More information
+can be found in the **MLE availability** section below.
 
 ## Details
 
-This will always be largest for `perm = "()"` (provided that `p <= n`).
+The value is largest for `perm = "()"` when the MLEs in both the
+unrestricted and the selected model are available.
 
-If the found permutation still requires more parameters than `n`, the
-likelihood does not exist; thus the function returns `NULL`.
+## MLE availability
 
-If the `projected_cov` (output of
-[`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md))
-is close to singular, the `NA` is returned.
-
-## Existence of likelihood
-
-We only consider the non-degenerate multivariate normal model. In the
-`gips` context, such a model exists only when the number of observations
-is bigger or equal to `n0`. To get `n0` for the `gips` object `g`, call
-`summary(g)$n0`.
-
-See examples where the `g_n_too_small` had too small
-`number_of_observations` to have likelihood. After the optimization, the
-likelihood did exist.
+The sample-size requirement is `number_of_observations >= n0`. Here,
+`n0` is the number of permutation cycles, increased by one when
+`was_mean_estimated = TRUE`; see `summary(g)$n0`. Meeting this threshold
+does not guarantee availability for a particular `S`: its projection
+must also be numerically positive definite. See
+`summary(g)$MLE_available` for the result of these checks.
 
 ## Multi-sample
 
 For multi-sample `gips` objects the log-likelihood is the sum of the
-per-group log-likelihoods. The existence condition becomes
-`min(n_g) >= n0`. The `df` attribute equals `G * dim_omega(sigma)` (each
-group has its own free covariance parameters), and `nobs` equals
-`sum(n_g)`.
+per-group log-likelihoods. The sample-size requirement is
+`min(n_g) >= n0`, and every projected covariance matrix must be
+numerically positive definite. The `df` attribute equals
+`G * dim_omega(sigma)` (each group has its own free covariance
+parameters), and `nobs` equals `sum(n_g)`.
 
 For more information, refer to **\\C\_\sigma\\ and `n0`** section in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
@@ -95,7 +86,7 @@ page](https://przechoj.github.io/gips/articles/Theory.html).
 
 - [`summary.gips()`](https://przechoj.github.io/gips/reference/summary.gips.md) -
   One can get `n0` by calling `summary(g)$n0`. To see why one may be
-  interested in `n0`, see the **Existence of likelihood** section above.
+  interested in `n0`, see the **MLE availability** section above.
 
 - [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md) -
   Project the known matrix onto the found permutations space. It is
@@ -121,9 +112,9 @@ logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, p
 #> 'log Lik.' -32.6722 (df=3)
 
 g_n_too_small <- gips(S, number_of_observations = 4)
-logLik(g_n_too_small) # NULL # the likelihood does not exists
-#> Warning: The likelihood is not defined for this `gips`.
-#> ✖ The n = 4 is smaller than the minimum required n0 = 5. For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).
+logLik(g_n_too_small) # NULL # the sample size is below n0
+#> Warning: The covariance MLE is unavailable for this `gips`.
+#> ✖ The n = 4 is smaller than the minimum required n0 = 5. For more information, see section **MLE availability** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html).
 #> NULL
 summary(g_n_too_small)$n0 # 5, but we set number_of_observations = 4, which is smaller
 #> [1] 5

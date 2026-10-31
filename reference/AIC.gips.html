@@ -71,12 +71,11 @@ The default <code>k = 2</code> is the classical AIC.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>AIC.gips()</code> returns calculated Akaike's An Information Criterion</p>
-<p>When the multivariate normal model does not exist
-(<code>number_of_observations &lt; n0</code>), it returns <code>NULL</code>.
-When the multivariate normal model cannot be reasonably approximated
-(output of <code><a href="project_matrix.html">project_matrix()</a></code> is singular), it returns <code>Inf</code>.</p>
+<p>If the sample-size requirement for the MLE is not met, it returns <code>NULL</code>.
+If a projected covariance matrix fails the numerical positive-definiteness
+check, it returns <code>Inf</code>.</p>
 <p>In both failure situations, shows a warning.
-More information can be found in the <strong>Existence of likelihood</strong>
+More information can be found in the <strong>MLE availability</strong>
 section of <code><a href="logLik.gips.html">logLik.gips()</a></code>.</p>
 <p><code>BIC.gips()</code> returns calculated
 Schwarz's Bayesian Information Criterion.</p>

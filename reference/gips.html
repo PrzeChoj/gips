@@ -111,12 +111,13 @@ per matrix in <code>S</code>; see the <strong>Multi-sample</strong> section belo
 
 
 <dt id="arg-d-matrix">D_matrix<a class="anchor" aria-label="anchor" href="#arg-d-matrix"></a></dt>
-<dd><p>Symmetric, positive-definite matrix of the same size as <code>S</code>.
-Hyper-parameter of a Bayesian model.
-When <code>NULL</code>, the (hopefully) reasonable one is derived from the data.
-For more details, see the <strong>Hyperparameters</strong> section below.
-For multi-sample input, use a list of matrices; see the
-<strong>Multi-sample</strong> section below.</p></dd>
+<dd><p>Hyper-parameter of a Bayesian model. Either <code>NULL</code> (default),
+a symmetric, positive-definite matrix of the same size as <code>S</code> for
+single-sample input, or a list of such matrices (one per matrix in <code>S</code>)
+for multi-sample input. List elements cannot be <code>NULL</code>.
+When <code>NULL</code>, defaults are derived from the data separately for each sample.
+For more details, see the <strong>Hyperparameters</strong> and <strong>Multi-sample</strong>
+sections below.</p></dd>
 
 
 <dt id="arg-was-mean-estimated">was_mean_estimated<a class="anchor" aria-label="anchor" href="#arg-was-mean-estimated"></a></dt>
@@ -300,7 +301,8 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The MLE estimator based on the found permutation does exist,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> since the number of observations (13) is bigger than n0 (2).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> since the number of observations (13) is bigger than n0 (2),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> and the projected covariance matrix is numerically positive definite.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The number of free parameters in the covariance matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3</span>
@@ -319,7 +321,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04525757 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03204417 secs</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gips-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

@@ -11,9 +11,38 @@
   those groups, including after MH continuation or HC followed by MH; BF
   retains the full posterior
   ([\#120](https://github.com/PrzeChoj/gips/issues/120)).
+- `S` and `D_matrix` must now be exactly symmetric; approximate symmetry
+  is no longer accepted.
+- `p <= 1` is rejected.
 
 #### Bugfixes:
 
+- Fixed loss of precision for very small likelihood-ratio p-values in
+  [`summary()`](https://rdrr.io/r/base/summary.html).
+- Printed summaries now distinguish insufficient observations from
+  projected covariance matrices that are not numerically positive
+  definite.
+- The likelihood-ratio test in
+  [`summary()`](https://rdrr.io/r/base/summary.html) now requires at
+  least `p` effective observations to compare with the unrestricted
+  model.
+- [`logLik()`](https://rdrr.io/r/stats/logLik.html), the
+  likelihood-ratio test in
+  [`summary()`](https://rdrr.io/r/base/summary.html), and posterior
+  calculations now use Cholesky factorization to check positive
+  definiteness and compute log-determinants.
+- [`validate_gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
+  now rejects incomplete permutations and invalid sizes.
+  [`gips_perm()`](https://przechoj.github.io/gips/reference/gips_perm.md)
+  now rejects invalid sizes during construction and correctly handles
+  size-zero identities.
+- [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md),
+  [`prepare_orthogonal_matrix()`](https://przechoj.github.io/gips/reference/prepare_orthogonal_matrix.md),
+  and
+  [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
+  now validate permutations before calculations.
+- When `D_matrix` is a list (for multi-sample input), it must not
+  contain `NULL` elements.
 - Fixed incorrect posterior comparisons for small non-scalar `D_matrix`
   values.
 - Fixed rejection of positive-definite prior matrices with small

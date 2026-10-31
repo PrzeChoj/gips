@@ -227,9 +227,9 @@ g <- gips(S, number_of_observations)
 
 g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 g_map
-#> The permutation (1,2):
+#> The permutation ():
 #>  - was found after 5 posteriori calculations;
-#>  - is 2.337 times more likely than the () permutation.
+#>  - is 1 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
 plot(g_map2, type = "both", logarithmic_x = TRUE)
@@ -262,7 +262,8 @@ summary(g_map_BF)
 #>  2
 #> 
 #> The MLE estimator based on the found permutation does exist,
-#> since the number of observations (13) is bigger than n0 (2).
+#> since the number of observations (13) is bigger than n0 (2),
+#> and the projected covariance matrix is numerically positive definite.
 #> 
 #> The number of free parameters in the covariance matrix:
 #>  3
@@ -281,5 +282,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04540348 secs
+#>  0.03213573 secs
 ```
