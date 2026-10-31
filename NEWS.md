@@ -7,6 +7,7 @@
   cyclic groups instead of estimating probabilities from visit frequencies.
   The result is conditional on those groups, including after MH continuation or
   HC followed by MH; BF retains the full posterior (#120).
+* `S` and `D_matrix` must now be exactly symmetric; approximate symmetry is no longer accepted.
 
 ### Bugfixes:
 

@@ -120,3 +120,84 @@ test_that("gips and validate_gips reject nonnumeric D_matrix", {
     }
   }
 })
+
+test_that("gips and validate_gips require exactly symmetric S", {
+  for (multi in c(FALSE, TRUE)) {
+    S <- diag(2)
+    input <- if (multi) list(diag(2), S) else S
+    n <- if (multi) c(10, 12) else 10
+    expect_silent(g <- gips(input, n))
+    expect_silent(validate_gips(g))
+
+    S[1, 2] <- .Machine$double.eps
+    input <- if (multi) list(diag(2), S) else S
+    expect_error(gips(input, n), "symmetric", fixed = TRUE, class = "rlang_error")
+    attr(g, "S") <- input
+    expect_error(validate_gips(g), "symmetric", fixed = TRUE, class = "rlang_error")
+
+    S <- (S + t(S))/2
+    input <- if (multi) list(diag(2), S) else S
+    expect_silent(gips(input, n))
+    attr(g, "S") <- input
+    expect_silent(validate_gips(g))
+  }
+})
+
+test_that("the symmetrization hint uses an absolute threshold of 1e-2", {
+  differences <- c(0.005, 0.01, 0.02)
+  expected_hints <- c(TRUE, TRUE, FALSE)
+  for (scale in c(1e-12, 1, 1e12)) {
+    for (i in seq_along(differences)) {
+      S <- diag(scale, 2)
+      S[1, 2] <- differences[i]
+      checked <- check_S_matrix(S)
+      expect_match(paste(checked$abort_text, collapse = " "), "symmetric", fixed = TRUE)
+      has_hint <- any(grepl("S <- (S + t(S))/2", checked$abort_text, fixed = TRUE))
+      expect_identical(has_hint, expected_hints[i])
+      expect_equal(checked$additional_info, as.integer(expected_hints[i]))
+    }
+  }
+})
+
+test_that("gips and validate_gips require exactly symmetric D_matrix", {
+  for (multi in c(FALSE, TRUE)) {
+    S <- if (multi) list(diag(2), diag(2)) else diag(2)
+    n <- if (multi) c(10, 12) else 10
+    expect_silent(gips(S, n, D_matrix = NULL))
+    D <- diag(c(2, 3))
+    input <- if (multi) list(diag(2), D) else D
+    expect_silent(g <- gips(S, n, D_matrix = input))
+    expect_silent(validate_gips(g))
+
+    D[1, 2] <- .Machine$double.eps
+    input <- if (multi) list(diag(2), D) else D
+    err <- tryCatch(gips(S, n, D_matrix = input), error = identity)
+    expect_s3_class(err, "rlang_error")
+    expect_match(conditionMessage(err), "symmetric", fixed = TRUE)
+    expect_match(conditionMessage(err), "1 problems identified", fixed = TRUE)
+    attr(g, "D_matrix") <- input
+    expect_error(validate_gips(g), "symmetric", fixed = TRUE, class = "rlang_error")
+
+    D <- (D + t(D))/2
+    input <- if (multi) list(diag(2), D) else D
+    expect_silent(gips(S, n, D_matrix = input))
+    attr(g, "D_matrix") <- input
+    expect_silent(validate_gips(g))
+  }
+})
+
+test_that("the D_matrix symmetrization hint uses an absolute threshold of 1e-2", {
+  differences <- c(0.005, 0.01, 0.02)
+  expected_hints <- c(TRUE, TRUE, FALSE)
+  for (scale in c(1e-12, 1, 1e12)) {
+    for (i in seq_along(differences)) {
+      D <- diag(scale, 2)
+      D[1, 2] <- differences[i]
+      checked <- check_D_matrix(D, 2)
+      expect_length(checked, 2L)
+      expect_match(paste(checked, collapse = " "), "symmetric", fixed = TRUE)
+      has_hint <- any(grepl("D_matrix <- (D_matrix + t(D_matrix))/2", checked, fixed = TRUE))
+      expect_identical(has_hint, expected_hints[i])
+    }
+  }
+})

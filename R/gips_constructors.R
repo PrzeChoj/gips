@@ -501,14 +501,17 @@ check_S_matrix <- function(S) {
     ))
   }
 
-  if (!all(abs(S - t(S)) < 0.000001)) {
+  if (!all(S == t(S))) {
+    show_symmetrization_hint <- max(abs(S - t(S))) <= 1e-2
     return(list(
       abort_text = c(
         "i" = "`S` matrix must be a symmetric matrix.",
         "x" = "You provided `S` as a matrix, but a non-symmetric one.",
-        "i" = "Is your matrix approximately symmetric? Maybe try setting `S <- (S+t(S))/2`?"
+        if (show_symmetrization_hint) c(
+          "i" = "If the asymmetry is due to numerical rounding, try `S <- (S + t(S))/2`."
+        )
       ),
-      additional_info = 1
+      additional_info = as.integer(show_symmetrization_hint)
     ))
   }
 
@@ -631,9 +634,15 @@ check_D_matrix <- function(D_matrix, p) {
     ))
   }
   
-  if (!(is.null(D_matrix) || all(abs(D_matrix - t(D_matrix)) < 0.000001))) {
+  if (!(is.null(D_matrix) || all(D_matrix == t(D_matrix)))) {
+    show_symmetrization_hint <- max(abs(D_matrix - t(D_matrix))) <= 1e-2
     return(c(
-      "i" = "`D_matrix` must either be `NULL` or a symmetric matrix.",
+      "i" = paste0(
+        "`D_matrix` must either be `NULL` or a symmetric matrix.",
+        if (show_symmetrization_hint) {
+          " If the asymmetry is due to numerical rounding, try `D_matrix <- (D_matrix + t(D_matrix))/2`."
+        } else ""
+      ),
       "x" = "You provided `D_matrix` as a matrix, but a non-symmetric one."
     ))
   }
