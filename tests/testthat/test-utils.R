@@ -41,6 +41,16 @@ test_that("is.positive.semi.definite.matrix works", {
   expect_false(is.positive.semi.definite.matrix(random_matrix - diag(p) * (10.01))) # the smallest eigen value is very close to -0.01
 })
 
+test_that("PSD validation uses entry scale rather than eigenvalue scale", {
+  # The largest eigenvalues are about 2, but the largest entries are about 1.
+  indefinite <- matrix(c(1, 1 + 2e-8, 1 + 2e-8, 1), 2)
+
+  for (scale in c(1e-12, 1, 1e12)) {
+    expect_false(is.positive.semi.definite.matrix(indefinite * scale))
+    expect_true(is.positive.semi.definite.matrix(diag(c(1, -1e-10)) * scale))
+  }
+})
+
 test_that("positive definiteness does not impose a relative eigenvalue cutoff", {
   for (scale in c(1e-12, 1, 1e12)) {
     expect_true(is.positive.definite.matrix(diag(c(1, 1e-12)) * scale))
