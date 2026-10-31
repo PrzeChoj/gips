@@ -258,7 +258,7 @@ For more information about continuing the optimization, see the **Continuing the
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 50
@@ -386,7 +386,7 @@ hill_climb <- function(g, max_iter) {
 perm_size <- 25
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 20
@@ -432,7 +432,7 @@ When `max_iter` is reached during Metropolis-Hastings or hill climbing, the opti
 perm_size <- 70
 mu <- runif(perm_size, -10, 10) # Assume we don't know the mean
 sigma_matrix <- (function(A) {
-  t(A) %*% A
+  crossprod(A)
 })(matrix(rnorm(perm_size * perm_size), nrow = perm_size))
 # sigma_matrix is the real covariance matrix, that we want to estimate
 number_of_observations <- 50

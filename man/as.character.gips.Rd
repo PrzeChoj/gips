@@ -19,7 +19,7 @@ Implementation of the S3 method.
 }
 \examples{
 A <- matrix(rnorm(4 * 4), nrow = 4)
-S <- t(A) \%*\% A
+S <- crossprod(A)
 g <- gips(S, 14, perm = "(123)")
 as.character(g)
 }

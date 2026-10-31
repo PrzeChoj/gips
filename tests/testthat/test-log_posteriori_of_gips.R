@@ -170,7 +170,7 @@ test_that("log_posteriori_of_gips has the desired property", {
   }
 
   Z <- MASS::mvrnorm(n, mu = mu, Sigma = sigma_matrix)
-  S <- t(Z) %*% Z / n
+  S <- crossprod(Z) / n
 
   actual_permutation <- permutations::as.cycle(permutations::as.word(c(2:p, 1)))
 

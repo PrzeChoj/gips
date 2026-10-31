@@ -208,7 +208,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   10. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * `TRUE` means the `S` parameter was the output of [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
-#'           `S = t(X) %*% X / number_of_observations`.
+#'           `S = crossprod(X) / number_of_observations`.
 #'   11. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
 #'       See the **Hyperparameters** section of [gips()] documentation.
 #'   12. `n_parameters` - number of free parameters in the covariance matrix.
@@ -251,7 +251,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   12. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * `TRUE` means the `S` parameter was output of the [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
-#'           `S = t(X) %*% X / number_of_observations`.
+#'           `S = crossprod(X) / number_of_observations`.
 #'   13. `delta`, `D_matrix` - the hyperparameters of the Bayesian method.
 #'       See the **Hyperparameters** section of [gips()] documentation.
 #'   14. `n_parameters` - number of free parameters in the covariance matrix.
@@ -1183,7 +1183,7 @@ get_probabilities_from_gips <- function(g) {
 #'
 #' @examples
 #' A <- matrix(rnorm(10 * 10), nrow = 10)
-#' S <- t(A) %*% A
+#' S <- crossprod(A)
 #' g <- gips(S, 13, was_mean_estimated = FALSE)
 #' g_map <- find_MAP(g,
 #'   max_iter = 10, optimizer = "Metropolis_Hastings",
@@ -1241,7 +1241,7 @@ forget_perms <- function(g) {
 #'
 #' @examples
 #' A <- matrix(rnorm(4 * 4), nrow = 4)
-#' S <- t(A) %*% A
+#' S <- crossprod(A)
 #' g <- gips(S, 14, perm = "(123)")
 #' as.character(g)
 as.character.gips <- function(x, ...) {

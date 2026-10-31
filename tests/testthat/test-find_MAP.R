@@ -47,7 +47,7 @@ test_that("Handle improper parameters", {
   )
 
   matrix_big_space <- matrix(runif(35 * 35), nrow = 35)
-  matrix_big_space <- t(matrix_big_space) %*% matrix_big_space
+  matrix_big_space <- crossprod(matrix_big_space)
   g_big <- gips(matrix_big_space, number_of_observations = 13, was_mean_estimated = FALSE)
 
   expect_error(
@@ -137,7 +137,7 @@ test_that("Warns when found group has n0 > n", {
     mu = numeric(6),
     Sigma = matrix_invariant_by_example_perm
   )
-  S <- (t(Z) %*% Z) / number_of_observations
+  S <- crossprod(Z) / number_of_observations
 
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 

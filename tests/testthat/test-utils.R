@@ -31,7 +31,7 @@ test_that("is.wholenumber works", {
 test_that("is.positive.semi.definite.matrix works", {
   p <- 7
   random_matrix <- matrix(rnorm(p * p), nrow = p)
-  random_matrix <- t(random_matrix) %*% random_matrix
+  random_matrix <- crossprod(random_matrix)
 
   random_matrix <- random_matrix - diag(p) * (eigen(random_matrix, symmetric = TRUE, only.values = TRUE)[["values"]][p] - 10)
   # the smallest eigen value of `random_matrix` is very close to 10

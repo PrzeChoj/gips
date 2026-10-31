@@ -38,7 +38,7 @@ When \code{Z} is the observed data:
 estimate it with the observed mean, use \code{S = cov(Z)},
 and leave parameter \code{was_mean_estimated = TRUE} as default;
 \item if one knows the theoretical mean is 0, use
-\code{S = (t(Z) \%*\% Z) / number_of_observations}, and set
+\code{S = crossprod(Z) / number_of_observations}, and set
 parameter \code{was_mean_estimated = FALSE}.
 }}
 
@@ -65,7 +65,7 @@ sections below.}
 \item Set \code{TRUE} (default) when your \code{S} parameter is a result of
 a \code{\link[stats:cov]{stats::cov()}} function.
 \item Set \code{FALSE} when your \code{S} parameter is a result of
-a \code{(t(Z) \%*\% Z) / number_of_observations} calculation.
+a \code{crossprod(Z) / number_of_observations} calculation.
 }}
 
 \item{perm}{An optional permutation to be the base for the \code{gips} object.

@@ -55,7 +55,7 @@ the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_g
 \itemize{
 \item \code{TRUE} means the \code{S} parameter was the output of \code{\link[stats:cov]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
-\code{S = t(X) \%*\% X / number_of_observations}.
+\code{S = crossprod(X) / number_of_observations}.
 }
 \item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
 See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.
@@ -102,7 +102,7 @@ the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_g
 \itemize{
 \item \code{TRUE} means the \code{S} parameter was output of the \code{\link[stats:cov]{stats::cov()}} function;
 \item \code{FALSE} means the \code{S} parameter was calculated with
-\code{S = t(X) \%*\% X / number_of_observations}.
+\code{S = crossprod(X) / number_of_observations}.
 }
 \item \code{delta}, \code{D_matrix} - the hyperparameters of the Bayesian method.
 See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} documentation.

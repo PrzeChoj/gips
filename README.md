@@ -186,7 +186,7 @@ number_of_observations <- nrow(Z) # 4
 p <- ncol(Z) # 6
 
 # Calculate the covariance matrix from the data:
-S <- (t(Z) %*% Z) / number_of_observations
+S <- crossprod(Z) / number_of_observations
 ```
 
 Make the gips object out of data:

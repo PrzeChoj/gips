@@ -15,7 +15,7 @@
 #'     estimate it with the observed mean, use `S = cov(Z)`,
 #'     and leave parameter `was_mean_estimated = TRUE` as default;
 #' * if one knows the theoretical mean is 0, use
-#'     `S = (t(Z) %*% Z) / number_of_observations`, and set
+#'     `S = crossprod(Z) / number_of_observations`, and set
 #'     parameter `was_mean_estimated = FALSE`.
 #' @param number_of_observations A number of data points that `S` is based on.
 #'     For multi-sample input, use one value per matrix in `S`; see the
@@ -36,7 +36,7 @@
 #' * Set `TRUE` (default) when your `S` parameter is a result of
 #'     a [stats::cov()] function.
 #' * Set `FALSE` when your `S` parameter is a result of
-#'     a `(t(Z) %*% Z) / number_of_observations` calculation.
+#'     a `crossprod(Z) / number_of_observations` calculation.
 #' @param perm An optional permutation to be the base for the `gips` object.
 #'     It can be of a `gips_perm` or a `permutation` class, or anything
 #'     the function [permutations::permutation()] can handle.

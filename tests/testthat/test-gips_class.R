@@ -17,7 +17,7 @@ sigma_matrix <- matrix(
 )
 number_of_observations <- 13
 Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix) # this place is random
-S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+S <- crossprod(Z) / number_of_observations # the theoretical mean is 0
 
 
 
@@ -1075,7 +1075,7 @@ test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
   p <- 6
   number_of_observations <- 2
   Z <- MASS::mvrnorm(number_of_observations, mu = mu, Sigma = sigma_matrix) # this place is random
-  S <- (t(Z) %*% Z) / number_of_observations # the theoretical mean is 0
+  S <- crossprod(Z) / number_of_observations # the theoretical mean is 0
   
   g <- gips(S, number_of_observations, perm = "()")
   expect_silent(my_sum <- summary.gips(g))
@@ -1170,7 +1170,7 @@ test_that("logLik.gips() works", {
 
   # ==================
   # Mean is (0,0,0,0)
-  U <- t(Z) %*% Z
+  U <- crossprod(Z)
   perm <- gips_perm("(12)(34)", 4)
   S <- project_matrix(U, perm) / n
 
@@ -1210,7 +1210,7 @@ test_that("logLik.gips() works", {
 
   # ==================
   # NUll:
-  U <- t(Z) %*% Z
+  U <- crossprod(Z)
   expect_warning(
     expect_equal(
       logLik(gips(U / n, 2, perm = perm)), NULL
@@ -1286,14 +1286,14 @@ test_that("AIC.gips() works", {
   p <- ncol(Z) # 4
   n <- nrow(Z) # 5
 
-  g <- gips(t(Z) %*% Z / n, n, perm = "(12)(34)", was_mean_estimated = FALSE)
+  g <- gips(crossprod(Z) / n, n, perm = "(12)(34)", was_mean_estimated = FALSE)
 
   expect_equal(AIC(g), 82.5767946096694)
   expect_equal(BIC(g), 80.233422084274)
 
   # ==================
   # NUll
-  S <- t(Z) %*% Z / n
+  S <- crossprod(Z) / n
   g <- gips(S, 2)
   expect_warning(
     expect_equal(
@@ -1317,7 +1317,7 @@ test_that("AIC.gips() works", {
 
 test_that("as.character.gips() work", {
   A <- matrix(rnorm(4 * 4), nrow = 4)
-  S <- t(A) %*% A
+  S <- crossprod(A)
   g <- gips(S, 14, perm = "(123)")
   expect_equal(as.character(g), "(1,2,3)")
 })

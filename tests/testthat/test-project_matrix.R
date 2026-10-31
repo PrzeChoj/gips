@@ -1,6 +1,6 @@
 test_that("projected matrix is invariant by example_perm", {
   S <- matrix(rnorm(6 * 6), ncol = 6)
-  S <- S %*% t(S)
+  S <- tcrossprod(S)
   gips_example_perm <- gips_perm(example_perm, 6)
 
   projected <- project_matrix(S, gips_example_perm)
@@ -36,7 +36,7 @@ test_that("project_matrix gives errors", {
   expect_error(project_matrix(7, gips_example_perm))
   expect_error(project_matrix(matrix(rnorm(5 * 6), ncol = 6), gips_example_perm))
   S <- matrix(rnorm(5 * 5), ncol = 5)
-  S <- S %*% t(S)
+  S <- tcrossprod(S)
   expect_error(project_matrix(S, gips_example_perm))
 
   expect_warning(project_matrix(matrix(rnorm(36), nrow = 6), gips_example_perm),
@@ -104,7 +104,7 @@ test_that("project_matrix can get gips as per", {
 test_that("project_matrix does not forget colnames or rownames", {
   p <- 9
   S <- matrix(rnorm(p * p), nrow = p)
-  S <- S %*% t(S)
+  S <- tcrossprod(S)
   rownames(S) <- LETTERS[1:p]
   colnames(S) <- LETTERS[1:p]
 
@@ -117,9 +117,9 @@ test_that("project_matrix does not forget colnames or rownames", {
 test_that("project_matrices_cpp_ projects a list of matrices", {
   p <- 6
   S1 <- matrix(rnorm(p * p), nrow = p)
-  S1 <- S1 %*% t(S1)
+  S1 <- tcrossprod(S1)
   S2 <- matrix(rnorm(p * p), nrow = p)
-  S2 <- S2 %*% t(S2)
+  S2 <- tcrossprod(S2)
   rownames(S1) <- rownames(S2) <- LETTERS[1:p]
   colnames(S1) <- colnames(S2) <- letters[1:p]
   perm <- gips_perm("(1,2,3)(4,5)", p)
