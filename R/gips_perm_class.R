@@ -199,19 +199,22 @@ validate_gips_perm <- function(g) {
     )
   }
   size_attr <- attr(g, "size")
-  if (is.null(size_attr) || !is.wholenumber(size_attr) || length(size_attr) != 1) {
-    wrong_argument_abort(i = "`g` must have an attribute `size` set as a single integer.")
+  if (length(size_attr) != 1L || !is.numeric(size_attr) || is.complex(size_attr) ||
+      !is.finite(size_attr) || size_attr < 0 || size_attr != floor(size_attr)) {
+    wrong_argument_abort(i = "`g` must have an attribute `size` set as a single finite non-negative integer.")
   }
-  is_whole_number <- unlist(sapply(g, is.wholenumber))
+  is_whole_number <- vapply(g, function(cycle) {
+    is.numeric(cycle) && !is.complex(cycle) && is.null(dim(cycle)) &&
+      length(cycle) > 0L && all(is.finite(cycle)) && all(cycle == floor(cycle))
+  }, FALSE)
   if (!all(is_whole_number)) {
-    wrong_element_index <- which(!is_whole_number)[1]
-    wrong_argument_abort(i = "All elements of `g` must be integer vectors.")
+    wrong_argument_abort(i = "All elements of `g` must be non-empty vectors of finite integers.")
   }
   all_ints <- unlist(g)
   if (length(all_ints) != length(unique(all_ints))) {
     wrong_argument_abort(i = "Elements of cycles must not repeat across or within cycles.")
   }
-  first_element_is_min <- sapply(g, which.min) == 1
+  first_element_is_min <- vapply(g, which.min, integer(1)) == 1
   if (!all(first_element_is_min)) {
     wrong_element_index <- which(!first_element_is_min)[1]
     wrong_argument_abort(
@@ -224,11 +227,11 @@ validate_gips_perm <- function(g) {
       )
     )
   }
-  not_sorted_by_first <- is.unsorted(sapply(g, function(v) v[1]))
+  not_sorted_by_first <- is.unsorted(vapply(g, function(v) v[1], numeric(1)))
   if (not_sorted_by_first) {
     wrong_argument_abort(i = "Cycles must appear in order determined by their first elements.")
   }
-  if (attr(g, "size") < max(all_ints)) {
+  if (length(all_ints) > 0L && size_attr < max(all_ints)) {
     wrong_argument_abort(
       i = "`size` attribute must be greater or equal to largest integer in elements of `g`.",
       x = paste0(
@@ -236,6 +239,11 @@ validate_gips_perm <- function(g) {
         "` while the maximum element is ",
         max(all_ints), "."
       )
+    )
+  }
+  if (length(all_ints) != size_attr || any(all_ints < 1)) {
+    wrong_argument_abort(
+      i = "Cycles must form a complete permutation of 1, ..., `size`, including fixed points."
     )
   }
   g

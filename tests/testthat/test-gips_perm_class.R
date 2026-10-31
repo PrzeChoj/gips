@@ -225,6 +225,59 @@ test_that("validate_gips works properly", {
   expect_error(validate_gips_perm(small_size), "size")
 })
 
+test_that("validate_gips_perm requires a finite non-negative integer size", {
+  invalid_sizes <- list(
+    NULL, numeric(0), c(3, 3), NA_real_, NaN, Inf, -Inf,
+    -1, 3.5, 3 + 1e-9, "3", 3 + 0i, TRUE
+  )
+  for (size in invalid_sizes) {
+    perm <- new_gips_perm(list(1:3), 3)
+    attr(perm, "size") <- size
+    expect_error(
+      validate_gips_perm(perm), "single finite non-negative integer",
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
+test_that("validate_gips_perm rejects incomplete permutations and nonpositive points", {
+  invalid_cycles <- list(
+    list(1:2), list(c(1L, 3L)), list(2:3), list(),
+    list(c(0L, 1L, 2L)), list(c(-1L, 1L, 2L))
+  )
+  for (cycles in invalid_cycles) {
+    expect_error(
+      validate_gips_perm(new_gips_perm(cycles, 3)), "complete permutation",
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
+test_that("validate_gips_perm rejects malformed cycles before checking their order", {
+  invalid_cycles <- list(
+    integer(0), NULL, "1", TRUE, matrix(1:3, nrow = 1),
+    c(1, NA_real_, 3), c(1, NaN, 3), c(1, Inf, 3), c(1, -Inf, 3),
+    c(1, 2.5, 3), c(1, 2 + 1e-9, 3), c(1, 2 + 0i, 3)
+  )
+  for (cycle in invalid_cycles) {
+    expect_error(
+      validate_gips_perm(new_gips_perm(list(cycle), 3)),
+      "non-empty vectors of finite integers",
+      fixed = TRUE, class = "rlang_error"
+    )
+  }
+})
+
+test_that("validate_gips_perm accepts complete permutations including sizes zero and one", {
+  perm <- gips_perm("(1,2)", 3)
+  expect_equal(perm, new_gips_perm(list(1:2, 3L), 3))
+
+  for (valid_perm in list(new_gips_perm(list(), 0), gips_perm("()", 1), perm)) {
+    expect_silent(validated <- validate_gips_perm(valid_perm))
+    expect_identical(validated, valid_perm)
+  }
+})
+
 test_that("object of gips_perm class can be printed", {
   expect_output(print(gips_perm("(1,2)(5,4)", 7)),
     regexp = "\\(12\\)\\(45\\)"
