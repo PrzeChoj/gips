@@ -20,13 +20,12 @@ The default \code{k = 2} is the classical AIC.}
 \value{
 \code{AIC.gips()} returns calculated Akaike's An Information Criterion
 
-When the multivariate normal model does not exist
-(\code{number_of_observations < n0}), it returns \code{NULL}.
-When the multivariate normal model cannot be reasonably approximated
-(output of \code{\link[=project_matrix]{project_matrix()}} is singular), it returns \code{Inf}.
+If the sample-size requirement for the MLE is not met, it returns \code{NULL}.
+If a projected covariance matrix fails the numerical positive-definiteness
+check, it returns \code{Inf}.
 
 In both failure situations, shows a warning.
-More information can be found in the \strong{Existence of likelihood}
+More information can be found in the \strong{MLE availability}
 section of \code{\link[=logLik.gips]{logLik.gips()}}.
 
 \code{BIC.gips()} returns calculated

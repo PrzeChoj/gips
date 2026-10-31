@@ -16,44 +16,38 @@ Log-Likelihood of the sample. Object of class \code{logLik}.
 
 Possible failure situations:
 \itemize{
-\item When the multivariate normal model does not exist
-(\code{number_of_observations < n0}), it returns \code{NULL}.
-\item When the multivariate normal model cannot be reasonably approximated
-(output of \code{\link[=project_matrix]{project_matrix()}} is singular), it returns \code{-Inf}.
+\item If the sample-size requirement is not met, it returns \code{NULL}.
+\item If a projected covariance matrix fails the numerical positive-definiteness
+check, it returns \code{-Inf}.
 }
 
 In both failure situations, it shows a warning.
-More information can be found in the \strong{Existence of likelihood} section below.
+Here, \code{-Inf} signals an unavailable result, not a calculated log-likelihood.
+More information can be found in the \strong{MLE availability} section below.
 }
 \description{
 Calculates Log-Likelihood of the sample based on the \code{gips} object.
 }
 \details{
-This will always be largest for \code{perm = "()"} (provided that \code{p <= n}).
-
-If the found permutation still requires more parameters than \code{n},
-the likelihood does not exist; thus the function returns \code{NULL}.
-
-If the \code{projected_cov} (output of \code{\link[=project_matrix]{project_matrix()}})
-is close to singular, the \code{NA} is returned.
+The value is largest for \code{perm = "()"} when the MLEs in both the
+unrestricted and the selected model are available.
 }
-\section{Existence of likelihood}{
+\section{MLE availability}{
 
-We only consider the non-degenerate multivariate normal model.
-In the \code{gips} context, such a model exists only when
-the number of observations is bigger or equal to \code{n0}. To get \code{n0}
-for the \code{gips} object \code{g}, call \code{summary(g)$n0}.
-
-See examples where the \code{g_n_too_small} had too small
-\code{number_of_observations} to have likelihood. After the optimization,
-the likelihood did exist.
+The sample-size requirement is \code{number_of_observations >= n0}.
+Here, \code{n0} is the number of permutation cycles, increased by one when
+\code{was_mean_estimated = TRUE}; see \code{summary(g)$n0}.
+Meeting this threshold does not guarantee availability for a particular \code{S}:
+its projection must also be numerically positive definite.
+See \code{summary(g)$MLE_available} for the result of these checks.
 }
 
 \section{Multi-sample}{
 
 For multi-sample \code{gips} objects the log-likelihood is the sum of the
-per-group log-likelihoods. The existence condition becomes
-\code{min(n_g) >= n0}. The \code{df} attribute equals \code{G * dim_omega(sigma)}
+per-group log-likelihoods. The sample-size requirement is \code{min(n_g) >= n0},
+and every projected covariance matrix must be numerically positive definite.
+The \code{df} attribute equals \code{G * dim_omega(sigma)}
 (each group has its own free covariance parameters), and \code{nobs} equals
 \code{sum(n_g)}.
 
@@ -85,7 +79,7 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 
 g_n_too_small <- gips(S, number_of_observations = 4)
-logLik(g_n_too_small) # NULL # the likelihood does not exists
+logLik(g_n_too_small) # NULL # the sample size is below n0
 summary(g_n_too_small)$n0 # 5, but we set number_of_observations = 4, which is smaller
 
 g_MAP <- find_MAP(g_n_too_small)
@@ -101,7 +95,7 @@ is called on the output of \code{find_MAP()}.
 interested in an Information Criterion AIC or BIC.
 \item \code{\link[=summary.gips]{summary.gips()}} - One can get \code{n0} by calling \code{summary(g)$n0}.
 To see why one may be interested in \code{n0},
-see the \strong{Existence of likelihood} section above.
+see the \strong{MLE availability} section above.
 \item \code{\link[=project_matrix]{project_matrix()}} - Project the known matrix
 onto the found permutations space.
 It is mentioned in the \strong{Calculation details} section above.

@@ -799,31 +799,25 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #'
 #' Calculates Log-Likelihood of the sample based on the `gips` object.
 #'
-#' This will always be largest for `perm = "()"` (provided that `p <= n`).
-#'
-#' If the found permutation still requires more parameters than `n`,
-#'     the likelihood does not exist; thus the function returns `NULL`.
-#'
-#' If the `projected_cov` (output of [project_matrix()])
-#'     is close to singular, the `NA` is returned.
+#' The value is largest for `perm = "()"` when the MLEs in both the
+#' unrestricted and the selected model are available.
 #'
 #' @param object An object of class `gips`. Usually, a result of a [find_MAP()].
 #' @param ... Further arguments will be ignored.
 #'
-#' @section Existence of likelihood:
-#' We only consider the non-degenerate multivariate normal model.
-#' In the `gips` context, such a model exists only when
-#' the number of observations is bigger or equal to `n0`. To get `n0`
-#' for the `gips` object `g`, call `summary(g)$n0`.
-#' 
-#' See examples where the `g_n_too_small` had too small
-#' `number_of_observations` to have likelihood. After the optimization,
-#' the likelihood did exist.
+#' @section MLE availability:
+#' The sample-size requirement is `number_of_observations >= n0`.
+#' Here, `n0` is the number of permutation cycles, increased by one when
+#' `was_mean_estimated = TRUE`; see `summary(g)$n0`.
+#' Meeting this threshold does not guarantee availability for a particular `S`:
+#' its projection must also be numerically positive definite.
+#' See `summary(g)$MLE_available` for the result of these checks.
 #'
 #' @section Multi-sample:
 #' For multi-sample `gips` objects the log-likelihood is the sum of the
-#' per-group log-likelihoods. The existence condition becomes
-#' `min(n_g) >= n0`. The `df` attribute equals `G * dim_omega(sigma)`
+#' per-group log-likelihoods. The sample-size requirement is `min(n_g) >= n0`,
+#' and every projected covariance matrix must be numerically positive definite.
+#' The `df` attribute equals `G * dim_omega(sigma)`
 #' (each group has its own free covariance parameters), and `nobs` equals
 #' `sum(n_g)`.
 #'
@@ -842,13 +836,13 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #' @returns Log-Likelihood of the sample. Object of class `logLik`.
 #'
 #' Possible failure situations:
-#' * When the multivariate normal model does not exist
-#'     (`number_of_observations < n0`), it returns `NULL`.
-#' * When the multivariate normal model cannot be reasonably approximated
-#'     (output of [project_matrix()] is singular), it returns `-Inf`.
+#' * If the sample-size requirement is not met, it returns `NULL`.
+#' * If a projected covariance matrix fails the numerical positive-definiteness
+#'     check, it returns `-Inf`.
 #'
 #' In both failure situations, it shows a warning.
-#' More information can be found in the **Existence of likelihood** section below.
+#' Here, `-Inf` signals an unavailable result, not a calculated log-likelihood.
+#' More information can be found in the **MLE availability** section below.
 #'
 #' @export
 #'
@@ -860,7 +854,7 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #'     interested in an Information Criterion AIC or BIC.
 #' * [summary.gips()] - One can get `n0` by calling `summary(g)$n0`.
 #'     To see why one may be interested in `n0`,
-#'     see the **Existence of likelihood** section above.
+#'     see the **MLE availability** section above.
 #' * [project_matrix()] - Project the known matrix
 #'     onto the found permutations space.
 #'     It is mentioned in the **Calculation details** section above.
@@ -880,7 +874,7 @@ get_n0_from_perm <- function(g_perm, was_mean_estimated) {
 #' logLik(g_map) # -32.6722 # this will always be smaller than `logLik(gips(S, n, perm = ""))`
 #'
 #' g_n_too_small <- gips(S, number_of_observations = 4)
-#' logLik(g_n_too_small) # NULL # the likelihood does not exists
+#' logLik(g_n_too_small) # NULL # the sample size is below n0
 #' summary(g_n_too_small)$n0 # 5, but we set number_of_observations = 4, which is smaller
 #' 
 #' g_MAP <- find_MAP(g_n_too_small)
@@ -901,7 +895,7 @@ logLik.gips <- function(object, ...) {
 
     if (min_n < n0) {
       rlang::warn(c(
-        "The likelihood is not defined for this multi-sample `gips`.",
+        "The covariance MLE is unavailable for at least one group.",
         "x" = paste0(
           "The minimum n_g = ", min_n,
           " is smaller than the required n0 = ", n0, "."
@@ -947,13 +941,13 @@ logLik.gips <- function(object, ...) {
   n0 <- tmp[1]
   edited_number_of_observations <- tmp[2]
 
-  if (n < n0) { # Likelihood is not defined in that setting
+  if (n < n0) { # The sample-size requirement for the MLE is not met.
     rlang::warn(c(
-      "The likelihood is not defined for this `gips`.",
+      "The covariance MLE is unavailable for this `gips`.",
       "x" = paste0(
         "The n = ", n,
         " is smaller than the minimum required n0 = ", n0,
-        ". For more information, see section **Existence of likelihood** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html)."
+        ". For more information, see section **MLE availability** in documentation `?logLik.gips` or its [pkgdown page](https://przechoj.github.io/gips/reference/logLik.gips.html)."
       )
     ), class = "likelihood_does_not_exists")
 
@@ -1013,13 +1007,12 @@ logLik.gips <- function(object, ...) {
 #'
 #' @returns `AIC.gips()` returns calculated Akaike's An Information Criterion
 #'
-#' When the multivariate normal model does not exist
-#'     (`number_of_observations < n0`), it returns `NULL`.
-#' When the multivariate normal model cannot be reasonably approximated
-#'     (output of [project_matrix()] is singular), it returns `Inf`.
+#' If the sample-size requirement for the MLE is not met, it returns `NULL`.
+#' If a projected covariance matrix fails the numerical positive-definiteness
+#'     check, it returns `Inf`.
 #'
 #' In both failure situations, shows a warning.
-#' More information can be found in the **Existence of likelihood**
+#' More information can be found in the **MLE availability**
 #' section of [logLik.gips()].
 #'
 #' @importFrom stats AIC
