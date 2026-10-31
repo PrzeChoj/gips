@@ -1125,6 +1125,53 @@ test_that("logLik.gips() works", {
   )
 })
 
+test_that("logLik.gips() rejects indefinite projections with either determinant sign", {
+  for (diagonal in list(c(1, -1e-8), c(1, -1e-8, -1e-8))) {
+    # These matrices pass input PSD tolerance, but are not positive definite.
+    g <- gips(diag(diagonal), 10, was_mean_estimated = FALSE)
+    expect_warning(
+      expect_equal(logLik(g), -Inf),
+      "not numerically positive definite",
+      class = "singular_matrix"
+    )
+  }
+})
+
+test_that("logLik.gips() checks the projection rather than the original S", {
+  S <- diag(c(1, 0))
+  g_identity <- gips(S, 10, was_mean_estimated = FALSE)
+  expect_warning(
+    expect_equal(logLik(g_identity), -Inf),
+    class = "singular_matrix"
+  )
+
+  g_swap <- gips(S, 10, perm = "(1,2)", was_mean_estimated = FALSE)
+  # The swap projects S onto 0.5 * I, which is positive definite.
+  expected <- -10 * (log(2 * pi) + 1 + log(0.5))
+  expect_equal(as.numeric(logLik(g_swap)), expected)
+})
+
+test_that("logLik.gips() accepts positive definite matrices with a small eigenvalue", {
+  g <- gips(diag(c(1, 1e-12)), 10, was_mean_estimated = FALSE)
+  expected <- -10 / 2 * (2 * (log(2 * pi) + 1) + log(1e-12))
+  expect_equal(as.numeric(logLik(g)), expected)
+})
+
+test_that("logLik.gips() still enforces n0 for positive definite S", {
+  for (was_mean_estimated in c(FALSE, TRUE)) {
+    n0 <- 2 + as.integer(was_mean_estimated)
+    g_below <- gips(diag(2), n0 - 1, was_mean_estimated = was_mean_estimated)
+    expect_warning(
+      expect_null(logLik(g_below)),
+      class = "likelihood_does_not_exists"
+    )
+
+    g_boundary <- gips(diag(2), n0, was_mean_estimated = was_mean_estimated)
+    # The mean correction is applied once; the effective sample size is 2.
+    expect_equal(as.numeric(logLik(g_boundary)), -2 * (log(2 * pi) + 1))
+  }
+})
+
 test_that("AIC.gips() works", {
   Z <- matrix(c(
     -1, 2, -3, 4,

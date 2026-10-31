@@ -868,16 +868,19 @@ logLik.gips <- function(object, ...) {
 
     log_L_S <- 0
     for (i in seq_len(G)) {
-      log_det_i <- determinant(projected_covs[[i]], logarithm = TRUE)[["modulus"]]
-      attributes(log_det_i) <- NULL
-      if (is.infinite(log_det_i)) {
+      projected_chol <- tryCatch(
+        chol(projected_covs[[i]], pivot = FALSE),
+        error = function(e) NULL
+      )
+      if (is.null(projected_chol)) {
         rlang::warn(c(
-          "A projected matrix for one of the groups is computationally singular.",
+          "A projected matrix for one of the groups is not numerically positive definite.",
           "x" = paste0("Group ", i, ": reciprocal condition number = ",
                        rcond(projected_covs[[i]]), ".")
         ), class = "singular_matrix")
         return(-Inf)
       }
+      log_det_i <- 2 * sum(log(diag(projected_chol)))
       log_L_S <- log_L_S + (-edited_ns[i] * (p * log_2pi_plus_1 + log_det_i) / 2)
     }
 
@@ -888,7 +891,6 @@ logLik.gips <- function(object, ...) {
     return(log_L_S)
   }
 
-  projected_cov <- project_matrix(original_cov, object[[1]])
   p <- ncol(original_cov)
   n <- attr(object, "number_of_observations")
 
@@ -909,17 +911,21 @@ logLik.gips <- function(object, ...) {
     return(NULL)
   }
 
-  log_det_projected_cov <- determinant(projected_cov, logarithm = TRUE)[["modulus"]]
-  attributes(log_det_projected_cov) <- NULL
-  if (is.infinite(log_det_projected_cov)) {
+  projected_cov <- project_matrix(original_cov, object[[1]])
+  projected_chol <- tryCatch(
+    chol(projected_cov, pivot = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(projected_chol)) {
     rlang::warn(c(
-      "The projected matrix is computationally singular.",
-      "x" = "The likelihood for singular matrices cannot be estimated with a satisfying precision.",
+      "The projected matrix is not numerically positive definite.",
+      "x" = "Its Cholesky factorization could not be computed.",
       "i" = paste0("Reciprocal condition number = ", rcond(projected_cov), ".")
     ), class = "singular_matrix")
 
     return(-Inf)
   }
+  log_det_projected_cov <- 2 * sum(log(diag(projected_chol)))
 
   log_2pi_plus_1 <- 2.837877066409345483560659472811235279722794947275566825634303 # log(2*pi) + 1
 

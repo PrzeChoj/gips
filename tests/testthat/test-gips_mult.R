@@ -302,6 +302,19 @@ test_that("logLik() returns NULL when min(n_g) < n0", {
 })
 
 
+test_that("logLik() identifies a non-positive-definite projection in a later group", {
+  g <- gips(
+    list(diag(2), diag(c(1, -1e-8))), c(10L, 12L),
+    was_mean_estimated = FALSE
+  )
+  expect_warning(
+    expect_equal(logLik(g), -Inf),
+    "Group 2",
+    class = "singular_matrix"
+  )
+})
+
+
 test_that("AIC() and BIC() work on multi-sample gips", {
   S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
   S2 <- matrix(c(2, 0.3, 0.3, 1.5), nrow = 2, byrow = TRUE)
