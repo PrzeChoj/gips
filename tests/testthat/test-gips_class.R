@@ -837,7 +837,7 @@ test_that("summary.gips() works", {
   likelihood_ratio_test_statistics <- 13*(determinant(project_matrix(S, custom_perm1))$modulus - determinant(S)$modulus)
   attributes(likelihood_ratio_test_statistics) <- NULL
   df_chisq <- p*(p+1)/2 - sum(get_structure_constants(custom_perm1)[["dim_omega"]])
-  likelihood_ratio_test_p_value <- 1 - pchisq(likelihood_ratio_test_statistics, df_chisq)
+  likelihood_ratio_test_p_value <- pchisq(likelihood_ratio_test_statistics, df_chisq, lower.tail = FALSE)
 
   my_sum <- structure(list(
     optimized = FALSE, start_permutation = structure(list(
@@ -979,6 +979,20 @@ test_that("summary.gips() calculates the LRT from both covariance determinants",
   identity_result <- summary(gips(diag(c(1, 3)), 10, was_mean_estimated = FALSE))
   expect_equal(identity_result$likelihood_ratio_test_statistics, 0)
   expect_null(identity_result$likelihood_ratio_test_p_value)
+})
+
+test_that("summary.gips() preserves very small positive LRT p-values", {
+  g <- gips(diag(c(1, 2, 3)), 300, perm = "(1,2,3)", was_mean_estimated = FALSE)
+  result <- summary(g)
+  # The projection is 2 * I, so the determinant ratio is 8 / 6 and df = 6 - 2 = 4.
+  expected_statistic <- 300 * log(4 / 3)
+  # The chi-squared distribution with 4 degrees of freedom has this exact upper tail.
+  expected_p_value <- exp(-expected_statistic / 2) * (1 + expected_statistic / 2)
+
+  expect_equal(result$likelihood_ratio_test_statistics, expected_statistic)
+  expect_gt(result$likelihood_ratio_test_p_value, 0)
+  expect_lt(result$likelihood_ratio_test_p_value, .Machine$double.eps)
+  expect_equal(result$likelihood_ratio_test_p_value / expected_p_value, 1, tolerance = 1e-12)
 })
 
 test_that("summary.gips() requires enough observations for the full-model LRT", {

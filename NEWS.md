@@ -12,6 +12,7 @@
 
 ### Bugfixes:
 
+* Fixed loss of precision for very small likelihood-ratio p-values in `summary()`.
 * Printed summaries now distinguish insufficient observations from projected
   covariance matrices that are not numerically positive definite.
 * The likelihood-ratio test in `summary()` now requires at least `p` effective
