@@ -554,6 +554,13 @@ check_delta <- function(delta) {
     ))
   }
 
+  if (!is.finite(delta)) {
+    return(c(
+      "i" = "`delta` must be finite.",
+      "x" = "You provided an infinite `delta`."
+    ))
+  }
+
   if (delta <= 1) {
     return(c(
       "i" = "`delta` must be strictly bigger than 1.",

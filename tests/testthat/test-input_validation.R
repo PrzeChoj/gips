@@ -65,3 +65,28 @@ test_that("validate_gips rejects NA in D_matrix after an attribute change", {
     )
   }
 })
+
+test_that("gips and validate_gips reject infinite delta", {
+  for (multi in c(FALSE, TRUE)) {
+    S <- if (multi) list(diag(2), diag(2)) else diag(2)
+    n <- if (multi) c(10, 12) else 10
+    g <- gips(S, n)
+    
+    for (value in c(Inf, -Inf)) {
+      delta <- if (multi) c(3, value) else value
+      
+      expect_error(
+        gips(S, n, delta = delta),
+        "`delta` must be finite.",
+        fixed = TRUE, class = "rlang_error"
+      )
+      
+      attr(g, "delta") <- delta
+      expect_error(
+        validate_gips(g),
+        "`delta` must be finite.",
+        fixed = TRUE, class = "rlang_error"
+      )
+    }
+  }
+})
