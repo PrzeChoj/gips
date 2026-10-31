@@ -248,7 +248,9 @@ Metropolis-Hastings algorithm suggested by the authors of [[1]](https://arxiv.or
 
 ### Example
 
+```{=html}
 <div id="spoiler3" style="display:none">
+```
 ```{r example2_readme1}
 # Prepare model, multivariate normal distribution
 p <- 6
@@ -274,7 +276,9 @@ Z <- withr::with_seed(2022,
 )
 # End of prepare model
 ```
+```{=html}
 </div>
+```
 
 <button title="Click to show the data preparation" type="button"
    onclick="if(document.getElementById('spoiler3') .style.display=='none')
@@ -348,7 +352,9 @@ When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - 
 
 Consider an example similar to one in the **Bayesian model selection** section:
 
+```{=html}
 <div id="spoiler4" style="display:none">
+```
 ```{r example3_1}
 # Prepare model, multivariate normal distribution
 p <- 6
@@ -374,7 +380,9 @@ Z <- withr::with_seed(2022,
 )
 # End of prepare model
 ```
+```{=html}
 </div>
+```
 
 <button title="Click to show the data preparation" type="button"
    onclick="if(document.getElementById('spoiler4') .style.display=='none')
