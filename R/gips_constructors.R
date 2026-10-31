@@ -603,6 +603,13 @@ check_D_matrix <- function(D_matrix, p) {
     ))
   }
 
+  if (anyNA(D_matrix)) {
+    return(c(
+      "i" = "`D_matrix` must not contain any `NA`s.",
+      "x" = "You provided `D_matrix` with `NA`s!"
+    ))
+  }
+
   if (any(is.infinite(D_matrix))) {
     return(c(
       "i" = "`D_matrix` must not contain any infinite values.",
