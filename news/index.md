@@ -16,6 +16,9 @@
 
 - Fixed incorrect posterior comparisons for small non-scalar `D_matrix`
   values.
+- Fixed rejection of positive-definite prior matrices with small
+  eigenvalues and corrected posterior calculations for nearly scalar
+  priors.
 
 ## gips 1.3.0
 
