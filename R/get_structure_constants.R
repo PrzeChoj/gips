@@ -51,18 +51,11 @@ get_structure_constants <- function(perm) {
 
 # Internal calculations for valid permutations; public inputs must be validated first.
 get_structure_constants_no_checks <- function(perm) {
-  perm_size <- attr(perm, "size")
-  l <- get_cycle_representatives_and_lengths(perm)
-  representatives <- l[["representatives"]]
-  cycle_lengths <- l[["cycle_lengths"]]
-  perm_order <- ifelse(length(cycle_lengths) >= 2,
-    numbers::mLCM(cycle_lengths),
-    cycle_lengths
-  )
+  cycle_lengths <- lengths(perm)
 
-  r <- calculate_r(cycle_lengths, perm_order)
+  r <- calculate_r(cycle_lengths)
   L <- length(r)
-  d <- calculate_d(L, perm_order)
+  d <- calculate_d(L, cycle_lengths)
 
   k <- d
   dim_omega <- r + r * (r - 1) * d / 2
@@ -76,76 +69,77 @@ get_structure_constants_no_checks <- function(perm) {
   )
 }
 
-#' Get cycle representatives and lengths
+# Internal Euclidean algorithm for a vector of nonnegative integers a and a scalar b > 0.
+# Inputs come from validated cycle lengths and generated frequency numerators.
+gcd_nonnegative <- function(a, b) {
+  b <- rep.int(b, length(a))
+  active <- a > 0
+  while (any(active)) {
+    remainder <- b[active] %% a[active]
+    b[active] <- a[active]
+    a[active] <- remainder
+    active <- a > 0
+  }
+  b
+}
+
+#' Get cycle frequencies as reduced fractions
 #'
-#' Essentially get iC, pC from paper
-#'
-#' @inheritParams get_structure_constants
-#'
-#' @returns A List with 2 items: `representatives` and `cycle_lengths`.
-#'
-#' @examples
-#' perm <- gips_perm(permutations::as.cycle(permutations::as.word(c(4, 3, 6, 5, 1, 2))), 6)
-#' get_cycle_representatives_and_lengths(perm)
-#'
+#' @param cycle_length A positive integer cycle length from a validated permutation.
+#' @returns A list with `numerator` and `denominator` vectors for frequencies
+#'     between 0 and 1/2, in increasing order.
 #' @noRd
-get_cycle_representatives_and_lengths <- function(perm) {
+get_cycle_frequencies <- function(cycle_length) {
+  numerators <- seq.int(0, floor(cycle_length / 2))
+  divisors <- gcd_nonnegative(numerators, cycle_length)
+
   list(
-    "representatives" = sapply(perm, function(v) v[1]),
-    "cycle_lengths" = sapply(perm, length)
+    numerator = numerators / divisors,
+    denominator = cycle_length / divisors
   )
 }
 
 #' Calculate structure constant r
-#' Utilizes the sparsity for the `r_alfa` to speed up the computation.
-#' The vector `r_alfa` is sorted by the value of the `alpha`.
-#' Meaning the first element is the `r_alpha` for `alpha` = 0.
+#' Count cycles containing each distinct frequency, in increasing frequency order.
+#' Frequencies are identified by their reduced numerator-denominator pairs.
 #'
-#' @returns An integer vector. Structure constant r already without 0 elements.
+#' @returns A numeric vector of positive integer multiplicities.
 #' @noRd
-calculate_r <- function(cycle_lengths, perm_order) {
-  M <- floor(perm_order / 2)
-  if (M == 0) {
-    # identity function
-    return(length(cycle_lengths))
+calculate_r <- function(cycle_lengths) {
+  if (length(cycle_lengths) == 0L) {
+    rlang::abort("Cannot calculate structure constants for a permutation without cycles.")
   }
-  # for alpha in 0,1,...,floor(perm_order/2)
-  # r_{alpha} = #{1:C such that alpha*p_c is a multiple of N}
-  # alpha*p_c is a multiple of N iff alpha*p_c %% N == 0
-  # Now, N is the Least Common Multiplier of all p_c
-  # Which means, that N %% p_c == 0 for every p_c
-  # In other words, N / p_c is an integer
-  multiples <- round(perm_order / cycle_lengths) # the result of division should be an integer, but floats may interfere
+  cycle_frequencies <- lapply(cycle_lengths, get_cycle_frequencies)
+  numerators <- unlist(lapply(cycle_frequencies, `[[`, "numerator"), use.names = FALSE)
+  denominators <- unlist(lapply(cycle_frequencies, `[[`, "denominator"), use.names = FALSE)
 
-  # Since N/p_c is an integer, alpha*p_c %% N == 0 iff alpha %% (N/p_c) == 0
-  # In other words, alpha must be a multiple of (N/p_1, N/p_2,...,N/p_C)
-  # (alpha = k*(N/p_1) or k*(N/p_2) or ... or k*(N/p_C) for some integer k (including 0))
-  # However, alpha must be at most M, and a valid bound from above for integer k is max(p_1,...,p_C).
-  max_order <- max(cycle_lengths)
-  
-  # Here we create all possible alpha values. 
-  # The `multiples` corresponds to N/p_1,...,N/p_C, and `0:max_order` are possible integers k.
-  # Use the outer product to get all pairwise multiplications
-  alpha_matrix <- multiples %*% t(0:max_order)
+  frequencies <- numerators / denominators
+  frequency_order <- order(frequencies)
+  frequencies <- frequencies[frequency_order]
+  numerators <- numerators[frequency_order]
+  denominators <- denominators[frequency_order]
 
-  # sort is in ascending order, which means smallest alphas go to start.
-  # The end result is as if we iterated over each alpha value (in ascending order),
-  # and then deleted entries with 0s.
-  possible_alphas <- unique(sort(alpha_matrix[alpha_matrix <= M]))
+  # Group by exact reduced fractions, not by their floating-point values.
+  is_new_frequency <- c(TRUE, diff(numerators) != 0 | diff(denominators) != 0)
+  if (anyDuplicated(frequencies[is_new_frequency]) > 0L) {
+    rlang::abort(c(
+      "Cannot reliably order cycle frequencies.",
+      "x" = "Distinct fractions have the same floating-point value."
+    ), class = "indistinguishable_cycle_frequencies")
+  }
 
-  # Recalculate the r_alpha vector using its definition directly.
-  r_alfa <- sapply(possible_alphas, function(alpha) sum(alpha %% multiples == 0))
-  as.double(r_alfa)
+  as.double(diff(c(which(is_new_frequency), length(frequencies) + 1)))
 }
 
 #' Calculate structure constant d.
-#' Utilizing the structure of `r_alfa` vector.
+#' The first block has frequency 0; the last has frequency 1/2 if any cycle is even.
 #'
 #' @noRd
-calculate_d <- function(r_len, perm_order) {
+calculate_d <- function(r_len, cycle_lengths) {
   d <- rep(2, r_len)
   d[1] <- 1
-  if (perm_order %% 2 == 0) {
+  # The LCM is even exactly when at least one cycle has even length.
+  if (any(cycle_lengths %% 2 == 0)) {
     d[r_len] <- 1
   }
   d
