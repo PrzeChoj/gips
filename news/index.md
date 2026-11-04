@@ -48,6 +48,10 @@
 - Fixed rejection of positive-definite prior matrices with small
   eigenvalues and corrected posterior calculations for nearly scalar
   priors.
+- Fixed
+  [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md)
+  for permutations with gigantic order (above 3e17)
+  ([\#122](https://github.com/PrzeChoj/gips/issues/122)).
 
 ## gips 1.3.0
 
