@@ -51,19 +51,58 @@ test_that("get_structure_constants handles a permutation of large order", {
   expect_equal(constants, expected_constants, tolerance = 0)
 })
 
+test_that("gcd_nonnegative handles zero, a common divisor and coprime inputs", {
+  expect_equal(gcd_nonnegative(0, 6), 6)
+  expect_equal(gcd_nonnegative(2, 6), 2)
+  expect_equal(gcd_nonnegative(5, 12), 1)
+})
+
+test_that("gcd_nonnegative handles pairs finishing at different iterations", {
+  expect_equal(gcd_nonnegative(c(0, 2, 5, 8), 12), c(12, 2, 1, 4), tolerance = 0)
+})
+
+test_that("get_cycle_frequencies handles a fixed point", {
+  expect_equal(
+    get_cycle_frequencies(1),
+    list(numerator = 0, denominator = 1),
+    tolerance = 0
+  )
+})
+
+test_that("get_cycle_frequencies handles an odd cycle", {
+  expect_equal(
+    get_cycle_frequencies(3),
+    list(numerator = c(0, 1), denominator = c(1, 3)),
+    tolerance = 0
+  )
+})
+
+test_that("get_cycle_frequencies reduces fractions for an even cycle", {
+  expect_equal(
+    get_cycle_frequencies(6),
+    list(numerator = c(0, 1, 1, 1), denominator = c(1, 6, 3, 2)),
+    tolerance = 0
+  )
+})
+
 # Example 6 from the paper
 test_that("calculate_r works for example from paper (without 0 values)", {
   expect_equal(
-    calculate_r(c(3, 2, 1), 6),
+    calculate_r(c(3, 2, 1)),
     c(3, 1, 1)
   )
 })
 
 test_that("calculate_r works for identity", {
   expect_equal(
-    calculate_r(c(1, 1, 1, 1), 1),
+    calculate_r(c(1, 1, 1, 1)),
     4
   )
+})
+
+test_that("calculate_r combines equal frequencies from different cycles", {
+  # Frequencies 0, 1/6, 1/3 (= 2/6), 1/2 occur in 2, 1, 2, 1 cycles.
+  expect_equal(calculate_r(c(3, 6)), c(2, 1, 2, 1), tolerance = 0)
 })
 
 test_that("calculate_d works when at least one cycle has even length", {
@@ -95,6 +134,11 @@ test_that("calculate_d works for identity", {
 
 test_that("get_structure_constants checks for proper argument", {
   expect_silent(get_structure_constants(gips_perm("(1,2,3)", 3)))
+
+  expect_error(
+    get_structure_constants(gips_perm("()", 0)),
+    "without cycles", fixed = TRUE
+  )
 
   expect_error(
     get_structure_constants(3),
