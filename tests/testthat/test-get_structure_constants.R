@@ -26,6 +26,31 @@ test_that("get_structure_constants for examples from paper", {
   )
 })
 
+test_that("get_structure_constants handles a permutation of large order", {
+  cycle_lengths <- c(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47)
+  p <- sum(cycle_lengths) # 328
+  cycles <- unname(split(
+    seq_len(p),
+    rep(seq_along(cycle_lengths), times = cycle_lengths)
+  ))
+  perm <- gips_perm(list(cycles), size = p)
+
+  # All 15 cycles share frequency 0, giving r = 15 and dim_omega = 15 * 16 / 2.
+  # The distinct odd primes give 156 distinct frequencies strictly between 0 and 1/2.
+  # Each has r = 1 and d = 2; only the 2-cycle contributes frequency 1/2, with d = 1.
+  expected_constants <- list(
+    r = c(15, rep(1, 157)),
+    d = c(1, rep(2, 156), 1),
+    k = c(1, rep(2, 156), 1),
+    L = 158,
+    dim_omega = c(120, rep(1, 157))
+  )
+
+  expect_silent(constants <- get_structure_constants(perm))
+  expect_equal(sum(constants$r * constants$d), p, tolerance = 0)
+  expect_equal(constants, expected_constants, tolerance = 0)
+})
+
 # Example 6 from the paper
 test_that("calculate_r works for example from paper (without 0 values)", {
   expect_equal(
