@@ -62,7 +62,7 @@ get_structure_constants_no_checks <- function(perm) {
 
   r <- calculate_r(cycle_lengths, perm_order)
   L <- length(r)
-  d <- calculate_d(L, perm_order)
+  d <- calculate_d(L, cycle_lengths)
 
   k <- d
   dim_omega <- r + r * (r - 1) * d / 2
@@ -139,13 +139,14 @@ calculate_r <- function(cycle_lengths, perm_order) {
 }
 
 #' Calculate structure constant d.
-#' Utilizing the structure of `r_alfa` vector.
+#' The first block has frequency 0; the last has frequency 1/2 if any cycle is even.
 #'
 #' @noRd
-calculate_d <- function(r_len, perm_order) {
+calculate_d <- function(r_len, cycle_lengths) {
   d <- rep(2, r_len)
   d[1] <- 1
-  if (perm_order %% 2 == 0) {
+  # The LCM is even exactly when at least one cycle has even length.
+  if (any(cycle_lengths %% 2 == 0)) {
     d[r_len] <- 1
   }
   d

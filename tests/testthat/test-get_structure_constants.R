@@ -66,19 +66,31 @@ test_that("calculate_r works for identity", {
   )
 })
 
-test_that("calculate_d works for even perm_order", {
+test_that("calculate_d works when at least one cycle has even length", {
   expect_equal(calculate_d(4, 6), c(1, 2, 2, 1))
   expect_equal(calculate_d(3, 4), c(1, 2, 1))
   expect_equal(calculate_d(2, 2), c(1, 1))
+  expect_equal(calculate_d(3, c(3, 2)), c(1, 2, 1))
 })
 
-test_that("calculate_d works for odd perm_order", {
+test_that("calculate_d works when all cycle lengths are odd", {
   expect_equal(calculate_d(3, 5), c(1, 2, 2))
   expect_equal(calculate_d(2, 3), c(1, 2))
+  expect_equal(calculate_d(4, c(3, 5)), c(1, 2, 2, 2))
+})
+
+test_that("calculate_d handles odd cycle lengths with a large LCM", {
+  cycle_lengths <- c(3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47)
+
+  # These distinct odd primes give frequency 0 and 156 distinct interior frequencies.
+  # There is no frequency 1/2, so only the first block has d = 1.
+  expect_silent(d <- calculate_d(157, cycle_lengths))
+  expect_equal(d, c(1, rep(2, 156)), tolerance = 0)
 })
 
 test_that("calculate_d works for identity", {
   expect_equal(calculate_d(1, 1), 1)
+  expect_equal(calculate_d(1, c(1, 1, 1)), 1)
 })
 
 test_that("get_structure_constants checks for proper argument", {
