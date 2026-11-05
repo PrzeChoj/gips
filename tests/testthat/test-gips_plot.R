@@ -40,6 +40,55 @@ test_that("default y scale follows the resolved plot type", {
 })
 
 
+test_that("linear posterior plots reject overflow and complete underflow", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  g <- gips(diag(3), 10)
+  histories <- list(overflow = c(0, 710), underflow = c(-1000, -999))
+
+  for (problem in names(histories)) {
+    log_post <- histories[[problem]]
+    attr(g, "optimization_info") <- list(log_posteriori_values = log_post)
+
+    for (type in c("all", "best", "both")) {
+      err <- tryCatch(
+        plot(g, type = type, logarithmic_y = FALSE),
+        error = identity
+      )
+      expect_s3_class(err, "rlang_error")
+      expect_match(conditionMessage(err), problem, fixed = TRUE)
+      expect_match(conditionMessage(err), "logarithmic_y = TRUE", fixed = TRUE)
+
+      expect_silent(p <- plot(g, type = type, logarithmic_y = TRUE))
+      # Both histories are increasing, so their running maxima are unchanged.
+      expected <- if (type == "both") rep(log_post, 2) else log_post
+      expect_equal(p$data$value, expected)
+    }
+  }
+})
+
+test_that("linear posterior plots allow partial underflow without rescaling", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  g <- gips(diag(3), 10)
+  attr(g, "optimization_info") <- list(
+    log_posteriori_values = c(-1000, 0, -1, 1)
+  )
+  all_values <- c(0, 1, exp(-1), exp(1))
+  best_values <- c(0, 1, exp(1)) # Repeated values on the plateau are omitted.
+
+  for (type in c("all", "best", "both")) {
+    expect_silent(p <- plot(g, type = type, logarithmic_y = FALSE))
+    expected <- switch(type,
+      all = all_values, best = best_values, both = c(all_values, best_values)
+    )
+    expect_equal(p$data$value, expected)
+  }
+})
+
+
 # ── Heatmap axis labels ─────────────────────────────────────────────────────
 
 test_that("heatmaps use numeric labels when neither axis is named", {

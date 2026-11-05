@@ -449,6 +449,20 @@ plot_gips_convergence <- function(x, type,
 
   log_post <- attr(x, "optimization_info")[["log_posteriori_values"]] # stored in log scale
   y_values_from <- if (logarithmic_y) log_post else exp(log_post)
+  if (!logarithmic_y) {
+    if (any(is.finite(log_post) & is.infinite(y_values_from))) {
+      rlang::abort(c(
+        "Cannot plot posterior values on a linear scale because of numerical overflow.",
+        "i" = "Use `logarithmic_y = TRUE`."
+      ))
+    }
+    if (any(is.finite(log_post)) && isTRUE(all(y_values_from == 0))) {
+      rlang::abort(c(
+        "Cannot plot posterior values on a linear scale because all values are zero after numerical underflow.",
+        "i" = "Use `logarithmic_y = TRUE`."
+      ))
+    }
+  }
   y_values_max  <- cummax(y_values_from)
   num_of_steps  <- length(y_values_from)
 
