@@ -69,7 +69,7 @@
 <li>When <code>D_matrix</code> is a list (for multi-sample input), it must not contain <code>NULL</code> elements.</li>
 <li>Fixed incorrect posterior comparisons for small non-scalar <code>D_matrix</code> values.</li>
 <li>Fixed rejection of positive-definite prior matrices with small eigenvalues and corrected posterior calculations for nearly scalar priors.</li>
-<li>Fixed <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code> for permutations with gigantic order (above 3e17). Benchmarks also showed approximately 4–11% shorter mean Brute Force search times for <code>p = 5–8</code>, with unchanged results (<a href="https://github.com/PrzeChoj/gips/issues/122" class="external-link">#122</a>).</li>
+<li>Fixed <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code> for permutations with gigantic order (above 3e17). Benchmarks also showed approximately 4–11% faste Brute Force search (<code>p = 5–8</code>) (<a href="https://github.com/PrzeChoj/gips/issues/122" class="external-link">#122</a>).</li>
 <li>Fixed logarithmic <code>n0</code> plots hiding values of <code>n0=1</code> and <code>n0=2</code> due to an incorrect lower axis limit.</li>
 <li>Fixed an empty bullet in <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> when no details are displayed.</li>
 <li>Fixed swapped row and column labels in single-sample heatmaps. When only one axis has names, those names are now used to label both axes.</li>
