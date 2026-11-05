@@ -77,7 +77,7 @@ the "\strong{Possible algorithms to use as optimizers}" section below.
 \itemize{
 \item the optimizer "hill_climbing" gets to the end of
 its \code{max_iter} without converging.
-\item the optimizer will find the permutation with smaller \code{n0} than
+\item the optimizer finds the permutation with bigger \code{n0} than
 \code{number_of_observations} (for more information on what it means,
 see \strong{\eqn{C_\sigma} and \code{n0}} section
 in the \code{vignette("Theory", package = "gips")} or in its

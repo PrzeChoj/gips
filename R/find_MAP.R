@@ -9,7 +9,7 @@
 #' `find_MAP()` can produce a warning when:
 #' * the optimizer "hill_climbing" gets to the end of
 #'   its `max_iter` without converging.
-#' * the optimizer will find the permutation with smaller `n0` than
+#' * the optimizer finds the permutation with bigger `n0` than
 #'   `number_of_observations` (for more information on what it means,
 #'   see **\eqn{C_\sigma} and `n0`** section
 #'   in the `vignette("Theory", package = "gips")` or in its
