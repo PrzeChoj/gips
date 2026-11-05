@@ -276,7 +276,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     }
     rlang::warn(c(
       msg_main,
-      "i" = "The covariance matrix invariant under the found permutation does not have the likelihood properly defined.",
+      "i" = "The covariance MLE is unavailable because the sample-size requirement is not met.",
       "i" = "For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html."
     ))
   }
