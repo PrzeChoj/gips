@@ -60,7 +60,7 @@
 - Fixed
   [`get_structure_constants()`](https://przechoj.github.io/gips/reference/get_structure_constants.md)
   for permutations with gigantic order (above 3e17). Benchmarks also
-  showed approximately 4–11% faste Brute Force search (`p = 5–8`)
+  showed approximately 4–11% faster Brute Force search (`p = 5–8`)
   ([\#122](https://github.com/PrzeChoj/gips/issues/122)).
 - Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2` due to
   an incorrect lower axis limit.
