@@ -178,6 +178,9 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
       delta = delta, D_matrices = D_matrix,
       was_mean_estimated = was_mean_estimated, perm = perm
     )
+    for (i in seq_along(S)) {
+      warn_if_S_names_differ(S[[i]], name = paste0("S[[", i, "]]"))
+    }
     delta <- checked_arguments[["delta"]]
     p <- ncol(S[[1]])
 
@@ -199,6 +202,7 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     delta = delta, D_matrix = D_matrix, was_mean_estimated = was_mean_estimated,
     perm = perm
   )
+  warn_if_S_names_differ(S)
 
   if (inherits(perm, "gips_perm")) {
     gips_perm_object <- perm # it is already a `gips_perm`
@@ -216,6 +220,20 @@ gips <- function(S, number_of_observations, delta = 3, D_matrix = NULL,
     delta = delta, D_matrix = D_matrix,
     was_mean_estimated = was_mean_estimated, optimization_info = NULL
   ))
+}
+
+
+warn_if_S_names_differ <- function(S, name = "S") {
+  row_names <- rownames(S)
+  column_names <- colnames(S)
+  if (!is.null(row_names) && !is.null(column_names) &&
+      !identical(row_names, column_names)) {
+    rlang::warn(c(
+      paste0("Row and column names differ in `", name, "`."),
+      "i" = "For a covariance matrix, both axes should describe the same variables in the same order."
+    ), class = "gips_mismatched_dimnames")
+  }
+  invisible(NULL)
 }
 
 

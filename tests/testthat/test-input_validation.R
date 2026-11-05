@@ -1,3 +1,53 @@
+test_that("gips silently accepts missing or matching axis names", {
+  variable_names <- c("height", "weight")
+  for (axis_names in list(
+    list(NULL, NULL), list(variable_names, NULL),
+    list(NULL, variable_names), list(variable_names, variable_names)
+  )) {
+    S <- diag(c(2, 1))
+    dimnames(S) <- axis_names
+    for (multi in c(FALSE, TRUE)) {
+      input <- if (multi) list(diag(2), S) else S
+      n <- if (multi) c(10, 12) else 10
+      expect_silent(g <- gips(input, n))
+      expect_identical(attr(g, "S"), input)
+    }
+  }
+})
+
+test_that("gips warns about conflicting axis names before optimization without repeating in methods", {
+  S <- diag(c(2, 3, 4))
+  rownames(S) <- c("height", "weight", "age")
+  colnames(S) <- c("weight", "height", "age")
+
+  for (multi in c(FALSE, TRUE)) {
+    input <- if (multi) list(diag(3), S) else S
+    n <- if (multi) c(10, 12) else 10
+    matrix_name <- if (multi) "S[[2]]" else "S"
+    expected_warning <- paste0("Row and column names differ in `", matrix_name, "`.")
+    expect_warning(
+      g <- gips(input, n), expected_warning, fixed = TRUE,
+      class = "gips_mismatched_dimnames"
+    )
+    expect_identical(attr(g, "S"), input)
+    expect_silent(validate_gips(g))
+    expect_silent(log_posteriori_of_gips(g))
+    expect_silent(capture.output(print(g)))
+    expect_silent(invisible(summary(g)))
+
+    expect_silent(g_map <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE))
+    expect_silent(capture.output(print(g_map)))
+    expect_silent(invisible(summary(g_map)))
+    expect_identical(attr(g_map, "S"), input)
+
+    # Constructing another object must still report its conflicting names.
+    expect_warning(
+      gips(input, n), expected_warning, fixed = TRUE,
+      class = "gips_mismatched_dimnames"
+    )
+  }
+})
+
 test_that("gips and validate_gips require at least two variables", {
   for (multi in c(FALSE, TRUE)) {
     S <- if (multi) list(diag(2), diag(2)) else diag(2)

@@ -52,12 +52,12 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     }
 
     if (compare_to_original) {
-      x_id <- gips(
+      x_id <- withCallingHandlers(gips(
         S = attr(x, "S"),
         number_of_observations = attr(x, "number_of_observations"),
         delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
         was_mean_estimated = attr(x, "was_mean_estimated"), perm = ""
-      )
+      ), gips_mismatched_dimnames = function(w) invokeRestart("muffleWarning"))
       log_posteriori_id <- log_posteriori_of_gips(x_id)
 
       printing_text <- c(
@@ -70,12 +70,12 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     }
   } else { # it is optimized gips object
     log_posteriori <- attr(x, "optimization_info")[["best_perm_log_posteriori"]]
-    x_original <- gips(
+    x_original <- withCallingHandlers(gips(
       S = attr(x, "S"),
       number_of_observations = attr(x, "number_of_observations"),
       delta = attr(x, "delta"), D_matrix = attr(x, "D_matrix"),
       was_mean_estimated = attr(x, "was_mean_estimated"), perm = attr(x, "optimization_info")[["original_perm"]]
-    )
+    ), gips_mismatched_dimnames = function(w) invokeRestart("muffleWarning"))
     log_posteriori_original <- log_posteriori_of_gips(x_original)
     
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
@@ -426,14 +426,14 @@ summary.gips <- function(object, ...) {
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
       start_permutation <- optimization_info[["original_perm"]]
-      gips_start <- gips(
+      gips_start <- withCallingHandlers(gips(
         S = attr(object, "S"),
         number_of_observations = attr(object, "number_of_observations"),
         delta = attr(object, "delta"),
         D_matrix = attr(object, "D_matrix"),
         was_mean_estimated = attr(object, "was_mean_estimated"),
         perm = start_permutation
-      )
+      ), gips_mismatched_dimnames = function(w) invokeRestart("muffleWarning"))
       start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
     
@@ -717,14 +717,14 @@ summary_gips_mult <- function(object) {
       when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
       start_permutation <- optimization_info[["original_perm"]]
-      gips_start <- gips(
+      gips_start <- withCallingHandlers(gips(
         S = attr(object, "S"),
         number_of_observations = attr(object, "number_of_observations"),
         delta = attr(object, "delta"),
         D_matrix = attr(object, "D_matrix"),
         was_mean_estimated = attr(object, "was_mean_estimated"),
         perm = start_permutation
-      )
+      ), gips_mismatched_dimnames = function(w) invokeRestart("muffleWarning"))
       start_permutation_log_posteriori <- log_posteriori_of_gips(gips_start)
     }
 

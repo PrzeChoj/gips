@@ -40,6 +40,76 @@ test_that("default y scale follows the resolved plot type", {
 })
 
 
+# ── Heatmap axis labels ─────────────────────────────────────────────────────
+
+test_that("heatmaps use numeric labels when neither axis is named", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  g <- gips(diag(c(2, 1)), 13)
+
+  expect_silent(p <- plot(g, type = "heatmap"))
+  expect_identical(p$scales$get_scales("x")$labels, c("1", "2"))
+  expect_identical(p$scales$get_scales("y")$labels, c("1", "2"))
+})
+
+test_that("heatmaps use the available names for both axes when one is unnamed", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  variable_names <- c("height", "weight")
+
+  for (named_axis in c("rows", "columns")) {
+    S <- diag(c(2, 1))
+    if (named_axis == "rows") {
+      rownames(S) <- variable_names
+    } else {
+      colnames(S) <- variable_names
+    }
+    g <- gips(S, 13)
+
+    expect_silent(p <- plot(g, type = "heatmap"))
+    expect_identical(p$scales$get_scales("x")$labels, variable_names)
+    expect_identical(p$scales$get_scales("y")$labels, variable_names)
+    expect_identical(attr(g, "S"), S)
+  }
+})
+
+test_that("heatmaps preserve matching row and column names without a warning", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  S <- diag(c(2, 1))
+  variable_names <- c("height", "weight")
+  dimnames(S) <- list(variable_names, variable_names)
+  g <- gips(S, 13)
+
+  expect_silent(p <- plot(g, type = "heatmap"))
+  expect_identical(p$scales$get_scales("x")$labels, variable_names)
+  expect_identical(p$scales$get_scales("y")$labels, variable_names)
+})
+
+test_that("heatmaps keep conflicting names on the correct axes without repeating the warning", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  S <- diag(c(2, 1))
+  # The same names in a different order still describe conflicting axes.
+  rownames(S) <- c("height", "weight")
+  colnames(S) <- c("weight", "height")
+  expect_warning(
+    g <- gips(S, 13),
+    "Row and column names differ", fixed = TRUE,
+    class = "gips_mismatched_dimnames"
+  )
+  expect_silent(p <- plot(g, type = "heatmap"))
+  expect_identical(p$scales$get_scales("x")$labels, colnames(S))
+  expect_identical(p$scales$get_scales("y")$labels, rownames(S))
+  expect_equal(p$data$covariance, S[cbind(p$data$row_id, p$data$col_id)])
+  expect_identical(attr(g, "S"), S)
+})
+
+
 # ── deduplicate_step_runs() ───────────────────────────────────────────────────
 
 test_that("deduplicate_step_runs() keeps only first of each run plus last row", {

@@ -239,15 +239,17 @@ plot_gips_heatmap <- function(x, type) {
 
   p <- ncol(my_projected_matrix)
 
-  if (is.null(colnames(my_projected_matrix))) {
-    colnames(my_projected_matrix) <- as.character(seq_len(p))
-  }
-  if (is.null(rownames(my_projected_matrix))) {
-    rownames(my_projected_matrix) <- as.character(seq_len(p))
-  }
-
   my_rownames <- rownames(my_projected_matrix)
   my_colnames <- colnames(my_projected_matrix)
+
+  if (is.null(my_rownames) && is.null(my_colnames)) {
+    my_rownames <- my_colnames <- as.character(seq_len(p))
+  } else if (is.null(my_rownames)) {
+    my_rownames <- my_colnames
+  } else if (is.null(my_colnames)) {
+    my_colnames <- my_rownames
+  }
+
   rownames(my_projected_matrix) <- as.character(seq_len(p))
   colnames(my_projected_matrix) <- as.character(seq_len(p))
 
@@ -275,8 +277,8 @@ plot_gips_heatmap <- function(x, type) {
   ) +
     ggplot2::geom_raster() +
     ggplot2::scale_fill_viridis_c(na.value = "white") +
-    ggplot2::scale_x_continuous(breaks = seq_len(p), labels = my_rownames) +
-    ggplot2::scale_y_reverse(breaks = seq_len(p), labels = my_colnames) +
+    ggplot2::scale_x_continuous(breaks = seq_len(p), labels = my_colnames) +
+    ggplot2::scale_y_reverse(breaks = seq_len(p), labels = my_rownames) +
     ggplot2::theme_bw() +
     ggplot2::labs(
       title = paste0("Estimated covariance matrix\nprojected on permutation ", x[[1]]),
