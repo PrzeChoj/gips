@@ -1096,8 +1096,8 @@ test_that("print.summary.gips() will properly print BIC and AIC when n < n0", {
   expect_null(my_sum$likelihood_ratio_test_statistics)
   expect_null(my_sum$likelihood_ratio_test_p_value)
   
-  expect_output(print(my_sum), "BIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")
-  expect_output(print(my_sum), "AIC:\n The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.")
+  expect_output(print(my_sum), "BIC:\n The sample-size requirement is not met for this permutation,\n so the covariance MLE is unavailable.")
+  expect_output(print(my_sum), "AIC:\n The sample-size requirement is not met for this permutation,\n so the covariance MLE is unavailable.")
 })
 
 

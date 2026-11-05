@@ -77,8 +77,10 @@ the "\strong{Possible algorithms to use as optimizers}" section below.
 \itemize{
 \item the optimizer "hill_climbing" gets to the end of
 its \code{max_iter} without converging.
-\item the optimizer finds the permutation with bigger \code{n0} than
-\code{number_of_observations} (for more information on what it means,
+\item the selected permutation has \code{n0 > number_of_observations}, or
+\code{n0 > min(number_of_observations)} for multiple samples.
+The threshold \code{n0} already includes the additional observation required
+when \code{was_mean_estimated = TRUE} (for more information,
 see \strong{\eqn{C_\sigma} and \code{n0}} section
 in the \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
@@ -148,7 +150,10 @@ If \code{g} was created with \code{gips(list(S1, S2, ...), c(n1, n2, ...))},
 the same optimizers search for one permutation shared by all groups.
 The optimized criterion is the combined log-posterior, i.e. the sum of
 per-group log-posteriors. The default optimizer is still chosen from the
-common matrix size \code{p}, and warnings about MLE existence use \code{min(n_g)}.
+common matrix size \code{p}. A sample-size warning is issued when \code{min(n_g) < n0}.
+Passing this check alone does not guarantee MLE availability: every projected
+covariance matrix must also be numerically positive definite. Use
+\code{summary(g)$MLE_available} on the returned object to check both conditions.
 }
 
 \examples{

@@ -34,7 +34,7 @@ gips - Gaussian model Invariant by Permutation Symmetry
 
 ## `gips` will help you with two things:
 1. Finding hidden symmetries between the variables. `gips` can be used as an exploratory tool for searching the space of permutation symmetries of the Gaussian vector.  Useful in the Exploratory Data Analysis (EDA).
-2. Covariance estimation. The Maximum Likelihood Estimator (MLE) for the covariance matrix is known to exist if and only if the number of variables is less or equal to the number of observations. Additional knowledge of symmetries significantly weakens this requirement. Moreover, the reduction of model dimension brings the advantage in terms of precision of covariance estimation. 
+2. Covariance estimation. For an i.i.d. sample from a nondegenerate Gaussian distribution, the unrestricted covariance Maximum Likelihood Estimator (MLE) exists almost surely if and only if $n \ge p$ when the mean is known to be zero, or $n \ge p + 1$ when the mean is estimated. Here, $n$ is the number of observations and $p$ the number of variables. Symmetry constraints can lower this sample-size requirement. Moreover, the reduction of model dimension brings the advantage in terms of precision of covariance estimation.
 
 ## Installation
 
@@ -211,12 +211,15 @@ additional assumptions are justified.
 ```{r example_mean_known5}
 summary(g_map)$n0
 summary(g_map)$n0 <= number_of_observations # 1 <= 4
+summary(g_map)$MLE_available
 ```
 
 What is more, we see the number of observations
 (`r number_of_observations`) is bigger than or equal to
-$n_0 = `r summary(g_map)$n0`$, so we can estimate the covariance matrix with
-the Maximum Likelihood estimator:
+$n_0 = `r summary(g_map)$n0`$. The sample-size requirement is therefore met.
+`summary(g_map)$MLE_available` also checks that the projected covariance matrix
+is numerically positive definite. With the known zero mean assumed in this
+example, the projection gives the covariance MLE when both checks pass:
 ```{r example_mean_known6}
 S_projected <- project_matrix(S, g_map)
 S_projected

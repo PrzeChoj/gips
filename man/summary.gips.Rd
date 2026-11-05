@@ -39,9 +39,10 @@ with Covariance matrix invariant under the given permutation.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \eqn{n \ge p},
 or \eqn{n \ge p + 1} when the mean was estimated.
-\item \code{n0} - the minimum number of observations needed for
-the covariance matrix's maximum likelihood estimator
-(corresponding to a MAP) to exist. See \strong{\eqn{C\sigma} and \code{n0}}
+\item \code{n0} - the sample-size threshold: the number of permutation cycles,
+increased by one when \code{was_mean_estimated = TRUE}.
+The projection must also be numerically positive definite;
+see \code{MLE_available} below and \strong{\eqn{C_\sigma} and \code{n0}}
 section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 \item \code{S_matrix} - the underlying matrix.
@@ -86,11 +87,12 @@ with Covariance matrix invariant under \code{found_permutation}.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \eqn{n \ge p},
 or \eqn{n \ge p + 1} when the mean was estimated.
-\item \code{n0} - the minimal number of observations needed for the existence of
-the maximum likelihood estimator (corresponding to a MAP) of
-the covariance matrix (see \strong{\eqn{C\sigma} and \code{n0}}
+\item \code{n0} - the sample-size threshold: the number of permutation cycles,
+increased by one when \code{was_mean_estimated = TRUE}.
+The projection must also be numerically positive definite;
+see \code{MLE_available} below and \strong{\eqn{C_\sigma} and \code{n0}}
 section in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 \item \code{S_matrix} - the underlying matrix.
 This matrix will be used in calculations of
 the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
@@ -149,8 +151,10 @@ Prints every interesting information in a form pleasant for humans.
 
 For multi-sample \code{gips} objects the summary includes the number of groups G,
 the full vector of per-group sample sizes, and the total \code{n_parameters}
-(which equals \code{G * dim_omega(sigma)}). The n0 existence check uses
-\code{min(n_g)}. The Likelihood-Ratio test is not available for multi-sample
+(which equals \code{G * dim_omega(sigma)}). The sample-size check is
+\code{min(n_g) >= n0}, and every projected covariance matrix must be numerically
+positive definite for \code{MLE_available} to be \code{TRUE}.
+The Likelihood-Ratio test is not available for multi-sample
 objects and is reported as \code{NULL}.
 }
 

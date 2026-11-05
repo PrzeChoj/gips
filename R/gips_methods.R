@@ -191,9 +191,10 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       The p-value is calculated from the asymptotic distribution.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},
 #'       or \eqn{n \ge p + 1} when the mean was estimated.
-#'   7. `n0` - the minimum number of observations needed for
-#'       the covariance matrix's maximum likelihood estimator
-#'       (corresponding to a MAP) to exist. See **\eqn{C\sigma} and `n0`**
+#'   7. `n0` - the sample-size threshold: the number of permutation cycles,
+#'       increased by one when `was_mean_estimated = TRUE`.
+#'       The projection must also be numerically positive definite;
+#'       see `MLE_available` below and **\eqn{C_\sigma} and `n0`**
 #'       section in `vignette("Theory", package = "gips")` or in its
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'   8. `S_matrix` - the underlying matrix.
@@ -234,11 +235,12 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       The p-value is calculated from the asymptotic distribution.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},
 #'       or \eqn{n \ge p + 1} when the mean was estimated.
-#'   9. `n0` - the minimal number of observations needed for the existence of
-#'       the maximum likelihood estimator (corresponding to a MAP) of
-#'       the covariance matrix (see **\eqn{C\sigma} and `n0`**
+#'   9. `n0` - the sample-size threshold: the number of permutation cycles,
+#'       increased by one when `was_mean_estimated = TRUE`.
+#'       The projection must also be numerically positive definite;
+#'       see `MLE_available` below and **\eqn{C_\sigma} and `n0`**
 #'       section in `vignette("Theory", package = "gips")` or in its
-#'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
+#'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'   10. `S_matrix` - the underlying matrix.
 #'       This matrix will be used in calculations of
 #'       the posteriori value in [log_posteriori_of_gips()].
@@ -282,8 +284,10 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #' @section Multi-sample:
 #' For multi-sample `gips` objects the summary includes the number of groups G,
 #' the full vector of per-group sample sizes, and the total `n_parameters`
-#' (which equals `G * dim_omega(sigma)`). The n0 existence check uses
-#' `min(n_g)`. The Likelihood-Ratio test is not available for multi-sample
+#' (which equals `G * dim_omega(sigma)`). The sample-size check is
+#' `min(n_g) >= n0`, and every projected covariance matrix must be numerically
+#' positive definite for `MLE_available` to be `TRUE`.
+#' The Likelihood-Ratio test is not available for multi-sample
 #' objects and is reported as `NULL`.
 #'
 #' @importFrom stats pchisq
@@ -602,10 +606,10 @@ print.summary.gips <- function(x, ...) {
     "\n\nThe number of free parameters in the covariance matrix:\n ", x[["n_parameters"]],
     if (isTRUE(x[["is_multi_sample"]])) paste0(" (", x[["n_parameters"]] / x[["G"]], " per group x ", x[["G"]], " groups)") else "",
     "\n\nBIC:\n ", ifelse(!enough_observations,
-      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["BIC"]]
+      "The sample-size requirement is not met for this permutation,\n so the covariance MLE is unavailable.", x[["BIC"]]
     ),
     "\n\nAIC:\n ", ifelse(!enough_observations,
-      "The number of observations is smaller than n0 for this permutation,\n so the gips model based on the found permutation does not exist.", x[["AIC"]]
+      "The sample-size requirement is not met for this permutation,\n so the covariance MLE is unavailable.", x[["AIC"]]
     ),
     sep = ""
   )
