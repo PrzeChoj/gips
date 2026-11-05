@@ -38,6 +38,8 @@
 #'     `type %in% c("all", "best", "both", "n0")` and ignored for heatmap types.
 #' @param logarithmic_y,logarithmic_x A boolean.
 #'     Sets the axis of the plot in logarithmic scale.
+#'     By default, `logarithmic_y` is `FALSE` for `type = "n0"` and `TRUE`
+#'     for posterior trajectories; `logarithmic_x` defaults to `FALSE`.
 #'     Only used for `type %in% c("all", "best", "both", "n0")`.
 #' @param color Vector of colors to be used to plot lines.
 #'     Only used for `type %in% c("all", "best", "both", "n0")`.
@@ -99,7 +101,7 @@
 #' g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
 #' plot(g_map_MH, type = "n0", logarithmic_y = FALSE)
 plot.gips <- function(x, type = NA,
-                      logarithmic_y = TRUE, logarithmic_x = FALSE,
+                      logarithmic_y = (type != "n0"), logarithmic_x = FALSE,
                       color = NULL,
                       title_text = "Convergence plot",
                       xlabel = NULL, ylabel = NULL,
@@ -533,7 +535,9 @@ plot_gips_n0 <- function(x,
   num_of_steps <- length(y_values)
 
   if (is.null(xlim)) xlim <- c(1, num_of_steps)
-  if (is.null(ylim)) ylim <- c(1, max(y_values))
+  if (is.null(ylim)) {
+    ylim <- c(if (logarithmic_y) 0 else 1, max(y_values))
+  }
 
   n0_label <- "all perms n0"
 

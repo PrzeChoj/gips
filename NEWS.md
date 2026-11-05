@@ -9,6 +9,7 @@
   HC followed by MH; BF retains the full posterior (#120).
 * `S` and `D_matrix` must now be exactly symmetric; approximate symmetry is no longer accepted.
 * `p <= 1` is rejected.
+* `plot(type = "n0")` now uses a linear y-axis by default.
 
 ### Bugfixes:
 
@@ -32,6 +33,9 @@
 * Fixed `get_structure_constants()` for permutations with gigantic order (above 3e17).
   Benchmarks also showed approximately 4–11% shorter mean Brute Force search
   times for `p = 5–8`, with unchanged results (#122).
+* Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2`
+  due to an incorrect lower axis limit.
+
 
 # gips 1.3.0
 

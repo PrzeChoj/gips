@@ -1,5 +1,44 @@
 # Tests for internal plot helpers and plot.gips() convergence output
 
+test_that("default y scale follows the resolved plot type", {
+  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
+    skip_if_not_installed(package)
+  }
+  g <- gips(diag(3), 10, was_mean_estimated = FALSE)
+  # A fixed history isolates plotting from the stochastic optimizer.
+  attr(g, "optimization_info") <- list(
+    optimization_algorithm_used = "Metropolis_Hastings",
+    all_n0 = c(3, 1, 2),
+    log_posteriori_values = c(-3, -2, -4)
+  )
+
+  linear_n0 <- plot(g, type = "n0")
+  expect_equal(linear_n0$data$value, c(3, 1, 2))
+  expect_equal(linear_n0$labels$y, "n0")
+  expect_equal(linear_n0$coordinates$limits$y, c(1, 3))
+
+  log_n0 <- plot(g, type = "n0", logarithmic_y = TRUE)
+  expect_equal(log_n0$data$value, log(c(3, 1, 2)))
+  expect_equal(log_n0$labels$y, "log n0")
+  expect_equal(log_n0$coordinates$limits$y, c(0, log(3)))
+
+  for (type in c("all", "best", "both")) {
+    expect_equal(
+      plot(g, type = type)$data,
+      plot(g, type = type, logarithmic_y = TRUE)$data
+    )
+  }
+  expect_equal(
+    plot(g, type = "all", logarithmic_y = FALSE)$data$value,
+    exp(c(-3, -2, -4))
+  )
+  expected <- plot(g, type = "both", logarithmic_y = TRUE)
+  expect_message(automatic <- plot(g), "type = 'both'", fixed = TRUE)
+  expect_message(explicit_na <- plot(g, type = NA), "type = 'both'", fixed = TRUE)
+  expect_equal(automatic$data, expected$data)
+  expect_equal(explicit_na$data, expected$data)
+})
+
 
 # ── deduplicate_step_runs() ───────────────────────────────────────────────────
 
