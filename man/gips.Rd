@@ -32,7 +32,11 @@ validate_gips(g)
 single-sample use of \code{gips()}. For the optional multi-sample interface,
 \code{S} can also be a list of covariance matrices; see the
 \strong{Multi-sample} section below.
-When \code{Z} is the observed data:
+Row and column names are optional. If both are supplied, they should
+identify the same variables in the same order.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{When `Z` is the observed data:
+}\if{html}{\out{</div>}}
 \itemize{
 \item if one does not know the theoretical mean and has to
 estimate it with the observed mean, use \code{S = cov(Z)},

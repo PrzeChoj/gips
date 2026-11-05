@@ -10,6 +10,9 @@
 #'     single-sample use of `gips()`. For the optional multi-sample interface,
 #'     `S` can also be a list of covariance matrices; see the
 #'     **Multi-sample** section below.
+#'     Row and column names are optional. If both are supplied, they should
+#'     identify the same variables in the same order.
+#'
 #'     When `Z` is the observed data:
 #' * if one does not know the theoretical mean and has to
 #'     estimate it with the observed mean, use `S = cov(Z)`,

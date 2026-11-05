@@ -29,6 +29,8 @@
 Estimator of the covariance matrix given the permutation.
 That is, the \code{S} matrix inside the \code{gips} object
 projected on the permutation in the \code{gips} object.
+For single-sample objects, if only rows or only columns are named,
+those names are used to label both axes.
 For multi-sample objects, produces faceted heatmaps (one panel per group).
 \item \code{"best"} - Shows the maximum A Posteriori value found over time.
 \item \code{"all"} - Shows the A Posteriori values for all visited states.
