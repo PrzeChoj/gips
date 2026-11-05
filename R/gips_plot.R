@@ -163,7 +163,12 @@ plot.gips <- function(x, type = NA,
   }
 
   # Check for required plotting packages
-  rlang::check_installed(c("ggplot2", "dplyr", "tidyr", "tibble"),
+  required_packages <- "ggplot2"
+  if (type %in% c("heatmap", "block_heatmap")) {
+    required_packages <- c(required_packages, "dplyr", "tidyr", "tibble")
+  }
+
+  rlang::check_installed(required_packages,
     reason = "to use `plot.gips()`"
   )
 
