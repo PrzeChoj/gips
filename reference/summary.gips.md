@@ -59,9 +59,10 @@ statistics of the given `gips` object. Those are:
       requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
       estimated.
 
-  7.  `n0` - the minimum number of observations needed for the
-      covariance matrix's maximum likelihood estimator (corresponding to
-      a MAP) to exist. See **\\C\sigma\\ and `n0`** section in
+  7.  `n0` - the sample-size threshold: the number of permutation
+      cycles, increased by one when `was_mean_estimated = TRUE`. The
+      projection must also be numerically positive definite; see
+      `MLE_available` below and **\\C\_\sigma\\ and `n0`** section in
       [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
       or in its [pkgdown
       page](https://przechoj.github.io/gips/articles/Theory.html).
@@ -132,12 +133,13 @@ statistics of the given `gips` object. Those are:
       requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
       estimated.
 
-  9.  `n0` - the minimal number of observations needed for the existence
-      of the maximum likelihood estimator (corresponding to a MAP) of
-      the covariance matrix (see **\\C\sigma\\ and `n0`** section in
+  9.  `n0` - the sample-size threshold: the number of permutation
+      cycles, increased by one when `was_mean_estimated = TRUE`. The
+      projection must also be numerically positive definite; see
+      `MLE_available` below and **\\C\_\sigma\\ and `n0`** section in
       [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
       or in its [pkgdown
-      page](https://przechoj.github.io/gips/articles/Theory.html)).
+      page](https://przechoj.github.io/gips/articles/Theory.html).
 
   10. `S_matrix` - the underlying matrix. This matrix will be used in
       calculations of the posteriori value in
@@ -213,9 +215,11 @@ The function `print.summary.gips()` returns an invisible `NULL`.
 
 For multi-sample `gips` objects the summary includes the number of
 groups G, the full vector of per-group sample sizes, and the total
-`n_parameters` (which equals `G * dim_omega(sigma)`). The n0 existence
-check uses `min(n_g)`. The Likelihood-Ratio test is not available for
-multi-sample objects and is reported as `NULL`.
+`n_parameters` (which equals `G * dim_omega(sigma)`). The sample-size
+check is `min(n_g) >= n0`, and every projected covariance matrix must be
+numerically positive definite for `MLE_available` to be `TRUE`. The
+Likelihood-Ratio test is not available for multi-sample objects and is
+reported as `NULL`.
 
 ## See also
 
@@ -399,7 +403,7 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.004765987 secs
+#> Time difference of 0.0046103 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -458,7 +462,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.03332686 secs
+#>  0.03008938 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  18

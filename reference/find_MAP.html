@@ -127,8 +127,10 @@ call <code><a href="get_probabilities_from_gips.html">get_probabilities_from_gip
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>find_MAP()</code> can produce a warning when:</p><ul><li><p>the optimizer "hill_climbing" gets to the end of
 its <code>max_iter</code> without converging.</p></li>
-<li><p>the optimizer will find the permutation with smaller <code>n0</code> than
-<code>number_of_observations</code> (for more information on what it means,
+<li><p>the selected permutation has <code>n0 &gt; number_of_observations</code>, or
+<code>n0 &gt; min(number_of_observations)</code> for multiple samples.
+The threshold <code>n0</code> already includes the additional observation required
+when <code>was_mean_estimated = TRUE</code> (for more information,
 see <strong>\(C_\sigma\) and <code>n0</code></strong> section
 in the <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p></li>
@@ -196,7 +198,10 @@ retains the starting state of the new stage.</p>
 the same optimizers search for one permutation shared by all groups.
 The optimized criterion is the combined log-posterior, i.e. the sum of
 per-group log-posteriors. The default optimizer is still chosen from the
-common matrix size <code>p</code>, and warnings about MLE existence use <code>min(n_g)</code>.</p>
+common matrix size <code>p</code>. A sample-size warning is issued when <code>min(n_g) &lt; n0</code>.
+Passing this check alone does not guarantee MLE availability: every projected
+covariance matrix must also be numerically positive definite. Use
+<code>summary(g)$MLE_available</code> on the returned object to check both conditions.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -315,7 +320,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04595494 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03636742 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -17,7 +17,7 @@ covariance matrix.
   : Find the Maximum A Posteriori Estimation
 
 - [`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
-  : Project matrix after optimization
+  : Project matrix onto a permutation-invariant space
 
 ## Diagnostics
 

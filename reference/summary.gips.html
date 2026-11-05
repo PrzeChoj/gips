@@ -87,9 +87,10 @@ with Covariance matrix invariant under the given permutation.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \(n \ge p\),
 or \(n \ge p + 1\) when the mean was estimated.</p></li>
-<li><p><code>n0</code> - the minimum number of observations needed for
-the covariance matrix's maximum likelihood estimator
-(corresponding to a MAP) to exist. See <strong>\(C\sigma\) and <code>n0</code></strong>
+<li><p><code>n0</code> - the sample-size threshold: the number of permutation cycles,
+increased by one when <code>was_mean_estimated = TRUE</code>.
+The projection must also be numerically positive definite;
+see <code>MLE_available</code> below and <strong>\(C_\sigma\) and <code>n0</code></strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
@@ -130,11 +131,12 @@ with Covariance matrix invariant under <code>found_permutation</code>.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \(n \ge p\),
 or \(n \ge p + 1\) when the mean was estimated.</p></li>
-<li><p><code>n0</code> - the minimal number of observations needed for the existence of
-the maximum likelihood estimator (corresponding to a MAP) of
-the covariance matrix (see <strong>\(C\sigma\) and <code>n0</code></strong>
+<li><p><code>n0</code> - the sample-size threshold: the number of permutation cycles,
+increased by one when <code>was_mean_estimated = TRUE</code>.
+The projection must also be numerically positive definite;
+see <code>MLE_available</code> below and <strong>\(C_\sigma\) and <code>n0</code></strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
-<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p></li>
+<a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
 This matrix will be used in calculations of
 the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
@@ -187,8 +189,10 @@ Prints every interesting information in a form pleasant for humans.</p></li>
 
 <p>For multi-sample <code>gips</code> objects the summary includes the number of groups G,
 the full vector of per-group sample sizes, and the total <code>n_parameters</code>
-(which equals <code>G * dim_omega(sigma)</code>). The n0 existence check uses
-<code>min(n_g)</code>. The Likelihood-Ratio test is not available for multi-sample
+(which equals <code>G * dim_omega(sigma)</code>). The sample-size check is
+<code>min(n_g) &gt;= n0</code>, and every projected covariance matrix must be numerically
+positive definite for <code>MLE_available</code> to be <code>TRUE</code>.
+The Likelihood-Ratio test is not available for multi-sample
 objects and is reported as <code>NULL</code>.</p>
     </div>
     <div class="section level2">
@@ -370,7 +374,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.004765987 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.0046103 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
@@ -429,7 +433,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03332686 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03008938 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  18</span>

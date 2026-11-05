@@ -94,9 +94,11 @@ An optimized object of a `gips` class.
 - the optimizer "hill_climbing" gets to the end of its `max_iter`
   without converging.
 
-- the optimizer will find the permutation with smaller `n0` than
-  `number_of_observations` (for more information on what it means, see
-  **\\C\_\sigma\\ and `n0`** section in the
+- the selected permutation has `n0 > number_of_observations`, or
+  `n0 > min(number_of_observations)` for multiple samples. The threshold
+  `n0` already includes the additional observation required when
+  `was_mean_estimated = TRUE` (for more information, see **\\C\_\sigma\\
+  and `n0`** section in the
   [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
   or in its [pkgdown
   page](https://przechoj.github.io/gips/articles/Theory.html)).
@@ -163,7 +165,11 @@ If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`, the
 same optimizers search for one permutation shared by all groups. The
 optimized criterion is the combined log-posterior, i.e. the sum of
 per-group log-posteriors. The default optimizer is still chosen from the
-common matrix size `p`, and warnings about MLE existence use `min(n_g)`.
+common matrix size `p`. A sample-size warning is issued when
+`min(n_g) < n0`. Passing this check alone does not guarantee MLE
+availability: every projected covariance matrix must also be numerically
+positive definite. Use `summary(g)$MLE_available` on the returned object
+to check both conditions.
 
 ## References
 
@@ -295,5 +301,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04595494 secs
+#>  0.03636742 secs
 ```

@@ -14,12 +14,15 @@ observations.
     as an exploratory tool for searching the space of permutation
     symmetries of the Gaussian vector. Useful in the Exploratory Data
     Analysis (EDA).
-2.  Covariance estimation. The Maximum Likelihood Estimator (MLE) for
-    the covariance matrix is known to exist if and only if the number of
-    variables is less or equal to the number of observations. Additional
-    knowledge of symmetries significantly weakens this requirement.
-    Moreover, the reduction of model dimension brings the advantage in
-    terms of precision of covariance estimation.
+2.  Covariance estimation. For an i.i.d. sample from a nondegenerate
+    Gaussian distribution, the unrestricted covariance Maximum
+    Likelihood Estimator (MLE) exists almost surely if and only if
+    $`n \ge p`$ when the mean is known to be zero, or $`n \ge p + 1`$
+    when the mean is estimated. Here, $`n`$ is the number of
+    observations and $`p`$ the number of variables. Symmetry constraints
+    can lower this sample-size requirement. Moreover, the reduction of
+    model dimension brings the advantage in terms of precision of
+    covariance estimation.
 
 ## Installation
 
@@ -226,11 +229,16 @@ summary(g_map)$n0
 #> [1] 1
 summary(g_map)$n0 <= number_of_observations # 1 <= 4
 #> [1] TRUE
+summary(g_map)$MLE_available
+#> [1] TRUE
 ```
 
 What is more, we see the number of observations (4) is bigger than or
-equal to $`n_0 = 1`$, so we can estimate the covariance matrix with the
-Maximum Likelihood estimator:
+equal to $`n_0 = 1`$. The sample-size requirement is therefore met.
+`summary(g_map)$MLE_available` also checks that the projected covariance
+matrix is numerically positive definite. With the known zero mean
+assumed in this example, the projection gives the covariance MLE when
+both checks pass:
 
 ``` r
 
