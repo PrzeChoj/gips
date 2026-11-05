@@ -743,6 +743,19 @@ test_that("print.gips() works", {
   )
 })
 
+test_that("print.gips() omits empty details when comparison is disabled", {
+  g <- gips(diag(5), 13)
+
+  expect_identical(
+    capture.output(print(g, compare_to_original = FALSE)),
+    "The permutation ()."
+  )
+  expect_identical(
+    capture.output(print(g, compare_to_original = FALSE, oneline = TRUE)),
+    "The permutation ()."
+  )
+})
+
 test_that("plot.gips() works or abords for wrong arguments", {
   skip_if_not_installed("ggplot2")
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)

@@ -111,17 +111,15 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     )
   }
 
-  # The first line will end with ":", all following lines will end with ";".
-  cat(
-    paste0(c(
-      printing_text[1],
-      paste0(printing_text[-1],
-        collapse = ifelse(oneline, "; ", ";\n - ")
-      )
-    ), collapse = ifelse(oneline, ": ", ":\n - ")),
-    ".\n",
-    sep = "", ...
-  )
+  # If there are details, the first line will end with ":", all following lines will end with ";".
+  output <- printing_text[1]
+  if (length(printing_text) > 1) {
+    output <- paste0(
+      output, ifelse(oneline, ": ", ":\n - "),
+      paste0(printing_text[-1], collapse = ifelse(oneline, "; ", ";\n - "))
+    )
+  }
+  cat(output, ".\n", sep = "", ...)
 
   invisible(NULL)
 }

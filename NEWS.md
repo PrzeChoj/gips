@@ -35,6 +35,7 @@
   times for `p = 5–8`, with unchanged results (#122).
 * Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2`
   due to an incorrect lower axis limit.
+* Fixed an empty bullet in `print()` when no details are displayed.
 
 
 # gips 1.3.0
