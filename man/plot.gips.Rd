@@ -7,7 +7,7 @@
 \method{plot}{gips}(
   x,
   type = NA,
-  logarithmic_y = TRUE,
+  logarithmic_y = (type != "n0"),
   logarithmic_x = FALSE,
   color = NULL,
   title_text = "Convergence plot",
@@ -58,6 +58,8 @@ Arguments \code{logarithmic_y}, \code{logarithmic_x}, \code{color}, \code{title_
 
 \item{logarithmic_y, logarithmic_x}{A boolean.
 Sets the axis of the plot in logarithmic scale.
+By default, \code{logarithmic_y} is \code{FALSE} for \code{type = "n0"} and \code{TRUE}
+for posterior trajectories; \code{logarithmic_x} defaults to \code{FALSE}.
 Only used for \code{type \%in\% c("all", "best", "both", "n0")}.}
 
 \item{color}{Vector of colors to be used to plot lines.
