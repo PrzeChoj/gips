@@ -67,7 +67,7 @@
 #'   * `"BF"` (the default for unoptimized `g` with `perm size <= 10`) - Brute Force;
 #'   * `"MH"` (the default for unoptimized `g` with `perm size > 10`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
-#'   * `"continue"` (the default for optimized `g`) - The same as
+#'   * `"continue"` (the default for `g` optimized with MH or HC) - The same as
 #'       the `g` was optimized by (see Examples).
 #'
 #' See the **Possible algorithms to use as optimizers**
@@ -90,11 +90,16 @@
 #' Each group contributes one weight, regardless of visit counts or the
 #'     number of its generators encountered. MH continuation includes earlier
 #'     MH and HC visits; keep `save_all_perms = TRUE` in every stage.
-#'     Standalone HC does not support this option. Histories mixing BF with
-#'     other optimizers do not retain a probability vector.
+#'     Standalone HC does not support this option.
 #'
 #' To examine probabilities after optimization,
 #'     call [get_probabilities_from_gips()].
+#'
+#' @section Repeated optimization:
+#' MH and HC results can be optimized further, including with BF.
+#' If the last optimization used BF, any further call to `find_MAP()` is
+#' rejected, including after [forget_perms()], because the whole permutation
+#' space has already been searched.
 #'
 #' @section Multi-sample:
 #' If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`,
@@ -298,6 +303,16 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
 
 
 validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return_probabilities) {
+  all_used_optimizers <- attr(g, "optimization_info")[["optimization_algorithm_used"]]
+  if (length(all_used_optimizers) > 0L &&
+    all_used_optimizers[length(all_used_optimizers)] == "brute_force") {
+    rlang::abort(c(
+      "The provided `gips` object was already optimized with brute_force.",
+      "i" = "Brute Force has already searched the whole permutation space.",
+      "i" = "To run a new search, use the original, unoptimized `gips` object."
+    ))
+  }
+
   possible_optimizers <- c(
     "MH", "Metropolis_Hastings", "HC", "hill_climbing",
     "BF", "brute_force", "full", "continue"
@@ -383,14 +398,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
       ))
     }
 
-    all_used_optimizers <- attr(g, "optimization_info")[["optimization_algorithm_used"]]
     optimizer <- all_used_optimizers[length(all_used_optimizers)] # this is the last used optimizer
-    if (optimizer %in% c("BF", "brute_force", "full")) {
-      rlang::abort(c("There was a problem identified with the provided arguments:",
-        "i" = "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`, because the whole space was already browsed.",
-        "x" = "You provided `optimizer == 'continue'`, but the gips object `g` was optimized with brute_force optimizer. Better permutation will not be found."
-      ))
-    }
   }
 
   if (!(optimizer %in% c("MH", "Metropolis_Hastings", "BF", "brute_force", "full")) && return_probabilities) {

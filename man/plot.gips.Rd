@@ -96,7 +96,6 @@ or the convergence of the optimization method.
 The plot depends on the \code{type} argument.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ggplot2") && rlang::is_installed("MASS")) withAutoprint(\{ # examplesIf}
 require("MASS") # for mvrnorm()
 
 perm_size <- 6
@@ -128,7 +127,6 @@ plot(g_map, type = "MLE")
 
 g_map_MH <- find_MAP(g, max_iter = 30, show_progress_bar = FALSE, optimizer = "MH")
 plot(g_map_MH, type = "n0", logarithmic_y = FALSE)
-\dontshow{\}) # examplesIf}
 }
 \seealso{
 \itemize{

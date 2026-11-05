@@ -26,7 +26,7 @@ for \code{optimizer = "HC"}, it can be infinite.}
 \item \code{"BF"} (the default for unoptimized \code{g} with \verb{perm size <= 10}) - Brute Force;
 \item \code{"MH"} (the default for unoptimized \code{g} with \verb{perm size > 10}) - Metropolis-Hastings;
 \item \code{"HC"} - Hill Climbing;
-\item \code{"continue"} (the default for optimized \code{g}) - The same as
+\item \code{"continue"} (the default for \code{g} optimized with MH or HC) - The same as
 the \code{g} was optimized by (see Examples).
 }
 
@@ -57,8 +57,7 @@ visited cyclic groups, giving probabilities conditional on that set;
 Each group contributes one weight, regardless of visit counts or the
 number of its generators encountered. MH continuation includes earlier
 MH and HC visits; keep \code{save_all_perms = TRUE} in every stage.
-Standalone HC does not support this option. Histories mixing BF with
-other optimizers do not retain a probability vector.
+Standalone HC does not support this option.
 
 To examine probabilities after optimization,
 call \code{\link[=get_probabilities_from_gips]{get_probabilities_from_gips()}}.}
@@ -129,6 +128,14 @@ in every iteration. For bigger \code{p}, this may be costly.
 }
 }
 
+\section{Repeated optimization}{
+
+MH and HC results can be optimized further, including with BF.
+If the last optimization used BF, any further call to \code{find_MAP()} is
+rejected, including after \code{\link[=forget_perms]{forget_perms()}}, because the whole permutation
+space has already been searched.
+}
+
 \section{Multi-sample}{
 
 If \code{g} was created with \code{gips(list(S1, S2, ...), c(n1, n2, ...))},
@@ -139,7 +146,6 @@ common matrix size \code{p}, and warnings about MLE existence use \code{min(n_g)
 }
 
 \examples{
-\dontshow{if (rlang::is_installed("ggplot2") && rlang::is_installed("MASS")) withAutoprint(\{ # examplesIf}
 require("MASS") # for mvrnorm()
 
 perm_size <- 5
@@ -168,7 +174,6 @@ plot(g_map2, type = "both", logarithmic_x = TRUE)
 
 g_map_BF <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 summary(g_map_BF)
-\dontshow{\}) # examplesIf}
 }
 \references{
 Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.

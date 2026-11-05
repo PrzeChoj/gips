@@ -43,7 +43,7 @@ test_that("Handle improper parameters", {
   g_BF <- find_MAP(g_small, optimizer = "brute_force", show_progress_bar = FALSE)
   expect_error(
     find_MAP(g_BF, max_iter = 10, optimizer = "continue"),
-    "`optimizer == 'continue'` cannot be provided after optimizating with `optimizer == 'brute_force'`"
+    "optimized.*brute_force"
   )
 
   matrix_big_space <- matrix(runif(35 * 35), nrow = 35)
@@ -54,6 +54,114 @@ test_that("Handle improper parameters", {
     find_MAP(g_big, optimizer = "brute_force", show_progress_bar = FALSE),
     "Optimizer 'brute_force' cannot browse such a big permutational space."
   )
+})
+
+bf_final_inputs <- function() {
+  S <- diag(c(1, 2))
+  list(
+    gips(S, 8, was_mean_estimated = FALSE),
+    gips(list(S, 2 * S), c(8, 10), was_mean_estimated = FALSE)
+  )
+}
+
+test_that("find_MAP() rejects every optimizer when the last optimization was BF", {
+  optimizers <- c(
+    "MH", "Metropolis_Hastings", "HC", "hill_climbing",
+    "BF", "brute_force", "full", "continue", NA_character_
+  )
+
+  for (g in bf_final_inputs()) {
+    g_bf <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
+    expect_identical(
+      tail(attr(g_bf, "optimization_info")[["optimization_algorithm_used"]], 1L),
+      "brute_force"
+    )
+
+    withr::with_seed(1, {
+      for (optimizer in optimizers) {
+        expect_error(suppressMessages(find_MAP(g_bf,
+          optimizer = optimizer, max_iter = 3, show_progress_bar = FALSE
+        )), "optimized.*brute_force")
+      }
+    })
+  }
+})
+
+test_that("completed BF is reported before a missing max_iter", {
+  for (g in bf_final_inputs()) {
+    g_bf <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
+
+    # The max_iter error also mentions brute_force; match the reason for rejection.
+    expect_error(suppressMessages(find_MAP(g_bf)), "optimized.*brute_force")
+    for (optimizer in c("MH", "HC", "continue")) {
+      expect_error(find_MAP(g_bf,
+        optimizer = optimizer, show_progress_bar = FALSE
+      ), "optimized.*brute_force")
+    }
+  }
+})
+
+test_that("forget_perms() does not allow further optimization after BF", {
+  for (g in bf_final_inputs()) {
+    g_bf <- find_MAP(g, optimizer = "BF", save_all_perms = TRUE,
+      show_progress_bar = FALSE
+    )
+    forgotten <- forget_perms(g_bf)
+    expect_true(all(is.na(attr(forgotten, "optimization_info")[["visited_perms"]])))
+    expect_identical(
+      tail(attr(forgotten, "optimization_info")[["optimization_algorithm_used"]], 1L),
+      "brute_force"
+    )
+
+    withr::with_seed(1, {
+      expect_error(suppressMessages(find_MAP(forgotten,
+        optimizer = "MH", max_iter = 3, show_progress_bar = FALSE
+      )), "optimized.*brute_force")
+    })
+  }
+})
+
+test_that("missing probabilities do not allow another BF on its result", {
+  for (g in bf_final_inputs()) {
+    g_bf <- find_MAP(g, optimizer = "BF", show_progress_bar = FALSE)
+    expect_null(attr(g_bf, "optimization_info")[["post_probabilities"]])
+
+    expect_error(find_MAP(g_bf, optimizer = "BF", save_all_perms = TRUE,
+      return_probabilities = TRUE, show_progress_bar = FALSE
+    ), "optimized.*brute_force")
+
+    # The original, unoptimized input can still be used to request probabilities.
+    expect_no_error(g_bf_with_probabilities <- find_MAP(g,
+      optimizer = "BF", save_all_perms = TRUE,
+      return_probabilities = TRUE, show_progress_bar = FALSE
+    ))
+    probabilities <- get_probabilities_from_gips(g_bf_with_probabilities)
+    expect_type(probabilities, "double")
+    expect_equal(sum(probabilities), 1)
+  }
+})
+
+test_that("MH and HC results can be optimized with BF as their final stage", {
+  for (g in bf_final_inputs()) {
+    for (optimizer in c("MH", "HC")) {
+      g_iterative <- withr::with_seed(1, suppressMessages(find_MAP(g,
+        optimizer = optimizer, max_iter = 3, show_progress_bar = FALSE
+      )))
+      expect_no_error(g_bf <- find_MAP(g_iterative,
+        optimizer = "BF", show_progress_bar = FALSE
+      ))
+      expect_identical(
+        tail(attr(g_bf, "optimization_info")[["optimization_algorithm_used"]], 1L),
+        "brute_force"
+      )
+
+      withr::with_seed(1, {
+        expect_error(suppressMessages(find_MAP(g_bf,
+          optimizer = "MH", max_iter = 3, show_progress_bar = FALSE
+        )), "optimized.*brute_force")
+      })
+    }
+  }
 })
 
 test_that("Handle proper parameters", {
