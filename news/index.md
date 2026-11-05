@@ -14,6 +14,7 @@
 - `S` and `D_matrix` must now be exactly symmetric; approximate symmetry
   is no longer accepted.
 - `p <= 1` is rejected.
+- `plot(type = "n0")` now uses a linear y-axis by default.
 
 #### Bugfixes:
 
@@ -54,6 +55,8 @@
   showed approximately 4–11% shorter mean Brute Force search times for
   `p = 5–8`, with unchanged results
   ([\#122](https://github.com/PrzeChoj/gips/issues/122)).
+- Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2` due to
+  an incorrect lower axis limit.
 
 ## gips 1.3.0
 
