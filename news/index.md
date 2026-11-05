@@ -15,6 +15,9 @@
   is no longer accepted.
 - `p <= 1` is rejected.
 - `plot(type = "n0")` now uses a linear y-axis by default.
+- [`gips()`](https://przechoj.github.io/gips/reference/gips.md) now
+  warns when row and column names differ within a supplied covariance
+  matrix, including matrices in multi-sample input.
 
 #### Bugfixes:
 
@@ -60,6 +63,8 @@
 - Fixed an empty bullet in
   [`print()`](https://rdrr.io/r/base/print.html) when no details are
   displayed.
+- Fixed swapped row and column labels in single-sample heatmaps. When
+  only one axis has names, those names are now used to label both axes.
 
 ## gips 1.3.0
 

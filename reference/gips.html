@@ -87,7 +87,9 @@ the <code><a href="find_MAP.html">find_MAP()</a></code> function to do it. See t
 single-sample use of <code>gips()</code>. For the optional multi-sample interface,
 <code>S</code> can also be a list of covariance matrices; see the
 <strong>Multi-sample</strong> section below.
-When <code>Z</code> is the observed data:</p><ul><li><p>if one does not know the theoretical mean and has to
+Row and column names are optional. If both are supplied, they should
+identify the same variables in the same order.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>When <span class="st">`</span><span class="at">Z</span><span class="st">`</span> is the observed data<span class="sc">:</span></span></code></pre><p></p></div><ul><li><p>if one does not know the theoretical mean and has to
 estimate it with the observed mean, use <code>S = cov(Z)</code>,
 and leave parameter <code>was_mean_estimated = TRUE</code> as default;</p></li>
 <li><p>if one knows the theoretical mean is 0, use
@@ -321,7 +323,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04245019 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03269958 secs</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gips-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

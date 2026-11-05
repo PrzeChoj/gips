@@ -38,8 +38,10 @@ plot(
   - `"heatmap"`, `"MLE"` - Plots a heatmap of the Maximum Likelihood
     Estimator of the covariance matrix given the permutation. That is,
     the `S` matrix inside the `gips` object projected on the permutation
-    in the `gips` object. For multi-sample objects, produces faceted
-    heatmaps (one panel per group).
+    in the `gips` object. For single-sample objects, if only rows or
+    only columns are named, those names are used to label both axes. For
+    multi-sample objects, produces faceted heatmaps (one panel per
+    group).
 
   - `"best"` - Shows the maximum A Posteriori value found over time.
 
