@@ -403,7 +403,7 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.0046103 secs
+#> Time difference of 0.004626274 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -462,7 +462,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.03008938 secs
+#>  0.03301239 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  18

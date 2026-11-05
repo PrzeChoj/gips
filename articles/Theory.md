@@ -462,9 +462,10 @@ are defined based on log-Likelihood:
 ```
 where $`S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top`$.
 
-The MLE of $`\Sigma`$ in a model invariant under $`\Gamma=c`$ is
-$`\hat{\Sigma} = \pi_{c}(S)`$. Further, for every $`c`$ we have
-$`\mathrm{tr}(\pi_{c}(S)^{-1} \cdot S) = p`$, so:
+If $`\pi_c(S)`$ is positive definite, the MLE of $`\Sigma`$ in a model
+invariant under $`\Gamma=c`$ is $`\hat{\Sigma} = \pi_c(S)`$. For every
+such $`c`$, the inverse exists and
+$`\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p`$, so:
 
 ``` math
 \log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2
