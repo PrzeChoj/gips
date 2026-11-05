@@ -43,8 +43,8 @@ find_MAP(
 
   - `"HC"` - Hill Climbing;
 
-  - `"continue"` (the default for optimized `g`) - The same as the `g`
-    was optimized by (see Examples).
+  - `"continue"` (the default for `g` optimized with MH or HC) - The
+    same as the `g` was optimized by (see Examples).
 
   See the **Possible algorithms to use as optimizers** section below for
   more details.
@@ -78,8 +78,7 @@ find_MAP(
   Each group contributes one weight, regardless of visit counts or the
   number of its generators encountered. MH continuation includes earlier
   MH and HC visits; keep `save_all_perms = TRUE` in every stage.
-  Standalone HC does not support this option. Histories mixing BF with
-  other optimizers do not retain a probability vector.
+  Standalone HC does not support this option.
 
   To examine probabilities after optimization, call
   [`get_probabilities_from_gips()`](https://przechoj.github.io/gips/reference/get_probabilities_from_gips.md).
@@ -143,6 +142,14 @@ For every algorithm, there are some aliases available.
   `find_MAP()` with `optimizer = "continue"`; see examples. Remember
   that `p*(p-1)/2` transpositions will be checked in every iteration.
   For bigger `p`, this may be costly.
+
+## Repeated optimization
+
+MH and HC results can be optimized further, including with BF. If the
+last optimization used BF, any further call to `find_MAP()` is rejected,
+including after
+[`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md),
+because the whole permutation space has already been searched.
 
 ## Multi-sample
 
@@ -282,5 +289,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.02945995 secs
+#>  0.01915312 secs
 ```

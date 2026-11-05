@@ -85,7 +85,7 @@ for <code>optimizer = "HC"</code>, it can be infinite.</p></dd>
 <dd><p>The optimizer for the search of the maximum posteriori:</p><ul><li><p><code>"BF"</code> (the default for unoptimized <code>g</code> with <code>perm size &lt;= 10</code>) - Brute Force;</p></li>
 <li><p><code>"MH"</code> (the default for unoptimized <code>g</code> with <code>perm size &gt; 10</code>) - Metropolis-Hastings;</p></li>
 <li><p><code>"HC"</code> - Hill Climbing;</p></li>
-<li><p><code>"continue"</code> (the default for optimized <code>g</code>) - The same as
+<li><p><code>"continue"</code> (the default for <code>g</code> optimized with MH or HC) - The same as
 the <code>g</code> was optimized by (see Examples).</p></li>
 </ul><p>See the <strong>Possible algorithms to use as optimizers</strong>
 section below for more details.</p></dd>
@@ -114,8 +114,7 @@ visited cyclic groups, giving probabilities conditional on that set;</p></li>
 </ul><p>Each group contributes one weight, regardless of visit counts or the
 number of its generators encountered. MH continuation includes earlier
 MH and HC visits; keep <code>save_all_perms = TRUE</code> in every stage.
-Standalone HC does not support this option. Histories mixing BF with
-other optimizers do not retain a probability vector.</p>
+Standalone HC does not support this option.</p>
 <p>To examine probabilities after optimization,
 call <code><a href="get_probabilities_from_gips.html">get_probabilities_from_gips()</a></code>.</p></dd>
 
@@ -175,6 +174,15 @@ the optimization on the output of the <code>find_MAP()</code> with
 Remember that <code>p*(p-1)/2</code> transpositions will be checked
 in every iteration. For bigger <code>p</code>, this may be costly.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="repeated-optimization">Repeated optimization<a class="anchor" aria-label="anchor" href="#repeated-optimization"></a></h2>
+
+
+<p>MH and HC results can be optimized further, including with BF.
+If the last optimization used BF, any further call to <code>find_MAP()</code> is
+rejected, including after <code><a href="forget_perms.html">forget_perms()</a></code>, because the whole permutation
+space has already been searched.</p>
+    </div>
     <div class="section level2">
     <h2 id="multi-sample">Multi-sample<a class="anchor" aria-label="anchor" href="#multi-sample"></a></h2>
 
@@ -302,7 +310,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.02945995 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.01915312 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
