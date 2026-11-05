@@ -164,6 +164,156 @@ test_that("MH and HC results can be optimized with BF as their final stage", {
   }
 })
 
+mh_boundary_fixture <- function(n = 10000) {
+  S <- diag(c(1, 100))
+  start <- gips(S, n, perm = "(1,2)", was_mean_estimated = FALSE)
+  identity <- gips(S, n, perm = "()", was_mean_estimated = FALSE)
+  log_weights <- c(log_posteriori_of_gips(start), log_posteriori_of_gips(identity))
+  expect_true(all(is.finite(log_weights)))
+  expect_gt(log_weights[2], log_weights[1])
+
+  list(start = start, identity = identity, log_weights = log_weights)
+}
+
+run_mh_boundary_segment <- function(g, optimizer = "MH",
+                                    save_all_perms = TRUE, seed = 1) {
+  withr::with_seed(seed, suppressMessages(find_MAP(g,
+    optimizer = optimizer, max_iter = 2, save_all_perms = save_all_perms,
+    show_progress_bar = FALSE
+  )))
+}
+
+test_that("MH continuation removes one shared boundary from all saved histories", {
+  fixture <- mh_boundary_fixture()
+  # At p = 2 there is only one proposal, and the return move is always rejected.
+  expect_identical(exp(fixture$log_weights[1] - fixture$log_weights[2]), 0)
+  first <- run_mh_boundary_segment(fixture$start)
+  continued <- run_mh_boundary_segment(first, optimizer = "continue", seed = 2)
+  info <- attr(continued, "optimization_info")
+
+  expect_equal(vapply(info$visited_perms, as.character, character(1)),
+    c("(1,2)", "()", "()")
+  )
+  expect_equal(info$log_posteriori_values, fixture$log_weights[c(1, 2, 2)])
+  expect_equal(info$visited_log_posteriori_values, fixture$log_weights[c(1, 2, 2)])
+  expect_equal(info$all_n0, c(1, 2, 2))
+  expect_equal(sum(info$iterations_performed), 2)
+})
+
+test_that("repeated MH continuation keeps genuine repetitions after rejection", {
+  fixture <- mh_boundary_fixture()
+  first <- run_mh_boundary_segment(fixture$start)
+  second <- run_mh_boundary_segment(first, optimizer = "continue", seed = 2)
+  # Omitting optimizer must also continue from the last state.
+  third <- withr::with_seed(3, suppressMessages(find_MAP(second,
+    max_iter = 2, save_all_perms = TRUE, show_progress_bar = FALSE
+  )))
+  info <- attr(third, "optimization_info")
+
+  expect_equal(vapply(info$visited_perms, as.character, character(1)),
+    c("(1,2)", "()", "()", "()")
+  )
+  expect_equal(info$log_posteriori_values, fixture$log_weights[c(1, 2, 2, 2)])
+  expect_equal(info$visited_log_posteriori_values, fixture$log_weights[c(1, 2, 2, 2)])
+  expect_equal(info$all_n0, c(1, 2, 2, 2))
+  expect_equal(sum(info$iterations_performed), 3)
+})
+
+test_that("MH continuation removes boundaries without saving permutations", {
+  fixture <- mh_boundary_fixture()
+  saved <- run_mh_boundary_segment(fixture$start)
+  unsaved <- run_mh_boundary_segment(fixture$start, save_all_perms = FALSE)
+
+  for (stage in 2:3) {
+    saved <- run_mh_boundary_segment(saved, optimizer = "continue", seed = stage)
+    unsaved <- run_mh_boundary_segment(unsaved, optimizer = "continue",
+      save_all_perms = FALSE, seed = stage
+    )
+    saved_info <- attr(saved, "optimization_info")
+    info <- attr(unsaved, "optimization_info")
+
+    expect_equal(info$log_posteriori_values,
+      c(fixture$log_weights[1], rep(fixture$log_weights[2], stage))
+    )
+    expect_equal(info$all_n0, c(1, rep(2, stage)))
+    expect_equal(info$log_posteriori_values, saved_info$log_posteriori_values)
+    expect_equal(info$all_n0, saved_info$all_n0)
+    expect_true(all(is.na(info$visited_perms)))
+    expect_null(info$visited_log_posteriori_values)
+  }
+})
+
+test_that("explicit MH restart retains its start when the best and last states differ", {
+  fixture <- mh_boundary_fixture(n = 20)
+  return_probability <- exp(fixture$log_weights[1] - fixture$log_weights[2])
+  expect_gt(return_probability, 0)
+  expect_lt(return_probability, 1)
+  first <- run_mh_boundary_segment(fixture$start)
+  info <- attr(first, "optimization_info")
+  expect_equal(vapply(info$visited_perms, as.character, character(1)),
+    c("(1,2)", "()")
+  )
+
+  # Construct a possible accepted move from the better identity to the swap.
+  # The best model remains identity; this history is not claimed to be sampled.
+  fields <- c("visited_perms", "visited_log_posteriori_values",
+    "log_posteriori_values", "all_n0")
+  for (field in fields) {
+    info[[field]] <- rev(info[[field]])
+  }
+  info$original_perm <- first[[1]]
+  info$start_perm <- first[[1]]
+  info$last_perm <- fixture$start[[1]]
+  info$last_perm_log_posteriori <- fixture$log_weights[1]
+  attr(first, "optimization_info") <- info
+  expect_false(identical(as.character(first[[1]]), as.character(info$last_perm)))
+
+  continued <- run_mh_boundary_segment(first, optimizer = "continue", seed = 2)
+  continued_info <- attr(continued, "optimization_info")
+  expect_equal(vapply(continued_info$visited_perms, as.character, character(1)),
+    c("()", "(1,2)", "()")
+  )
+  expect_equal(continued_info$log_posteriori_values, fixture$log_weights[c(2, 1, 2)])
+  expect_equal(continued_info$visited_log_posteriori_values,
+    fixture$log_weights[c(2, 1, 2)]
+  )
+  expect_equal(continued_info$all_n0, c(2, 1, 2))
+
+  # Reproduce only the new segment, with the same start and seed as the restart.
+  independent <- run_mh_boundary_segment(fixture$identity, seed = 2)
+  restarted <- run_mh_boundary_segment(first, optimizer = "MH", seed = 2)
+  independent_info <- attr(independent, "optimization_info")
+  restarted_info <- attr(restarted, "optimization_info")
+  for (field in fields) {
+    expect_equal(restarted_info[[field]], c(info[[field]], independent_info[[field]]))
+    expect_length(restarted_info[[field]], 4L)
+  }
+  expect_equal(as.character(restarted_info$visited_perms[[3]]), "()")
+})
+
+test_that("removing MH continuation boundaries preserves acceptance rate aggregation", {
+  fixture <- mh_boundary_fixture()
+  first <- run_mh_boundary_segment(fixture$start)
+  independent_second <- run_mh_boundary_segment(fixture$identity, seed = 2)
+  independent_third <- run_mh_boundary_segment(fixture$identity, seed = 3)
+  independent_rates <- vapply(list(first, independent_second, independent_third),
+    function(g) attr(g, "optimization_info")[["acceptance_rate"]], numeric(1)
+  )
+  expect_gt(independent_rates[1], independent_rates[2])
+  expect_equal(independent_rates[2], independent_rates[3])
+
+  second <- run_mh_boundary_segment(first, optimizer = "continue", seed = 2)
+  third <- run_mh_boundary_segment(second, optimizer = "continue", seed = 3)
+  # Equal-length segments must keep their equal weights when boundaries are removed.
+  # Derive rates from separate runs instead of fixing the current per-run convention.
+  expect_equal(attr(second, "optimization_info")[["acceptance_rate"]],
+    mean(independent_rates[1:2])
+  )
+  expect_equal(attr(third, "optimization_info")[["acceptance_rate"]],
+    mean(independent_rates)
+  )
+})
+
 test_that("Handle proper parameters", {
   g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
   

@@ -101,6 +101,12 @@
 #' rejected, including after [forget_perms()], because the whole permutation
 #' space has already been searched.
 #'
+#' When all previous stages used MH, `optimizer = "continue"` resumes from the
+#' last visited state and records the shared boundary state only once.
+#' Repeated visits after rejected proposals remain in the history.
+#' An explicit `optimizer = "MH"` starts from the best model found so far and
+#' retains the starting state of the new stage.
+#'
 #' @section Multi-sample:
 #' If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`,
 #' the same optimizers search for one permutation shared by all groups.
@@ -270,7 +276,9 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
     ))
   }
 
-  g_out <- combine_gips(g, gips_optimized)
+  g_out <- combine_gips(g, gips_optimized,
+    continue_optimization = continue_optimization
+  )
   optimization_info <- attr(g_out, "optimization_info")
   # BF retains its exact calculation. For MH/HC histories, normalize only
   # after combining all saved visits, including visits made during HC.
@@ -594,6 +602,7 @@ Metropolis_Hastings_optimizer <- function(
 
   optimization_info <- list(
     "acceptance_rate" = mean(acceptance),
+    "acceptance_rate_weight" = function_calls,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) log_posteriori_values else NULL,
@@ -747,6 +756,7 @@ hill_climbing_optimizer <- function(
 
   optimization_info <- list(
     "acceptance_rate" = 1 / choose(perm_size, 2),
+    "acceptance_rate_weight" = function_calls,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) goal_function_best_logvalues else NULL,
@@ -921,7 +931,8 @@ brute_force_optimizer <- function(
 #' If g2 was optimized with "brute_force", forget the g1.
 #'
 #' @noRd
-combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
+combine_gips <- function(g1, g2, show_progress_bar = FALSE,
+                         continue_optimization = FALSE) {
   # first, adjust the number of observations:
   attr(g2, "number_of_observations") <- attr(g1, "number_of_observations")
   attr(g2, "was_mean_estimated") <- attr(g1, "was_mean_estimated")
@@ -938,8 +949,22 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")
 
-  n1 <- length(optimization_info1[["log_posteriori_values"]])
-  n2 <- length(optimization_info2[["log_posteriori_values"]])
+  # Keep aggregation weights independent of removed continuation boundaries.
+  n1 <- optimization_info1[["acceptance_rate_weight"]]
+  n2 <- optimization_info2[["acceptance_rate_weight"]]
+  optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
+
+  if (continue_optimization &&
+    all(optimization_algorithm_used == "Metropolis_Hastings")) {
+    if (!all(is.na(optimization_info2[["visited_perms"]]))) {
+      # Read aligned weights before shortening the saved permutation list.
+      optimization_info2[["visited_log_posteriori_values"]] <-
+        get_saved_visited_log_weights(optimization_info2)[-1L]
+      optimization_info2[["visited_perms"]] <- optimization_info2[["visited_perms"]][-1L]
+    }
+    optimization_info2[["log_posteriori_values"]] <- optimization_info2[["log_posteriori_values"]][-1L]
+    optimization_info2[["all_n0"]] <- optimization_info2[["all_n0"]][-1L]
+  }
 
   if (all(is.na(optimization_info1[["visited_perms"]])) || all(is.na(optimization_info2[["visited_perms"]]))) {
     if (!all(is.na(optimization_info1[["visited_perms"]])) || !all(is.na(optimization_info2[["visited_perms"]]))) {
@@ -951,8 +976,6 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   } else {
     visited_perms <- c(optimization_info1[["visited_perms"]], optimization_info2[["visited_perms"]]) # WoW, one can use `c()` to combine lists!
   }
-  optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
-
   visited_log_weights <- NULL
   if (!all(is.na(visited_perms)) &&
     all(optimization_algorithm_used %in% c("Metropolis_Hastings", "hill_climbing"))) {
@@ -965,6 +988,7 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE) {
   optimization_info_new <- list(
     "original_perm" = optimization_info1[["original_perm"]],
     "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
+    "acceptance_rate_weight" = n1 + n2,
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = visited_log_weights,
