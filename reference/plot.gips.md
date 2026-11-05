@@ -11,7 +11,7 @@ argument.
 plot(
   x,
   type = NA,
-  logarithmic_y = TRUE,
+  logarithmic_y = (type != "n0"),
   logarithmic_x = FALSE,
   color = NULL,
   title_text = "Convergence plot",
@@ -76,8 +76,10 @@ plot(
 
 - logarithmic_y, logarithmic_x:
 
-  A boolean. Sets the axis of the plot in logarithmic scale. Only used
-  for `type %in% c("all", "best", "both", "n0")`.
+  A boolean. Sets the axis of the plot in logarithmic scale. By default,
+  `logarithmic_y` is `FALSE` for `type = "n0"` and `TRUE` for posterior
+  trajectories; `logarithmic_x` defaults to `FALSE`. Only used for
+  `type %in% c("all", "best", "both", "n0")`.
 
 - color:
 
