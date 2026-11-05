@@ -191,7 +191,10 @@ test_that("deduplicate_step_runs() returns a single-row data frame unchanged", {
 })
 
 test_that("deduplicate_step_runs() preserves all columns", {
-  df <- data.frame(step = 1:3, value = c(5, 5, 6), series = "my_series", extra = letters[1:3])
+  df <- data.frame(
+    step = 1:3, value = c(5, 5, 6), series = "my_series", extra = letters[1:3],
+    stringsAsFactors = FALSE
+  )
 
   result <- gips:::deduplicate_step_runs(df)
 
