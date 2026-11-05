@@ -36,7 +36,7 @@
 * Fixed rejection of positive-definite prior matrices with small eigenvalues
   and corrected posterior calculations for nearly scalar priors.
 * Fixed `get_structure_constants()` for permutations with gigantic order (above 3e17).
-  Benchmarks also showed approximately 4–11% faste Brute Force search (`p = 5–8`) (#122).
+  Benchmarks also showed approximately 4–11% faster Brute Force search (`p = 5–8`) (#122).
 * Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2`
   due to an incorrect lower axis limit.
 * Fixed an empty bullet in `print()` when no details are displayed.
