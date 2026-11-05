@@ -1,9 +1,6 @@
 # Tests for internal plot helpers and plot.gips() convergence output
 
 test_that("default y scale follows the resolved plot type", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   g <- gips(diag(3), 10, was_mean_estimated = FALSE)
   # A fixed history isolates plotting from the stochastic optimizer.
   attr(g, "optimization_info") <- list(
@@ -41,9 +38,6 @@ test_that("default y scale follows the resolved plot type", {
 
 
 test_that("linear posterior plots reject overflow and complete underflow", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   g <- gips(diag(3), 10)
   histories <- list(overflow = c(0, 710), underflow = c(-1000, -999))
 
@@ -69,9 +63,6 @@ test_that("linear posterior plots reject overflow and complete underflow", {
 })
 
 test_that("linear posterior plots allow partial underflow without rescaling", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   g <- gips(diag(3), 10)
   attr(g, "optimization_info") <- list(
     log_posteriori_values = c(-1000, 0, -1, 1)
@@ -92,9 +83,6 @@ test_that("linear posterior plots allow partial underflow without rescaling", {
 # ── Heatmap axis labels ─────────────────────────────────────────────────────
 
 test_that("heatmaps use numeric labels when neither axis is named", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   g <- gips(diag(c(2, 1)), 13)
 
   expect_silent(p <- plot(g, type = "heatmap"))
@@ -103,9 +91,6 @@ test_that("heatmaps use numeric labels when neither axis is named", {
 })
 
 test_that("heatmaps use the available names for both axes when one is unnamed", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   variable_names <- c("height", "weight")
 
   for (named_axis in c("rows", "columns")) {
@@ -125,9 +110,6 @@ test_that("heatmaps use the available names for both axes when one is unnamed", 
 })
 
 test_that("heatmaps preserve matching row and column names without a warning", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   S <- diag(c(2, 1))
   variable_names <- c("height", "weight")
   dimnames(S) <- list(variable_names, variable_names)
@@ -139,9 +121,6 @@ test_that("heatmaps preserve matching row and column names without a warning", {
 })
 
 test_that("heatmaps keep conflicting names on the correct axes without repeating the warning", {
-  for (package in c("ggplot2", "dplyr", "tidyr", "tibble")) {
-    skip_if_not_installed(package)
-  }
   S <- diag(c(2, 1))
   # The same names in a different order still describe conflicting axes.
   rownames(S) <- c("height", "weight")
@@ -268,7 +247,6 @@ local({
   )
 
   test_that("convergence plot data x-range spans full iteration count (type = 'all')", {
-    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "all")
     expect_true(inherits(gg, "ggplot"))
     expect_equal(max(gg$data$step), num_of_steps)
@@ -276,19 +254,16 @@ local({
   })
 
   test_that("convergence plot data x-range spans full iteration count (type = 'best')", {
-    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "best")
     expect_equal(max(gg$data$step), num_of_steps)
   })
 
   test_that("convergence plot data x-range spans full iteration count (type = 'both')", {
-    skip_if_not_installed("ggplot2")
     gg <- plot(g_mh, type = "both")
     expect_equal(max(gg$data$step), num_of_steps)
   })
 
   test_that("convergence plot data has fewer rows than num_of_steps (deduplication works)", {
-    skip_if_not_installed("ggplot2")
     # With MH and 50 steps at p=5, there will be many repeated log-posterior
     # values (rejected proposals). After deduplication the data frame must be
     # smaller (if all 50 values happened to be distinct this would fail, but
@@ -302,7 +277,6 @@ local({
 # ── Continuing MH runs and plotting n0 trajectory ────────────────────────────
 
 test_that("MH -> continue -> continue -> plot(type = 'n0') works end-to-end", {
-  skip_if_not_installed("ggplot2")
   # Start with MH optimization
   g_base <- gips(diag(1.1, 5), 10)
   g_mh <- suppressMessages(find_MAP(g_base, optimizer = "MH", max_iter = 10,

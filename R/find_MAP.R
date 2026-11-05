@@ -139,7 +139,7 @@
 #'     A place to learn more about
 #'     the math behind the `gips` package.
 #'
-#' @examplesIf rlang::is_installed("ggplot2") && rlang::is_installed("MASS")
+#' @examples
 #' require("MASS") # for mvrnorm()
 #'
 #' perm_size <- 5

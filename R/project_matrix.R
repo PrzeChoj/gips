@@ -79,7 +79,7 @@
 #'     number of observations, so that the projected matrix
 #'     will be the MLE estimator of the covariance matrix.
 #'
-#' @examplesIf rlang::is_installed("ggplot2")
+#' @examples
 #' p <- 6
 #' my_perm <- "(14)(23)" # permutation (1,4)(2,3)(5)(6)
 #' number_of_observations <- 10

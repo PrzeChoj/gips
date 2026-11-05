@@ -757,7 +757,6 @@ test_that("print.gips() omits empty details when comparison is disabled", {
 })
 
 test_that("plot.gips() works or abords for wrong arguments", {
-  skip_if_not_installed("ggplot2")
   custom_perm1 <- gips_perm("(1,2)(3,4,5,6)", 6)
   g1 <- gips(S, number_of_observations,
     was_mean_estimated = FALSE, perm = custom_perm1
@@ -811,7 +810,6 @@ test_that("plot.gips() works or abords for wrong arguments", {
 })
 
 test_that("plot.gips() works for books example", {
-  skip_if_not_installed("ggplot2")
   Z <- DAAG::oddbooks[, c(1, 2, 3)]
   Z$height <- Z$height / sqrt(2)
 
