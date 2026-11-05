@@ -56,6 +56,7 @@
 <h4 id="bugfixes-1-3-0-9000">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-3-0-9000"></a></h4>
 <ul><li>
 <code><a href="../reference/find_MAP.html">find_MAP()</a></code> now rejects any further optimization when the object’s last optimization used Brute Force, including after <code><a href="../reference/forget_perms.html">forget_perms()</a></code>.</li>
+<li>Fixed duplicated boundary states in MH-only continuation histories.</li>
 <li>Fixed loss of precision for very small likelihood-ratio p-values in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</li>
 <li>Printed summaries now distinguish insufficient observations from projected covariance matrices that are not numerically positive definite.</li>
 <li>The likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now requires at least <code>p</code> effective observations to compare with the unrestricted model.</li>

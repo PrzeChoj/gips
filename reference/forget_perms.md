@@ -43,8 +43,8 @@ g_map <- find_MAP(g,
 )
 
 object.size(g_map) # ~18 KB
-#> 20928 bytes
+#> 21080 bytes
 g_map_slim <- forget_perms(g_map)
 object.size(g_map_slim) # ~8 KB
-#> 10680 bytes
+#> 10816 bytes
 ```
