@@ -407,7 +407,7 @@ summary.gips <- function(object, ...) {
       D_matrix = attr(object, "D_matrix"),
       n_parameters = n_parameters,
       AIC = aic_value,
-      BIC = suppressWarnings(BIC(object, classes = c("singular_matrix", "likelihood_does_not_exists"))) # warning for NA and NULL
+      BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")) # warning for NA and NULL
     )
   } else {
     optimization_info <- attr(object, "optimization_info")
