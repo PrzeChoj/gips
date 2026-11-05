@@ -37,16 +37,16 @@ LinkingTo:
 Suggests: 
     DAAG,
     dplyr,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     HSAUR2,
     knitr,
     MASS (>= 7.3-39),
     mvtnorm,
     rmarkdown,
     spelling,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.5),
     tibble,
-    tidyr,
+    tidyr (>= 1.0.0),
     withr
 VignetteBuilder: 
     knitr
