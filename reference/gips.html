@@ -186,17 +186,22 @@ it produces an error.</p>
 
 <p>We encourage you to try <code>D_matrix = d * I</code>, where <code>I</code> is a <code>p</code> \(\times\)
 <code>p</code> identity matrix and <code>d &gt; 0</code> for some different <code>d</code>.
-When <code>d</code> is small compared to the data (e.g., <code>d=0.1 * mean(diag(S))</code>),
-bigger structures will be found.
-When <code>d</code> is big compared to the data (e.g., <code>d=100 * mean(diag(S))</code>),
-the posterior distribution does not depend on the data.</p>
-<p>Taking <code>D_matrix = d * I</code> is equivalent to setting <code>S &lt;- S / d</code>.</p>
+Smaller <code>d</code> favor models with more equality constraints and fewer
+free covariance parameters. This tendency depends on the data and <code>delta</code>.
+For fixed dimension, sample size and <code>delta</code>, as <code>d</code> tends to infinity,
+the posterior distribution over symmetry groups converges to a
+distribution independent of <code>S</code>.</p>
+<p>Using <code>S</code> with <code>D_matrix = d * I</code> gives the same results
+as using <code>S / d</code> with <code>D_matrix = I</code>,
+with the other parameters unchanged.</p>
 <p>The default for <code>D_matrix</code> is <code>D_matrix = d * I</code>, where
-<code>d = mean(diag(S))</code>, which is equivalent to modifying <code>S</code>
-so that the mean value on the diagonal is 1.</p>
-<p>In the Bayesian model, the prior distribution for
-the covariance matrix is a generalized case of
-<a href="https://en.wikipedia.org/wiki/Wishart_distribution" class="external-link">Wishart distribution</a>.</p>
+<code>d = mean(diag(S))</code>. For group selection, this is equivalent to using
+<code>S / d</code> with <code>D_matrix = I</code>, so that the mean diagonal entry of <code>S / d</code> is 1.</p>
+<p>The Bayesian model uses a
+<a href="https://en.wikipedia.org/wiki/Wishart_distribution" class="external-link">Wishart-type prior</a>
+on the precision matrix (the inverse covariance matrix).</p>
+<p>The hyperparameters affect symmetry selection. For a fixed permutation,
+<code><a href="project_matrix.html">project_matrix()</a></code> does not use <code>delta</code> or <code>D_matrix</code>.</p>
 <p>For a brief introduction, see the <strong>Bayesian model selection</strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>).</p>
@@ -323,7 +328,7 @@ for <code>gips</code> is a one-element list of a <code>gips_perm</code> object.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.02082515 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.02056313 secs</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"both"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gips-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

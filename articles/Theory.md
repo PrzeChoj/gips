@@ -307,7 +307,8 @@ to find it.
 
 #### General workflow
 
-1.  Choose the prior distribution on $`\Gamma`$ and $`\Sigma`$.
+1.  Choose the prior distribution on $`\Gamma`$ and the precision matrix
+    $`K = \Sigma^{-1}`$.
 2.  Calculate the posteriori distribution (up to a normalizing constant)
     by the formula [\[1\]](https://arxiv.org/abs/2004.03503), (30).
 3.  Use the Metropolis-Hastings algorithm to find the permutation with
@@ -335,10 +336,45 @@ $`\delta > 1`$. Refer to the [\[1\]](https://arxiv.org/abs/2004.03503).
 
 In `gips`, $`\delta`$ is named `delta`, and $`D`$ is named `D_matrix`.
 By default, they are set to $`3`$ and `diag(d, p)`, respectively, where
-`d = mean(diag(S))`. However, it is worth running the procedure for
-several parameters `D_matrix` of form $`d\cdot diag(p)`$ for positive
-constant $`d`$. Small $`d`$ (compared to the data) favors small
-structures. Large $`d`$ will “forget” the data.
+`d = mean(diag(S))`. It is worth comparing results for several choices
+of `D_matrix = d * diag(p)`, with $`d > 0`$.
+
+In the spirit of the Bayesian approach, the prior should be specified
+before observing the data. Our default `D_matrix` depends on the
+observed sample, so it departs from this principle. Nevertheless, we
+retain it as a practical default that we have found useful. For
+posterior comparisons between symmetry groups, this choice is equivalent
+to using `S / mean(diag(S))` with `D_matrix = diag(p)`. See \[2\],
+Section *3.2. Hyperparameter’s influence*, for a discussion of
+hyperparameter choices.
+
+Smaller $`d`$ can favor models with more equality constraints and fewer
+free covariance parameters. This tendency depends on the data and
+$`\delta`$; it is not a guarantee that decreasing $`d`$ will always
+select a more constrained model.
+
+For fixed dimension, sample size and $`\delta`$, as $`d \to \infty`$,
+the posterior distribution over symmetry groups converges to a
+distribution independent of $`S`$. The limit can still depend on the
+dimension, sample size and $`\delta`$, and is not uniform. For finite
+$`d`$, the posterior generally still depends on $`S`$: the calculation
+uses $`D + U`$, where $`U = n_{\mathrm{eff}} S`$, with
+$`n_{\mathrm{eff}} = n - 1`$ when the mean was estimated and $`n`$
+otherwise.
+
+Using `S` with `D_matrix = d * diag(p)` gives the same normalized
+posterior over symmetry groups, and hence the same MAP, as using `S / d`
+with `D_matrix = diag(p)`, with the other parameters unchanged. The
+unnormalized log-posterior values differ by a constant shared by all
+groups. The identity prior must be set explicitly in this comparison;
+leaving `D_matrix = NULL` recalculates the default from the rescaled
+data.
+
+The hyperparameters affect symmetry selection. Once the permutation is
+fixed,
+[`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
+uses only `S` and that permutation, independently of `delta` and
+`D_matrix`.
 
 One can calculate the logarithm of formula (30) with the function
 [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).

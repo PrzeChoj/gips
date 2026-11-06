@@ -43,8 +43,8 @@ other than - invariance under permutation symmetry.
 This package provides a way to find a *reasonable* permutation to be
 used as a constraint in covariance matrix estimation. In this case,
 *reasonable* means maximizing the Bayesian posterior distribution when
-using a Wishart-like distribution on symmetric, positive definite
-matrices as a prior. The idea, exact formulas, and algorithm sketch are
+using a Wishart-like prior on the precision matrix (the inverse
+covariance matrix). The idea, exact formulas, and algorithm sketch are
 explored in another vignette that can be accessed by
 [`vignette("Theory", package="gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or on its [pkgdown
@@ -147,13 +147,14 @@ round(project_matrix(S, g_map), 1)
 #> breadth -30.1   14.6    14.9
 ```
 
-The result depends on two input parameters, `delta` and `D_matrix`. By
-default, they are set to `3` and `diag(p) * d`, respectively, where
-`d = mean(diag(S))`. The method is not scale-invariant, so we recommend
-running gips for different values of `D_matrix` of the form
-`D_matrix = d * diag(p)`, where `d` $`\in \mathbb{R}^+`$). The impact
-analysis of those can be read in \[2\] in section *3.2. Hyperparameter’s
-influence*.
+The selected symmetry depends on two hyperparameters, `delta` and
+`D_matrix`. By default, they are set to `3` and `d * diag(p)`,
+respectively, where `d = mean(diag(S))`. We recommend comparing results
+for different values of `D_matrix = d * diag(p)`, where $`d > 0`$. For a
+fixed permutation, the projection returned by
+[`project_matrix()`](https://przechoj.github.io/gips/reference/project_matrix.md)
+does not depend on either hyperparameter. The impact analysis of those
+can be read in \[2\] in section *3.2. Hyperparameter’s influence*.
 
 ## Theoretic example
 

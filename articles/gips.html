@@ -117,10 +117,10 @@ other than - invariance under permutation symmetry.</p>
 <p>This package provides a way to find a <em>reasonable</em> permutation
 to be used as a constraint in covariance matrix estimation. In this
 case, <em>reasonable</em> means maximizing the Bayesian posterior
-distribution when using a Wishart-like distribution on symmetric,
-positive definite matrices as a prior. The idea, exact formulas, and
-algorithm sketch are explored in another vignette that can be accessed
-by <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or on its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
+distribution when using a Wishart-like prior on the precision matrix
+(the inverse covariance matrix). The idea, exact formulas, and algorithm
+sketch are explored in another vignette that can be accessed by
+<code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code> or on its <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>.</p>
 <p>For an in-depth analysis of the package performance, capabilities,
 and comparison with other packages, see the article “Learning
@@ -193,13 +193,14 @@ how to use it with MH.</p>
 <span><span class="co">#&gt; thick    72.7  -30.1   -30.1</span></span>
 <span><span class="co">#&gt; height  -30.1   14.9    14.6</span></span>
 <span><span class="co">#&gt; breadth -30.1   14.6    14.9</span></span></code></pre></div>
-<p>The result depends on two input parameters, <code>delta</code> and
-<code>D_matrix</code>. By default, they are set to <code>3</code> and
-<code>diag(p) * d</code>, respectively, where
-<code>d = mean(diag(S))</code>. The method is not scale-invariant, so we
-recommend running gips for different values of <code>D_matrix</code> of
-the form <code>D_matrix = d * diag(p)</code>, where <code>d</code>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><msup><mi>ℝ</mi><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">\in \mathbb{R}^+</annotation></semantics></math>).
+<p>The selected symmetry depends on two hyperparameters,
+<code>delta</code> and <code>D_matrix</code>. By default, they are set
+to <code>3</code> and <code>d * diag(p)</code>, respectively, where
+<code>d = mean(diag(S))</code>. We recommend comparing results for
+different values of <code>D_matrix = d * diag(p)</code>, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d &gt; 0</annotation></semantics></math>.
+For a fixed permutation, the projection returned by
+<code><a href="../reference/project_matrix.html">project_matrix()</a></code> does not depend on either hyperparameter.
 The impact analysis of those can be read in [2] in section <em>3.2.
 Hyperparameter’s influence</em>.</p>
 </div>
