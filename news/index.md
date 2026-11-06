@@ -21,6 +21,8 @@
 
 #### Bugfixes:
 
+- Improved documentation and examples in function help, vignettes, and
+  the README.
 - [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
   now rejects any further optimization when the object’s last
   optimization used Brute Force, including after
