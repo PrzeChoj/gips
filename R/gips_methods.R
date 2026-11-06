@@ -3,9 +3,9 @@
 #' Printing function for a `gips` class.
 #'
 #' @param x An object of a `gips` class.
-#' @param digits The number of decimal places for
-#'     the posterior probability. It can be negative.
-#'     By default, `Inf`. It is passed to [base::round()].
+#' @param digits The number of decimal places used to round displayed posterior
+#'     ratios and, when `log_value = TRUE`, the unnormalized log-posterior.
+#'     It can be negative. Defaults to `3`. Passed to [base::round()].
 #' @param compare_to_original A logical. Whether to print how many
 #'     times more likely the current permutation is compared to:
 #' * the identity permutation `()` (for unoptimized `gips` object);
@@ -24,9 +24,9 @@
 #'     not only compared to the starting one or id.
 #'
 #' @section Multi-sample:
-#' For multi-sample `gips` objects the number of observations is shown as a
-#' vector `n = c(n1, n2, ...)` and the comparison to the starting permutation
-#' uses the combined unnormalized log-posterior (sum of per-sample log weights).
+#' For multi-sample `gips` objects, posterior comparisons use the combined
+#' unnormalized log-posterior (sum of per-sample log weights).
+#' Use `summary(x)` to display the sample sizes; see [summary.gips()].
 #'
 #' @returns An invisible `NULL`.
 #' @export
