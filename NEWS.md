@@ -15,6 +15,7 @@
 
 ### Bugfixes:
 
+* Corrected the declared minimum R version to 4.0.0 to reflect existing code requirements.
 * Fixed compilation of covariance projection code with C++11.
 * Improved documentation and examples in function help, vignettes, and the README.
 * `find_MAP()` now rejects any further optimization when the object's last
