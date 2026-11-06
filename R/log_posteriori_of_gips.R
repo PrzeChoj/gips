@@ -36,11 +36,19 @@
 #'
 #' @section Multi-sample:
 #' When `g` is a multi-sample `gips` object (created with a list of matrices,
-#' e.g. `gips(list(S1, S2), c(n1, n2))`), the log-posterior is the sum of
-#' the independent single-sample log-posteriors across all G groups, using
-#' the per-group `number_of_observations`, `delta`, and `D_matrix` values:
+#' e.g. `gips(list(S1, S2), c(n1, n2))`), each sample has its own covariance
+#' matrix, while all samples share the same cyclic symmetry group.
+#' Under the package's assumptions of conditional independence of the samples
+#' and their precision-matrix priors given that group, and a uniform prior
+#' over cyclic groups,
 #'
-#' \deqn{\log P(\Gamma | S_1, \ldots, S_G) = \sum_{\ell=1}^{G} \log P(\Gamma | S_\ell)}
+#' \deqn{P(\Gamma \mid S_1, \ldots, S_G) \propto
+#'   \exp\left\{\sum_{j=1}^{G} \ell_j(\Gamma)\right\}.}
+#'
+#' Here, \eqn{\ell_j(\Gamma)} is the single-sample unnormalized log-posterior
+#' weight, computed using that sample's `number_of_observations`, `delta`,
+#' and `D_matrix`. The function returns the sum of these log weights,
+#' without normalizing over symmetry groups.
 #'
 #' @returns The logarithm of an unnormalized A Posteriori.
 #'
@@ -293,7 +301,7 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
 #' @section Multi-sample:
 #' When comparing permutations for a multi-sample `gips` object, or when
 #' passing multi-sample arguments directly, the comparison uses the combined
-#' log-posterior (the sum of per-group log-posteriors). Two `gips` objects can
+#' unnormalized log-posterior (the sum of per-sample log weights). Two `gips` objects can
 #' be compared only when they are both single-sample or both multi-sample with
 #' the same data and hyperparameters.
 #'

@@ -112,8 +112,8 @@
 #' @section Multi-sample:
 #' If `g` was created with `gips(list(S1, S2, ...), c(n1, n2, ...))`,
 #' the same optimizers search for one permutation shared by all groups.
-#' The optimized criterion is the combined log-posterior, i.e. the sum of
-#' per-group log-posteriors. The default optimizer is still chosen from the
+#' The optimized criterion is the combined unnormalized log-posterior, i.e.
+#' the sum of per-sample log weights. The default optimizer is still chosen from the
 #' common matrix size `p`. A sample-size warning is issued when `min(n_g) < n0`.
 #' Passing this check alone does not guarantee MLE availability: every projected
 #' covariance matrix must also be numerically positive definite. Use

@@ -45,7 +45,7 @@ Printing function for a \code{gips} class.
 
 For multi-sample \code{gips} objects the number of observations is shown as a
 vector \code{n = c(n1, n2, ...)} and the comparison to the starting permutation
-uses the combined log-posterior (sum across groups).
+uses the combined unnormalized log-posterior (sum of per-sample log weights).
 }
 
 \examples{
