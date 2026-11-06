@@ -362,7 +362,7 @@ A smaller value of the criteria for a given model indicates a better fit.
 Those can be calculated by `AIC.gips()` and `BIC.gips()`.
 
 ### Estimated mean
-When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then in the $\log L$ we use $n-1$ in stead of $n$. Definitions of AIC and BIC stay the same.
+When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then in the $\log L$ we use $n-1$ in stead of $n$. Definitions of AIC and BIC stay the same.
 
 
 ### Example

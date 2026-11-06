@@ -191,7 +191,7 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
 We can see the standard estimator of the covariance matrix:
-$$\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
+$$\hat{\Sigma} = (1/n) \cdot  \sum_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
 It is not MLE (again, because MLE does not exist for $n < p$):
 ```{r example_mean_known3_1}
 plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard way")
