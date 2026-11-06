@@ -95,11 +95,11 @@ section in <code><a href="../articles/Theory.html">vignette("Theory", package = 
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
 This matrix will be used in calculations of
-the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
+the posterior value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>number_of_observations</code> - the number of observations that
 were observed for the <code>S_matrix</code> to be calculated.
 This value will be used in calculations of
-the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
+the posterior value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was the output of <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
 <li><p><code>FALSE</code> means the <code>S</code> parameter was calculated with
 <code>S = crossprod(X) / number_of_observations</code>.</p></li>
@@ -118,10 +118,10 @@ value the found permutation has.</p></li>
 represented before optimization. It is the first visited permutation.</p></li>
 <li><p><code>start_permutation_log_posteriori</code> - the log of the A Posteriori
 value the start permutation has.</p></li>
-<li><p><code>times_more_likely_than_start</code> - how many more likely
+<li><p><code>times_more_likely_than_start</code> - how many times more likely
 the <code>found_permutation</code> is over the <code>start_permutation</code>.
 It cannot be a number less than 1.
-Remember that this number can big and overflow to <code>Inf</code>.</p></li>
+Remember that this number can become large and overflow to <code>Inf</code>.</p></li>
 <li><p><code>log_times_more_likely_than_start</code> - log of
 <code>times_more_likely_than_start</code>.</p></li>
 <li><p><code>likelihood_ratio_test_statistics</code>, <code>likelihood_ratio_test_p_value</code> -
@@ -139,11 +139,11 @@ section in <code><a href="../articles/Theory.html">vignette("Theory", package = 
 <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown page</a>.</p></li>
 <li><p><code>S_matrix</code> - the underlying matrix.
 This matrix will be used in calculations of
-the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
+the posterior value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>number_of_observations</code> - the number of observations that
 were observed for the <code>S_matrix</code> to be calculated.
 This value will be used in calculations of
-the posteriori value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
+the posterior value in <code><a href="log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code>.</p></li>
 <li><p><code>was_mean_estimated</code> - given by the user while creating the <code>gips</code> object:</p><ul><li><p><code>TRUE</code> means the <code>S</code> parameter was output of the <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::cov()</a></code> function;</p></li>
 <li><p><code>FALSE</code> means the <code>S</code> parameter was calculated with
 <code>S = crossprod(X) / number_of_observations</code>.</p></li>
@@ -374,7 +374,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.00469327 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.002510548 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
@@ -433,7 +433,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03301859 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.01664352 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  18</span>

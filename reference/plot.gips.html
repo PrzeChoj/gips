@@ -91,7 +91,7 @@ For multi-sample objects, produces faceted heatmaps (one panel per group).</p></
 <li><p><code>"both"</code> - Shows both trajectories from "all" and "best".</p></li>
 <li><p><code>"n0"</code> - Plots the <code>n0</code> values observed during optimization
 (only for "MH" optimization).</p></li>
-<li><p><code>"block_heatmap"</code> - Plots a heatmap of diagonally block representation of <code>S</code>.
+<li><p><code>"block_heatmap"</code> - Plots a heatmap of the block-diagonal representation of <code>S</code>.
 Non-block entries (equal to 0) are white for better clarity.
 For more information, see <strong>Block Decomposition - [1], Theorem 1</strong>
 section in <code><a href="../articles/Theory.html">vignette("Theory", package = "gips")</a></code> or in its
@@ -99,7 +99,7 @@ section in <code><a href="../articles/Theory.html">vignette("Theory", package = 
 For multi-sample objects, produces faceted block heatmaps.</p></li>
 </ul><p>The default value is <code>NA</code>, which will be changed to "heatmap" for
 non-optimized <code>gips</code> objects and to "both" for optimized ones.
-Using the default produces a warning.</p>
+Using the default produces a message.</p>
 <p><strong>Multi-sample note:</strong> Heatmap types produce one facet per group.
 Convergence plots use the combined log-posterior optimized by
 <code><a href="find_MAP.html">find_MAP()</a></code>. When there are more than 10 groups, the function warns

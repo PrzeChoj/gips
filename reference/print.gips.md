@@ -24,8 +24,9 @@ print(
 
 - digits:
 
-  The number of decimal places for the posterior probability. It can be
-  negative. By default, `Inf`. It is passed to
+  The number of decimal places used to round displayed posterior ratios
+  and, when `log_value = TRUE`, the unnormalized log-posterior. It can
+  be negative. Defaults to `3`. Passed to
   [`base::round()`](https://rdrr.io/r/base/Round.html).
 
 - compare_to_original:
@@ -57,10 +58,10 @@ An invisible `NULL`.
 
 ## Multi-sample
 
-For multi-sample `gips` objects the number of observations is shown as a
-vector `n = c(n1, n2, ...)` and the comparison to the starting
-permutation uses the combined unnormalized log-posterior (sum of
-per-sample log weights).
+For multi-sample `gips` objects, posterior comparisons use the combined
+unnormalized log-posterior (sum of per-sample log weights). Use
+`summary(x)` to display the sample sizes; see
+[`summary.gips()`](https://przechoj.github.io/gips/reference/summary.gips.md).
 
 ## See also
 
@@ -69,7 +70,7 @@ per-sample log weights).
   unoptimized one.
 
 - [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md) -
-  The function that prints the compared posteriories between any two
+  The function that prints the compared posteriors between any two
   permutations, not only compared to the starting one or id.
 
 ## Examples

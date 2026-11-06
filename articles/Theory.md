@@ -172,7 +172,7 @@ invariant under the given permutation:
 \pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top
 ```
 
-The projected matrix is the element of the cone
+The projected matrix is an element of the cone
 $`\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}`$, which means:
 ``` math
 \forall_{i,j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma
@@ -309,7 +309,7 @@ to find it.
 
 1.  Choose the prior distribution on $`\Gamma`$ and the precision matrix
     $`K = \Sigma^{-1}`$.
-2.  Calculate the posteriori distribution (up to a normalizing constant)
+2.  Calculate the posterior distribution (up to a normalizing constant)
     by the formula [\[1\]](https://arxiv.org/abs/2004.03503), (30).
 3.  Use the Metropolis-Hastings algorithm to find the permutation with
     the biggest value of the posterior probability
@@ -385,10 +385,9 @@ When all assumptions are met, the formula (30) puts a number on each
 permutation’s cyclic group. The bigger its value, the more likely the
 data was drawn from that model.
 
-When one finds the permutation group $`c_{\text{max}}`$ that maximizes
-(30),
+When one finds the permutation $`c_{\text{map}}`$ that maximizes (30),
 ``` math
-c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)
+c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=\langle c\rangle|Z^{(1)},\ldots,Z^{(n)}\right)
 ```
 
 one can reasonably assume the data $`Z`$ was drawn from the model
@@ -467,7 +466,7 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 print(g_map)
 #> The permutation (1,2,3,4,5,6):
-#>  - was found after 362 posteriori calculations;
+#>  - was found after 362 posterior calculations;
 #>  - is 133.158 times more likely than the () permutation.
 
 S_projected <- project_matrix(S, g_map)
@@ -499,9 +498,9 @@ are defined based on log-Likelihood:
 where $`S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top`$.
 
 If $`\pi_c(S)`$ is positive definite, the MLE of $`\Sigma`$ in a model
-invariant under $`\Gamma=c`$ is $`\hat{\Sigma} = \pi_c(S)`$. For every
-such $`c`$, the inverse exists and
-$`\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p`$, so:
+invariant under $`\Gamma=\langle c\rangle`$ is
+$`\hat{\Sigma} = \pi_c(S)`$. For every such $`c`$, the inverse exists
+and $`\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p`$, so:
 
 ``` math
 \log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2
@@ -530,9 +529,9 @@ and
 #### Estimated mean
 
 When the mean was estimated, we have
-$`S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top`$,
+$`S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top`$,
 where $`\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}`$. Then in the
-$`\log L`$ we use $`n-1`$ in stead of $`n`$. Definitions of AIC and BIC
+$`\log L`$ we use $`n-1`$ instead of $`n`$. Definitions of AIC and BIC
 stay the same.
 
 #### Example
@@ -612,7 +611,7 @@ The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv
 link](https://arxiv.org/abs/2004.03503); [DOI:
 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 
-\[2\] “Learning permutation symmetries with gips in R” by `gips`
-developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
-[Journal of Statistical
+\[2\] “Learning Permutation Symmetry of a Gaussian Vector with gips in
+R” by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz
+Kołodziejek, [Journal of Statistical
 Software](https://doi.org/10.18637/jss.v112.i07).

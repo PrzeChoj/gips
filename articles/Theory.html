@@ -242,7 +242,7 @@ the orthogonal projection on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><annotation encoding="application/x-tex">\mathcal{Z}_{\Gamma}</annotation></semantics></math>,
 the space of matrices invariant under the given permutation:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi></mrow></munder><mi>σ</mi><mo>⋅</mo><mi>S</mi><mo>⋅</mo><msup><mi>σ</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top</annotation></semantics></math></p>
-<p>The projected matrix is the element of the cone
+<p>The projected matrix is an element of the cone
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub></mrow><annotation encoding="application/x-tex">\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}</annotation></semantics></math>,
 which means:
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∀</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mi>…</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow></msub><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi></mrow><annotation encoding="application/x-tex">\forall_{i,j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma</annotation></semantics></math></p>
@@ -384,7 +384,7 @@ how to find it.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 and the precision matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">K = \Sigma^{-1}</annotation></semantics></math>.</li>
-<li>Calculate the posteriori distribution (up to a normalizing constant)
+<li>Calculate the posterior distribution (up to a normalizing constant)
 by the formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
 (30).</li>
 <li>Use the Metropolis-Hastings algorithm to find the permutation with
@@ -504,10 +504,10 @@ that permutation, independently of <code>delta</code> and
 <p>When all assumptions are met, the formula (30) puts a number on each
 permutation’s cyclic group. The bigger its value, the more likely the
 data was drawn from that model.</p>
-<p>When one finds the permutation group
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mtext mathvariant="normal">max</mtext></msub><annotation encoding="application/x-tex">c_{\text{max}}</annotation></semantics></math>
+<p>When one finds the permutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><annotation encoding="application/x-tex">c_{\text{map}}</annotation></semantics></math>
 that maximizes (30),
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><mo>=</mo><msub><mrow><mi mathvariant="normal">arg max</mi><mo>⁡</mo></mrow><mrow><mi>c</mi><mo>∈</mo><msub><mi>𝔖</mi><mi>p</mi></msub></mrow></msub><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo>=</mo><mi>c</mi><mo stretchy="false" form="prefix">|</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=c|Z^{(1)},\ldots,Z^{(n)}\right)</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><mo>=</mo><msub><mrow><mi mathvariant="normal">arg max</mi><mo>⁡</mo></mrow><mrow><mi>c</mi><mo>∈</mo><msub><mi>𝔖</mi><mi>p</mi></msub></mrow></msub><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>c</mi><mo stretchy="false" form="postfix">⟩</mo><mo stretchy="false" form="prefix">|</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=\langle c\rangle|Z^{(1)},\ldots,Z^{(n)}\right)</annotation></semantics></math></p>
 <p>one can reasonably assume the data
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
 was drawn from the model
@@ -591,7 +591,7 @@ We want to estimate the covariance matrix:</p>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
+<span><span class="co">#&gt;  - was found after 362 posterior calculations;</span></span>
 <span><span class="co">#&gt;  - is 133.158 times more likely than the () permutation.</span></span>
 <span></span>
 <span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span></code></pre></div>
@@ -624,7 +624,7 @@ where
 is positive definite, the MLE of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
 in a model invariant under
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">\Gamma=c</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>c</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\Gamma=\langle c\rangle</annotation></semantics></math>
 is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\Sigma} = \pi_c(S)</annotation></semantics></math>.
 For every such
@@ -644,14 +644,14 @@ fit.</p>
 <h4 id="estimated-mean">Estimated mean<a class="anchor" aria-label="anchor" href="#estimated-mean"></a>
 </h4>
 <p>When the mean was estimated, we have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo stretchy="false" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><msup><mrow><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n-1} \sum_{i=1}^n (Z^{(i)} - \bar{Z})\cdot ({Z^{(i)} - \bar{Z})}^\top</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top</annotation></semantics></math>,
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}</annotation></semantics></math>.
 Then in the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">\log L</annotation></semantics></math>
 we use
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>
-in stead of
+instead of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
 Definitions of AIC and BIC stay the same.</p>
 </div>
@@ -731,10 +731,10 @@ the AIC and the BIC.</p>
 “Model selection in the space of Gaussian models invariant by symmetry.”
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
-<p>[2] “Learning permutation symmetries with gips in R” by
-<code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
-Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of
-Statistical Software</a>.</p>
+<p>[2] “Learning Permutation Symmetry of a Gaussian Vector with gips in
+R” by <code>gips</code> developers Adam Chojecki, Paweł Morgen, and
+Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
+Software</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

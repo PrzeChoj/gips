@@ -68,12 +68,12 @@ statistics of the given `gips` object. Those are:
       page](https://przechoj.github.io/gips/articles/Theory.html).
 
   8.  `S_matrix` - the underlying matrix. This matrix will be used in
-      calculations of the posteriori value in
+      calculations of the posterior value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
   9.  `number_of_observations` - the number of observations that were
       observed for the `S_matrix` to be calculated. This value will be
-      used in calculations of the posteriori value in
+      used in calculations of the posterior value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
   10. `was_mean_estimated` - given by the user while creating the `gips`
@@ -116,10 +116,10 @@ statistics of the given `gips` object. Those are:
   5.  `start_permutation_log_posteriori` - the log of the A Posteriori
       value the start permutation has.
 
-  6.  `times_more_likely_than_start` - how many more likely the
+  6.  `times_more_likely_than_start` - how many times more likely the
       `found_permutation` is over the `start_permutation`. It cannot be
-      a number less than 1. Remember that this number can big and
-      overflow to `Inf`.
+      a number less than 1. Remember that this number can become large
+      and overflow to `Inf`.
 
   7.  `log_times_more_likely_than_start` - log of
       `times_more_likely_than_start`.
@@ -142,12 +142,12 @@ statistics of the given `gips` object. Those are:
       page](https://przechoj.github.io/gips/articles/Theory.html).
 
   10. `S_matrix` - the underlying matrix. This matrix will be used in
-      calculations of the posteriori value in
+      calculations of the posterior value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
   11. `number_of_observations` - the number of observations that were
       observed for the `S_matrix` to be calculated. This value will be
-      used in calculations of the posteriori value in
+      used in calculations of the posterior value in
       [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md).
 
   12. `was_mean_estimated` - given by the user while creating the `gips`
@@ -403,7 +403,7 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.00469327 secs
+#> Time difference of 0.002510548 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -462,7 +462,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.03301859 secs
+#>  0.01664352 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  18

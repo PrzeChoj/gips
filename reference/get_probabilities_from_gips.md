@@ -46,7 +46,7 @@ permutation symmetry, calculated from the combined posterior used by
 
 - [`vignette("Optimizers", package = "gips")`](https://przechoj.github.io/gips/articles/Optimizers.md)
   or its [pkgdown
-  page](https://przechoj.github.io/gips/articles/Optimizers.html)) - A
+  page](https://przechoj.github.io/gips/articles/Optimizers.html) - A
   place to learn more about the available optimizers.
 
 ## Examples

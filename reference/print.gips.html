@@ -64,9 +64,9 @@
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
-<dd><p>The number of decimal places for
-the posterior probability. It can be negative.
-By default, <code>Inf</code>. It is passed to <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">base::round()</a></code>.</p></dd>
+<dd><p>The number of decimal places used to round displayed posterior
+ratios and, when <code>log_value = TRUE</code>, the unnormalized log-posterior.
+It can be negative. Defaults to <code>3</code>. Passed to <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">base::round()</a></code>.</p></dd>
 
 
 <dt id="arg-compare-to-original">compare_to_original<a class="anchor" aria-label="anchor" href="#arg-compare-to-original"></a></dt>
@@ -98,9 +98,9 @@ one or multiple lines. Default to <code>FALSE</code>.</p></dd>
     <h2 id="multi-sample">Multi-sample<a class="anchor" aria-label="anchor" href="#multi-sample"></a></h2>
 
 
-<p>For multi-sample <code>gips</code> objects the number of observations is shown as a
-vector <code>n = c(n1, n2, ...)</code> and the comparison to the starting permutation
-uses the combined unnormalized log-posterior (sum of per-sample log weights).</p>
+<p>For multi-sample <code>gips</code> objects, posterior comparisons use the combined
+unnormalized log-posterior (sum of per-sample log weights).
+Use <code>summary(x)</code> to display the sample sizes; see <code><a href="summary.gips.html">summary.gips()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -108,7 +108,7 @@ uses the combined unnormalized log-posterior (sum of per-sample log weights).</p
 <ul><li><p><code><a href="find_MAP.html">find_MAP()</a></code> - The function that makes
 an optimized <code>gips</code> object out of the unoptimized one.</p></li>
 <li><p><code><a href="compare_posteriories_of_perms.html">compare_posteriories_of_perms()</a></code> - The function that prints
-the compared posteriories between any two permutations,
+the compared posteriors between any two permutations,
 not only compared to the starting one or id.</p></li>
 </ul></div>
     </div>

@@ -168,12 +168,12 @@ For a brief introduction, see the **Bayesian model selection** section
 in
 [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md)
 or in its [pkgdown
-page](https://przechoj.github.io/gips/articles/Theory.html)).
+page](https://przechoj.github.io/gips/articles/Theory.html).
 
 For analysis of the Hyperparameters influence, see **Section 3.2.** of
-"Learning permutation symmetries with gips in R" by `gips` developers
-Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, Journal of
-Statistical Software;
+"Learning Permutation Symmetry of a Gaussian Vector with gips in R" by
+`gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
+Journal of Statistical Software;
 [doi:10.18637/jss.v112.i07](https://doi.org/10.18637/jss.v112.i07) .
 
 ## Multi-sample
@@ -248,7 +248,7 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 g_map
 #> The permutation (1,2,3,4,5):
-#>  - was found after 67 posteriori calculations;
+#>  - was found after 67 posterior calculations;
 #>  - is 953.095 times more likely than the () permutation.
 
 summary(g_map)
@@ -297,6 +297,6 @@ summary(g_map)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04183698 secs
+#>  0.02037883 secs
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```

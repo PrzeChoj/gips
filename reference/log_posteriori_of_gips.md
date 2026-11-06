@@ -79,7 +79,7 @@ link](https://arxiv.org/abs/2004.03503);
 ## Examples
 
 ``` r
-# In the space with p = 2, there is only 2 permutations:
+# In the space with p = 2, there are only 2 permutations:
 perm1 <- permutations::as.cycle("(1)(2)")
 perm2 <- permutations::as.cycle("(1,2)")
 S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)

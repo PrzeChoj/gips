@@ -108,10 +108,10 @@ from:</p>
 <ul>
 <li>
 <code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> |
-recommend for
+recommended for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\le 10</annotation></semantics></math>.</li>
 <li>
-<code>"Metropolis_Hastings"</code>, <code>"MH"</code> | recommend
+<code>"Metropolis_Hastings"</code>, <code>"MH"</code> | recommended
 for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>11</mn></mrow><annotation encoding="application/x-tex">p\ge 11</annotation></semantics></math>.</li>
 <li>
@@ -338,7 +338,7 @@ process:</p>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 362 posteriori calculations;</span></span>
+<span><span class="co">#&gt;  - was found after 362 posterior calculations;</span></span>
 <span><span class="co">#&gt;  - is 28979.967 times more likely than the () permutation.</span></span></code></pre></div>
 <p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p = 6</annotation></semantics></math>.</p>
@@ -347,17 +347,21 @@ process:</p>
 <div class="section level3">
 <h3 id="metropolis-hastings">Metropolis-Hastings<a class="anchor" aria-label="anchor" href="#metropolis-hastings"></a>
 </h3>
-<p>This optimizer implements the <em>Second approach</em> from <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec 4.1.2]</a>.</p>
+<p>This optimizer is based on the <em>Second approach</em> from <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1, Sec 4.1.2]</a>.</p>
 <p>It uses the Metropolis-Hastings algorithm to optimize the space; <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="external-link">see
 Wikipedia</a>. This algorithm used in this context is a special case of
 the Simulated Annealing the reader may be more familiar with; <a href="https://en.wikipedia.org/wiki/Simulated_annealing" class="external-link">see
 Wikipedia</a>.</p>
+<p>The <code>MH</code> optimizer supplements ordinary Metropolis steps
+with forced moves and temporary restrictions on reversing them to help
+escape local optima. It searches for MAP; visit frequencies should not
+be interpreted as posterior probabilities. See <a href="https://github.com/PrzeChoj/gips/issues/115" class="external-link">issue #115</a> for
+details.</p>
 <div class="section level4">
 <h4 id="short-description">Short description<a class="anchor" aria-label="anchor" href="#short-description"></a>
 </h4>
-<p>In every iteration
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
-an algorithm considers a permutation, say,
+<p>In an ordinary Metropolis step, the algorithm considers a
+permutation, say,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
 Then a random transposition is drawn uniformly
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_i = (j,k)</annotation></semantics></math>,
@@ -410,15 +414,13 @@ could mean
 <div id="spoiler1" style="display:none">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>, <span class="op">{</span></span>
+<span>  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span>  <span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate based on Z</span></span>
+<span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler1') .style.display=='none')
               {document.getElementById('spoiler1') .style.display=''}
@@ -442,14 +444,19 @@ process:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_2-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2023</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">150</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,34,48,24,30,46,17,2,58,32,69,54,42,57,38,16,23,18,20,10,59,35,53,55,13,66,65,52,64,27,60,6,9,4,47,33,41,21,7,68,3,63,43,29,40,26,70,61,15,36,56,25,39,5,67,49,37,45,50,51,14,8,31,11,19,44,62,22):</span></span>
-<span><span class="co">#&gt;  - was found after 150 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 1.058e+652 times more likely than the () permutation.</span></span></code></pre></div>
-<p>After just 150 iterations, the found permutation is unimaginably more
-likely than the $_0 = $ <code>()</code> permutation.</p>
+<span><span class="co">#&gt; The permutation (1,30,6,8,21,59,15,67,5,63,56,70,12,36,69,19,32,22,18,26,3,37,38,2,65,7,62,31,9,17,40,10,35,41,55,64,24,33,61,68,4,11,50,42,16,25,52,51,43,14,49,53,39,48,47,44,66,28,23)(20,45,57,29,58,34,54,27,60,46):</span></span>
+<span><span class="co">#&gt;  - was found after 150 posterior calculations;</span></span>
+<span><span class="co">#&gt;  - is 5.252e+660 times more likely than the () permutation.</span></span></code></pre></div>
+<p>After 150 iterations, the best group found is unimaginably more
+likely than the trivial group generated by the identity permutation
+<code>()</code>: its posterior probability is approximately
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>661</mn></msup><annotation encoding="application/x-tex">10^{661}</annotation></semantics></math>
+times as large.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" class="r-plt" alt="" width="700"></p>
@@ -549,15 +556,13 @@ Show/hide pseudocode
 <div id="spoiler3" style="display:none">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>, <span class="op">{</span></span>
+<span>  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span>  <span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate based on Z</span></span>
+<span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
 <button title="Click to show the data preparation" type="button" onclick="if(document.getElementById('spoiler3') .style.display=='none')
               {document.getElementById('spoiler3') .style.display=''}
@@ -577,7 +582,8 @@ process:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">2</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># we will see a warning:</span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">2</span>, optimizer <span class="op">=</span> <span class="st">"hill_climbing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; Warning: Hill Climbing algorithm did not converge in 2 iterations!</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> We recommend to run the `find_MAP(optimizer = 'continue')` on the acquired output.</span></span>
@@ -585,12 +591,11 @@ process:</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> The covariance MLE is unavailable because the sample-size requirement is not met.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> For a more in-depth explanation, see the 'Project Matrix - Equation (6)' section in the `vignette('Theory', package = 'gips')` or its pkgdown page: https://przechoj.github.io/gips/articles/Theory.html.</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (2,21)(5,6):</span></span>
-<span><span class="co">#&gt;  - was found after 601 posteriori calculations;</span></span>
-<span><span class="co">#&gt;  - is 2.672e+12 times more likely than the () permutation.</span></span>
+<span><span class="co">#&gt; The permutation (1,13)(5,21):</span></span>
+<span><span class="co">#&gt;  - was found after 601 posterior calculations;</span></span>
+<span><span class="co">#&gt;  - is 2.401e+21 times more likely than the () permutation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/hill_climbing_2-2.png" class="r-plt" alt="" width="700"></p>
-<p>The above warnings are expected.</p>
 </div>
 </div>
 </div>
@@ -598,23 +603,23 @@ process:</p>
 <h2 id="continuing-the-optimization">Continuing the optimization<a class="anchor" aria-label="anchor" href="#continuing-the-optimization"></a>
 </h2>
 <p>When <code>max_iter</code> is reached during Metropolis-Hastings or
-hill climbing, the optimization stops and returns the result. Users are
-encouraged to plot the result and determine if it has converged. If
-necessary, users can continue the optimization, as shown below.</p>
+hill climbing, the optimization stops and returns the result. Plot the
+best result found so far to assess whether it is still improving. A flat
+segment does not guarantee that the global maximum has been reached.
+Users can continue the optimization, as shown below.</p>
 <div id="spoiler5" style="display:none">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># the same code as for generating example for Metropolis-Hastings above</span></span>
+<code class="sourceCode R"><span><span class="co"># Generate data as in the Metropolis-Hastings example above,</span></span>
+<span><span class="co"># with a fixed seed for all random draws.</span></span>
 <span></span>
 <span><span class="va">perm_size</span> <span class="op">&lt;-</span> <span class="fl">70</span></span>
-<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
-<span><span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate</span></span>
 <span><span class="va">number_of_observations</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>,</span>
-<span>  code <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2022</span>, <span class="op">{</span></span>
+<span>  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">perm_size</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># Assume we don't know the mean</span></span>
+<span>  <span class="va">sigma_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">perm_size</span> <span class="op">*</span> <span class="va">perm_size</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">perm_size</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># sigma_matrix is the real covariance matrix, that we want to estimate based on Z</span></span>
+<span>  <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">number_of_observations</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma_matrix</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 50 70</span></span>
@@ -630,22 +635,33 @@ Show/hide data preparation
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">number_of_observations</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">50</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="va">g_map</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2023</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g</span>, max_iter <span class="op">=</span> <span class="fl">50</span>, optimizer <span class="op">=</span> <span class="st">"Metropolis_Hastings"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; ==============================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/continuing_2-1.png" class="r-plt" alt="" width="700"></p>
-<p>The algorithm was still significantly improving the permutation. It
-is reasonable to continue it:</p>
+<p>We see the value is still increasing steadily. We now run 100
+additional iterations and compare the best results before and after the
+continuation:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">100</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g_map2</span> <span class="op">&lt;-</span> <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">2024</span>,</span>
+<span>  code <span class="op">=</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_map</span>, max_iter <span class="op">=</span> <span class="fl">100</span>, optimizer <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map2</span>, type <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/continuing_3-1.png" class="r-plt" alt="" width="700"></p>
-<p>The improvement has slowed down significantly. It is fair to stop the
-algorithm here. Keep in mind the y scale is logarithmic. The visually
-“small” improvement between 100 and 150 iterations was huge,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>52</mn></msup><annotation encoding="application/x-tex">10^{52}</annotation></semantics></math>
-times the posteriori.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">log_gain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_posteriories_of_perms.html">compare_log_posteriories_of_perms</a></span><span class="op">(</span></span>
+<span>  <span class="va">g_map2</span>, <span class="va">g_map</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The posterior probability of the best group found after 150
+iterations is approximately
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>227</mn></msup><annotation encoding="application/x-tex">10^{227}</annotation></semantics></math>
+times that of the best group found after 50 iterations. Keep in mind
+that the y scale is logarithmic, so a visually small increase can
+represent a large posterior ratio. Use the plot to decide whether the
+best result is stabilizing and whether to run further iterations.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
@@ -683,7 +699,7 @@ probabilities; saving permutations alone is not enough.</p>
 <p>Probabilities after MH continuation or HC followed by MH use the
 combined saved visited groups. Keep <code>save_all_perms = TRUE</code>
 in every stage, and request probabilities in the final MH call:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1.4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="fl">8</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">g_hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_MAP.html">find_MAP</a></span><span class="op">(</span><span class="va">g_small</span>, optimizer <span class="op">=</span> <span class="st">"HC"</span>, max_iter <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  save_all_perms <span class="op">=</span> <span class="cn">TRUE</span>, show_progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -700,7 +716,7 @@ in every stage, and request probabilities in the final MH call:</p>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
 </h2>
-<p>We encourage everyone to discuss on available and potential new
+<p>We encourage everyone to discuss available and potential new
 optimizers on <a href="https://github.com/PrzeChoj/gips/issues/21" class="external-link">ISSUE#21</a>. One can
 also see why some optimizers were implemented but not yet added to gips
 there.</p>
@@ -712,10 +728,10 @@ there.</p>
 “Model selection in the space of Gaussian models invariant by symmetry.”
 The Annals of Statistics, 50(3) 1747-1774 June 2022. <a href="https://arxiv.org/abs/2004.03503" class="external-link">arXiv link</a>; <a href="https://doi.org/10.1214/22-AOS2174" class="external-link">DOI:
 10.1214/22-AOS2174</a></p>
-<p>[2] “Learning permutation symmetries with gips in R” by
-<code>gips</code> developers Adam Chojecki, Paweł Morgen, and Bartosz
-Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of
-Statistical Software</a>.</p>
+<p>[2] “Learning Permutation Symmetry of a Gaussian Vector with gips in
+R” by <code>gips</code> developers Adam Chojecki, Paweł Morgen, and
+Bartosz Kołodziejek, <a href="https://doi.org/10.18637/jss.v112.i07" class="external-link">Journal of Statistical
+Software</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

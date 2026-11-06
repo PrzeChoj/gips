@@ -40,7 +40,7 @@ results.
 
 - [`compare_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
   [`compare_log_posteriories_of_perms()`](https://przechoj.github.io/gips/reference/compare_posteriories_of_perms.md)
-  : Compare the posteriori probabilities of 2 permutations
+  : Compare the posterior probabilities of 2 permutations
 
 - [`AIC(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/AIC.gips.md)
   [`BIC(`*`<gips>`*`)`](https://przechoj.github.io/gips/reference/AIC.gips.md)

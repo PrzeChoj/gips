@@ -1,4 +1,4 @@
-# Compare the posteriori probabilities of 2 permutations
+# Compare the posterior probabilities of 2 permutations
 
 Check which permutation is more likely and how much more likely.
 
