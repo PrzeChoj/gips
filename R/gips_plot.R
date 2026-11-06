@@ -30,7 +30,7 @@
 #'
 #' The default value is `NA`, which will be changed to "heatmap" for
 #'     non-optimized `gips` objects and to "both" for optimized ones.
-#'     Using the default produces a warning.
+#'     Using the default produces a message.
 #' 
 #' **Multi-sample note:** Heatmap types produce one facet per group.
 #'     Convergence plots use the combined log-posterior optimized by
