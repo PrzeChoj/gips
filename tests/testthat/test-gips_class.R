@@ -721,11 +721,11 @@ test_that("print.gips() works", {
   )
   expect_output(
     print(g, log_value = TRUE),
-    "The permutation \\(\\):\n - is 1 times more likely than the \\(\\) permutation;\n - has log posteriori"
+    "The permutation \\(\\):\n - is 1 times more likely than the \\(\\) permutation;\n - has log posterior"
   )
   expect_output(
     print(g_map),
-    "\n - was found after 10 posteriori calculations;\n - is"
+    "\n - was found after 10 posterior calculations;\n - is"
   )
 
   # oneline:
@@ -735,11 +735,11 @@ test_that("print.gips() works", {
   )
   expect_output(
     print(g, oneline = TRUE, log_value = TRUE),
-    "permutation; has log posteriori "
+    "permutation; has log posterior "
   )
   expect_output(
     print(g_map, oneline = TRUE),
-    ": was found after 10 posteriori calculations; is"
+    ": was found after 10 posterior calculations; is"
   )
 })
 
