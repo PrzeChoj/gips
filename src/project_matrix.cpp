@@ -22,14 +22,14 @@ List project_matrices_cpp_impl_(List matrices, IntegerVector sigma) {
   inputs.reserve(matrix_count);
   projected.reserve(matrix_count);
 
-  NumericMatrix first_matrix(matrices[0]);
+  NumericMatrix first_matrix = as<NumericMatrix>(matrices[0]);
   const int size = first_matrix.nrow();
 
   if (sigma.size() != size) {
     stop("`sigma` must have the same length as the size of `S`.");
   }
   for (int matrix_index = 0; matrix_index < matrix_count; ++matrix_index) {
-    NumericMatrix current_matrix(matrices[matrix_index]);
+    NumericMatrix current_matrix = as<NumericMatrix>(matrices[matrix_index]);
     if (current_matrix.nrow() != size || current_matrix.ncol() != size) {
       stop("Every matrix in `matrices` must be square and match the length of `sigma`.");
     }
