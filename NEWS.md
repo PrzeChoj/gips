@@ -15,6 +15,7 @@
 
 ### Bugfixes:
 
+* Improved documentation and examples in function help, vignettes, and the README.
 * `find_MAP()` now rejects any further optimization when the object's last
   optimization used Brute Force, including after `forget_perms()`.
 * Fixed duplicated boundary states in MH-only continuation histories.
