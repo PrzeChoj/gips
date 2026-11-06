@@ -198,7 +198,7 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
 We can see the standard estimator of the covariance matrix:
-$$\hat{\Sigma} = (1/n) \cdot  \Sigma_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
+$$\hat{\Sigma} = (1/n) \cdot  \sum_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)$$
 It is not MLE (again, because MLE does not exist for $n < p$):
 
 ``` r
@@ -263,6 +263,14 @@ and additional reasonable assumptions.
 
 Note that the rank of the `S` matrix was 4, while the rank of the
 `S_projected` matrix was 6 (full rank).
+
+`gips` also supports multiple independent samples with a shared
+permutation symmetry and separate covariance matrices. Supply a list of
+sample covariance matrices and a vector of sample sizes; all matrices
+must describe the same variables in the same order. See the
+[Multi-sample
+example](https://przechoj.github.io/gips/articles/gips.html#multi-sample-example)
+in the introductory vignette for a complete workflow.
 
 # Further reading
 

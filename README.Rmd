@@ -233,6 +233,12 @@ We see `gips` found the data's structure, and we could estimate the covariance m
 Note that the rank of the `S` matrix was `r qr(S)$rank`, while the rank of the
 `S_projected` matrix was `r qr(S_projected)$rank` (full rank).
 
+`gips` also supports multiple independent samples with a shared permutation
+symmetry and separate covariance matrices. Supply a list of sample covariance
+matrices and a vector of sample sizes; all matrices must describe the same
+variables in the same order. See the [Multi-sample example](https://przechoj.github.io/gips/articles/gips.html#multi-sample-example)
+in the introductory vignette for a complete workflow.
+
 
 # Further reading
 
