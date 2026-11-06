@@ -21,6 +21,7 @@
 
 #### Bugfixes:
 
+- Fixed compilation of covariance projection code with C++11.
 - Improved documentation and examples in function help, vignettes, and
   the README.
 - [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
