@@ -58,7 +58,7 @@ print(g, digits = 4, oneline = TRUE)
 \item \code{\link[=find_MAP]{find_MAP()}} - The function that makes
 an optimized \code{gips} object out of the unoptimized one.
 \item \code{\link[=compare_posteriories_of_perms]{compare_posteriories_of_perms()}} - The function that prints
-the compared posteriories between any two permutations,
+the compared posteriors between any two permutations,
 not only compared to the starting one or id.
 }
 }

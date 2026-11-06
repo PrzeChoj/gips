@@ -65,7 +65,7 @@
 #'     At least 2. For `optimizer = "BF"`, it is not used;
 #'     for `optimizer = "MH"`, it has to be finite;
 #'     for `optimizer = "HC"`, it can be infinite.
-#' @param optimizer The optimizer for the search of the maximum posteriori:
+#' @param optimizer The optimizer used to find the maximum a posteriori estimate:
 #'   * `"BF"` (the default for unoptimized `g` with `perm size <= 10`) - Brute Force;
 #'   * `"MH"` (the default for unoptimized `g` with `perm size > 10`) - Metropolis-Hastings;
 #'   * `"HC"` - Hill Climbing;
@@ -342,7 +342,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
         "You provided `optimizer == (",
         paste0(optimizer, collapse = ", "), ")`."
       ),
-      "i" = "Did You misspell the optimizer name?"
+      "i" = "Did you misspell the optimizer name?"
     ))
   }
   # default optimizer:
@@ -373,7 +373,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
         paste0(possible_optimizers, collapse = "', '"), "')."
       ),
       "x" = paste0("You provided `optimizer == '", optimizer, "'`."),
-      "i" = "Did You misspell the optimizer name?"
+      "i" = "Did you misspell the optimizer name?"
     ))
   }
 
@@ -395,8 +395,8 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`max_iter = NA` can be provided only for `optimizer` one of: c('BF', 'brute_force', 'full'). For any other, `max_iter` must be a whole number, strictly bigger than 1.",
       "x" = paste0("You provided `optimizer == ", optimizer, "` and `max_iter = NA`."),
-      "i" = "Did You forget to set the `max_iter`?",
-      "i" = "Did You misspell the optimizer name?"
+      "i" = "Did you forget to set the `max_iter`?",
+      "i" = "Did you misspell the optimizer name?"
     ))
   }
 
@@ -406,8 +406,8 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
       rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "`optimizer == 'continue'` can be provided only with an optimized gips object `g`.",
         "x" = "You provided `optimizer == 'continue'`, but the gips object `g` is not optimized.",
-        "i" = "Did You provide wrong `gips` object?",
-        "i" = "Did You want to call another optimizer like 'MH' or 'HC'?"
+        "i" = "Did you provide wrong `gips` object?",
+        "i" = "Did you want to call another optimizer like 'MH' or 'HC'?"
       ))
     }
 
@@ -418,7 +418,7 @@ validate_find_MAP_optimizer_arguments <- function(g, max_iter, optimizer, return
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "Probabilities can only be returned with the `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`",
       "x" = "You provided both `!(optimizer %in% c('Metropolis_Hastings', 'brute_force'))` and `return_probabilities == TRUE`!",
-      "i" = "Did You want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FALSE`?"
+      "i" = "Did you want to use `optimizer == 'Metropolis_Hastings'` or `optimizer == 'brute_force'`, or `return_probabilities == FALSE`?"
     ))
   }
 
@@ -482,7 +482,7 @@ Metropolis_Hastings_optimizer <- function(
   }
 
   my_goal_function <- function(perm, i) {
-    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -491,7 +491,7 @@ Metropolis_Hastings_optimizer <- function(
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
+        "x" = paste0("The posterior value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
       ))
@@ -670,7 +670,7 @@ hill_climbing_optimizer <- function(
 
 
   my_goal_function <- function(perm, i) {
-    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -679,7 +679,7 @@ hill_climbing_optimizer <- function(
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
+        "x" = paste0("The posterior value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for D_matrix with huge values. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
       ))
@@ -703,7 +703,7 @@ hill_climbing_optimizer <- function(
   goal_function_best_logvalues[1] <- my_goal_function(current_perm, 0)
   log_posteriori_values[1] <- goal_function_best_logvalues[1]
 
-  # mail loop
+  # main loop
   iteration <- 0
   did_converge <- FALSE
   while (iteration <= max_iter - 1) {
@@ -844,7 +844,7 @@ brute_force_optimizer <- function(
   }
 
   my_goal_function <- function(perm, i) {
-    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If You really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
+    out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
     )
@@ -853,7 +853,7 @@ brute_force_optimizer <- function(
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::abort(c(
         "gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
+        "x" = paste0("The posterior value of ", ifelse(is.nan(out_val), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
       ))

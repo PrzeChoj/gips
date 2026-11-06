@@ -47,11 +47,11 @@ section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 \item \code{S_matrix} - the underlying matrix.
 This matrix will be used in calculations of
-the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+the posterior value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{number_of_observations} - the number of observations that
 were observed for the \code{S_matrix} to be calculated.
 This value will be used in calculations of
-the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+the posterior value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
 \item \code{TRUE} means the \code{S} parameter was the output of \code{\link[stats:cov]{stats::cov()}} function;
@@ -74,10 +74,10 @@ value the found permutation has.
 represented before optimization. It is the first visited permutation.
 \item \code{start_permutation_log_posteriori} - the log of the A Posteriori
 value the start permutation has.
-\item \code{times_more_likely_than_start} - how many more likely
+\item \code{times_more_likely_than_start} - how many times more likely
 the \code{found_permutation} is over the \code{start_permutation}.
 It cannot be a number less than 1.
-Remember that this number can big and overflow to \code{Inf}.
+Remember that this number can become large and overflow to \code{Inf}.
 \item \code{log_times_more_likely_than_start} - log of
 \code{times_more_likely_than_start}.
 \item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
@@ -95,11 +95,11 @@ section in \code{vignette("Theory", package = "gips")} or in its
 \href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 \item \code{S_matrix} - the underlying matrix.
 This matrix will be used in calculations of
-the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+the posterior value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{number_of_observations} - the number of observations that
 were observed for the \code{S_matrix} to be calculated.
 This value will be used in calculations of
-the posteriori value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+the posterior value in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 \item \code{was_mean_estimated} - given by the user while creating the \code{gips} object:
 \itemize{
 \item \code{TRUE} means the \code{S} parameter was output of the \code{\link[stats:cov]{stats::cov()}} function;

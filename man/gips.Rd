@@ -151,10 +151,10 @@ The hyperparameters affect symmetry selection. For a fixed permutation,
 
 For a brief introduction, see the \strong{Bayesian model selection}
 section in \code{vignette("Theory", package = "gips")} or in its
-\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}).
+\href{https://przechoj.github.io/gips/articles/Theory.html}{pkgdown page}.
 
 For analysis of the Hyperparameters influence, see \strong{Section 3.2.}
-of "Learning permutation symmetries with gips in R"
+of "Learning Permutation Symmetry of a Gaussian Vector with gips in R"
 by \code{gips} developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
 Journal of Statistical Software; \doi{10.18637/jss.v112.i07}.
 }

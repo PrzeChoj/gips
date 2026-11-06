@@ -20,7 +20,7 @@ and the beginning of
 }
 \description{
 Finds constants necessary for internal calculations of integrals and
-eventually the posteriori probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
+eventually the posterior probability in \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}}.
 }
 \details{
 Uses \href{https://arxiv.org/abs/2004.03503}{Theorem 5 from references}

@@ -1,7 +1,7 @@
 #' Get Structure Constants
 #'
 #' Finds constants necessary for internal calculations of integrals and
-#' eventually the posteriori probability in [log_posteriori_of_gips()].
+#' eventually the posterior probability in [log_posteriori_of_gips()].
 #'
 #' Uses [Theorem 5 from references](https://arxiv.org/abs/2004.03503)
 #' to calculate the constants.

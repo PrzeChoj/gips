@@ -788,7 +788,7 @@ test_that("plot.gips() works or abords for wrong arguments", {
 
   expect_error(
     plot.gips(g1_found, type = "non_existing"),
-    "Did You misspell the 'type' argument?"
+    "Did you misspell the 'type' argument?"
   )
   
   # n0 only for M-H
@@ -1114,7 +1114,7 @@ test_that("get_probabilities_from_gips() works", {
 
   expect_error(
     get_probabilities_from_gips(g),
-    "Did You forget to optimize `g`?"
+    "Did you forget to optimize `g`?"
   )
 
   g_map_no_prob <- find_MAP(g,

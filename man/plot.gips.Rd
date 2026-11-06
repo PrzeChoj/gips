@@ -39,7 +39,7 @@ For multi-sample objects, produces faceted heatmaps (one panel per group).
 \item \code{"both"} - Shows both trajectories from "all" and "best".
 \item \code{"n0"} - Plots the \code{n0} values observed during optimization
 (only for "MH" optimization).
-\item \code{"block_heatmap"} - Plots a heatmap of diagonally block representation of \code{S}.
+\item \code{"block_heatmap"} - Plots a heatmap of the block-diagonal representation of \code{S}.
 Non-block entries (equal to 0) are white for better clarity.
 For more information, see \strong{Block Decomposition - [1], Theorem 1}
 section in \code{vignette("Theory", package = "gips")} or in its

@@ -97,7 +97,7 @@ Remember, we analyze the covariance matrix. We can see some nearly
 identical colors in the estimated covariance matrix. E.g., variances of
 columns 1 and 2 are very similar (`S[1,1]` $\approx$ `S[2,2]`), and
 variances of columns 3 and 4 are very similar (`S[3,3]` $\approx$
-`S[4,4]`). What is more, Covariances are also similar (`S[1,3]`
+`S[4,4]`). What is more, covariances are also similar (`S[1,3]`
 $\approx$ `S[1,4]` $\approx$ `S[2,3]` $\approx$ `S[2,4]`). Are those
 approximate equalities coincidental? Or do they reflect some underlying
 data properties? It is hard to decide purely by looking at the matrix.
@@ -112,7 +112,7 @@ g_MAP <- find_MAP(g, optimizer = "brute_force")
 
 g_MAP
 #> The permutation (1,2)(3,4):
-#>  - was found after 17 posteriori calculations;
+#>  - was found after 17 posterior calculations;
 #>  - is 3.374 times more likely than the () permutation.
 ```
 
@@ -174,8 +174,8 @@ Z <- withr::with_seed(2022,
 <img src="man/figures/README-example_mean_known1_1-1.png" alt="" width="100%" />
 
 Suppose we do not know the actual covariance matrix $\Sigma$ and we want
-to estimate it. We cannot use the standard MLE because it does not
-exists ($4 < 6$, $n < p$).
+to estimate it. We cannot use the standard MLE because it does not exist
+($4 < 6$, $n < p$).
 
 We will assume it was generated from the normal distribution with the
 mean $0$.
@@ -216,7 +216,7 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 
 g_map
 #> The permutation (1,2,3,4,5,6):
-#>  - was found after 362 posteriori calculations;
+#>  - was found after 362 posterior calculations;
 #>  - is 118.863 times more likely than the () permutation.
 ```
 
@@ -279,9 +279,9 @@ For more examples and introduction, see
 page](https://przechoj.github.io/gips/articles/gips.html).
 
 For an in-depth analysis of the package performance, capabilities, and
-comparison with similar packages, see the article “Learning permutation
-symmetries with gips in R” by `gips` developers Adam Chojecki, Paweł
-Morgen, and Bartosz Kołodziejek, [Journal of Statistical
+comparison with similar packages, see the article “Learning Permutation
+Symmetry of a Gaussian Vector with gips in R” by `gips` developers Adam
+Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical
 Software](https://doi.org/10.18637/jss.v112.i07).
 
 # Acknowledgment

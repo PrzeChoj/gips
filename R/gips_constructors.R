@@ -81,10 +81,10 @@
 #'
 #' For a brief introduction, see the **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
-#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html)).
+#' [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'
 #' For analysis of the Hyperparameters influence, see **Section 3.2.**
-#' of "Learning permutation symmetries with gips in R"
+#' of "Learning Permutation Symmetry of a Gaussian Vector with gips in R"
 #' by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek,
 #' Journal of Statistical Software; \doi{10.18637/jss.v112.i07}.
 #'
@@ -790,7 +790,7 @@ abort_on_argument_problems <- function(abort_text, additional_info = 0) {
 
   abort_text <- c(
     abort_text,
-    ">" = "If You think You've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
+    ">" = "If you think you've found a bug in a package, please open an ISSUE on https://github.com/PrzeChoj/gips/issues"
   )
 
   rlang::abort(abort_text)
@@ -888,7 +888,7 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
       rlang::abort(c("There was a problem identified with the provided arguments:",
         "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
         "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
-        "i" = "Did You want to set `save_all_perms = TRUE`?"
+        "i" = "Did you want to set `save_all_perms = TRUE`?"
       ))
     }
     return(invisible(NULL))
@@ -914,8 +914,8 @@ check_find_MAP_arguments <- function(S, number_of_observations, max_iter, start_
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "For calculations of probabilities, all perms have to be available after the optimization process.",
       "x" = "You provided `return_probabilities == TRUE` and `save_all_perms == FALSE`!",
-      "i" = "Did You want to set `save_all_perms = TRUE`?",
-      "i" = "Did You want to set `return_probabilities = FALSE`?",
+      "i" = "Did you want to set `save_all_perms = TRUE`?",
+      "i" = "Did you want to set `return_probabilities = FALSE`?",
       "!" = paste0(
         "Remember that setting `return_probabilities == TRUE` can be computationally costly",
         ifelse(show_progress_bar, " and second progress bar will be shown.", ".")

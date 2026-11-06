@@ -53,7 +53,7 @@
 #' @returns The logarithm of an unnormalized A Posteriori.
 #'
 #' @examples
-#' # In the space with p = 2, there is only 2 permutations:
+#' # In the space with p = 2, there are only 2 permutations:
 #' perm1 <- permutations::as.cycle("(1)(2)")
 #' perm2 <- permutations::as.cycle("(1,2)")
 #' S1 <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)
@@ -107,7 +107,7 @@ log_posteriori_of_gips <- function(g) {
 
 #' We recommend to use the `log_posteriori_of_gips()` function.
 #' 
-#' If You really want to use `log_posteriori_of_perm()`, remember
+#' If you really want to use `log_posteriori_of_perm()`, remember
 #'  to edit `number_of_observations` if the mean was estimated!
 #' 
 #' @noRd
@@ -155,10 +155,10 @@ log_posteriori_of_perm <- function(perm_proposal, S, number_of_observations,
   out <- Ac_part + G_part + phi_part
 
   if (is.infinite(out)) {
-    rlang::warn("The infinite value of a posteriori was produced.")
+    rlang::warn("The infinite value of the posterior was produced.")
   }
   if (is.nan(out)) {
-    rlang::warn("The NaN value of a posteriori was produced.")
+    rlang::warn("The NaN value of the posterior was produced.")
   }
 
   out
@@ -273,7 +273,7 @@ calculate_log_determinants_of_block_matrices <- function(diagonalised_matrix,
   out
 }
 
-#' Compare the posteriori probabilities of 2 permutations
+#' Compare the posterior probabilities of 2 permutations
 #'
 #' Check which permutation is more likely and how much more likely.
 #'

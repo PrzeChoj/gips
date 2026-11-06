@@ -134,7 +134,7 @@ calculate_G_part <- function(structure_constants, delta, number_of_observations)
         "Gamma integral divergence detected while calculating the G part. ",
         "This should not happen for valid `gips` inputs. ",
         "This follows from the facts that `delta > 1`, `k` is `1` or `2` and `r >= 1`. ",
-        "If You see this, please open an ISSUE on GitHub to let us know."
+        "If you see this, please open an ISSUE on GitHub to let us know."
       ),
       call. = FALSE
     )

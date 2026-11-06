@@ -11,7 +11,7 @@
 #' @param size An integer. Size of a permutation
 #'     (AKA the cardinality of the set on which the permutation is defined. See examples).
 #'
-#' @section Methods for a `gips` class:
+#' @section Methods for a `gips_perm` class:
 #' * [as.character.gips_perm()]
 #' * [print.gips_perm()]
 #'
@@ -29,7 +29,7 @@
 #' gperm <- gips_perm("(12)(45)", 5)
 #' gperm <- gips_perm("(1,2)(4,5)", 5)
 #' gperm <- gips_perm(as.matrix(c(2, 1, 3, 5, 4)), 5)
-#' gperm <- gips_perm(t(as.matrix(c(2, 1, 3, 5, 4))), 5) # both way for a matrix works
+#' gperm <- gips_perm(t(as.matrix(c(2, 1, 3, 5, 4))), 5) # both matrix orientations work
 #' gperm <- gips_perm(list(list(c(2, 1), c(4, 5))), 5)
 #' gperm <- gips_perm(permutations::as.word(c(2, 1, 3, 5, 4)), 5)
 #' gperm <- gips_perm(permutations::as.cycle("(1,2)(4,5)"), 5)

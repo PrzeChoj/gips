@@ -35,8 +35,8 @@ This a posteriori probability function is described in-depth in the **Bayesian m
 
 The space of permutations is enormous - for the permutation of size $p$, the space of all permutations is of size $p!$ ($p$ factorial). Even for $p=12$, this space is practically impossible to browse. This is why `find_MAP()` implements multiple (3) optimizers to choose from:
 
-* `"brute_force"`, `"BF"`, `"full"` | recommend for $p\le 10$.
-* `"Metropolis_Hastings"`, `"MH"`   | recommend for $p\ge 11$.
+* `"brute_force"`, `"BF"`, `"full"` | recommended for $p\le 10$.
+* `"Metropolis_Hastings"`, `"MH"`   | recommended for $p\ge 11$.
 * `"hill_climbing"`, `"HC"`
 
 ### Note on computation time
@@ -421,7 +421,7 @@ S <- cov(Z) # Assume we have to estimate the mean
 
 g <- gips(S, number_of_observations)
 plot(g, type = "heatmap")
-# we will se a warning:
+# we will see a warning:
 g_map <- find_MAP(g, max_iter = 2, optimizer = "hill_climbing")
 g_map
 plot(g_map, type = "best")
@@ -522,14 +522,14 @@ Standalone HC does not support `return_probabilities = TRUE`.
 
 # Discussion
 
-We encourage everyone to discuss on available and potential new optimizers on [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). One can also see why some optimizers were implemented but not yet added to gips there.
+We encourage everyone to discuss available and potential new optimizers on [ISSUE#21](https://github.com/PrzeChoj/gips/issues/21). One can also see why some optimizers were implemented but not yet added to gips there.
 
 
 # References
 
 [1] Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam. "Model selection in the space of Gaussian models invariant by symmetry." The Annals of Statistics, 50(3) 1747-1774 June 2022. [arXiv link](https://arxiv.org/abs/2004.03503); [DOI: 10.1214/22-AOS2174](https://doi.org/10.1214/22-AOS2174)
 
-[2] "Learning permutation symmetries with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
+[2] "Learning Permutation Symmetry of a Gaussian Vector with gips in R" by `gips` developers Adam Chojecki, Paweł Morgen, and Bartosz Kołodziejek, [Journal of Statistical Software](https://doi.org/10.18637/jss.v112.i07).
 
 ```{r options_back, include = FALSE}
 options(old_options) # back to the original options

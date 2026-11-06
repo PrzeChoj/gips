@@ -146,11 +146,11 @@ get_coprimes <- function(n) {
 #' We use the "second approach" from the paper.
 #'
 #' @param perms An output of `permutations::allperms()`.
-#' @param log_posteriories A vector of all values of log posteriories of all `perms`.
+#' @param log_posteriories A vector of log-posterior values for all `perms`.
 #' @param show_progress_bar A boolean. Indicate whether or not to show two progress bars.
 #'
 #' @returns A named numeric vector. Names: character representations of permutations.
-#' Elements: estimated posterior probabilities of permutations.
+#' Elements: exact posterior probabilities of cyclic groups represented by permutations.
 #' @noRd
 calculate_probabilities <- function(perms, log_posteriories, show_progress_bar = FALSE) {
   if (show_progress_bar) {

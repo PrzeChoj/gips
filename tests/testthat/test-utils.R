@@ -112,7 +112,7 @@ test_that("scalar identity detection distinguishes nearly scalar matrices at dif
   }
 })
 
-test_that("change_log_probabilities_unnorm_to_probabilities forks as intendent", {
+test_that("change_log_probabilities_unnorm_to_probabilities works as intended", {
   desired_probs <- c(0.1, 0.2, 0.3, 0.4)
   changed_probs <- log(desired_probs) + runif(1, -1000, 1000)
   est_desired_probs <- change_log_probabilities_unnorm_to_probabilities(changed_probs)

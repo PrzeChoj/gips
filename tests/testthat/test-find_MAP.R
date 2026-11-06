@@ -408,7 +408,7 @@ test_that("Warns when found group has n0 > n", {
   )
 })
 
-test_that("find_MAP() can gues the correct optimizer and message the user", {
+test_that("find_MAP() can guess the correct optimizer and message the user", {
   g <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
 
   # can guess:

@@ -21,7 +21,7 @@ At least 2. For \code{optimizer = "BF"}, it is not used;
 for \code{optimizer = "MH"}, it has to be finite;
 for \code{optimizer = "HC"}, it can be infinite.}
 
-\item{optimizer}{The optimizer for the search of the maximum posteriori:
+\item{optimizer}{The optimizer used to find the maximum a posteriori estimate:
 \itemize{
 \item \code{"BF"} (the default for unoptimized \code{g} with \verb{perm size <= 10}) - Brute Force;
 \item \code{"MH"} (the default for unoptimized \code{g} with \verb{perm size > 10}) - Metropolis-Hastings;

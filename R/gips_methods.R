@@ -20,7 +20,7 @@
 #' * [find_MAP()] - The function that makes
 #'     an optimized `gips` object out of the unoptimized one.
 #' * [compare_posteriories_of_perms()] - The function that prints
-#'     the compared posteriories between any two permutations,
+#'     the compared posteriors between any two permutations,
 #'     not only compared to the starting one or id.
 #'
 #' @section Multi-sample:
@@ -46,7 +46,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
+        "x" = paste0("The posterior value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -81,7 +81,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     if (is.nan(log_posteriori) || is.infinite(log_posteriori)) {
       # See ISSUE#5; We hope the implementation of log calculations have stopped this problem.
       rlang::warn(c("gips is yet unable to process this S matrix, and produced a NaN or Inf value while trying.",
-        "x" = paste0("The posteriori value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
+        "x" = paste0("The posterior value of ", ifelse(is.nan(log_posteriori), "NaN", "Inf"), " occurred!"),
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5."
       ))
     }
@@ -89,7 +89,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     printing_text <- c(printing_text, paste0(
       "was found after ",
       length(attr(x, "optimization_info")[["log_posteriori_values"]]),
-      " posteriori calculations"
+      " posterior calculations"
     ))
 
     if (compare_to_original) {
@@ -105,7 +105,7 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     printing_text <- c(
       printing_text,
       paste0(
-        "has log posteriori ",
+        "has log posterior ",
         round(log_posteriori, digits = digits)
       )
     )
@@ -199,11 +199,11 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'   8. `S_matrix` - the underlying matrix.
 #'       This matrix will be used in calculations of
-#'       the posteriori value in [log_posteriori_of_gips()].
+#'       the posterior value in [log_posteriori_of_gips()].
 #'   9. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated.
 #'       This value will be used in calculations of
-#'       the posteriori value in [log_posteriori_of_gips()].
+#'       the posterior value in [log_posteriori_of_gips()].
 #'   10. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * `TRUE` means the `S` parameter was the output of [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
@@ -222,10 +222,10 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       represented before optimization. It is the first visited permutation.
 #'   5. `start_permutation_log_posteriori` - the log of the A Posteriori
 #'       value the start permutation has.
-#'   6. `times_more_likely_than_start` - how many more likely
+#'   6. `times_more_likely_than_start` - how many times more likely
 #'       the `found_permutation` is over the `start_permutation`.
 #'       It cannot be a number less than 1.
-#'       Remember that this number can big and overflow to `Inf`.
+#'       Remember that this number can become large and overflow to `Inf`.
 #'   7. `log_times_more_likely_than_start` - log of
 #'       `times_more_likely_than_start`.
 #'   8. `likelihood_ratio_test_statistics`, `likelihood_ratio_test_p_value` - 
@@ -243,11 +243,11 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       [pkgdown page](https://przechoj.github.io/gips/articles/Theory.html).
 #'   10. `S_matrix` - the underlying matrix.
 #'       This matrix will be used in calculations of
-#'       the posteriori value in [log_posteriori_of_gips()].
+#'       the posterior value in [log_posteriori_of_gips()].
 #'   11. `number_of_observations` - the number of observations that
 #'       were observed for the `S_matrix` to be calculated.
 #'       This value will be used in calculations of
-#'       the posteriori value in [log_posteriori_of_gips()].
+#'       the posterior value in [log_posteriori_of_gips()].
 #'   12. `was_mean_estimated` - given by the user while creating the `gips` object:
 #'       * `TRUE` means the `S` parameter was output of the [stats::cov()] function;
 #'       * `FALSE` means the `S` parameter was calculated with
@@ -1113,7 +1113,7 @@ BIC.gips <- function(object, ...) {
 #'     is called on the output of
 #'     `find_MAP(return_probabilities = TRUE, save_all_perms = TRUE)`.
 #' * `vignette("Optimizers", package = "gips")` or its
-#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html)) -
+#'     [pkgdown page](https://przechoj.github.io/gips/articles/Optimizers.html) -
 #'     A place to learn more about the available optimizers.
 #'
 #' @examples
@@ -1132,8 +1132,8 @@ get_probabilities_from_gips <- function(g) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`gips` object has to be optimized with `find_MAP(return_probabilities=TRUE)` to use `get_probabilities_from_gips()` function.",
       "x" = "You did not optimize `g`.",
-      "i" = "Did You use the wrong `g` as an argument for this function?",
-      "i" = "Did You forget to optimize `g`?"
+      "i" = "Did you use the wrong `g` as an argument for this function?",
+      "i" = "Did you forget to optimize `g`?"
     ))
   }
 
@@ -1144,8 +1144,8 @@ get_probabilities_from_gips <- function(g) {
     rlang::inform(c(
       "You called `get_probabilities_from_gips(g)` on the `gips` object that does not have saved probabilities.",
       "x" = "`NULL` will be returned",
-      "i" = "Did You use the wrong `g` as an argument for this function?",
-      "i" = "Did You forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?"
+      "i" = "Did you use the wrong `g` as an argument for this function?",
+      "i" = "Did you forget to optimize with `g <- find_MAP(return_probabilities = TRUE)`?"
     ))
     return(NULL)
   }
@@ -1203,13 +1203,13 @@ forget_perms <- function(g) {
   if (is.null(optimization_info)) {
     rlang::inform(c(
       "Provided `g` is a `gips` object, but it was not optimized yet.",
-      "i" = "Did You provide the wrong `gips` object?"
+      "i" = "Did you provide the wrong `gips` object?"
     ))
   } else {
     if (all(is.na(optimization_info[["visited_perms"]]))) {
       rlang::inform(c(
         "Provided `g` is an optimized `gips` object that already has forgotten all permutations.",
-        "i" = "Did You provide the wrong `gips` object?"
+        "i" = "Did you provide the wrong `gips` object?"
       ))
     } else {
       optimization_info[["visited_perms"]] <- I(NA)

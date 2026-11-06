@@ -21,7 +21,7 @@
 #'   * `"both"` - Shows both trajectories from "all" and "best".
 #'   * `"n0"` - Plots the `n0` values observed during optimization
 #'       (only for "MH" optimization).
-#'   * `"block_heatmap"` - Plots a heatmap of diagonally block representation of `S`.
+#'   * `"block_heatmap"` - Plots a heatmap of the block-diagonal representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information, see **Block Decomposition - \[1\], Theorem 1**
 #'       section in `vignette("Theory", package = "gips")` or in its
@@ -115,7 +115,7 @@ plot.gips <- function(x, type = NA,
 
   if (length(type) != 1) {
     rlang::abort(c("There was a problem identified with the provided arguments:",
-      "i" = "`type` must be an character vector of length 1.",
+      "i" = "`type` must be a character vector of length 1.",
       "x" = paste0("You provided `type` with length ", length(type), " which is wrong!")
     ))
   }
@@ -141,7 +141,7 @@ plot.gips <- function(x, type = NA,
     rlang::abort(c("There was a problem identified with the provided arguments:",
       "i" = "`type` must be one of: c('heatmap', 'MLE', 'block_heatmap', 'all', 'best', 'both', 'n0').",
       "x" = paste0("You provided `type == ", type, "`."),
-      "i" = "Did You misspell the 'type' argument?"
+      "i" = "Did you misspell the 'type' argument?"
     ))
   }
 
@@ -152,14 +152,14 @@ plot.gips <- function(x, type = NA,
         "There was a problem identified with the provided arguments:",
         "i" = "For non-optimized `gips` objects only the `type = 'heatmap', 'MLE' or 'block_heatmap'` can be used.",
         "x" = paste0(
-          "You did not optimized `x` and provided `type = '",
+          "You did not optimize `x` and provided `type = '",
           type, "'`."
         ),
         "i" = paste0(
-          "Did You want to call `x <- find_MAP(g)` and then `plot(x, type = '",
+          "Did you want to call `x <- find_MAP(g)` and then `plot(x, type = '",
           type, "')`?"
         ),
-        "i" = "Did You want to use `type = 'heatmap'`?"
+        "i" = "Did you want to use `type = 'heatmap'`?"
       )
     )
   }
@@ -445,7 +445,7 @@ plot_gips_convergence <- function(x, type,
                                   show_legend,
                                   ylim, xlim) {
   if (is.null(ylabel)) {
-    ylabel <- ifelse(logarithmic_y, "log posteriori", "posteriori")
+    ylabel <- ifelse(logarithmic_y, "log posterior", "posterior")
   }
   if (is.null(xlabel)) {
     xlabel <- ifelse(logarithmic_x,

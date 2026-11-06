@@ -3,7 +3,7 @@
 \name{compare_posteriories_of_perms}
 \alias{compare_posteriories_of_perms}
 \alias{compare_log_posteriories_of_perms}
-\title{Compare the posteriori probabilities of 2 permutations}
+\title{Compare the posterior probabilities of 2 permutations}
 \usage{
 compare_posteriories_of_perms(
   perm1,

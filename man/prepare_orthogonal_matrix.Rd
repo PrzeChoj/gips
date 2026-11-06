@@ -50,7 +50,7 @@ U_Gamma <- prepare_orthogonal_matrix(gperm)
 number_of_observations <- 10
 X <- matrix(rnorm(5 * number_of_observations), number_of_observations, 5)
 S <- cov(X)
-X <- project_matrix(S, perm = gperm) # this matrix in invariant under gperm
+X <- project_matrix(S, perm = gperm) # this matrix is invariant under gperm
 
 block_decomposition <- t(U_Gamma) \%*\% X \%*\% U_Gamma
 round(block_decomposition, 5) # the non-zeros only on diagonal and [1,2] and [2,1]

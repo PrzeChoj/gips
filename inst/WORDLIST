@@ -36,6 +36,8 @@ arXiv
 arg
 argmax
 attr
+bigl
+bigr
 cardinality
 cdot
 circ
@@ -54,6 +56,7 @@ forall
 frac
 ge
 ifelse
+infty
 inv
 iter
 iteratively
@@ -83,10 +86,10 @@ pbmcapply
 pbmclapply
 pkgdown
 posteriori
-posteriories
 precomputed
 programme
 rangle
+rescaled
 rescaling
 rnorm
 roxygen

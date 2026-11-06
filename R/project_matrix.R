@@ -127,7 +127,7 @@ project_matrix <- function(S, perm, precomputed_equal_indices = NULL) {
       "i" = "`project_matrix()` is designed for positive semi-definite matrices",
       "x" = "You provided `S` that is not positive semi-definite matrix",
       "*" = "`gips` can still project this matrix on the provided permutation",
-      "i" = "Did You provide the wrong `S` matrix?"
+      "i" = "Did you provide the wrong `S` matrix?"
     ), class = "not_positive_semi_definite_matrix")
   }
 
