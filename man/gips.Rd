@@ -128,20 +128,26 @@ the \code{\link[=find_MAP]{find_MAP()}} function to do it. See the examples belo
 
 We encourage you to try \code{D_matrix = d * I}, where \code{I} is a \code{p} \eqn{\times}
 \code{p} identity matrix and \code{d > 0} for some different \code{d}.
-When \code{d} is small compared to the data (e.g., \code{d=0.1 * mean(diag(S))}),
-bigger structures will be found.
-When \code{d} is big compared to the data (e.g., \code{d=100 * mean(diag(S))}),
-the posterior distribution does not depend on the data.
+Smaller \code{d} favor models with more equality constraints and fewer
+free covariance parameters. This tendency depends on the data and \code{delta}.
+For fixed dimension, sample size and \code{delta}, as \code{d} tends to infinity,
+the posterior distribution over symmetry groups converges to a
+distribution independent of \code{S}.
 
-Taking \code{D_matrix = d * I} is equivalent to setting \code{S <- S / d}.
+Using \code{S} with \code{D_matrix = d * I} gives the same results
+as using \code{S / d} with \code{D_matrix = I},
+with the other parameters unchanged.
 
 The default for \code{D_matrix} is \code{D_matrix = d * I}, where
-\code{d = mean(diag(S))}, which is equivalent to modifying \code{S}
-so that the mean value on the diagonal is 1.
+\code{d = mean(diag(S))}. For group selection, this is equivalent to using
+\code{S / d} with \code{D_matrix = I}, so that the mean diagonal entry of \code{S / d} is 1.
 
-In the Bayesian model, the prior distribution for
-the covariance matrix is a generalized case of
-\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}.
+The Bayesian model uses a
+\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart-type prior}
+on the precision matrix (the inverse covariance matrix).
+
+The hyperparameters affect symmetry selection. For a fixed permutation,
+\code{\link[=project_matrix]{project_matrix()}} does not use \code{delta} or \code{D_matrix}.
 
 For a brief introduction, see the \strong{Bayesian model selection}
 section in \code{vignette("Theory", package = "gips")} or in its

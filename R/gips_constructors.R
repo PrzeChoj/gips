@@ -58,20 +58,26 @@
 #' @section Hyperparameters:
 #' We encourage you to try `D_matrix = d * I`, where `I` is a `p` \eqn{\times}
 #'     `p` identity matrix and `d > 0` for some different `d`.
-#' When `d` is small compared to the data (e.g., `d=0.1 * mean(diag(S))`),
-#'     bigger structures will be found.
-#' When `d` is big compared to the data (e.g., `d=100 * mean(diag(S))`),
-#'     the posterior distribution does not depend on the data.
+#' Smaller `d` favor models with more equality constraints and fewer
+#'     free covariance parameters. This tendency depends on the data and `delta`.
+#' For fixed dimension, sample size and `delta`, as `d` tends to infinity,
+#'     the posterior distribution over symmetry groups converges to a
+#'     distribution independent of `S`.
 #'
-#' Taking `D_matrix = d * I` is equivalent to setting `S <- S / d`.
+#' Using `S` with `D_matrix = d * I` gives the same results
+#' as using `S / d` with `D_matrix = I`,
+#' with the other parameters unchanged.
 #'
 #' The default for `D_matrix` is `D_matrix = d * I`, where
-#' `d = mean(diag(S))`, which is equivalent to modifying `S`
-#' so that the mean value on the diagonal is 1.
+#' `d = mean(diag(S))`. For group selection, this is equivalent to using
+#' `S / d` with `D_matrix = I`, so that the mean diagonal entry of `S / d` is 1.
 #'
-#' In the Bayesian model, the prior distribution for
-#' the covariance matrix is a generalized case of
-#' [Wishart distribution](https://en.wikipedia.org/wiki/Wishart_distribution).
+#' The Bayesian model uses a
+#' [Wishart-type prior](https://en.wikipedia.org/wiki/Wishart_distribution)
+#' on the precision matrix (the inverse covariance matrix).
+#'
+#' The hyperparameters affect symmetry selection. For a fixed permutation,
+#' [project_matrix()] does not use `delta` or `D_matrix`.
 #'
 #' For a brief introduction, see the **Bayesian model selection**
 #' section in `vignette("Theory", package = "gips")` or in its
