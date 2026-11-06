@@ -77,9 +77,9 @@ of how many times the `perm1` is more likely than `perm2`.
 
 When comparing permutations for a multi-sample `gips` object, or when
 passing multi-sample arguments directly, the comparison uses the
-combined log-posterior (the sum of per-group log-posteriors). Two `gips`
-objects can be compared only when they are both single-sample or both
-multi-sample with the same data and hyperparameters.
+combined unnormalized log-posterior (the sum of per-sample log weights).
+Two `gips` objects can be compared only when they are both single-sample
+or both multi-sample with the same data and hyperparameters.
 
 ## See also
 

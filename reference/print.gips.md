@@ -59,7 +59,8 @@ An invisible `NULL`.
 
 For multi-sample `gips` objects the number of observations is shown as a
 vector `n = c(n1, n2, ...)` and the comparison to the starting
-permutation uses the combined log-posterior (sum across groups).
+permutation uses the combined unnormalized log-posterior (sum of
+per-sample log weights).
 
 ## See also
 
