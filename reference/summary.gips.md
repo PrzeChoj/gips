@@ -55,9 +55,11 @@ statistics of the given `gips` object. Those are:
       Likelihood Ratio test, where the \\H_0\\ is that the data was
       drawn from the normal distribution with Covariance matrix
       invariant under the given permutation. The p-value is calculated
-      from the asymptotic distribution. Comparison with the unrestricted
-      model requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
-      estimated.
+      from the asymptotic distribution. For interpretation, see the
+      **Likelihood-ratio test** section in
+      [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md).
+      Comparison with the unrestricted model requires \\n \ge p\\, or
+      \\n \ge p + 1\\ when the mean was estimated.
 
   7.  `n0` - the sample-size threshold: the number of permutation
       cycles, increased by one when `was_mean_estimated = TRUE`. The
@@ -129,9 +131,11 @@ statistics of the given `gips` object. Those are:
       Likelihood Ratio test, where the \\H_0\\ is that the data was
       drawn from the normal distribution with Covariance matrix
       invariant under `found_permutation`. The p-value is calculated
-      from the asymptotic distribution. Comparison with the unrestricted
-      model requires \\n \ge p\\, or \\n \ge p + 1\\ when the mean was
-      estimated.
+      from the asymptotic distribution. For interpretation, see the
+      **Likelihood-ratio test** section in
+      [`vignette("Theory", package = "gips")`](https://przechoj.github.io/gips/articles/Theory.md).
+      Comparison with the unrestricted model requires \\n \ge p\\, or
+      \\n \ge p + 1\\ when the mean was estimated.
 
   9.  `n0` - the sample-size threshold: the number of permutation
       cycles, increased by one when `was_mean_estimated = TRUE`. The
@@ -403,7 +407,7 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.004500866 secs
+#> Time difference of 0.003306627 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -462,7 +466,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.03025651 secs
+#>  0.0227778 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  18
