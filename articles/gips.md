@@ -17,9 +17,11 @@ exactly when both its mean vector and covariance matrix remain unchanged
 under the interchange. For example, consider a Gaussian vector with zero
 mean and the following positive definite covariance matrix. Variables X1
 and X3 are interchangeable, meaning that vectors (X1, X2, X3) and (X3,
-X2, X1) have the same distribution.
+X2, X1) have the same distribution. The plots below show the covariance
+matrix before and after swapping X1 and X3: the axis labels change
+order, but the values in each position remain the same.
 
-![](gips_files/figure-html/symvariant_matrix-1.png)
+![](gips_files/figure-html/symvariant_matrix-1.png)![](gips_files/figure-html/symvariant_matrix-2.png)
 
 Now, we can state this interchangeability property in terms of
 permutations. In our case, the distribution of (X1, X2, X3) is

@@ -301,5 +301,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.03756833 secs
+#>  0.03663039 secs
 ```
