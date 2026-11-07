@@ -362,7 +362,9 @@ A smaller value of the criteria for a given model indicates a better fit.
 Those can be calculated by `AIC.gips()` and `BIC.gips()`.
 
 ### Estimated mean
-When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$. Then in the $\log L$ we use $n-1$ instead of $n$. Definitions of AIC and BIC stay the same.
+When the mean was estimated, we have $S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top$, where $\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}$.
+
+Using $n-1$ instead of $n$ in `logLik()` corresponds to the likelihood of $n-1$ independent Gaussian contrasts that remove an unrestricted mean. AIC and BIC therefore count only covariance parameters and compare models with the same mean specification. BIC retains $\log n$ in its penalty.
 
 
 ### Example
@@ -431,6 +433,13 @@ BIC(g_map) # this is smaller, so this is better
 ```
 
 We will consider a `g_map` better model both in terms of the AIC and the BIC.
+
+
+# Likelihood-ratio test
+
+For a single sample, `summary()` compares the covariance model specified by the current permutation with an unrestricted covariance model. Its p-value uses an asymptotic chi-squared reference distribution for a fixed symmetry model.
+
+The reported p-value does not account for choosing the symmetry on the same data, as in `find_MAP()` followed by `summary()` ("double dipping").
 
 
 # References
