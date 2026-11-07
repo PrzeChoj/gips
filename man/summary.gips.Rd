@@ -37,6 +37,8 @@ statistics and p-value of Likelihood Ratio test, where
 the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 with Covariance matrix invariant under the given permutation.
 The p-value is calculated from the asymptotic distribution.
+For interpretation, see the \strong{Likelihood-ratio test} section in
+\code{vignette("Theory", package = "gips")}.
 Comparison with the unrestricted model requires \eqn{n \ge p},
 or \eqn{n \ge p + 1} when the mean was estimated.
 \item \code{n0} - the sample-size threshold: the number of permutation cycles,
@@ -85,6 +87,8 @@ statistics and p-value of Likelihood Ratio test, where
 the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 with Covariance matrix invariant under \code{found_permutation}.
 The p-value is calculated from the asymptotic distribution.
+For interpretation, see the \strong{Likelihood-ratio test} section in
+\code{vignette("Theory", package = "gips")}.
 Comparison with the unrestricted model requires \eqn{n \ge p},
 or \eqn{n \ge p + 1} when the mean was estimated.
 \item \code{n0} - the sample-size threshold: the number of permutation cycles,

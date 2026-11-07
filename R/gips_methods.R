@@ -189,6 +189,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under the given permutation.
 #'       The p-value is calculated from the asymptotic distribution.
+#'       For interpretation, see the **Likelihood-ratio test** section in
+#'       `vignette("Theory", package = "gips")`.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},
 #'       or \eqn{n \ge p + 1} when the mean was estimated.
 #'   7. `n0` - the sample-size threshold: the number of permutation cycles,
@@ -233,6 +235,8 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under `found_permutation`.
 #'       The p-value is calculated from the asymptotic distribution.
+#'       For interpretation, see the **Likelihood-ratio test** section in
+#'       `vignette("Theory", package = "gips")`.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},
 #'       or \eqn{n \ge p + 1} when the mean was estimated.
 #'   9. `n0` - the sample-size threshold: the number of permutation cycles,
