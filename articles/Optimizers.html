@@ -10,7 +10,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -78,42 +84,32 @@
 <h2 id="what-are-we-optimizing">What are we optimizing?<a class="anchor" aria-label="anchor" href="#what-are-we-optimizing"></a>
 </h2>
 <p>The goal of the <code><a href="../reference/find_MAP.html">find_MAP()</a></code> is to find the permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-that maximizes the a posteriori probability (MAP - Maximum A
-Posteriori). Such a permutation represents the most plausible symmetry
-given the data.</p>
+<span class="math inline">\(\sigma\)</span> that maximizes the a
+posteriori probability (MAP - Maximum A Posteriori). Such a permutation
+represents the most plausible symmetry given the data.</p>
 <p>This a posteriori probability function is described in-depth in the
 <strong>Bayesian model selection</strong> section of the
 <code><a href="../articles/Theory.html">vignette("Theory", package="gips")</a></code>, also available as a <a href="https://przechoj.github.io/gips/articles/Theory.html">pkgdown
 page</a>. <code>gips</code> can calculate the logarithm of it by the
 <code><a href="../reference/log_posteriori_of_gips.html">log_posteriori_of_gips()</a></code> function. In the following
 paragraphs, we will refer to this a posteriori probability function as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>.
-We have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(\sigma) &gt; 0</annotation></semantics></math>.</p>
+<span class="math inline">\(f(\sigma)\)</span>. We have <span class="math inline">\(f(\sigma) &gt; 0\)</span>.</p>
 </div>
 <div class="section level2">
 <h2 id="available-optimizers">Available optimizers<a class="anchor" aria-label="anchor" href="#available-optimizers"></a>
 </h2>
 <p>The space of permutations is enormous - for the permutation of size
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
-the space of all permutations is of size
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>!</mi></mrow><annotation encoding="application/x-tex">p!</annotation></semantics></math>
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-factorial). Even for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">p=12</annotation></semantics></math>,
-this space is practically impossible to browse. This is why
-<code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements multiple (3) optimizers to choose
-from:</p>
+<span class="math inline">\(p\)</span>, the space of all permutations is
+of size <span class="math inline">\(p!\)</span> (<span class="math inline">\(p\)</span> factorial). Even for <span class="math inline">\(p=12\)</span>, this space is practically
+impossible to browse. This is why <code><a href="../reference/find_MAP.html">find_MAP()</a></code> implements
+multiple (3) optimizers to choose from:</p>
 <ul>
 <li>
 <code>"brute_force"</code>, <code>"BF"</code>, <code>"full"</code> |
-recommended for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\le 10</annotation></semantics></math>.</li>
+recommended for <span class="math inline">\(p\le 10\)</span>.</li>
 <li>
 <code>"Metropolis_Hastings"</code>, <code>"MH"</code> | recommended
-for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>11</mn></mrow><annotation encoding="application/x-tex">p\ge 11</annotation></semantics></math>.</li>
+for <span class="math inline">\(p\ge 11\)</span>.</li>
 <li>
 <code>"hill_climbing"</code>, <code>"HC"</code>
 </li>
@@ -125,14 +121,10 @@ for
 Metropolis-Hastings and hill climbing.</p>
 <p>For Metropolis-Hastings, it computes the a posteriori probability for
 <code>max_iter</code> permutations, whereas for hill climbing, it
-computes
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>p</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo></mrow><annotation encoding="application/x-tex">{p\choose 2} \cdot</annotation></semantics></math><code>max_iter</code> of them.</p>
-<p>In the case of the Brute Force optimizer, it computes all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma)</annotation></semantics></math>
-values. The number of all different
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-follows <a href="https://oeis.org/A051625" class="external-link">OEIS sequence
-A051625</a>.</p>
+computes <span class="math inline">\({p\choose 2} \cdot\)</span>
+<code>max_iter</code> of them.</p>
+<p>In the case of the Brute Force optimizer, it computes all <span class="math inline">\(f(\sigma)\)</span> values. The number of all
+different <span class="math inline">\(\sigma\)</span> follows <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="brute-force">Brute Force<a class="anchor" aria-label="anchor" href="#brute-force"></a>
@@ -141,10 +133,10 @@ A051625</a>.</p>
 <p>This is the only optimizer that will certainly find the true MAP
 estimator.</p>
 <p>Brute Force is <strong>only recommended</strong> for small spaces
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p \le 10</annotation></semantics></math>).
-It can also browse bigger spaces, but the required time is probably too
-long. We tested how much time it takes to browse with Brute Force (Apple
-M2), and we show the time in the table below:</p>
+(<span class="math inline">\(p \le 10\)</span>). It can also browse
+bigger spaces, but the required time is probably too long. We tested how
+much time it takes to browse with Brute Force (Apple M2), and we show
+the time in the table below:</p>
 <div id="spoiler_benchmark" style="display:none">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
@@ -340,8 +332,7 @@ process:</p>
 <span><span class="co">#&gt; The permutation (1,2,3,4,5,6):</span></span>
 <span><span class="co">#&gt;  - was found after 362 posterior calculations;</span></span>
 <span><span class="co">#&gt;  - is 28979.967 times more likely than the () permutation.</span></span></code></pre></div>
-<p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p = 6</annotation></semantics></math>.</p>
+<p>Brute Force needed 362 calculations, as predicted in <a href="https://oeis.org/A051625" class="external-link">OEIS sequence A051625</a> for <span class="math inline">\(p = 6\)</span>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -361,32 +352,21 @@ details.</p>
 <h4 id="short-description">Short description<a class="anchor" aria-label="anchor" href="#short-description"></a>
 </h4>
 <p>In an ordinary Metropolis step, the algorithm considers a
-permutation, say,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
-Then a random transposition is drawn uniformly
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_i = (j,k)</annotation></semantics></math>,
-and the value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i)</annotation></semantics></math>
-is computed.</p>
+permutation, say, <span class="math inline">\(\sigma_i\)</span>. Then a
+random transposition is drawn uniformly <span class="math inline">\(t_i
+= (j,k)\)</span>, and the value of <span class="math inline">\(f(\sigma_i \circ t_i)\)</span> is computed.</p>
 <ul>
-<li>If a new value is bigger than the previous one (i.e.,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) \ge f(\sigma_i)</annotation></semantics></math>),
-then we set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>.</li>
-<li>If a new value is smaller
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t_i) &lt; f(\sigma_i)</annotation></semantics></math>),
-then we will choose
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i \circ t_i</annotation></semantics></math>
-with probability
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><annotation encoding="application/x-tex">\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.
-Otherwise, we set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = \sigma_i</annotation></semantics></math>
-with complementary probability
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}</annotation></semantics></math>.</li>
+<li>If a new value is bigger than the previous one (i.e., <span class="math inline">\(f(\sigma_i \circ t_i) \ge f(\sigma_i)\)</span>),
+then we set <span class="math inline">\(\sigma_{i+1} = \sigma_i \circ
+t_i\)</span>.</li>
+<li>If a new value is smaller (<span class="math inline">\(f(\sigma_i
+\circ t_i) &lt; f(\sigma_i)\)</span>), then we will choose <span class="math inline">\(\sigma_{i+1} = \sigma_i \circ t_i\)</span> with
+probability <span class="math inline">\(\frac{f(\sigma_i \circ
+t_i)}{f(\sigma_i)}\)</span>. Otherwise, we set <span class="math inline">\(\sigma_{i+1} = \sigma_i\)</span> with
+complementary probability <span class="math inline">\(1 -
+\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}\)</span>.</li>
 </ul>
-<p>The final value is the best
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-ever computed.</p>
+<p>The final value is the best <span class="math inline">\(\sigma\)</span> ever computed.</p>
 </div>
 <div class="section level4">
 <h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
@@ -403,8 +383,8 @@ plotting the convergence plot with a logarithmic OX scale:
 <code>plot(g_map, type = "best", logarithmic_x = TRUE)</code>, then
 decide if the line has flattened already. Keep in mind that the OY scale
 is also logarithmic. For example, a marginal change on the OY scale
-could mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10000</mn><annotation encoding="application/x-tex">10000</annotation></semantics></math><strong>times</strong> the change in A Posteriori.</p>
+could mean <span class="math inline">\(10000\)</span>
+<strong>times</strong> the change in A Posteriori.</p>
 <p>For more information about continuing the optimization, see the
 <strong>Continuing the optimization</strong> section below.</p>
 </div>
@@ -449,14 +429,12 @@ process:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,30,6,8,21,59,15,67,5,63,56,70,12,36,69,19,32,22,18,26,3,37,38,2,65,7,62,31,9,17,40,10,35,41,55,64,24,33,61,68,4,11,50,42,16,25,52,51,43,14,49,53,39,48,47,44,66,28,23)(20,45,57,29,58,34,54,27,60,46):</span></span>
+<span><span class="co">#&gt; The permutation (1,30,66,28,63,56,70,23,6,21,59,15,22,67,38,62,31,34,54,27,60,35,46,20,45,69,53,26,5,12,36,57,29,58,9,17,10,41,55,64,24,49,61,68,4,11,50,42,16,25,52,14,33,40,51,7,2,65,43,39,48,47,44,19,32,3,37):</span></span>
 <span><span class="co">#&gt;  - was found after 150 posterior calculations;</span></span>
-<span><span class="co">#&gt;  - is 5.252e+660 times more likely than the () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt;  - is 2.459e+659 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After 150 iterations, the best group found is unimaginably more
 likely than the trivial group generated by the identity permutation
-<code>()</code>: its posterior probability is approximately
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>661</mn></msup><annotation encoding="application/x-tex">10^{661}</annotation></semantics></math>
-times as large.</p>
+<code>()</code>: its posterior probability is approximately <span class="math inline">\(10^{659}\)</span> times as large.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" class="r-plt" alt="" width="700"></p>
@@ -471,20 +449,16 @@ Wikipedia</a>.</p>
 <div class="section level4">
 <h4 id="short-description-1">Short description<a class="anchor" aria-label="anchor" href="#short-description-1"></a>
 </h4>
-<p>In every iteration
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
-an algorithm considers a permutation; call it
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>.
-Then, all the values of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>∘</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\sigma_i \circ t)</annotation></semantics></math>
-are computed for every possible transposition
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t = (j,k)</annotation></semantics></math>.
-Then the next
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\sigma_{i+1}</annotation></semantics></math>
-will be the one with the biggest value:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>a</mi><mi>r</mi><mi>g</mi><mi>m</mi><mi>a</mi><msub><mi>x</mi><mrow><mtext mathvariant="normal">perm</mtext><mo>∈</mo><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\}</annotation></semantics></math></p>
-<p>Where:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">neighbors</mtext><mo stretchy="false" form="prefix">(</mo><mi>σ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>σ</mi><mo>∘</mo><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mn>1</mn><mo>≤</mo><mi>j</mi><mo>&lt;</mo><mi>k</mi><mo>≤</mo><mtext mathvariant="normal">p</mtext><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}</annotation></semantics></math></p>
+<p>In every iteration <span class="math inline">\(i\)</span>, an
+algorithm considers a permutation; call it <span class="math inline">\(\sigma_i\)</span>. Then, all the values of <span class="math inline">\(f(\sigma_i \circ t)\)</span> are computed for
+every possible transposition <span class="math inline">\(t =
+(j,k)\)</span>. Then the next <span class="math inline">\(\sigma_{i+1}\)</span> will be the one with the
+biggest value:</p>
+<p><span class="math display">\[\sigma_{i+1} =
+\operatorname*{arg\,max}_{\text{perm} \in
+\text{neighbors}(\sigma_{i})}\{f(\text{perm})\}\]</span></p>
+<p>Where: <span class="math display">\[\text{neighbors}(\sigma) =
+\{\sigma \circ (j,k) : 1 \le j &lt; k \le \text{p}\}\]</span></p>
 <p>The algorithm ends when all neighbors are less likely, or the
 <code>max_iter</code> is achieved. In the first case, the algorithm will
 finish at a local maximum, but there is no guarantee that this is also
@@ -656,12 +630,11 @@ continuation:</p>
 <span>  <span class="va">g_map2</span>, <span class="va">g_map</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The posterior probability of the best group found after 150
-iterations is approximately
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>227</mn></msup><annotation encoding="application/x-tex">10^{227}</annotation></semantics></math>
-times that of the best group found after 50 iterations. Keep in mind
-that the y scale is logarithmic, so a visually small increase can
-represent a large posterior ratio. Use the plot to decide whether the
-best result is stabilizing and whether to run further iterations.</p>
+iterations is approximately <span class="math inline">\(10^{265}\)</span> times that of the best group
+found after 50 iterations. Keep in mind that the y scale is logarithmic,
+so a visually small increase can represent a large posterior ratio. Use
+the plot to decide whether the best result is stabilizing and whether to
+run further iterations.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
@@ -676,20 +649,16 @@ second progress bar will indicate the calculation of the probabilities
 after optimization.</p>
 <p>The <code>save_all_perms = TRUE</code> will save all visited
 permutations in the outputted object, which significantly increases the
-required RAM. For instance, with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>150</mn></mrow><annotation encoding="application/x-tex">p=150</annotation></semantics></math>
-and <code>max_iter = 150000</code>, we needed 400 MB to store it,
-whereas <code>save_all_perms = FALSE</code> only required 2 MB. However,
+required RAM. For instance, with <span class="math inline">\(p=150\)</span> and <code>max_iter = 150000</code>,
+we needed 400 MB to store it, whereas
+<code>save_all_perms = FALSE</code> only required 2 MB. However,
 <code>save_all_perms = TRUE</code> is necessary for
 <code>return_probabilities = TRUE</code> or more complex path
 analysis.</p>
 <p>With <code>return_probabilities = TRUE</code>, probabilities are
-calculated from unnormalized posterior weights
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w(\Gamma)</annotation></semantics></math>,
-conditional on the set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
-of distinct visited cyclic groups:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo>∣</mo><mi>Z</mi><mo>,</mo><mi mathvariant="normal">Γ</mi><mo>∈</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mrow><mi>H</mi><mo>∈</mo><mi>V</mi></mrow></munder><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi>H</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">P(\Gamma \mid Z,\Gamma\in V)=\frac{w(\Gamma)}{\sum_{H\in V}w(H)}.</annotation></semantics></math></p>
+calculated from unnormalized posterior weights <span class="math inline">\(w(\Gamma)\)</span>, conditional on the set <span class="math inline">\(V\)</span> of distinct visited cyclic groups:</p>
+<p><span class="math display">\[P(\Gamma \mid Z,\Gamma\in
+V)=\frac{w(\Gamma)}{\sum_{H\in V}w(H)}.\]</span></p>
 <p>Each group contributes one weight, regardless of repeated visits or
 different generators. BF uses all cyclic groups and gives the full
 posterior. A high conditional probability after MH does not establish

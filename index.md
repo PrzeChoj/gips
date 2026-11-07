@@ -16,13 +16,12 @@ observations.
     Analysis (EDA).
 2.  Covariance estimation. For an i.i.d. sample from a nondegenerate
     Gaussian distribution, the unrestricted covariance Maximum
-    Likelihood Estimator (MLE) exists almost surely if and only if
-    $`n \ge p`$ when the mean is known to be zero, or $`n \ge p + 1`$
-    when the mean is estimated. Here, $`n`$ is the number of
-    observations and $`p`$ the number of variables. Symmetry constraints
-    can lower this sample-size requirement. Moreover, the reduction of
-    model dimension brings the advantage in terms of precision of
-    covariance estimation.
+    Likelihood Estimator (MLE) exists almost surely if and only if \\n
+    \ge p\\ when the mean is known to be zero, or \\n \ge p + 1\\ when
+    the mean is estimated. Here, \\n\\ is the number of observations and
+    \\p\\ the number of variables. Symmetry constraints can lower this
+    sample-size requirement. Moreover, the reduction of model dimension
+    brings the advantage in terms of precision of covariance estimation.
 
 ## Installation
 
@@ -84,11 +83,11 @@ plot_cosmetic_modifications(plot(g, type = "heatmap"))
 
 Remember, we analyze the covariance matrix. We can see some nearly
 identical colors in the estimated covariance matrix. E.g., variances of
-columns 1 and 2 are very similar (`S[1,1]` $`\approx`$`S[2,2]`), and
-variances of columns 3 and 4 are very similar (`S[3,3]`
-$`\approx`$`S[4,4]`). What is more, covariances are also similar
-(`S[1,3]` $`\approx`$`S[1,4]` $`\approx`$`S[2,3]` $`\approx`$`S[2,4]`).
-Are those approximate equalities coincidental? Or do they reflect some
+columns 1 and 2 are very similar (`S[1,1]` \\\approx\\ `S[2,2]`), and
+variances of columns 3 and 4 are very similar (`S[3,3]` \\\approx\\
+`S[4,4]`). What is more, covariances are also similar (`S[1,3]`
+\\\approx\\ `S[1,4]` \\\approx\\ `S[2,3]` \\\approx\\ `S[2,4]`). Are
+those approximate equalities coincidental? Or do they reflect some
 underlying data properties? It is hard to decide purely by looking at
 the matrix.
 
@@ -166,12 +165,12 @@ Z <- withr::with_seed(2022,
 
 ![](reference/figures/README-example_mean_known1_1-1.png)
 
-Suppose we do not know the actual covariance matrix $`\Sigma`$ and we
+Suppose we do not know the actual covariance matrix \\\Sigma\\ and we
 want to estimate it. We cannot use the standard MLE because it does not
-exist ($`4 < 6`$, $`n < p`$).
+exist (\\4 \< 6\\, \\n \< p\\).
 
 We will assume it was generated from the normal distribution with the
-mean $`0`$.
+mean \\0\\.
 
 ``` r
 
@@ -193,10 +192,9 @@ g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
 ```
 
 We can see the standard estimator of the covariance matrix:
-``` math
-\hat{\Sigma} = (1/n) \cdot  \sum_{i=1}^n \Big( Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)
-```
-It is not MLE (again, because MLE does not exist for $`n < p`$):
+\\\hat{\Sigma} = (1/n) \cdot \sum\_{i=1}^n \Big(
+Z^{(i)}\cdot\big({Z^{(i)}}^\top\big) \Big)\\ It is not MLE (again,
+because MLE does not exist for \\n \< p\\):
 
 ``` r
 
@@ -206,7 +204,7 @@ plot(g, type = "heatmap") + ggplot2::ggtitle("Covariance estimated in standard w
 ![](reference/figures/README-example_mean_known3_1-1.png)
 
 Let’s find the Maximum A Posteriori Estimator for the permutation. Space
-is small ($`6! = 720`$), so it is reasonable to browse the whole of it:
+is small (\\6! = 720\\), so it is reasonable to browse the whole of it:
 
 ``` r
 
@@ -234,7 +232,7 @@ summary(g_map)$MLE_available
 ```
 
 What is more, we see the number of observations (4) is bigger than or
-equal to $`n_0 = 1`$. The sample-size requirement is therefore met.
+equal to \\n_0 = 1\\. The sample-size requirement is therefore met.
 `summary(g_map)$MLE_available` also checks that the projected covariance
 matrix is numerically positive definite. With the known zero mean
 assumed in this example, the projection gives the covariance MLE when

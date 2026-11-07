@@ -10,7 +10,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -84,12 +90,10 @@ of view. We will also show examples of those results in the
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span></code></pre></div>
 <p>As mentioned in the abstract, the outline of the paper is to “derive
 the distribution of the maximum likelihood estimate of the covariance
-parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
-(…)” and then to “perform Bayesian model selection in the class of
-complete Gaussian models invariant by the action of a subgroup of the
-symmetric group (…)”. Those ideas are implemented in the
-<code>gips</code> package.</p>
+parameter <span class="math inline">\(\Sigma\)</span> (…)” and then to
+“perform Bayesian model selection in the class of complete Gaussian
+models invariant by the action of a subgroup of the symmetric group
+(…)”. Those ideas are implemented in the <code>gips</code> package.</p>
 <div class="section level3">
 <h3 id="alternative-reference">Alternative reference<a class="anchor" aria-label="anchor" href="#alternative-reference"></a>
 </h3>
@@ -102,67 +106,42 @@ comprehensibly set out in [2].</p>
 <div class="section level2">
 <h2 id="basic-definitions">Basic definitions<a class="anchor" aria-label="anchor" href="#basic-definitions"></a>
 </h2>
-<p>Let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">V=\{1,\ldots,p\}</annotation></semantics></math>
-be a finite index set, and for every
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">i\in \{1, \dots, n\}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>Z</mi><mn>1</mn><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>Z</mi><mi>p</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top</annotation></semantics></math>
-be a multivariate random variable following a centered Gaussian model
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\Sigma)</annotation></semantics></math>,
-and let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">Z^{(1)},\ldots, Z^{(n)}</annotation></semantics></math>
-be an i.i.d. (independent and identically distributed) sample from this
-distribution. Name the whole sample
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Z = (Z^{(1)},\ldots, Z^{(n)})</annotation></semantics></math>.</p>
-<p>Let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔖</mi><mi>p</mi></msub><annotation encoding="application/x-tex">\mathfrak{S}_p</annotation></semantics></math>
-denote the symmetric group on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>,
-that is, the set of all permutations on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{1,\ldots,p\}</annotation></semantics></math>
-with function composition as the group operation. Let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-be an arbitrary subgroup of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔖</mi><mi>p</mi></msub><annotation encoding="application/x-tex">\mathfrak{S}_p</annotation></semantics></math>.
-The model
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\Sigma)</annotation></semantics></math>
-is said to be invariant under the action of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-if for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi></mrow><annotation encoding="application/x-tex">g\in \Gamma</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>⋅</mo><mi mathvariant="normal">Σ</mi><mo>⋅</mo><msup><mi>g</mi><mi>⊤</mi></msup><mo>=</mo><mi mathvariant="normal">Σ</mi></mrow><annotation encoding="application/x-tex">g\cdot\Sigma\cdot g^\top=\Sigma</annotation></semantics></math>
-(here, we identify a permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
-with its permutation matrix).</p>
-<p>For a subgroup
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>⊂</mo><msub><mi>𝔖</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">\Gamma \subset  \mathfrak{S}_p</annotation></semantics></math>,
-we define the colored space, i.e., the space of symmetric matrices
-invariant under
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>,
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mi>S</mi><mo>∈</mo><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">y</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>;</mo><mi>ℝ</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><msub><mi>S</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>S</mi><mrow><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>V</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},</annotation></semantics></math>
-and the colored cone of positive definite matrices valued in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><annotation encoding="application/x-tex">\mathcal{Z}_{\Gamma}</annotation></semantics></math>,
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mi mathvariant="normal">Γ</mi></msub><mo>:=</mo><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><mo>∩</mo><msup><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">y</mi><mi mathvariant="normal">m</mi></mrow><mo>+</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>;</mo><mi>ℝ</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).</annotation></semantics></math></p>
+<p>Let <span class="math inline">\(V=\{1,\ldots,p\}\)</span> be a finite
+index set, and for every <span class="math inline">\(i\in \{1, \dots,
+n\}\)</span>, <span class="math inline">\(Z^{(i)}=(Z_1^{(i)},\ldots,
+Z_p^{(i)})^\top\)</span> be a multivariate random variable following a
+centered Gaussian model <span class="math inline">\(\mathrm{N}_p(0,\Sigma)\)</span>, and let <span class="math inline">\(Z^{(1)},\ldots, Z^{(n)}\)</span> be an i.i.d.
+(independent and identically distributed) sample from this distribution.
+Name the whole sample <span class="math inline">\(Z = (Z^{(1)},\ldots,
+Z^{(n)})\)</span>.</p>
+<p>Let <span class="math inline">\(\mathfrak{S}_p\)</span> denote the
+symmetric group on <span class="math inline">\(V\)</span>, that is, the
+set of all permutations on <span class="math inline">\(\{1,\ldots,p\}\)</span> with function composition
+as the group operation. Let <span class="math inline">\(\Gamma\)</span>
+be an arbitrary subgroup of <span class="math inline">\(\mathfrak{S}_p\)</span>. The model <span class="math inline">\(\mathrm{N}_p(0,\Sigma)\)</span> is said to be
+invariant under the action of <span class="math inline">\(\Gamma\)</span> if for all <span class="math inline">\(g\in \Gamma\)</span>, <span class="math inline">\(g\cdot\Sigma\cdot g^\top=\Sigma\)</span> (here, we
+identify a permutation <span class="math inline">\(g\)</span> with its
+permutation matrix).</p>
+<p>For a subgroup <span class="math inline">\(\Gamma
+\subset  \mathfrak{S}_p\)</span>, we define the colored space, i.e., the
+space of symmetric matrices invariant under <span class="math inline">\(\Gamma\)</span>, <span class="math display">\[\mathcal{Z}_{\Gamma} := \{S \in
+\mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)}
+\text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},\]</span>
+and the colored cone of positive definite matrices valued in <span class="math inline">\(\mathcal{Z}_{\Gamma}\)</span>, <span class="math display">\[\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap
+\mathrm{Sym}^+(p;\mathbb{R}).\]</span></p>
 </div>
 <div class="section level2">
 <h2 id="block-decomposition---1-theorem-1">Block Decomposition - [1], Theorem 1<a class="anchor" aria-label="anchor" href="#block-decomposition---1-theorem-1"></a>
 </h2>
 <p>The main theoretical result in this theory (Theorem 1 in <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>) states that given a
-permutation subgroup
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-there exists an orthogonal matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mi mathvariant="normal">Γ</mi></msub><annotation encoding="application/x-tex">U_\Gamma</annotation></semantics></math>
-such that all the symmetric matrices
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∈</mo><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub></mrow><annotation encoding="application/x-tex">S\in\mathcal{Z}_\Gamma</annotation></semantics></math>
-can be transformed into block-diagonal form.</p>
+permutation subgroup <span class="math inline">\(\Gamma\)</span> there
+exists an orthogonal matrix <span class="math inline">\(U_\Gamma\)</span> such that all the symmetric
+matrices <span class="math inline">\(S\in\mathcal{Z}_\Gamma\)</span> can
+be transformed into block-diagonal form.</p>
 <p>The exact form of blocks depends on so-called <em>structure
-constants</em>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>k</mi><mi>i</mi></msub><mo>,</mo><msub><mi>d</mi><mi>i</mi></msub><mo>,</mo><msub><mi>r</mi><mi>i</mi></msub><msubsup><mo stretchy="false" form="postfix">)</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>L</mi></msubsup></mrow><annotation encoding="application/x-tex">(k_i,d_i,r_i)_{i=1}^L</annotation></semantics></math>.
-It is worth noting that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">k = d</annotation></semantics></math>
-for cyclic groups
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>σ</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\Gamma = \langle\sigma\rangle</annotation></semantics></math>.
-Because gips searches only within cyclic subgroups, this simplifies the
+constants</em> <span class="math inline">\((k_i,d_i,r_i)_{i=1}^L\)</span>. It is worth noting
+that <span class="math inline">\(k = d\)</span> for cyclic groups <span class="math inline">\(\Gamma = \langle\sigma\rangle\)</span>. Because
+gips searches only within cyclic subgroups, this simplifies the
 theory.</p>
 <div class="section level4">
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -178,8 +157,8 @@ theory.</p>
 <span>  <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span></span>
 <span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_2-1.png" class="r-plt" alt="" width="700"></p>
-<p><code>S</code> is a symmetric matrix invariant under the group
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt;(1,2,3,4,5,6)\right&gt;</annotation></semantics></math>.</p>
+<p><code>S</code> is a symmetric matrix invariant under the group <span class="math inline">\(\Gamma =
+\left&lt;(1,2,3,4,5,6)\right&gt;\)</span>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_perm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips_perm.html">gips_perm</a></span><span class="op">(</span><span class="st">"(1,2,3,4,5,6)"</span>, <span class="va">p</span><span class="op">)</span></span>
 <span><span class="va">U_Gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix</a></span><span class="op">(</span><span class="va">g_perm</span><span class="op">)</span></span>
@@ -214,7 +193,8 @@ inaccuracies of floating point arithmetic.</p>
 <span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_6-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now, <code>S</code> is a symmetric matrix invariant under the group
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt;(1,2,3)(4,5,6)\right&gt;</annotation></semantics></math>.</p>
+<span class="math inline">\(\Gamma =
+\left&lt;(1,2,3)(4,5,6)\right&gt;\)</span>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_perm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips_perm.html">gips_perm</a></span><span class="op">(</span><span class="st">"(1,2,3)(4,5,6)"</span>, <span class="va">p</span><span class="op">)</span></span>
 <span><span class="va">U_Gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix</a></span><span class="op">(</span><span class="va">g_perm</span><span class="op">)</span></span>
@@ -230,42 +210,39 @@ inaccuracies of floating point arithmetic.</p>
 <span><span class="co">#&gt; [6,]  0.0  0.0 0.0866  0.2500  0.0000 0.3000</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/th1_8-1.png" class="r-plt" alt="" width="700"></p>
 <p>Again, this result is in accordance with <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>, Theorem 1. Notice the
-zeros in <code>block_decomposition</code>:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∀</mo><mrow><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>j</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">}</mo></mrow></msub><mtext mathvariant="normal">block_decomposition</mtext><mo stretchy="false" form="prefix">[</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0</annotation></semantics></math></p>
+zeros in <code>block_decomposition</code>: <span class="math display">\[\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j]
+= 0\]</span></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="project-matrix---1-eq--6">Project Matrix - [1, Eq. (6)]<a class="anchor" aria-label="anchor" href="#project-matrix---1-eq--6"></a>
 </h2>
 <p>One can also take any symmetric square matrix <code>S</code> and find
-the orthogonal projection on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub><annotation encoding="application/x-tex">\mathcal{Z}_{\Gamma}</annotation></semantics></math>,
-the space of matrices invariant under the given permutation:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi></mrow></munder><mi>σ</mi><mo>⋅</mo><mi>S</mi><mo>⋅</mo><msup><mi>σ</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top</annotation></semantics></math></p>
-<p>The projected matrix is an element of the cone
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msub><mi>𝒵</mi><mi mathvariant="normal">Γ</mi></msub></mrow><annotation encoding="application/x-tex">\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}</annotation></semantics></math>,
-which means:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∀</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mi>…</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow></msub><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for all </mtext><mspace width="0.333em"></mspace></mrow><mi>σ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi></mrow><annotation encoding="application/x-tex">\forall_{i,j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma</annotation></semantics></math></p>
+the orthogonal projection on <span class="math inline">\(\mathcal{Z}_{\Gamma}\)</span>, the space of
+matrices invariant under the given permutation:</p>
+<p><span class="math display">\[\pi_\Gamma(S) :=
+\frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot
+S\cdot\sigma^\top\]</span></p>
+<p>The projected matrix is an element of the cone <span class="math inline">\(\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}\)</span>,
+which means: <span class="math display">\[\forall_{i,j\in \{1,\ \dots,\
+p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for
+all }\sigma\in\Gamma\]</span></p>
 <p>So it has some identical elements.</p>
 <div class="section level4">
 <h4 id="trivial-case">Trivial case<a class="anchor" aria-label="anchor" href="#trivial-case"></a>
 </h4>
-<p>Note that for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">id</mtext><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mi>…</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}</annotation></semantics></math>
-we have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">id</mtext><mo stretchy="false" form="postfix">}</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">\pi_{\{\text{id}\}}(S) = S</annotation></semantics></math>.</p>
+<p>Note that for <span class="math inline">\(\Gamma = \{\text{id}\} =
+\{(1)(2)\dots(p)\}\)</span> we have <span class="math inline">\(\pi_{\{\text{id}\}}(S) = S\)</span>.</p>
 <p>So, no additional assumptions are made; thus, the standard covariance
 estimator is the best we can do.</p>
 </div>
 <div class="section level4">
 <h4 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
 </h4>
-<p>We will abbreviate the notation: when the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mi>c</mi><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt; c \right&gt;</annotation></semantics></math>
-is a cyclic group of a permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
-we will write
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><msub><mi>π</mi><mi mathvariant="normal">Γ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>π</mi><mrow><mo stretchy="true" form="prefix">⟨</mo><mi>c</mi><mo stretchy="true" form="postfix">⟩</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\pi_{c}(S) := \pi_{\Gamma}(S) = \pi_{\left&lt; c \right&gt;}(S)</annotation></semantics></math>.</p>
+<p>We will abbreviate the notation: when the <span class="math inline">\(\Gamma = \left&lt; c \right&gt;\)</span> is a
+cyclic group of a permutation <span class="math inline">\(c\)</span>, we
+will write <span class="math inline">\(\pi_{c}(S) := \pi_{\Gamma}(S) =
+\pi_{\left&lt; c \right&gt;}(S)\)</span>.</p>
 </div>
 <div class="section level4">
 <h4 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -281,8 +258,8 @@ we will write
 <span><span class="co">#&gt; [5,] -24.35  12.23  -3.81   7.71  26.00  -7.24</span></span>
 <span><span class="co">#&gt; [6,] -17.42  -2.74  -9.60 -13.51  -7.24  16.77</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/def3_2-1.png" class="r-plt" alt="" width="700"></p>
-<p>One can project this matrix, for example, on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mtext mathvariant="normal">perm</mtext><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma = \left&lt; \text{perm} \right&gt; = \left&lt;(1,2)(3,4,5,6)\right&gt;</annotation></semantics></math>:</p>
+<p>One can project this matrix, for example, on <span class="math inline">\(\Gamma = \left&lt; \text{perm} \right&gt; =
+\left&lt;(1,2)(3,4,5,6)\right&gt;\)</span>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, perm <span class="op">=</span> <span class="st">"(1,2)(3,4,5,6)"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_projected</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -300,47 +277,35 @@ For example, <code>S_projected[1,1] = S_projected[2,2]</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="c_sigma-and-n0">
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>
-and <code>n0</code><a class="anchor" aria-label="anchor" href="#c_sigma-and-n0"></a>
+<span class="math inline">\(C_\sigma\)</span> and
+<code>n0</code><a class="anchor" aria-label="anchor" href="#c_sigma-and-n0"></a>
 </h3>
 <p>For an i.i.d. sample from a nondegenerate Gaussian distribution, the
 unrestricted covariance Maximum Likelihood Estimator (MLE) exists almost
-surely if and only if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n \ge p</annotation></semantics></math>
-when the mean is known to be zero. When the mean is estimated, the
-corresponding requirement is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mi>p</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n \ge p + 1</annotation></semantics></math>.</p>
-<p>For a fixed cyclic symmetry group generated by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>,
-the almost-sure existence condition is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>≥</mo><msub><mi>C</mi><mi>σ</mi></msub></mrow><annotation encoding="application/x-tex">n_{\mathrm{eff}} \ge C_\sigma</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>
-is the number of cycles, including fixed points. Here,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>=</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">n_{\mathrm{eff}} = n</annotation></semantics></math>
-for a known zero mean and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>=</mo><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_{\mathrm{eff}} = n - 1</annotation></semantics></math>
+surely if and only if <span class="math inline">\(n \ge p\)</span> when
+the mean is known to be zero. When the mean is estimated, the
+corresponding requirement is <span class="math inline">\(n \ge p +
+1\)</span>.</p>
+<p>For a fixed cyclic symmetry group generated by <span class="math inline">\(\sigma\)</span>, the almost-sure existence
+condition is <span class="math inline">\(n_{\mathrm{eff}} \ge
+C_\sigma\)</span>, where <span class="math inline">\(C_\sigma\)</span>
+is the number of cycles, including fixed points. Here, <span class="math inline">\(n_{\mathrm{eff}} = n\)</span> for a known zero
+mean and <span class="math inline">\(n_{\mathrm{eff}} = n - 1\)</span>
 when the mean is estimated. Symmetry constraints can therefore lower the
 required sample size.</p>
 <p>The threshold reported by <code>gips</code> is expressed in terms of
-the original sample size:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><msub><mi>C</mi><mi>σ</mi></msub><mo>+</mo><msub><mn>𝟏</mn><mrow><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">mean estimated</mtext><mo stretchy="false" form="postfix">}</mo></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">n_0 = C_\sigma + \mathbf{1}_{\{\text{mean estimated}\}}.</annotation></semantics></math>
-Thus the sample-size check is
-<code>number_of_observations &gt;= summary(g)$n0</code>; the correction
-for estimating the mean is already included in <code>n0</code>. This
-threshold is not the number of free covariance parameters.</p>
-<p>For example, when
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sigma = (1,2,3,4,5,6)</annotation></semantics></math>,
-we have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>σ</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">C_\sigma = 1</annotation></semantics></math>.
-With a known zero mean, one observation suffices almost surely under the
-Gaussian sampling assumptions. For
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sigma = (1,2)(3,4,5,6)</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>σ</mi></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">C_\sigma = 2</annotation></semantics></math>,
-so the threshold is two observations. When the mean is estimated, these
-thresholds increase by one.</p>
+the original sample size: <span class="math display">\[n_0 = C_\sigma +
+\mathbf{1}_{\{\text{mean estimated}\}}.\]</span> Thus the sample-size
+check is <code>number_of_observations &gt;= summary(g)$n0</code>; the
+correction for estimating the mean is already included in
+<code>n0</code>. This threshold is not the number of free covariance
+parameters.</p>
+<p>For example, when <span class="math inline">\(p=6\)</span> and <span class="math inline">\(\sigma = (1,2,3,4,5,6)\)</span>, we have <span class="math inline">\(C_\sigma = 1\)</span>. With a known zero mean, one
+observation suffices almost surely under the Gaussian sampling
+assumptions. For <span class="math inline">\(\sigma =
+(1,2)(3,4,5,6)\)</span>, <span class="math inline">\(C_\sigma =
+2\)</span>, so the threshold is two observations. When the mean is
+estimated, these thresholds increase by one.</p>
 <p>For a particular supplied <code>S</code>, satisfying the sample-size
 threshold alone does not guarantee MLE availability: the projected
 matrix must also be numerically positive definite.
@@ -349,8 +314,7 @@ multiple samples, the sample-size requirement is
 <code>min(n_g) &gt;= n0</code>, and every projected covariance matrix
 must pass the positive-definiteness check. The common
 <code>was_mean_estimated</code> setting applies to all samples.</p>
-<p>With a known zero mean, <code>summary(g)$n0</code> equals
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">C_\sigma</annotation></semantics></math>:</p>
+<p>With a known zero mean, <code>summary(g)$n0</code> equals <span class="math inline">\(C_\sigma\)</span>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">n</span>, perm <span class="op">=</span> <span class="st">"(1,2,3,4,5,6)"</span>, was_mean_estimated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g1</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span></span>
@@ -380,70 +344,43 @@ how to find it.</p>
 <h4 id="general-workflow">General workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
 </h4>
 <ol style="list-style-type: decimal">
-<li>Choose the prior distribution on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-and the precision matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">K = \Sigma^{-1}</annotation></semantics></math>.</li>
+<li>Choose the prior distribution on <span class="math inline">\(\Gamma\)</span> and the precision matrix <span class="math inline">\(K = \Sigma^{-1}\)</span>.</li>
 <li>Calculate the posterior distribution (up to a normalizing constant)
 by the formula <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
 (30).</li>
 <li>Use the Metropolis-Hastings algorithm to find the permutation with
-the biggest value of the posterior probability
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathbb{P}(\Gamma|Z)</annotation></semantics></math>.</li>
+the biggest value of the posterior probability <span class="math inline">\(\mathbb{P}(\Gamma|Z)\)</span>.</li>
 </ol>
 </div>
 <div class="section level4">
 <h4 id="details-on-the-prior-distribution">Details on the prior distribution<a class="anchor" aria-label="anchor" href="#details-on-the-prior-distribution"></a>
 </h4>
-<p>The considered prior distribution of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">K=\Sigma^{-1}</annotation></semantics></math>:</p>
+<p>The considered prior distribution of <span class="math inline">\(\Gamma\)</span> and <span class="math inline">\(K=\Sigma^{-1}\)</span>:</p>
 <ol style="list-style-type: decimal">
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-is uniformly distributed on the set of all cyclic subgroups of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔖</mi><mi>p</mi></msub><annotation encoding="application/x-tex">\mathfrak{S}_p</annotation></semantics></math>.</li>
+<span class="math inline">\(\Gamma\)</span> is uniformly distributed
+on the set of all cyclic subgroups of <span class="math inline">\(\mathfrak{S}_p\)</span>.</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
-given
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
-follows the Diaconis-Ylvisaker conjugate prior distribution with
-parameters
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
-(real number,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 1</annotation></semantics></math>)
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
-(symmetric, positive definite square matrix of the same size as
-<code>S</code>), see <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>,
-Sec. 3.4.</li>
+<span class="math inline">\(K\)</span> given <span class="math inline">\(\Gamma\)</span> follows the Diaconis-Ylvisaker
+conjugate prior distribution with parameters <span class="math inline">\(\delta\)</span> (real number, <span class="math inline">\(\delta &gt; 1\)</span>) and <span class="math inline">\(D\)</span> (symmetric, positive definite square
+matrix of the same size as <code>S</code>), see <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>, Sec. 3.4.</li>
 </ol>
-<p>Footnote: Actually, for the special case of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">id</mtext><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Gamma = \{\text{id}\}</annotation></semantics></math>,
-the parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 0</annotation></semantics></math>
-is theoretically correct. In <code>gips</code>, we want this to be
-defined for all cyclic groups
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>,
-so we restrict
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\delta &gt; 1</annotation></semantics></math>.
-Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
+<p>Footnote: Actually, for the special case of <span class="math inline">\(\Gamma = \{\text{id}\}\)</span>, the parameter
+<span class="math inline">\(\delta &gt; 0\)</span> is theoretically
+correct. In <code>gips</code>, we want this to be defined for all cyclic
+groups <span class="math inline">\(\Gamma\)</span>, so we restrict <span class="math inline">\(\delta &gt; 1\)</span>. Refer to the <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a>.</p>
 </div>
 <div class="section level4">
 <h4 id="gips-technical-details">
 <code>gips</code> technical details<a class="anchor" aria-label="anchor" href="#gips-technical-details"></a>
 </h4>
-<p>In <code>gips</code>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
-is named <code>delta</code>, and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
-is named <code>D_matrix</code>. By default, they are set to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
-and <code>diag(d, p)</code>, respectively, where
-<code>d = mean(diag(S))</code>. It is worth comparing results for
-several choices of <code>D_matrix = d * diag(p)</code>, with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d &gt; 0</annotation></semantics></math>.</p>
+<p>In <code>gips</code>, <span class="math inline">\(\delta\)</span> is
+named <code>delta</code>, and <span class="math inline">\(D\)</span> is
+named <code>D_matrix</code>. By default, they are set to <span class="math inline">\(3\)</span> and <code>diag(d, p)</code>,
+respectively, where <code>d = mean(diag(S))</code>. It is worth
+comparing results for several choices of
+<code>D_matrix = d * diag(p)</code>, with <span class="math inline">\(d
+&gt; 0\)</span>.</p>
 <p>In the spirit of the Bayesian approach, the prior should be specified
 before observing the data. Our default <code>D_matrix</code> depends on
 the observed sample, so it departs from this principle. Nevertheless, we
@@ -453,36 +390,18 @@ to using <code>S / mean(diag(S))</code> with
 <code>D_matrix = diag(p)</code>. See [2], Section <em>3.2.
 Hyperparameter’s influence</em>, for a discussion of hyperparameter
 choices.</p>
-<p>Smaller
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-can favor models with more equality constraints and fewer free
-covariance parameters. This tendency depends on the data and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>;
-it is not a guarantee that decreasing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-will always select a more constrained model.</p>
-<p>For fixed dimension, sample size and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>,
-as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">d \to \infty</annotation></semantics></math>,
-the posterior distribution over symmetry groups converges to a
-distribution independent of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>.
-The limit can still depend on the dimension, sample size and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>,
-and is not uniform. For finite
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>,
-the posterior generally still depends on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>:
-the calculation uses
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>+</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">D + U</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo>=</mo><msub><mi>n</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></msub><mi>S</mi></mrow><annotation encoding="application/x-tex">U = n_{\mathrm{eff}} S</annotation></semantics></math>,
-with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>=</mo><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_{\mathrm{eff}} = n - 1</annotation></semantics></math>
-when the mean was estimated and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-otherwise.</p>
+<p>Smaller <span class="math inline">\(d\)</span> can favor models with
+more equality constraints and fewer free covariance parameters. This
+tendency depends on the data and <span class="math inline">\(\delta\)</span>; it is not a guarantee that
+decreasing <span class="math inline">\(d\)</span> will always select a
+more constrained model.</p>
+<p>For fixed dimension, sample size and <span class="math inline">\(\delta\)</span>, as <span class="math inline">\(d
+\to \infty\)</span>, the posterior distribution over symmetry groups
+converges to a distribution independent of <span class="math inline">\(S\)</span>. The limit can still depend on the
+dimension, sample size and <span class="math inline">\(\delta\)</span>,
+and is not uniform. For finite <span class="math inline">\(d\)</span>,
+the posterior generally still depends on <span class="math inline">\(S\)</span>: the calculation uses <span class="math inline">\(D + U\)</span>, where <span class="math inline">\(U = n_{\mathrm{eff}} S\)</span>, with <span class="math inline">\(n_{\mathrm{eff}} = n - 1\)</span> when the mean
+was estimated and <span class="math inline">\(n\)</span> otherwise.</p>
 <p>Using <code>S</code> with <code>D_matrix = d * diag(p)</code> gives
 the same normalized posterior over symmetry groups, and hence the same
 MAP, as using <code>S / d</code> with <code>D_matrix = diag(p)</code>,
@@ -504,29 +423,21 @@ that permutation, independently of <code>delta</code> and
 <p>When all assumptions are met, the formula (30) puts a number on each
 permutation’s cyclic group. The bigger its value, the more likely the
 data was drawn from that model.</p>
-<p>When one finds the permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><annotation encoding="application/x-tex">c_{\text{map}}</annotation></semantics></math>
-that maximizes (30),
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><mo>=</mo><msub><mrow><mi mathvariant="normal">arg max</mi><mo>⁡</mo></mrow><mrow><mi>c</mi><mo>∈</mo><msub><mi>𝔖</mi><mi>p</mi></msub></mrow></msub><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>c</mi><mo stretchy="false" form="postfix">⟩</mo><mo stretchy="false" form="prefix">|</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=\langle c\rangle|Z^{(1)},\ldots,Z^{(n)}\right)</annotation></semantics></math></p>
-<p>one can reasonably assume the data
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
-was drawn from the model
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>π</mi><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top</annotation></semantics></math></p>
-<p>In such a case, we call
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mtext mathvariant="normal">map</mtext></msub><annotation encoding="application/x-tex">c_{\text{map}}</annotation></semantics></math>
-the Maximum A Posteriori (MAP).</p>
+<p>When one finds the permutation <span class="math inline">\(c_{\text{map}}\)</span> that maximizes (30), <span class="math display">\[c_{\text{map}} =
+\operatorname{arg\,max}_{c\in\mathfrak{S}_p}
+\mathbb{P}\left(\Gamma=\langle
+c\rangle|Z^{(1)},\ldots,Z^{(n)}\right)\]</span></p>
+<p>one can reasonably assume the data <span class="math inline">\(Z\)</span> was drawn from the model <span class="math display">\[\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))\]</span></p>
+<p>where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n
+Z^{(i)}\cdot {Z^{(i)}}^\top\)</span></p>
+<p>In such a case, we call <span class="math inline">\(c_{\text{map}}\)</span> the Maximum A Posteriori
+(MAP).</p>
 </div>
 <div class="section level4">
 <h4 id="finding-the-map-estimator">Finding the MAP Estimator<a class="anchor" aria-label="anchor" href="#finding-the-map-estimator"></a>
 </h4>
-<p>The space of all permutations is enormous for bigger
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-(in our experiments,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≥</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\ge 10</annotation></semantics></math>
-is too big). In such a big space, estimating the MAP is more practical
-than calculating it exactly.</p>
+<p>The space of all permutations is enormous for bigger <span class="math inline">\(p\)</span> (in our experiments, <span class="math inline">\(p\ge 10\)</span> is too big). In such a big space,
+estimating the MAP is more practical than calculating it exactly.</p>
 <p>Metropolis-Hastings algorithm suggested by the authors of <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1]</a> is a natural way to do
 it. To see the discussion on it and other options available in
 <code>gips</code>, see
@@ -567,14 +478,10 @@ page</a>.</p>
             else{document.getElementById('spoiler3') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have this data, <code>Z</code>. It has dimension
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>
-and only
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
-observations. Let’s assume <code>Z</code> was drawn from the normal
-distribution with the mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,0,0,0,0,0)</annotation></semantics></math>.
-We want to estimate the covariance matrix:</p>
+<p>Let’s say we have this data, <code>Z</code>. It has dimension <span class="math inline">\(p=6\)</span> and only <span class="math inline">\(4\)</span> observations. Let’s assume
+<code>Z</code> was drawn from the normal distribution with the mean
+<span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate
+the covariance matrix:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 6</span></span>
@@ -597,16 +504,12 @@ We want to estimate the covariance matrix:</p>
 <span><span class="va">S_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">g_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Theory_files/figure-html/example2_readme3-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see the posterior probability <a href="https://arxiv.org/abs/2004.03503" class="external-link">[1,(30)]</a> has the biggest
-value for the permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3,4,5,6)</annotation></semantics></math>.
-It is 133.16 times bigger than for the trivial
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">id</mtext><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mi>…</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{id} = (1)(2)\ldots(p)</annotation></semantics></math>
-permutation. Under the assumptions (centered Gaussian), we therefore
-interpret the model
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mtext mathvariant="normal">S_projected</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\text{S_projected})</annotation></semantics></math>
-as more reasonable than
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mtext mathvariant="normal">S</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{N}_p(0,\text{S})</annotation></semantics></math>
-for the data <code>Z</code>.</p>
+value for the permutation <span class="math inline">\((1,2,3,4,5,6)\)</span>. It is 133.16 times bigger
+than for the trivial <span class="math inline">\(\text{id} =
+(1)(2)\ldots(p)\)</span> permutation. Under the assumptions (centered
+Gaussian), we therefore interpret the model <span class="math inline">\(\mathrm{N}_p(0,\text{S_projected})\)</span> as
+more reasonable than <span class="math inline">\(\mathrm{N}_p(0,\text{S})\)</span> for the data
+<code>Z</code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -615,27 +518,29 @@ for the data <code>Z</code>.</p>
 <p>One may be interested in Akaike’s An Information Criterion (AIC) or
 Schwarz’s Bayesian Information Criterion (BIC) of the found model. Those
 are defined based on log-Likelihood:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo>;</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><mi>p</mi><mn>2</mn></mfrac><mi mathvariant="normal">log</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi mathvariant="normal">log</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo></mrow><annotation encoding="application/x-tex">\log L\left(\Sigma; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12 {Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi mathvariant="normal">Σ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \Sigma\right)\right) - \frac{n}2\mathrm{tr}(\Sigma^{-1} S),</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⋅</mo><msup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top</annotation></semantics></math>.</p>
-<p>If
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\pi_c(S)</annotation></semantics></math>
-is positive definite, the MLE of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
-in a model invariant under
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>c</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\Gamma=\langle c\rangle</annotation></semantics></math>
-is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\Sigma} = \pi_c(S)</annotation></semantics></math>.
-For every such
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
-the inverse exists and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>⋅</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p</annotation></semantics></math>,
+<p><span class="math display">\[\log L\left(\Sigma;
+Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log
+(2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12
+{Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= \]</span></p>
+<p><span class="math display">\[- \frac{np}{2}\log (2\pi) -
+\frac{n}{2}\log\left( \det\left( \Sigma\right)\right) -
+\frac{n}2\mathrm{tr}(\Sigma^{-1} S),\]</span> where <span class="math inline">\(S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot
+{Z^{(i)}}^\top\)</span>.</p>
+<p>If <span class="math inline">\(\pi_c(S)\)</span> is positive
+definite, the MLE of <span class="math inline">\(\Sigma\)</span> in a
+model invariant under <span class="math inline">\(\Gamma=\langle
+c\rangle\)</span> is <span class="math inline">\(\hat{\Sigma} =
+\pi_c(S)\)</span>. For every such <span class="math inline">\(c\)</span>, the inverse exists and <span class="math inline">\(\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p\)</span>,
 so:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>;</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>−</mi><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">det</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mrow><mi>n</mi><mi>p</mi></mrow><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2</annotation></semantics></math></p>
+<p><span class="math display">\[\log L\left(\pi_{c}(S);
+Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) -
+\frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) -
+\frac{np}2\]</span></p>
 <p>which can be calculated by <code><a href="../reference/logLik.gips.html">logLik.gips()</a></code>.</p>
 <p>Then AIC and BIC are defined by:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>I</mi><mi>C</mi><mo>=</mo><mn>2</mn><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">dim</mi><mo>⁡</mo></mrow><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>2</mn><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">AIC = 2 \cdot (\dim M) -2 \log L(\pi_{c}(S))</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>I</mi><mi>C</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">dim</mi><mo>⁡</mo></mrow><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>2</mn><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>π</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BIC = (\log n) \cdot (\dim M) -2 \log L(\pi_{c}(S))</annotation></semantics></math></p>
+<p><span class="math display">\[AIC = 2 \cdot (\dim M) -2 \log
+L(\pi_{c}(S))\]</span> <span class="math display">\[BIC = (\log n) \cdot
+(\dim M) -2 \log L(\pi_{c}(S))\]</span></p>
 <p>A smaller value of the criteria for a given model indicates a better
 fit.</p>
 <p>Those can be calculated by <code><a href="../reference/AIC.gips.html">AIC.gips()</a></code> and
@@ -643,17 +548,11 @@ fit.</p>
 <div class="section level4">
 <h4 id="estimated-mean">Estimated mean<a class="anchor" aria-label="anchor" href="#estimated-mean"></a>
 </h4>
-<p>When the mean was estimated, we have
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><mover><mi>Z</mi><mo accent="true">‾</mo></mover><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Z</mi><mo accent="true">‾</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msup><mi>Z</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}</annotation></semantics></math>.
-Then in the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">\log L</annotation></semantics></math>
-we use
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>
-instead of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
-Definitions of AIC and BIC stay the same.</p>
+<p>When the mean was estimated, we have <span class="math inline">\(S =
+\frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} -
+\bar{Z}\bigr)^\top\)</span>, where <span class="math inline">\(\bar{Z} =
+\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>. Then in the <span class="math inline">\(\log L\)</span> we use <span class="math inline">\(n-1\)</span> instead of <span class="math inline">\(n\)</span>. Definitions of AIC and BIC stay the
+same.</p>
 </div>
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
@@ -691,14 +590,10 @@ selection</strong> section:</p>
             else{document.getElementById('spoiler4') .style.display='none'}">
 Show/hide data preparation
 </button>
-<p>Let’s say we have this data, <code>Z</code>. It has dimension
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">p=6</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
-observations. Let’s assume <code>Z</code> was drawn from the normal
-distribution with the mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,0,0,0,0,0)</annotation></semantics></math>.
-We want to estimate the covariance matrix:</p>
+<p>Let’s say we have this data, <code>Z</code>. It has dimension <span class="math inline">\(p=6\)</span> and <span class="math inline">\(7\)</span> observations. Let’s assume
+<code>Z</code> was drawn from the normal distribution with the mean
+<span class="math inline">\((0,0,0,0,0,0)\)</span>. We want to estimate
+the covariance matrix:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 7 6</span></span>

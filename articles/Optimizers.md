@@ -14,7 +14,7 @@ library(gips)
 
 The goal of the
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md) is
-to find the permutation $`\sigma`$ that maximizes the a posteriori
+to find the permutation \\\sigma\\ that maximizes the a posteriori
 probability (MAP - Maximum A Posteriori). Such a permutation represents
 the most plausible symmetry given the data.
 
@@ -26,20 +26,20 @@ page](https://przechoj.github.io/gips/articles/Theory.html). `gips` can
 calculate the logarithm of it by the
 [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
 function. In the following paragraphs, we will refer to this a
-posteriori probability function as $`f(\sigma)`$. We have
-$`f(\sigma) > 0`$.
+posteriori probability function as \\f(\sigma)\\. We have \\f(\sigma) \>
+0\\.
 
 ## Available optimizers
 
 The space of permutations is enormous - for the permutation of size
-$`p`$, the space of all permutations is of size $`p!`$ ($`p`$
-factorial). Even for $`p=12`$, this space is practically impossible to
+\\p\\, the space of all permutations is of size \\p!\\ (\\p\\
+factorial). Even for \\p=12\\, this space is practically impossible to
 browse. This is why
 [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
 implements multiple (3) optimizers to choose from:
 
-- `"brute_force"`, `"BF"`, `"full"` \| recommended for $`p\le 10`$.
-- `"Metropolis_Hastings"`, `"MH"` \| recommended for $`p\ge 11`$.
+- `"brute_force"`, `"BF"`, `"full"` \| recommended for \\p\le 10\\.
+- `"Metropolis_Hastings"`, `"MH"` \| recommended for \\p\ge 11\\.
 - `"hill_climbing"`, `"HC"`
 
 #### Note on computation time
@@ -49,10 +49,10 @@ hill climbing.
 
 For Metropolis-Hastings, it computes the a posteriori probability for
 `max_iter` permutations, whereas for hill climbing, it computes
-$`{p\choose 2} \cdot`$`max_iter` of them.
+\\{p\choose 2} \cdot\\ `max_iter` of them.
 
-In the case of the Brute Force optimizer, it computes all $`f(\sigma)`$
-values. The number of all different $`\sigma`$ follows [OEIS sequence
+In the case of the Brute Force optimizer, it computes all \\f(\sigma)\\
+values. The number of all different \\\sigma\\ follows [OEIS sequence
 A051625](https://oeis.org/A051625).
 
 ### Brute Force
@@ -62,7 +62,7 @@ It searches through the whole space at once.
 This is the only optimizer that will certainly find the true MAP
 estimator.
 
-Brute Force is **only recommended** for small spaces ($`p \le 10`$). It
+Brute Force is **only recommended** for small spaces (\\p \le 10\\). It
 can also browse bigger spaces, but the required time is probably too
 long. We tested how much time it takes to browse with Brute Force (Apple
 M2), and we show the time in the table below:
@@ -230,7 +230,7 @@ g_map
 ```
 
 Brute Force needed 362 calculations, as predicted in [OEIS sequence
-A051625](https://oeis.org/A051625) for $`p = 6`$.
+A051625](https://oeis.org/A051625) for \\p = 6\\.
 
 ### Metropolis-Hastings
 
@@ -252,19 +252,19 @@ as posterior probabilities. See [issue
 #### Short description
 
 In an ordinary Metropolis step, the algorithm considers a permutation,
-say, $`\sigma_i`$. Then a random transposition is drawn uniformly
-$`t_i = (j,k)`$, and the value of $`f(\sigma_i \circ t_i)`$ is computed.
+say, \\\sigma_i\\. Then a random transposition is drawn uniformly \\t_i
+= (j,k)\\, and the value of \\f(\sigma_i \circ t_i)\\ is computed.
 
-- If a new value is bigger than the previous one (i.e.,
-  $`f(\sigma_i \circ t_i) \ge f(\sigma_i)`$), then we set
-  $`\sigma_{i+1} = \sigma_i \circ t_i`$.
-- If a new value is smaller ($`f(\sigma_i \circ t_i) < f(\sigma_i)`$),
-  then we will choose $`\sigma_{i+1} = \sigma_i \circ t_i`$ with
-  probability $`\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}`$. Otherwise,
-  we set $`\sigma_{i+1} = \sigma_i`$ with complementary probability
-  $`1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}`$.
+- If a new value is bigger than the previous one (i.e., \\f(\sigma_i
+  \circ t_i) \ge f(\sigma_i)\\), then we set \\\sigma\_{i+1} = \sigma_i
+  \circ t_i\\.
+- If a new value is smaller (\\f(\sigma_i \circ t_i) \< f(\sigma_i)\\),
+  then we will choose \\\sigma\_{i+1} = \sigma_i \circ t_i\\ with
+  probability \\\frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}\\. Otherwise,
+  we set \\\sigma\_{i+1} = \sigma_i\\ with complementary probability
+  \\1 - \frac{f(\sigma_i \circ t_i)}{f(\sigma_i)}\\.
 
-The final value is the best $`\sigma`$ ever computed.
+The final value is the best \\\sigma\\ ever computed.
 
 #### Notes
 
@@ -281,7 +281,7 @@ the convergence plot with a logarithmic OX scale:
 `plot(g_map, type = "best", logarithmic_x = TRUE)`, then decide if the
 line has flattened already. Keep in mind that the OY scale is also
 logarithmic. For example, a marginal change on the OY scale could mean
-$`10000`$**times** the change in A Posteriori.
+\\10000\\ **times** the change in A Posteriori.
 
 For more information about continuing the optimization, see the
 **Continuing the optimization** section below.
@@ -329,14 +329,14 @@ g_map <- withr::with_seed(2023,
 )
 #> ===============================================================================
 g_map
-#> The permutation (1,30,6,8,21,59,15,67,5,63,56,70,12,36,69,19,32,22,18,26,3,37,38,2,65,7,62,31,9,17,40,10,35,41,55,64,24,33,61,68,4,11,50,42,16,25,52,51,43,14,49,53,39,48,47,44,66,28,23)(20,45,57,29,58,34,54,27,60,46):
+#> The permutation (1,30,66,28,63,56,70,23,6,21,59,15,22,67,38,62,31,34,54,27,60,35,46,20,45,69,53,26,5,12,36,57,29,58,9,17,10,41,55,64,24,49,61,68,4,11,50,42,16,25,52,14,33,40,51,7,2,65,43,39,48,47,44,19,32,3,37):
 #>  - was found after 150 posterior calculations;
-#>  - is 5.252e+660 times more likely than the () permutation.
+#>  - is 2.459e+659 times more likely than the () permutation.
 ```
 
 After 150 iterations, the best group found is unimaginably more likely
 than the trivial group generated by the identity permutation `()`: its
-posterior probability is approximately $`10^{661}`$ times as large.
+posterior probability is approximately \\10^{659}\\ times as large.
 
 ``` r
 
@@ -354,19 +354,16 @@ It is performing the local optimization iteratively.
 
 #### Short description
 
-In every iteration $`i`$, an algorithm considers a permutation; call it
-$`\sigma_i`$. Then, all the values of $`f(\sigma_i \circ t)`$ are
-computed for every possible transposition $`t = (j,k)`$. Then the next
-$`\sigma_{i+1}`$ will be the one with the biggest value:
+In every iteration \\i\\, an algorithm considers a permutation; call it
+\\\sigma_i\\. Then, all the values of \\f(\sigma_i \circ t)\\ are
+computed for every possible transposition \\t = (j,k)\\. Then the next
+\\\sigma\_{i+1}\\ will be the one with the biggest value:
 
-``` math
-\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\}
-```
+\\\sigma\_{i+1} = \operatorname\*{arg\\max}\_{\text{perm} \in
+\text{neighbors}(\sigma\_{i})}\\f(\text{perm})\\\\
 
-Where:
-``` math
-\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}
-```
+Where: \\\text{neighbors}(\sigma) = \\\sigma \circ (j,k) : 1 \le j \< k
+\le \text{p}\\\\
 
 The algorithm ends when all neighbors are less likely, or the `max_iter`
 is achieved. In the first case, the algorithm will finish at a local
@@ -546,7 +543,7 @@ log_gain <- compare_log_posteriories_of_perms(
 ```
 
 The posterior probability of the best group found after 150 iterations
-is approximately $`10^{227}`$ times that of the best group found after
+is approximately \\10^{265}\\ times that of the best group found after
 50 iterations. Keep in mind that the y scale is logarithmic, so a
 visually small increase can represent a large posterior ratio. Use the
 plot to decide whether the best result is stabilizing and whether to run
@@ -566,18 +563,16 @@ calculation of the probabilities after optimization.
 
 The `save_all_perms = TRUE` will save all visited permutations in the
 outputted object, which significantly increases the required RAM. For
-instance, with $`p=150`$ and `max_iter = 150000`, we needed 400 MB to
+instance, with \\p=150\\ and `max_iter = 150000`, we needed 400 MB to
 store it, whereas `save_all_perms = FALSE` only required 2 MB. However,
 `save_all_perms = TRUE` is necessary for `return_probabilities = TRUE`
 or more complex path analysis.
 
 With `return_probabilities = TRUE`, probabilities are calculated from
-unnormalized posterior weights $`w(\Gamma)`$, conditional on the set
-$`V`$ of distinct visited cyclic groups:
+unnormalized posterior weights \\w(\Gamma)\\, conditional on the set
+\\V\\ of distinct visited cyclic groups:
 
-``` math
-P(\Gamma \mid Z,\Gamma\in V)=\frac{w(\Gamma)}{\sum_{H\in V}w(H)}.
-```
+\\P(\Gamma \mid Z,\Gamma\in V)=\frac{w(\Gamma)}{\sum\_{H\in V}w(H)}.\\
 
 Each group contributes one weight, regardless of repeated visits or
 different generators. BF uses all cyclic groups and gives the full

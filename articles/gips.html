@@ -10,7 +10,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -95,15 +101,11 @@ order, but the values in each position remain the same.</p>
 <p><img src="gips_files/figure-html/symvariant_matrix-1.png" class="r-plt" alt="" width="49%"><img src="gips_files/figure-html/symvariant_matrix-2.png" class="r-plt" alt="" width="49%"></p>
 <p>Now, we can state this interchangeability property in terms of
 permutations. In our case, the distribution of (X1, X2, X3) is
-<strong>invariant by permutation</strong>
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>↦</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">1\mapsto3</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>↦</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3\mapsto1</annotation></semantics></math>),
-or in cyclic form
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,3)(2)</annotation></semantics></math>.
-This is equivalent to saying that swapping the first with the third row
-and then swapping the first and third columns of the covariance matrix
-results in the same matrix. Then we say that this covariance matrix is
-<strong>invariant by permutation</strong>.</p>
+<strong>invariant by permutation</strong> (<span class="math inline">\(1\mapsto3\)</span>, <span class="math inline">\(3\mapsto1\)</span>), or in cyclic form <span class="math inline">\((1,3)(2)\)</span>. This is equivalent to saying
+that swapping the first with the third row and then swapping the first
+and third columns of the covariance matrix results in the same matrix.
+Then we say that this covariance matrix is <strong>invariant by
+permutation</strong>.</p>
 <p>Of course, in the samples collected in the real world, no perfect
 equalities will be observed. Still, if the respective values in the
 (poorly) estimated covariance matrix were close, adopting a particular
@@ -139,9 +141,7 @@ Statistical Software</a>.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">DAAG</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/DAAG/man/oddbooks.html" class="external-link">oddbooks</a></span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>We suspect books from this dataset were printed with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math>
-aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A-series paper
+<p>We suspect books from this dataset were printed with <span class="math inline">\(\sqrt{2}\)</span> aspect ratio as in popular <a href="https://en.wikipedia.org/wiki/Paper_size#A_series" class="external-link">A-series paper
 size</a>. Therefore, we can use this expert knowledge in the analysis
 and unify the data for height and width:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -200,12 +200,10 @@ how to use it with MH.</p>
 <code>delta</code> and <code>D_matrix</code>. By default, they are set
 to <code>3</code> and <code>d * diag(p)</code>, respectively, where
 <code>d = mean(diag(S))</code>. We recommend comparing results for
-different values of <code>D_matrix = d * diag(p)</code>, where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d &gt; 0</annotation></semantics></math>.
-For a fixed permutation, the projection returned by
-<code><a href="../reference/project_matrix.html">project_matrix()</a></code> does not depend on either hyperparameter.
-The impact analysis of those can be read in [2] in section <em>3.2.
-Hyperparameter’s influence</em>.</p>
+different values of <code>D_matrix = d * diag(p)</code>, where <span class="math inline">\(d &gt; 0\)</span>. For a fixed permutation, the
+projection returned by <code><a href="../reference/project_matrix.html">project_matrix()</a></code> does not depend on
+either hyperparameter. The impact analysis of those can be read in [2]
+in section <em>3.2. Hyperparameter’s influence</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="theoretic-example">Theoretic example<a class="anchor" aria-label="anchor" href="#theoretic-example"></a>
@@ -238,11 +236,11 @@ Show/hide data preparation
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">toy_example_data</span></span>
-<span><span class="co">#&gt;            [,1]     [,2]     [,3]      [,4]       [,5]</span></span>
-<span><span class="co">#&gt; [1,]  -5.554883 7.466693 2.253895 -5.945163  -8.996498</span></span>
-<span><span class="co">#&gt; [2,] -11.330708 1.700968 2.962689 -5.420533  -8.969249</span></span>
-<span><span class="co">#&gt; [3,] -10.579451 3.914784 2.121055 -7.288234  -9.706408</span></span>
-<span><span class="co">#&gt; [4,] -12.634411 4.881232 1.063559 -8.249461 -10.747491</span></span>
+<span><span class="co">#&gt;            [,1]     [,2]      [,3]      [,4]       [,5]</span></span>
+<span><span class="co">#&gt; [1,]  -5.554883 7.466693 2.9365870 -6.012184  -9.612169</span></span>
+<span><span class="co">#&gt; [2,] -11.330708 1.700968 3.4492219 -5.981525  -8.894789</span></span>
+<span><span class="co">#&gt; [3,] -10.579451 3.914784 1.5836832 -6.700888  -9.756382</span></span>
+<span><span class="co">#&gt; [4,] -12.634411 4.881232 0.6227172 -7.743648 -10.812462</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">toy_example_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 5</span></span>
@@ -280,9 +278,8 @@ also close.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/toy_example_data_show3-1.png" class="r-plt" alt="" width="700"></p>
-<p><code>gips</code> decided that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
-was the most reasonable assumption. Let’s see how much better it is:</p>
+<p><code>gips</code> decided that <span class="math inline">\((3,4,5)\)</span> was the most reasonable
+assumption. Let’s see how much better it is:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_map</span></span>
 <span><span class="co">#&gt; The permutation (3,4,5):</span></span>
@@ -294,43 +291,37 @@ are:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">toy_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span></span>
 <span><span class="va">toy_probabilities</span></span>
-<span><span class="co">#&gt;      (3,4,5)      (2,3,4) (1,2)(3,4,5)   (2,4)(3,5)      (2,4,5)        (3,5) </span></span>
-<span><span class="co">#&gt;  0.060807722  0.050871350  0.047553052  0.043197758  0.042882206  0.037338642 </span></span>
-<span><span class="co">#&gt;        (4,5)    (2,3,4,5)        (2,4)    (2,4,3,5)        (3,4)    (2,3,5,4) </span></span>
-<span><span class="co">#&gt;  0.037076593  0.036671982  0.035204099  0.035156201  0.034409141  0.033256368 </span></span>
-<span><span class="co">#&gt; (1,2,4)(3,5)   (1,2)(4,5)   (1,2)(3,4)   (1,2)(3,5)    (1,2,3,4)   (2,3)(4,5) </span></span>
-<span><span class="co">#&gt;  0.027001338  0.026434942  0.025646738  0.024909339  0.018755173  0.018682287 </span></span>
-<span><span class="co">#&gt;      (2,3,5)           ()   (2,5)(3,4)    (1,3,2,4)  (1,2,5,3,4)    (1,2,5,4) </span></span>
-<span><span class="co">#&gt;  0.018674566  0.016753585  0.015770733  0.015104228  0.014416932  0.014167291 </span></span>
-<span><span class="co">#&gt;      (1,2,4)        (2,3)        (1,2)    (1,4,2,5)        (2,5) (1,5)(2,3,4) </span></span>
-<span><span class="co">#&gt;  0.014022635  0.013346786  0.012970521  0.012088297  0.012009802  0.011275341 </span></span>
-<span><span class="co">#&gt;  (1,2,3,5,4)  (1,2,3,4,5) (1,2,5)(3,4) (1,2,3)(4,5)  (1,2,4,3,5)  (1,2,5,4,3) </span></span>
-<span><span class="co">#&gt;  0.010799158  0.010556133  0.010457193  0.010368108  0.009845391  0.009645315 </span></span>
-<span><span class="co">#&gt; (1,4)(2,3,5) (1,3)(2,4,5)   (1,4)(2,3)    (1,2,4,3)    (1,2,4,5)  (1,2,4,5,3) </span></span>
-<span><span class="co">#&gt;  0.009639332  0.009111449  0.008821912  0.008558766  0.007837587  0.007573836 </span></span>
-<span><span class="co">#&gt;   (1,4)(3,5)   (1,4)(2,5)    (1,3,2,5)      (1,2,5)      (1,2,3)    (1,2,3,5) </span></span>
-<span><span class="co">#&gt;  0.006541385  0.005361152  0.005298321  0.005207779  0.004993743  0.004600971 </span></span>
-<span><span class="co">#&gt;   (1,5)(2,4)   (1,3)(2,4)   (1,5)(3,4)    (1,2,5,3)        (1,4) (1,3,5)(2,4) </span></span>
-<span><span class="co">#&gt;  0.004266386  0.004236670  0.003994193  0.003884773  0.003574818  0.003160935 </span></span>
-<span><span class="co">#&gt;   (1,3)(4,5)   (1,5)(2,3) (1,4,5)(2,3)        (1,5)      (1,4,5)        (1,3) </span></span>
-<span><span class="co">#&gt;  0.003051082  0.002800666  0.002539015  0.002419267  0.002180980  0.002077069 </span></span>
-<span><span class="co">#&gt;      (1,3,4)   (1,3)(2,5) (1,3,4)(2,5)      (1,3,5)    (1,4,3,5)    (1,3,5,4) </span></span>
-<span><span class="co">#&gt;  0.001871114  0.001816812  0.001785037  0.001379745  0.001231682  0.001029557 </span></span>
-<span><span class="co">#&gt;    (1,3,4,5) </span></span>
-<span><span class="co">#&gt;  0.001027021</span></span></code></pre></div>
-<p>We see that assumption
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
+<span><span class="co">#&gt;      (3,4,5)      (2,3,5) (1,2)(3,4,5)   (2,3)(4,5)      (2,3,4)        (4,5) </span></span>
+<span><span class="co">#&gt;  0.060795897  0.051327650  0.047543805  0.043479702  0.042258173  0.037444039 </span></span>
+<span><span class="co">#&gt;        (3,4)    (2,4,3,5)    (2,3,5,4)        (2,3)        (3,5)    (2,3,4,5) </span></span>
+<span><span class="co">#&gt;  0.036974591  0.036537592  0.035288679  0.035029003  0.034387822  0.033253087 </span></span>
+<span><span class="co">#&gt; (1,2,3)(4,5)   (1,2)(3,4)   (1,2)(3,5)   (1,2)(4,5)    (1,2,5,3)      (2,4,5) </span></span>
+<span><span class="co">#&gt;  0.027117327  0.026461675  0.025577690  0.024936845  0.018903085  0.018746139 </span></span>
+<span><span class="co">#&gt;   (2,5)(3,4)           ()   (2,4)(3,5)    (1,3,2,5)  (1,2,4,5,3)    (1,2,4,3) </span></span>
+<span><span class="co">#&gt;  0.018700989  0.016750327  0.015663346  0.015307451  0.014592485  0.014039967 </span></span>
+<span><span class="co">#&gt;      (1,2,3)        (2,5)        (1,2)        (2,4)    (1,3,2,4) (1,4)(2,3,5) </span></span>
+<span><span class="co">#&gt;  0.013997807  0.013485936  0.012967999  0.011923087  0.011841521  0.011196394 </span></span>
+<span><span class="co">#&gt;  (1,2,5,4,3)  (1,2,5,3,4) (1,2,5)(3,4) (1,2,4)(3,5)  (1,2,3,5,4) (1,3)(2,4,5) </span></span>
+<span><span class="co">#&gt;  0.010785372  0.010419982  0.010409290  0.010365568  0.009845095  0.009702158 </span></span>
+<span><span class="co">#&gt;  (1,2,4,3,5) (1,5)(2,3,4)   (1,3)(2,5)    (1,2,3,5)    (1,2,3,4)  (1,2,3,4,5) </span></span>
+<span><span class="co">#&gt;  0.009651125  0.009104584  0.008944279  0.008695051  0.007651747  0.007588575 </span></span>
+<span><span class="co">#&gt;   (1,3)(4,5)   (1,3)(2,4)    (1,4,2,5)      (1,2,4)      (1,2,5)    (1,2,5,4) </span></span>
+<span><span class="co">#&gt;  0.006593231  0.005343025  0.005328589  0.005157984  0.005040218  0.004559069 </span></span>
+<span><span class="co">#&gt;   (1,5)(2,3)   (1,4)(2,3)   (1,4)(3,5)    (1,2,4,5)        (1,3) (1,4,5)(2,3) </span></span>
+<span><span class="co">#&gt;  0.004283906  0.004131646  0.003985042  0.003944406  0.003585326  0.003141217 </span></span>
+<span><span class="co">#&gt;   (1,5)(3,4)   (1,4)(2,5) (1,3,4)(2,5)        (1,4)      (1,3,4)        (1,5) </span></span>
+<span><span class="co">#&gt;  0.003043179  0.002773443  0.002564496  0.002403143  0.002179071  0.002082365 </span></span>
+<span><span class="co">#&gt;      (1,3,5)   (1,5)(2,4) (1,3,5)(2,4)      (1,4,5)    (1,3,5,4)    (1,3,4,5) </span></span>
+<span><span class="co">#&gt;  0.001874883  0.001849327  0.001777368  0.001376319  0.001233471  0.001030074 </span></span>
+<span><span class="co">#&gt;    (1,4,3,5) </span></span>
+<span><span class="co">#&gt;  0.001026267</span></span></code></pre></div>
+<p>We see that assumption <span class="math inline">\((3,4,5)\)</span>
 is the most likely with a 6.1% posterior probability. 19 cyclic groups
 are more likely than id.</p>
 <p>Remember that the <code>n0</code> could still be too big for your
-data. In this example, the assumptions with transpositions (like
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5)</annotation></semantics></math>)
-would yield the <code>n0</code>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">= 5</annotation></semantics></math>,
-which would be insufficient for us to estimate covariance correctly. The
-assumption
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4,5)</annotation></semantics></math>
-will be just right:</p>
+data. In this example, the assumptions with transpositions (like <span class="math inline">\((3,5)\)</span>) would yield the <code>n0</code>
+<span class="math inline">\(= 5\)</span>, which would be insufficient
+for us to estimate covariance correctly. The assumption <span class="math inline">\((3,4,5)\)</span> will be just right:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">g_map</span><span class="op">)</span><span class="op">$</span><span class="va">n0</span> <span class="co"># compare n0 with number_of_observations</span></span>
 <span><span class="co">#&gt; [1] 4</span></span>
@@ -360,8 +351,7 @@ column order. <code>gips</code> applies a shared permutation to matching
 matrix indices; it does not match or reorder variables using matrix
 names.</p>
 <p>The two covariance matrices below are different, but both are
-invariant under the permutation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>:</p>
+invariant under the permutation <span class="math inline">\((1,2,3)\)</span>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
@@ -406,9 +396,7 @@ invariant under the permutation
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/multi_sample_plot-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see that the estimated covariances are different, but both look
-approximately invariant under the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
-permutation.</p>
+approximately invariant under the <span class="math inline">\((1,2,3)\)</span> permutation.</p>
 <p>Now we can fit one shared symmetry model to both covariance
 matrices:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -424,12 +412,11 @@ matrices:</p>
 <span><span class="co">#&gt;  - is 2147633.177 times more likely than the () permutation.</span></span>
 <span><span class="va">multi_probabilities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_probabilities_from_gips.html">get_probabilities_from_gips</a></span><span class="op">(</span><span class="va">g_multi_map</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">multi_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)   (1,5)(2,3)        (2,3)        (1,3) </span></span>
-<span><span class="co">#&gt;  0.935489675  0.054313094  0.003891049  0.003821645  0.001542028</span></span></code></pre></div>
-<p>The MAP symmetry is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>,
+<span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)        (2,3)        (1,3)   (1,5)(2,3) </span></span>
+<span><span class="co">#&gt; 0.5626843561 0.4333038479 0.0021741302 0.0009889950 0.0002932819</span></span></code></pre></div>
+<p>The MAP symmetry is <span class="math inline">\((1,2,3)\)</span>,
 matching the shared symmetry used to generate both groups. Its posterior
-probability is about 93.5%. The projected covariance estimate is also
+probability is about 56.3%. The projected covariance estimate is also
 returned as one matrix per group:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S_multi_projected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/project_matrix.html">project_matrix</a></span><span class="op">(</span><span class="va">S_by_group</span>, <span class="va">g_multi_map</span><span class="op">)</span></span>
@@ -443,11 +430,11 @@ returned as one matrix per group:</p>
 <span><span class="co">#&gt; hy -0.26 -0.26 -0.26 0.08  0.61</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S_multi_projected</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       he    ha    hi    hu    hy</span></span>
-<span><span class="co">#&gt; he  2.13  1.35  1.35 -0.06  0.95</span></span>
-<span><span class="co">#&gt; ha  1.35  2.13  1.35 -0.06  0.95</span></span>
-<span><span class="co">#&gt; hi  1.35  1.35  2.13 -0.06  0.95</span></span>
-<span><span class="co">#&gt; hu -0.06 -0.06 -0.06  0.78 -0.66</span></span>
-<span><span class="co">#&gt; hy  0.95  0.95  0.95 -0.66  3.24</span></span>
+<span><span class="co">#&gt; he  2.40  1.62  1.62 -0.51  0.28</span></span>
+<span><span class="co">#&gt; ha  1.62  2.40  1.62 -0.51  0.28</span></span>
+<span><span class="co">#&gt; hi  1.62  1.62  2.40 -0.51  0.28</span></span>
+<span><span class="co">#&gt; hu -0.51 -0.51 -0.51  1.01 -0.73</span></span>
+<span><span class="co">#&gt; hy  0.28  0.28  0.28 -0.73  2.22</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_multi_map</span>, type <span class="op">=</span> <span class="st">"MLE"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gips_files/figure-html/multi_sample_example_project-1.png" class="r-plt" alt="" width="700"></p>
@@ -475,14 +462,12 @@ clear:</p>
 <span><span class="co">#&gt;      (1,2,3) (1,2,3)(4,5)      (2,3,4)   (1,2)(3,4)        (2,3) </span></span>
 <span><span class="co">#&gt;   0.49456331   0.23279372   0.04635442   0.03723094   0.02928359</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">group_2_probabilities</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    (1,3,5)    (1,2,3)  (1,3,2,5)  (1,2,5,3)  (1,2,3,5) </span></span>
-<span><span class="co">#&gt; 0.36354891 0.26511520 0.06678466 0.06658150 0.06277936</span></span></code></pre></div>
-<p>The separate analyses are more ambiguous. The true
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2,3)</annotation></semantics></math>
-permutation has posterior probability about 49.5% in the first sample
-and only about 26.5% in the second sample. The multi-sample fit combines
-evidence from both groups while requiring one shared permutation
-symmetry.</p>
+<span><span class="co">#&gt; (1,2,3)(4,5)      (1,2,3)      (1,3,5)        (1,3)        (2,3) </span></span>
+<span><span class="co">#&gt;   0.51933859   0.31744775   0.05597950   0.02090608   0.02071526</span></span></code></pre></div>
+<p>The separate analyses are more ambiguous. The true <span class="math inline">\((1,2,3)\)</span> permutation has posterior
+probability about 49.5% in the first sample and only about 31.7% in the
+second sample. The multi-sample fit combines evidence from both groups
+while requiring one shared permutation symmetry.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>

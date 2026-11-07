@@ -17,7 +17,7 @@ library(gips)
 
 As mentioned in the abstract, the outline of the paper is to “derive the
 distribution of the maximum likelihood estimate of the covariance
-parameter $`\Sigma`$ (…)” and then to “perform Bayesian model selection
+parameter \\\Sigma\\ (…)” and then to “perform Bayesian model selection
 in the class of complete Gaussian models invariant by the action of a
 subgroup of the symmetric group (…)”. Those ideas are implemented in the
 `gips` package.
@@ -31,43 +31,41 @@ comprehensibly set out in \[2\].
 
 ## Basic definitions
 
-Let $`V=\{1,\ldots,p\}`$ be a finite index set, and for every
-$`i\in \{1, \dots, n\}`$, $`Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top`$
-be a multivariate random variable following a centered Gaussian model
-$`\mathrm{N}_p(0,\Sigma)`$, and let $`Z^{(1)},\ldots, Z^{(n)}`$ be an
+Let \\V=\\1,\ldots,p\\\\ be a finite index set, and for every \\i\in
+\\1, \dots, n\\\\, \\Z^{(i)}=(Z_1^{(i)},\ldots, Z_p^{(i)})^\top\\ be a
+multivariate random variable following a centered Gaussian model
+\\\mathrm{N}\_p(0,\Sigma)\\, and let \\Z^{(1)},\ldots, Z^{(n)}\\ be an
 i.i.d. (independent and identically distributed) sample from this
-distribution. Name the whole sample $`Z = (Z^{(1)},\ldots, Z^{(n)})`$.
+distribution. Name the whole sample \\Z = (Z^{(1)},\ldots, Z^{(n)})\\.
 
-Let $`\mathfrak{S}_p`$ denote the symmetric group on $`V`$, that is, the
-set of all permutations on $`\{1,\ldots,p\}`$ with function composition
-as the group operation. Let $`\Gamma`$ be an arbitrary subgroup of
-$`\mathfrak{S}_p`$. The model $`\mathrm{N}_p(0,\Sigma)`$ is said to be
-invariant under the action of $`\Gamma`$ if for all $`g\in \Gamma`$,
-$`g\cdot\Sigma\cdot g^\top=\Sigma`$ (here, we identify a permutation
-$`g`$ with its permutation matrix).
+Let \\\mathfrak{S}\_p\\ denote the symmetric group on \\V\\, that is,
+the set of all permutations on \\\\1,\ldots,p\\\\ with function
+composition as the group operation. Let \\\Gamma\\ be an arbitrary
+subgroup of \\\mathfrak{S}\_p\\. The model \\\mathrm{N}\_p(0,\Sigma)\\
+is said to be invariant under the action of \\\Gamma\\ if for all \\g\in
+\Gamma\\, \\g\cdot\Sigma\cdot g^\top=\Sigma\\ (here, we identify a
+permutation \\g\\ with its permutation matrix).
 
-For a subgroup $`\Gamma \subset  \mathfrak{S}_p`$, we define the colored
-space, i.e., the space of symmetric matrices invariant under $`\Gamma`$,
-``` math
-\mathcal{Z}_{\Gamma} := \{S \in \mathrm{Sym}(p;\mathbb{R})\colon S_{i,j} = S_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in \Gamma\mbox{ for all }i,j\in V\},
-```
-and the colored cone of positive definite matrices valued in
-$`\mathcal{Z}_{\Gamma}`$,
-``` math
-\mathcal{P}_{\Gamma} := \mathcal{Z}_{\Gamma} \cap \mathrm{Sym}^+(p;\mathbb{R}).
-```
+For a subgroup \\\Gamma \subset \mathfrak{S}\_p\\, we define the colored
+space, i.e., the space of symmetric matrices invariant under \\\Gamma\\,
+\\\mathcal{Z}\_{\Gamma} := \\S \in \mathrm{Sym}(p;\mathbb{R})\colon
+S\_{i,j} = S\_{\sigma(i),\sigma(j)} \text{ for all }\sigma \in
+\Gamma\mbox{ for all }i,j\in V\\,\\ and the colored cone of positive
+definite matrices valued in \\\mathcal{Z}\_{\Gamma}\\,
+\\\mathcal{P}\_{\Gamma} := \mathcal{Z}\_{\Gamma} \cap
+\mathrm{Sym}^+(p;\mathbb{R}).\\
 
 ## Block Decomposition - \[1\], Theorem 1
 
 The main theoretical result in this theory (Theorem 1 in
 [\[1\]](https://arxiv.org/abs/2004.03503)) states that given a
-permutation subgroup $`\Gamma`$ there exists an orthogonal matrix
-$`U_\Gamma`$ such that all the symmetric matrices
-$`S\in\mathcal{Z}_\Gamma`$ can be transformed into block-diagonal form.
+permutation subgroup \\\Gamma\\ there exists an orthogonal matrix
+\\U\_\Gamma\\ such that all the symmetric matrices
+\\S\in\mathcal{Z}\_\Gamma\\ can be transformed into block-diagonal form.
 
 The exact form of blocks depends on so-called *structure constants*
-$`(k_i,d_i,r_i)_{i=1}^L`$. It is worth noting that $`k = d`$ for cyclic
-groups $`\Gamma = \langle\sigma\rangle`$. Because gips searches only
+\\(k_i,d_i,r_i)\_{i=1}^L\\. It is worth noting that \\k = d\\ for cyclic
+groups \\\Gamma = \langle\sigma\rangle\\. Because gips searches only
 within cyclic subgroups, this simplifies the theory.
 
 #### Examples
@@ -87,8 +85,8 @@ S <- matrix(c(
 
 ![](Theory_files/figure-html/th1_2-1.png)
 
-`S` is a symmetric matrix invariant under the group
-$`\Gamma = \left<(1,2,3,4,5,6)\right>`$.
+`S` is a symmetric matrix invariant under the group \\\Gamma =
+\left\<(1,2,3,4,5,6)\right\>\\.
 
 ``` r
 
@@ -134,8 +132,8 @@ S <- matrix(c(
 
 ![](Theory_files/figure-html/th1_6-1.png)
 
-Now, `S` is a symmetric matrix invariant under the group
-$`\Gamma = \left<(1,2,3)(4,5,6)\right>`$.
+Now, `S` is a symmetric matrix invariant under the group \\\Gamma =
+\left\<(1,2,3)(4,5,6)\right\>\\.
 
 ``` r
 
@@ -158,41 +156,39 @@ round(block_decomposition, 5)
 Again, this result is in accordance with
 [\[1\]](https://arxiv.org/abs/2004.03503), Theorem 1. Notice the zeros
 in `block_decomposition`:
-``` math
-\forall_{i\in\{1,2\},j\in\{3,4,5,6\}}\text{block_decomposition}[i,j] = 0
-```
+\\\forall\_{i\in\\1,2\\,j\in\\3,4,5,6\\}\text{block_decomposition}\[i,j\]
+= 0\\
 
 ## Project Matrix - \[1, Eq. (6)\]
 
 One can also take any symmetric square matrix `S` and find the
-orthogonal projection on $`\mathcal{Z}_{\Gamma}`$, the space of matrices
-invariant under the given permutation:
+orthogonal projection on \\\mathcal{Z}\_{\Gamma}\\, the space of
+matrices invariant under the given permutation:
 
-``` math
-\pi_\Gamma(S) := \frac{1}{|\Gamma|}\sum_{\sigma\in\Gamma}\sigma\cdot S\cdot\sigma^\top
-```
+\\\pi\_\Gamma(S) :=
+\frac{1}{\|\Gamma\|}\sum\_{\sigma\in\Gamma}\sigma\cdot
+S\cdot\sigma^\top\\
 
 The projected matrix is an element of the cone
-$`\pi_\Gamma(S)\in\mathcal{Z}_{\Gamma}`$, which means:
-``` math
-\forall_{i,j\in \{1,\ \dots,\ p\}} \pi_\Gamma(S)[i,j] = \pi_\Gamma(S)[\sigma(i),\sigma(j)] \text{ for all }\sigma\in\Gamma
-```
+\\\pi\_\Gamma(S)\in\mathcal{Z}\_{\Gamma}\\, which means:
+\\\forall\_{i,j\in \\1,\\ \dots,\\ p\\} \pi\_\Gamma(S)\[i,j\] =
+\pi\_\Gamma(S)\[\sigma(i),\sigma(j)\] \text{ for all }\sigma\in\Gamma\\
 
 So it has some identical elements.
 
 #### Trivial case
 
-Note that for $`\Gamma = \{\text{id}\} = \{(1)(2)\dots(p)\}`$ we have
-$`\pi_{\{\text{id}\}}(S) = S`$.
+Note that for \\\Gamma = \\\text{id}\\ = \\(1)(2)\dots(p)\\\\ we have
+\\\pi\_{\\\text{id}\\}(S) = S\\.
 
 So, no additional assumptions are made; thus, the standard covariance
 estimator is the best we can do.
 
 #### Notation
 
-We will abbreviate the notation: when the $`\Gamma = \left< c \right>`$
-is a cyclic group of a permutation $`c`$, we will write
-$`\pi_{c}(S) := \pi_{\Gamma}(S) = \pi_{\left< c \right>}(S)`$.
+We will abbreviate the notation: when the \\\Gamma = \left\< c
+\right\>\\ is a cyclic group of a permutation \\c\\, we will write
+\\\pi\_{c}(S) := \pi\_{\Gamma}(S) = \pi\_{\left\< c \right\>}(S)\\.
 
 #### Example
 
@@ -212,8 +208,8 @@ round(S, 2)
 
 ![](Theory_files/figure-html/def3_2-1.png)
 
-One can project this matrix, for example, on
-$`\Gamma = \left< \text{perm} \right> = \left<(1,2)(3,4,5,6)\right>`$:
+One can project this matrix, for example, on \\\Gamma = \left\<
+\text{perm} \right\> = \left\<(1,2)(3,4,5,6)\right\>\\:
 
 ``` r
 
@@ -234,34 +230,32 @@ Notice in the `S_projected` matrix there are identical elements
 according to the equation from the beginning of this section. For
 example, `S_projected[1,1] = S_projected[2,2]`.
 
-### $`C_\sigma`$ and `n0`
+### \\C\_\sigma\\ and `n0`
 
 For an i.i.d. sample from a nondegenerate Gaussian distribution, the
 unrestricted covariance Maximum Likelihood Estimator (MLE) exists almost
-surely if and only if $`n \ge p`$ when the mean is known to be zero.
-When the mean is estimated, the corresponding requirement is
-$`n \ge p + 1`$.
+surely if and only if \\n \ge p\\ when the mean is known to be zero.
+When the mean is estimated, the corresponding requirement is \\n \ge p +
+1\\.
 
-For a fixed cyclic symmetry group generated by $`\sigma`$, the
-almost-sure existence condition is $`n_{\mathrm{eff}} \ge C_\sigma`$,
-where $`C_\sigma`$ is the number of cycles, including fixed points.
-Here, $`n_{\mathrm{eff}} = n`$ for a known zero mean and
-$`n_{\mathrm{eff}} = n - 1`$ when the mean is estimated. Symmetry
+For a fixed cyclic symmetry group generated by \\\sigma\\, the
+almost-sure existence condition is \\n\_{\mathrm{eff}} \ge C\_\sigma\\,
+where \\C\_\sigma\\ is the number of cycles, including fixed points.
+Here, \\n\_{\mathrm{eff}} = n\\ for a known zero mean and
+\\n\_{\mathrm{eff}} = n - 1\\ when the mean is estimated. Symmetry
 constraints can therefore lower the required sample size.
 
 The threshold reported by `gips` is expressed in terms of the original
-sample size:
-``` math
-n_0 = C_\sigma + \mathbf{1}_{\{\text{mean estimated}\}}.
-```
-Thus the sample-size check is `number_of_observations >= summary(g)$n0`;
-the correction for estimating the mean is already included in `n0`. This
-threshold is not the number of free covariance parameters.
+sample size: \\n_0 = C\_\sigma + \mathbf{1}\_{\\\text{mean
+estimated}\\}.\\ Thus the sample-size check is
+`number_of_observations >= summary(g)$n0`; the correction for estimating
+the mean is already included in `n0`. This threshold is not the number
+of free covariance parameters.
 
-For example, when $`p=6`$ and $`\sigma = (1,2,3,4,5,6)`$, we have
-$`C_\sigma = 1`$. With a known zero mean, one observation suffices
-almost surely under the Gaussian sampling assumptions. For
-$`\sigma = (1,2)(3,4,5,6)`$, $`C_\sigma = 2`$, so the threshold is two
+For example, when \\p=6\\ and \\\sigma = (1,2,3,4,5,6)\\, we have
+\\C\_\sigma = 1\\. With a known zero mean, one observation suffices
+almost surely under the Gaussian sampling assumptions. For \\\sigma =
+(1,2)(3,4,5,6)\\, \\C\_\sigma = 2\\, so the threshold is two
 observations. When the mean is estimated, these thresholds increase by
 one.
 
@@ -273,7 +267,7 @@ both conditions. For multiple samples, the sample-size requirement is
 positive-definiteness check. The common `was_mean_estimated` setting
 applies to all samples.
 
-With a known zero mean, `summary(g)$n0` equals $`C_\sigma`$:
+With a known zero mean, `summary(g)$n0` equals \\C\_\sigma\\:
 
 ``` r
 
@@ -307,37 +301,37 @@ to find it.
 
 #### General workflow
 
-1.  Choose the prior distribution on $`\Gamma`$ and the precision matrix
-    $`K = \Sigma^{-1}`$.
+1.  Choose the prior distribution on \\\Gamma\\ and the precision matrix
+    \\K = \Sigma^{-1}\\.
 2.  Calculate the posterior distribution (up to a normalizing constant)
     by the formula [\[1\]](https://arxiv.org/abs/2004.03503), (30).
 3.  Use the Metropolis-Hastings algorithm to find the permutation with
     the biggest value of the posterior probability
-    $`\mathbb{P}(\Gamma|Z)`$.
+    \\\mathbb{P}(\Gamma\|Z)\\.
 
 #### Details on the prior distribution
 
-The considered prior distribution of $`\Gamma`$ and $`K=\Sigma^{-1}`$:
+The considered prior distribution of \\\Gamma\\ and \\K=\Sigma^{-1}\\:
 
-1.  $`\Gamma`$ is uniformly distributed on the set of all cyclic
-    subgroups of $`\mathfrak{S}_p`$.
-2.  $`K`$ given $`\Gamma`$ follows the Diaconis-Ylvisaker conjugate
-    prior distribution with parameters $`\delta`$ (real number,
-    $`\delta > 1`$) and $`D`$ (symmetric, positive definite square
-    matrix of the same size as `S`), see
-    [\[1\]](https://arxiv.org/abs/2004.03503), Sec. 3.4.
+1.  \\\Gamma\\ is uniformly distributed on the set of all cyclic
+    subgroups of \\\mathfrak{S}\_p\\.
+2.  \\K\\ given \\\Gamma\\ follows the Diaconis-Ylvisaker conjugate
+    prior distribution with parameters \\\delta\\ (real number, \\\delta
+    \> 1\\) and \\D\\ (symmetric, positive definite square matrix of the
+    same size as `S`), see [\[1\]](https://arxiv.org/abs/2004.03503),
+    Sec. 3.4.
 
-Footnote: Actually, for the special case of $`\Gamma = \{\text{id}\}`$,
-the parameter $`\delta > 0`$ is theoretically correct. In `gips`, we
-want this to be defined for all cyclic groups $`\Gamma`$, so we restrict
-$`\delta > 1`$. Refer to the [\[1\]](https://arxiv.org/abs/2004.03503).
+Footnote: Actually, for the special case of \\\Gamma = \\\text{id}\\\\,
+the parameter \\\delta \> 0\\ is theoretically correct. In `gips`, we
+want this to be defined for all cyclic groups \\\Gamma\\, so we restrict
+\\\delta \> 1\\. Refer to the [\[1\]](https://arxiv.org/abs/2004.03503).
 
 #### `gips` technical details
 
-In `gips`, $`\delta`$ is named `delta`, and $`D`$ is named `D_matrix`.
-By default, they are set to $`3`$ and `diag(d, p)`, respectively, where
+In `gips`, \\\delta\\ is named `delta`, and \\D\\ is named `D_matrix`.
+By default, they are set to \\3\\ and `diag(d, p)`, respectively, where
 `d = mean(diag(S))`. It is worth comparing results for several choices
-of `D_matrix = d * diag(p)`, with $`d > 0`$.
+of `D_matrix = d * diag(p)`, with \\d \> 0\\.
 
 In the spirit of the Bayesian approach, the prior should be specified
 before observing the data. Our default `D_matrix` depends on the
@@ -348,18 +342,18 @@ to using `S / mean(diag(S))` with `D_matrix = diag(p)`. See \[2\],
 Section *3.2. Hyperparameter’s influence*, for a discussion of
 hyperparameter choices.
 
-Smaller $`d`$ can favor models with more equality constraints and fewer
+Smaller \\d\\ can favor models with more equality constraints and fewer
 free covariance parameters. This tendency depends on the data and
-$`\delta`$; it is not a guarantee that decreasing $`d`$ will always
+\\\delta\\; it is not a guarantee that decreasing \\d\\ will always
 select a more constrained model.
 
-For fixed dimension, sample size and $`\delta`$, as $`d \to \infty`$,
+For fixed dimension, sample size and \\\delta\\, as \\d \to \infty\\,
 the posterior distribution over symmetry groups converges to a
-distribution independent of $`S`$. The limit can still depend on the
-dimension, sample size and $`\delta`$, and is not uniform. For finite
-$`d`$, the posterior generally still depends on $`S`$: the calculation
-uses $`D + U`$, where $`U = n_{\mathrm{eff}} S`$, with
-$`n_{\mathrm{eff}} = n - 1`$ when the mean was estimated and $`n`$
+distribution independent of \\S\\. The limit can still depend on the
+dimension, sample size and \\\delta\\, and is not uniform. For finite
+\\d\\, the posterior generally still depends on \\S\\: the calculation
+uses \\D + U\\, where \\U = n\_{\mathrm{eff}} S\\, with
+\\n\_{\mathrm{eff}} = n - 1\\ when the mean was estimated and \\n\\
 otherwise.
 
 Using `S` with `D_matrix = d * diag(p)` gives the same normalized
@@ -385,25 +379,22 @@ When all assumptions are met, the formula (30) puts a number on each
 permutation’s cyclic group. The bigger its value, the more likely the
 data was drawn from that model.
 
-When one finds the permutation $`c_{\text{map}}`$ that maximizes (30),
-``` math
-c_{\text{map}} = \operatorname{arg\,max}_{c\in\mathfrak{S}_p} \mathbb{P}\left(\Gamma=\langle c\rangle|Z^{(1)},\ldots,Z^{(n)}\right)
-```
+When one finds the permutation \\c\_{\text{map}}\\ that maximizes (30),
+\\c\_{\text{map}} = \operatorname{arg\\max}\_{c\in\mathfrak{S}\_p}
+\mathbb{P}\left(\Gamma=\langle c\rangle\|Z^{(1)},\ldots,Z^{(n)}\right)\\
 
-one can reasonably assume the data $`Z`$ was drawn from the model
-``` math
-\mathrm{N}_p(0,\pi_{c_{\text{map}}}(S))
-```
+one can reasonably assume the data \\Z\\ was drawn from the model
+\\\mathrm{N}\_p(0,\pi\_{c\_{\text{map}}}(S))\\
 
-where $`S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top`$
+where \\S = \frac{1}{n} \sum\_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top\\
 
-In such a case, we call $`c_{\text{map}}`$ the Maximum A Posteriori
+In such a case, we call \\c\_{\text{map}}\\ the Maximum A Posteriori
 (MAP).
 
 #### Finding the MAP Estimator
 
-The space of all permutations is enormous for bigger $`p`$ (in our
-experiments, $`p\ge 10`$ is too big). In such a big space, estimating
+The space of all permutations is enormous for bigger \\p\\ (in our
+experiments, \\p\ge 10\\ is too big). In such a big space, estimating
 the MAP is more practical than calculating it exactly.
 
 Metropolis-Hastings algorithm suggested by the authors of
@@ -444,9 +435,9 @@ Z <- withr::with_seed(2022,
 
 Show/hide data preparation
 
-Let’s say we have this data, `Z`. It has dimension $`p=6`$ and only
-$`4`$ observations. Let’s assume `Z` was drawn from the normal
-distribution with the mean $`(0,0,0,0,0,0)`$. We want to estimate the
+Let’s say we have this data, `Z`. It has dimension \\p=6\\ and only
+\\4\\ observations. Let’s assume `Z` was drawn from the normal
+distribution with the mean \\(0,0,0,0,0,0)\\. We want to estimate the
 covariance matrix:
 
 ``` r
@@ -476,11 +467,11 @@ S_projected <- project_matrix(S, g_map)
 
 We see the posterior probability
 [\[1,(30)\]](https://arxiv.org/abs/2004.03503) has the biggest value for
-the permutation $`(1,2,3,4,5,6)`$. It is 133.16 times bigger than for
-the trivial $`\text{id} = (1)(2)\ldots(p)`$ permutation. Under the
+the permutation \\(1,2,3,4,5,6)\\. It is 133.16 times bigger than for
+the trivial \\\text{id} = (1)(2)\ldots(p)\\ permutation. Under the
 assumptions (centered Gaussian), we therefore interpret the model
-$`\mathrm{N}_p(0,\text{S_projected})`$ as more reasonable than
-$`\mathrm{N}_p(0,\text{S})`$ for the data `Z`.
+\\\mathrm{N}\_p(0,\text{S_projected})\\ as more reasonable than
+\\\mathrm{N}\_p(0,\text{S})\\ for the data `Z`.
 
 ## Information Criterion - AIC and BIC
 
@@ -488,35 +479,31 @@ One may be interested in Akaike’s An Information Criterion (AIC) or
 Schwarz’s Bayesian Information Criterion (BIC) of the found model. Those
 are defined based on log-Likelihood:
 
-``` math
-\log L\left(\Sigma; Z^{(1)},\ldots,Z^{(n)}\right) = \sum_{i=1}^n \left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left( \Sigma\right)\right) - \frac12 {Z^{(i)}}^\top \Sigma^{-1} Z^{(i)}\right)= 
-```
+\\\log L\left(\Sigma; Z^{(1)},\ldots,Z^{(n)}\right) = \sum\_{i=1}^n
+\left(- \frac{p}{2}\log (2\pi) - \frac{1}{2}\log\left( \det\left(
+\Sigma\right)\right) - \frac12 {Z^{(i)}}^\top \Sigma^{-1}
+Z^{(i)}\right)= \\
 
-``` math
-- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \Sigma\right)\right) - \frac{n}2\mathrm{tr}(\Sigma^{-1} S),
-```
-where $`S = \frac{1}{n} \sum_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top`$.
+\\- \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left(
+\Sigma\right)\right) - \frac{n}2\mathrm{tr}(\Sigma^{-1} S),\\ where \\S
+= \frac{1}{n} \sum\_{i=1}^n Z^{(i)}\cdot {Z^{(i)}}^\top\\.
 
-If $`\pi_c(S)`$ is positive definite, the MLE of $`\Sigma`$ in a model
-invariant under $`\Gamma=\langle c\rangle`$ is
-$`\hat{\Sigma} = \pi_c(S)`$. For every such $`c`$, the inverse exists
-and $`\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p`$, so:
+If \\\pi_c(S)\\ is positive definite, the MLE of \\\Sigma\\ in a model
+invariant under \\\Gamma=\langle c\rangle\\ is \\\hat{\Sigma} =
+\pi_c(S)\\. For every such \\c\\, the inverse exists and
+\\\mathrm{tr}(\pi_c(S)^{-1} \cdot S) = p\\, so:
 
-``` math
-\log L\left(\pi_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = - \frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left( \pi_{c}(S)\right)\right) - \frac{np}2
-```
+\\\log L\left(\pi\_{c}(S); Z^{(1)},\ldots,Z^{(n)}\right) = -
+\frac{np}{2}\log (2\pi) - \frac{n}{2}\log\left( \det\left(
+\pi\_{c}(S)\right)\right) - \frac{np}2\\
 
 which can be calculated by
 [`logLik.gips()`](https://przechoj.github.io/gips/reference/logLik.gips.md).
 
 Then AIC and BIC are defined by:
 
-``` math
-AIC = 2 \cdot (\dim M) -2 \log L(\pi_{c}(S))
-```
-``` math
-BIC = (\log n) \cdot (\dim M) -2 \log L(\pi_{c}(S))
-```
+\\AIC = 2 \cdot (\dim M) -2 \log L(\pi\_{c}(S))\\ \\BIC = (\log n) \cdot
+(\dim M) -2 \log L(\pi\_{c}(S))\\
 
 A smaller value of the criteria for a given model indicates a better
 fit.
@@ -528,11 +515,11 @@ and
 
 #### Estimated mean
 
-When the mean was estimated, we have
-$`S = \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top`$,
-where $`\bar{Z} = \frac{1}{n} \sum_{i=1}^n Z^{(i)}`$. Then in the
-$`\log L`$ we use $`n-1`$ instead of $`n`$. Definitions of AIC and BIC
-stay the same.
+When the mean was estimated, we have \\S = \frac{1}{n-1} \sum\_{i=1}^n
+\bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top\\, where
+\\\bar{Z} = \frac{1}{n} \sum\_{i=1}^n Z^{(i)}\\. Then in the \\\log L\\
+we use \\n-1\\ instead of \\n\\. Definitions of AIC and BIC stay the
+same.
 
 #### Example
 
@@ -568,9 +555,9 @@ Z <- withr::with_seed(2022,
 
 Show/hide data preparation
 
-Let’s say we have this data, `Z`. It has dimension $`p=6`$ and $`7`$
+Let’s say we have this data, `Z`. It has dimension \\p=6\\ and \\7\\
 observations. Let’s assume `Z` was drawn from the normal distribution
-with the mean $`(0,0,0,0,0,0)`$. We want to estimate the covariance
+with the mean \\(0,0,0,0,0,0)\\. We want to estimate the covariance
 matrix:
 
 ``` r
