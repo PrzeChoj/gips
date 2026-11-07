@@ -517,9 +517,14 @@ and
 
 When the mean was estimated, we have \\S = \frac{1}{n-1} \sum\_{i=1}^n
 \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} - \bar{Z}\bigr)^\top\\, where
-\\\bar{Z} = \frac{1}{n} \sum\_{i=1}^n Z^{(i)}\\. Then in the \\\log L\\
-we use \\n-1\\ instead of \\n\\. Definitions of AIC and BIC stay the
-same.
+\\\bar{Z} = \frac{1}{n} \sum\_{i=1}^n Z^{(i)}\\.
+
+Using \\n-1\\ instead of \\n\\ in
+[`logLik()`](https://rdrr.io/r/stats/logLik.html) corresponds to the
+likelihood of \\n-1\\ independent Gaussian contrasts that remove an
+unrestricted mean. AIC and BIC therefore count only covariance
+parameters and compare models with the same mean specification. BIC
+retains \\\log n\\ in its penalty.
 
 #### Example
 
@@ -589,6 +594,19 @@ BIC(g_map) # this is smaller, so this is better
 
 We will consider a `g_map` better model both in terms of the AIC and the
 BIC.
+
+## Likelihood-ratio test
+
+For a single sample, [`summary()`](https://rdrr.io/r/base/summary.html)
+compares the covariance model specified by the current permutation with
+an unrestricted covariance model. Its p-value uses an asymptotic
+chi-squared reference distribution for a fixed symmetry model.
+
+The reported p-value does not account for choosing the symmetry on the
+same data, as in
+[`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
+followed by [`summary()`](https://rdrr.io/r/base/summary.html) (“double
+dipping”).
 
 ## References
 

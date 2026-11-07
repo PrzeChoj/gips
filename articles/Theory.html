@@ -551,8 +551,13 @@ fit.</p>
 <p>When the mean was estimated, we have <span class="math inline">\(S =
 \frac{1}{n-1} \sum_{i=1}^n \bigl(Z^{(i)} - \bar{Z}\bigr)\bigl(Z^{(i)} -
 \bar{Z}\bigr)^\top\)</span>, where <span class="math inline">\(\bar{Z} =
-\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>. Then in the <span class="math inline">\(\log L\)</span> we use <span class="math inline">\(n-1\)</span> instead of <span class="math inline">\(n\)</span>. Definitions of AIC and BIC stay the
-same.</p>
+\frac{1}{n} \sum_{i=1}^n Z^{(i)}\)</span>.</p>
+<p>Using <span class="math inline">\(n-1\)</span> instead of <span class="math inline">\(n\)</span> in <code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code> corresponds to
+the likelihood of <span class="math inline">\(n-1\)</span> independent
+Gaussian contrasts that remove an unrestricted mean. AIC and BIC
+therefore count only covariance parameters and compare models with the
+same mean specification. BIC retains <span class="math inline">\(\log
+n\)</span> in its penalty.</p>
 </div>
 <div class="section level4">
 <h4 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
@@ -618,6 +623,17 @@ the covariance matrix:</p>
 <p>We will consider a <code>g_map</code> better model both in terms of
 the AIC and the BIC.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="likelihood-ratio-test">Likelihood-ratio test<a class="anchor" aria-label="anchor" href="#likelihood-ratio-test"></a>
+</h2>
+<p>For a single sample, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> compares the covariance
+model specified by the current permutation with an unrestricted
+covariance model. Its p-value uses an asymptotic chi-squared reference
+distribution for a fixed symmetry model.</p>
+<p>The reported p-value does not account for choosing the symmetry on
+the same data, as in <code><a href="../reference/find_MAP.html">find_MAP()</a></code> followed by
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> (“double dipping”).</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
