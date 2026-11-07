@@ -43,9 +43,12 @@
 #' over cyclic groups,
 #'
 #' \deqn{P(\Gamma \mid S_1, \ldots, S_G) \propto
-#'   \exp\left\{\sum_{j=1}^{G} \ell_j(\Gamma)\right\}.}
+#'   \exp\left\{\sum_{j=1}^{G} \ell_j(\Gamma)\right\}.}{
+#'   P(Gamma | S_1, ..., S_G) is proportional to
+#'   exp(ell_1(Gamma) + ... + ell_G(Gamma)).
+#' }
 #'
-#' Here, \eqn{\ell_j(\Gamma)} is the single-sample unnormalized log-posterior
+#' Here, \eqn{\ell_j(\Gamma)}{ell_j(Gamma)} is the single-sample unnormalized log-posterior
 #' weight, computed using that sample's `number_of_observations`, `delta`,
 #' and `D_matrix`. The function returns the sum of these log weights,
 #' without normalizing over symmetry groups.

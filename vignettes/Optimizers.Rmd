@@ -320,7 +320,7 @@ It is performing the local optimization iteratively.
 
 In every iteration $i$, an algorithm considers a permutation; call it $\sigma_i$. Then, all the values of $f(\sigma_i \circ t)$ are computed for every possible transposition $t = (j,k)$. Then the next $\sigma_{i+1}$ will be the one with the biggest value:
 
-$$\sigma_{i+1} = argmax_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(perm)\}$$
+$$\sigma_{i+1} = \operatorname*{arg\,max}_{\text{perm} \in \text{neighbors}(\sigma_{i})}\{f(\text{perm})\}$$
 
 Where:
 $$\text{neighbors}(\sigma) = \{\sigma \circ (j,k) : 1 \le j < k \le \text{p}\}$$

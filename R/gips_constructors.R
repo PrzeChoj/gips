@@ -56,7 +56,7 @@
 #' * [as.character.gips()]
 #'
 #' @section Hyperparameters:
-#' We encourage you to try `D_matrix = d * I`, where `I` is a `p` \eqn{\times}
+#' We encourage you to try `D_matrix = d * I`, where `I` is a `p` \eqn{\times}{by}
 #'     `p` identity matrix and `d > 0` for some different `d`.
 #' Smaller `d` favor models with more equality constraints and fewer
 #'     free covariance parameters. This tendency depends on the data and `delta`.

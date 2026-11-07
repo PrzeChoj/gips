@@ -126,7 +126,7 @@ the \code{\link[=find_MAP]{find_MAP()}} function to do it. See the examples belo
 
 \section{Hyperparameters}{
 
-We encourage you to try \code{D_matrix = d * I}, where \code{I} is a \code{p} \eqn{\times}
+We encourage you to try \code{D_matrix = d * I}, where \code{I} is a \code{p} \eqn{\times}{by}
 \code{p} identity matrix and \code{d > 0} for some different \code{d}.
 Smaller \code{d} favor models with more equality constraints and fewer
 free covariance parameters. This tendency depends on the data and \code{delta}.

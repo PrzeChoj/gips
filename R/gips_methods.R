@@ -186,7 +186,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'   5. `log_times_more_likely_than_id` - log of `times_more_likely_than_id`.
 #'   6. `likelihood_ratio_test_statistics`, `likelihood_ratio_test_p_value` - 
 #'       statistics and p-value of Likelihood Ratio test, where
-#'       the H_0 is that the data was drawn from the normal distribution
+#'       the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under the given permutation.
 #'       The p-value is calculated from the asymptotic distribution.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},
@@ -230,7 +230,7 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       `times_more_likely_than_start`.
 #'   8. `likelihood_ratio_test_statistics`, `likelihood_ratio_test_p_value` - 
 #'       statistics and p-value of Likelihood Ratio test, where
-#'       the H_0 is that the data was drawn from the normal distribution
+#'       the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 #'       with Covariance matrix invariant under `found_permutation`.
 #'       The p-value is calculated from the asymptotic distribution.
 #'       Comparison with the unrestricted model requires \eqn{n \ge p},

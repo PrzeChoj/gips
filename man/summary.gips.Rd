@@ -34,7 +34,7 @@ very large and overflow to \code{Inf} or small and underflow to 0.
 \item \code{log_times_more_likely_than_id} - log of \code{times_more_likely_than_id}.
 \item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
 statistics and p-value of Likelihood Ratio test, where
-the H_0 is that the data was drawn from the normal distribution
+the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 with Covariance matrix invariant under the given permutation.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \eqn{n \ge p},
@@ -82,7 +82,7 @@ Remember that this number can become large and overflow to \code{Inf}.
 \code{times_more_likely_than_start}.
 \item \code{likelihood_ratio_test_statistics}, \code{likelihood_ratio_test_p_value} -
 statistics and p-value of Likelihood Ratio test, where
-the H_0 is that the data was drawn from the normal distribution
+the \eqn{H_0}{H0} is that the data was drawn from the normal distribution
 with Covariance matrix invariant under \code{found_permutation}.
 The p-value is calculated from the asymptotic distribution.
 Comparison with the unrestricted model requires \eqn{n \ge p},

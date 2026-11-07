@@ -5,7 +5,7 @@
 #'
 #' Let \eqn{X} be a matrix invariant under the permutation `perm`.
 #' Let the permutations cyclic group for it be called Gamma:
-#' \eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}.
+#' \eqn{\Gamma = <perm> = \{perm, perm^2, ...\}}{Gamma = <perm> = \{perm, perm^2, ...\}}.
 #'
 #' Then \eqn{U_\Gamma} is an orthogonal matrix that block-diagonalizes \eqn{X}.
 #'
@@ -27,7 +27,7 @@
 #'     Required if `perm` is neither `gips_perm` nor `gips`.
 #' @param basis A matrix with basis vectors in COLUMNS; identity by default.
 #' @returns A square matrix of size `perm_size` by `perm_size` with
-#'     columns from vector elements \eqn{v_k^{(c)}} according to
+#'     columns from vector elements \eqn{v_k^{(c)}}{v_k^(c)} according to
 #'     [Theorem 6 from references](https://arxiv.org/abs/2004.03503).
 #'
 #' @references Piotr Graczyk, Hideyuki Ishi, Bartosz Kołodziejek, Hélène Massam.
