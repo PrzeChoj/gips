@@ -31,7 +31,8 @@
   now rejects any further optimization when the object’s last
   optimization used Brute Force, including after
   [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md).
-- Fixed duplicated boundary states in MH-only continuation histories.
+- Fixed duplicated boundary states when continuing MH, including after
+  earlier HC stages.
 - Fixed loss of precision for very small likelihood-ratio p-values in
   [`summary()`](https://rdrr.io/r/base/summary.html).
 - Printed summaries now distinguish insufficient observations from

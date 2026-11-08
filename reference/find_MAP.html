@@ -192,8 +192,9 @@ in every iteration. For bigger <code>p</code>, this may be costly.</p></li>
 If the last optimization used BF, any further call to <code>find_MAP()</code> is
 rejected, including after <code><a href="forget_perms.html">forget_perms()</a></code>, because the whole permutation
 space has already been searched.</p>
-<p>When all previous stages used MH, <code>optimizer = "continue"</code> resumes from the
-last visited state and records the shared boundary state only once.
+<p>When the last stage used MH, <code>optimizer = "continue"</code> resumes from the
+last visited state and records the shared boundary state only once,
+even when earlier stages used HC.
 Repeated visits after rejected proposals remain in the history.
 An explicit <code>optimizer = "MH"</code> starts from the best model found so far and
 retains the starting state of the new stage.</p>
@@ -328,7 +329,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.04249239 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.01902103 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

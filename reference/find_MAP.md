@@ -154,11 +154,11 @@ including after
 [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md),
 because the whole permutation space has already been searched.
 
-When all previous stages used MH, `optimizer = "continue"` resumes from
-the last visited state and records the shared boundary state only once.
-Repeated visits after rejected proposals remain in the history. An
-explicit `optimizer = "MH"` starts from the best model found so far and
-retains the starting state of the new stage.
+When the last stage used MH, `optimizer = "continue"` resumes from the
+last visited state and records the shared boundary state only once, even
+when earlier stages used HC. Repeated visits after rejected proposals
+remain in the history. An explicit `optimizer = "MH"` starts from the
+best model found so far and retains the starting state of the new stage.
 
 ## Multi-sample
 
@@ -302,5 +302,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.04249239 secs
+#>  0.01902103 secs
 ```
