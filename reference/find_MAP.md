@@ -55,8 +55,8 @@ find_MAP(
 
   - When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 
-  - When `return_probabilities = TRUE`, then shows an additional
-    progress bar for the time when the probabilities are calculated.
+  - When `return_probabilities = TRUE`, an additional progress bar shows
+    probability calculation.
 
 - save_all_perms:
 
@@ -302,5 +302,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.02044344 secs
+#>  0.03111029 secs
 ```

@@ -556,10 +556,11 @@ The
 function has three additional logical parameters: `show_progress_bar`,
 `save_all_perms`, and `return_probabilities`.
 
-When `show_progress_bar = TRUE`, `gips` will print “=” characters on the
-console during optimization. Remember that when the user sets the
-`return_probabilities = TRUE`, a second progress bar will indicate the
-calculation of the probabilities after optimization.
+When `show_progress_bar = TRUE`, `gips` prints “=” characters on the
+console during optimization. With `return_probabilities = TRUE`, a
+second progress bar shows probability calculation. BF with one generator
+per cyclic group (currently for \\p \le 10\\) skips removing repeated
+groups, so there are two bars in total.
 
 The `save_all_perms = TRUE` will save all visited permutations in the
 outputted object, which significantly increases the required RAM. For
