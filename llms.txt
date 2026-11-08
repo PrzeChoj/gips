@@ -102,7 +102,7 @@ g_MAP <- find_MAP(g, optimizer = "brute_force")
 
 g_MAP
 #> The permutation (1,2)(3,4):
-#>  - was found after 17 posterior calculations;
+#>  - was found in a search using 17 posterior calculations;
 #>  - is 3.374 times more likely than the () permutation.
 ```
 
@@ -213,7 +213,7 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 
 g_map
 #> The permutation (1,2,3,4,5,6):
-#>  - was found after 362 posterior calculations;
+#>  - was found in a search using 362 posterior calculations;
 #>  - is 118.863 times more likely than the () permutation.
 ```
 
