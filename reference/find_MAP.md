@@ -248,7 +248,7 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, max_iter = 5, show_progress_bar = FALSE, optimizer = "Metropolis_Hastings")
 g_map
 #> The permutation ():
-#>  - was found after 5 posterior calculations;
+#>  - was found in a search using 5 posterior calculations;
 #>  - is 1 times more likely than the () permutation.
 
 g_map2 <- find_MAP(g_map, max_iter = 5, show_progress_bar = FALSE, optimizer = "continue")
@@ -298,9 +298,9 @@ summary(g_map_BF)
 #> Optimization algorithm:
 #>  brute_force
 #> 
-#> The number of log_posteriori calls:
+#> Posterior calculations during optimization:
 #>  67
 #> 
 #> Optimization time:
-#>  0.03712511 secs
+#>  0.02909684 secs
 ```

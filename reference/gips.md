@@ -248,7 +248,7 @@ g <- gips(S, number_of_observations)
 g_map <- find_MAP(g, show_progress_bar = FALSE, optimizer = "brute_force")
 g_map
 #> The permutation (1,2,3,4,5):
-#>  - was found after 67 posterior calculations;
+#>  - was found in a search using 67 posterior calculations;
 #>  - is 953.095 times more likely than the () permutation.
 
 summary(g_map)
@@ -293,10 +293,10 @@ summary(g_map)
 #> Optimization algorithm:
 #>  brute_force
 #> 
-#> The number of log_posteriori calls:
+#> Posterior calculations during optimization:
 #>  67
 #> 
 #> Optimization time:
-#>  0.03624463 secs
+#>  0.02852464 secs
 plot(g_map, type = "both", logarithmic_x = TRUE)
 ```

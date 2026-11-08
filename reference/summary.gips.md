@@ -183,18 +183,16 @@ statistics of the given `gips` object. Those are:
 
   17. `did_converge` - a boolean, did the last used algorithm converge.
 
-  18. `number_of_log_posteriori_calls` - how many times was the
-      [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
-      function called during the optimization.
+  18. `number_of_log_posteriori_calls` - the number of actual posterior
+      evaluations during the recorded optimization. For multiple
+      samples, one evaluation computes the joint objective.
 
   19. `whole_optimization_time` - how long was the optimization process;
       the sum of all optimization times (when there were multiple).
 
-  20. `log_posteriori_calls_after_best` - how many times was the
-      [`log_posteriori_of_gips()`](https://przechoj.github.io/gips/reference/log_posteriori_of_gips.md)
-      function called after the `found_permutation`; in other words, how
-      long ago could the optimization be stopped and have the same
-      result. If this value is small, consider running
+  20. `log_posteriori_calls_after_best` - the number of posterior
+      evaluations after the best log-posterior value was first obtained.
+      If this value is small, consider running
       [`find_MAP()`](https://przechoj.github.io/gips/reference/find_MAP.md)
       again with `optimizer = "continue"`. For `optimizer = "BF"`, it is
       `NULL`.
@@ -405,10 +403,10 @@ unclass(summary(g_map))
 #> NULL
 #> 
 #> $number_of_log_posteriori_calls
-#> [1] 10
+#> [1] 8
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.003870726 secs
+#> Time difference of 0.003016949 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -463,13 +461,13 @@ summary(g_map2)
 #> Optimization algorithm:
 #>  hill_climbing did converge
 #> 
-#> The number of log_posteriori calls:
+#> Posterior calculations during optimization:
 #>  76
 #> 
 #> Optimization time:
-#>  0.02884531 secs
+#>  0.02257609 secs
 #> 
-#> Log_posteriori calls after the found permutation:
+#> Posterior calculations after first reaching the best value:
 #>  18
 # ================================================================================
 S <- matrix(c(1, 0.5, 0.5, 2), nrow = 2, byrow = TRUE)

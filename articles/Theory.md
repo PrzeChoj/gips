@@ -457,7 +457,7 @@ g_map <- find_MAP(g, optimizer = "brute_force")
 #> ================================================================================
 print(g_map)
 #> The permutation (1,2,3,4,5,6):
-#>  - was found after 362 posterior calculations;
+#>  - was found in a search using 362 posterior calculations;
 #>  - is 133.158 times more likely than the () permutation.
 
 S_projected <- project_matrix(S, g_map)
