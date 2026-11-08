@@ -139,8 +139,9 @@ If the last optimization used BF, any further call to \code{find_MAP()} is
 rejected, including after \code{\link[=forget_perms]{forget_perms()}}, because the whole permutation
 space has already been searched.
 
-When all previous stages used MH, \code{optimizer = "continue"} resumes from the
-last visited state and records the shared boundary state only once.
+When the last stage used MH, \code{optimizer = "continue"} resumes from the
+last visited state and records the shared boundary state only once,
+even when earlier stages used HC.
 Repeated visits after rejected proposals remain in the history.
 An explicit \code{optimizer = "MH"} starts from the best model found so far and
 retains the starting state of the new stage.

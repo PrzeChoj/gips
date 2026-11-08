@@ -105,8 +105,9 @@
 #' rejected, including after [forget_perms()], because the whole permutation
 #' space has already been searched.
 #'
-#' When all previous stages used MH, `optimizer = "continue"` resumes from the
-#' last visited state and records the shared boundary state only once.
+#' When the last stage used MH, `optimizer = "continue"` resumes from the
+#' last visited state and records the shared boundary state only once,
+#' even when earlier stages used HC.
 #' Repeated visits after rejected proposals remain in the history.
 #' An explicit `optimizer = "MH"` starts from the best model found so far and
 #' retains the starting state of the new stage.
@@ -966,8 +967,9 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE,
   n2 <- optimization_info2[["acceptance_rate_weight"]]
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
 
+  # Only the two stages sharing this boundary need to use MH.
   if (continue_optimization &&
-    all(optimization_algorithm_used == "Metropolis_Hastings")) {
+    all(utils::tail(optimization_algorithm_used, 2L) == "Metropolis_Hastings")) {
     if (!all(is.na(optimization_info2[["visited_perms"]]))) {
       # Read aligned weights before shortening the saved permutation list.
       optimization_info2[["visited_log_posteriori_values"]] <-

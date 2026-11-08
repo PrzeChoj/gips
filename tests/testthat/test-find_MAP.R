@@ -314,6 +314,55 @@ test_that("removing MH continuation boundaries preserves acceptance rate aggrega
   )
 })
 
+test_that("MH continuation after HC removes only the shared boundary", {
+  for (save in c(FALSE, TRUE)) {
+    g <- find_MAP(mh_boundary_fixture()$start,
+      optimizer = "HC", max_iter = Inf,
+      save_all_perms = save, show_progress_bar = FALSE
+    )
+    g <- run_mh_boundary_segment(g, save_all_perms = save)
+
+    fields <- c("all_n0", "log_posteriori_values")
+    if (save) {
+      fields <- c(fields, "visited_perms", "visited_log_posteriori_values")
+    }
+
+    for (optimizer in c("continue", NA_character_)) {
+      before <- attr(g, "optimization_info")
+      g <- run_mh_boundary_segment(g,
+        optimizer = optimizer, save_all_perms = save
+      )
+      after <- attr(g, "optimization_info")
+
+      # One MH proposal retains one new record after rejection.
+      for (field in fields) {
+        expect_equal(after[[field]],
+          c(before[[field]], tail(before[[field]], 1L))
+        )
+      }
+    }
+  }
+})
+
+test_that("explicit MH restart after HC retains its initial state", {
+  g <- find_MAP(mh_boundary_fixture()$start,
+    optimizer = "HC", max_iter = Inf,
+    save_all_perms = TRUE, show_progress_bar = FALSE
+  )
+  g <- run_mh_boundary_segment(g)
+  before <- attr(g, "optimization_info")
+
+  restarted <- run_mh_boundary_segment(g, optimizer = "MH")
+  after <- attr(restarted, "optimization_info")
+
+  # A restart records its initial state and the state after rejection.
+  for (field in c("all_n0", "log_posteriori_values",
+                 "visited_perms", "visited_log_posteriori_values")) {
+    last <- tail(before[[field]], 1L)
+    expect_equal(after[[field]], c(before[[field]], last, last))
+  }
+})
+
 test_that("HC records n0 for its initial and accepted states without requiring saved permutations", {
   for (was_mean_estimated in c(FALSE, TRUE)) {
     for (start_perm in c("(1,2)", "()")) {
