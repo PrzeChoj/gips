@@ -54,6 +54,16 @@ get_perm_group_generators <- function(p) {
     group_end <- group_ends[group_index]
     
     indexes_with_same_hash <- hash_order[group_start:group_end]
+
+    if (length(indexes_with_same_hash) > 1L) {
+      # Use the same ordering as get_group_representative() so that the
+      # first generator selected for each group is its canonical representative.
+      perms_as_strings <- vapply(indexes_with_same_hash, function(index) {
+        paste(unclass_all_perms_list[index, ], collapse = " ")
+      }, character(1))
+      indexes_with_same_hash <-
+        indexes_with_same_hash[stringi::stri_order(perms_as_strings)]
+    }
     
     for (position in seq_along(indexes_with_same_hash)) {
       i <- indexes_with_same_hash[position]
@@ -99,14 +109,14 @@ get_perm_group_generators <- function(p) {
 
 # Time it took on Apple M2, single core
 
-perm_group_generators_3 <- get_perm_group_generators(3) # 0.0007 secs
+perm_group_generators_3 <- get_perm_group_generators(3) # 0.0009 secs
 perm_group_generators_4 <- get_perm_group_generators(4) # 0.003 secs
 perm_group_generators_5 <- get_perm_group_generators(5) # 0.01 secs
 perm_group_generators_6 <- get_perm_group_generators(6) # 0.04 secs
 perm_group_generators_7 <- get_perm_group_generators(7) # 0.2 secs
-perm_group_generators_8 <- get_perm_group_generators(8) # 1.2 secs
-perm_group_generators_9 <- get_perm_group_generators(9) # 9.6 secs
-perm_group_generators_10 <- get_perm_group_generators(10) # 1.77 mins
+perm_group_generators_8 <- get_perm_group_generators(8) # 1.5 secs
+perm_group_generators_9 <- get_perm_group_generators(9) # 12.7 secs
+perm_group_generators_10 <- get_perm_group_generators(10) # 2.2 mins
 # perm_group_generators_11 <- get_perm_group_generators(11) # Takes > 40 GB of RAM; see ISSUE#21 **"BF" optimization**
 
 perm_group_generators_list <- list(
