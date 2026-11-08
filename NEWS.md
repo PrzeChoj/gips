@@ -1,4 +1,4 @@
-# gips 1.3.0.9000
+# gips 1.3.1
 
 ### Update to functions
 
