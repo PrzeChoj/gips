@@ -503,7 +503,8 @@ Metropolis_Hastings_optimizer <- function(
     out_val
   }
 
-  acceptance <- rep(FALSE, max_iter)
+  acceptance_rate_numerator <- 0
+  acceptance_rate_denominator <- 0
   log_posteriori_values <- rep(0, max_iter)
   all_n0 <- rep(0, max_iter)
   if (save_all_perms) {
@@ -547,6 +548,9 @@ Metropolis_Hastings_optimizer <- function(
     
     if (forbidden_string == e_string) {
       goal_function_perm_proposal <- -Inf
+    } else {
+      # Blocked returns are excluded from the acceptance-rate denominator.
+      acceptance_rate_denominator <- acceptance_rate_denominator + 1
     }
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
@@ -559,7 +563,7 @@ Metropolis_Hastings_optimizer <- function(
         visited_perms[[i + 1]] <- current_perm
       }
       log_posteriori_values[i + 1] <- goal_function_perm_proposal
-      acceptance[i] <- TRUE
+      acceptance_rate_numerator <- acceptance_rate_numerator + 1
       all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE) # was_mean_estimated will be corrected in find_MAP()
 
       if (found_perm_log_posteriori < log_posteriori_values[i + 1]) {
@@ -604,13 +608,13 @@ Metropolis_Hastings_optimizer <- function(
   # (in case the loop broke early when cache filled up)
   log_posteriori_values <- log_posteriori_values[1:(i+1)]
   all_n0 <- all_n0[1:(i+1)]
-  acceptance <- acceptance[1:(i+1)]
 
   function_calls <- length(log_posteriori_values)
 
   optimization_info <- list(
-    "acceptance_rate" = mean(acceptance),
-    "acceptance_rate_weight" = function_calls,
+    "acceptance_rate" = acceptance_rate_numerator / acceptance_rate_denominator,
+    "acceptance_rate_numerator" = acceptance_rate_numerator,
+    "acceptance_rate_denominator" = acceptance_rate_denominator,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) log_posteriori_values else NULL,
@@ -762,11 +766,10 @@ hill_climbing_optimizer <- function(
     }
   }
 
-  function_calls <- length(log_posteriori_values)
-
   optimization_info <- list(
-    "acceptance_rate" = 1 / choose(perm_size, 2),
-    "acceptance_rate_weight" = function_calls,
+    "acceptance_rate" = NULL,
+    "acceptance_rate_numerator" = 0,
+    "acceptance_rate_denominator" = 0,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) goal_function_best_logvalues else NULL,
@@ -962,9 +965,9 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE,
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")
 
-  # Keep aggregation weights independent of removed continuation boundaries.
-  n1 <- optimization_info1[["acceptance_rate_weight"]]
-  n2 <- optimization_info2[["acceptance_rate_weight"]]
+  # Pool MH counts independently of saved states and continuation boundaries.
+  acceptance_rate_numerator <- optimization_info1[["acceptance_rate_numerator"]] + optimization_info2[["acceptance_rate_numerator"]]
+  acceptance_rate_denominator <- optimization_info1[["acceptance_rate_denominator"]] + optimization_info2[["acceptance_rate_denominator"]]
   optimization_algorithm_used <- c(optimization_info1[["optimization_algorithm_used"]], optimization_info2[["optimization_algorithm_used"]])
 
   # Only the two stages sharing this boundary need to use MH.
@@ -1001,8 +1004,9 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE,
 
   optimization_info_new <- list(
     "original_perm" = optimization_info1[["original_perm"]],
-    "acceptance_rate" = (n1 * optimization_info1[["acceptance_rate"]] + n2 * optimization_info2[["acceptance_rate"]]) / (n1 + n2),
-    "acceptance_rate_weight" = n1 + n2,
+    "acceptance_rate" = if (acceptance_rate_denominator > 0) acceptance_rate_numerator / acceptance_rate_denominator else NULL,
+    "acceptance_rate_numerator" = acceptance_rate_numerator,
+    "acceptance_rate_denominator" = acceptance_rate_denominator,
     "log_posteriori_values" = c(optimization_info1[["log_posteriori_values"]], optimization_info2[["log_posteriori_values"]]),
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = visited_log_weights,

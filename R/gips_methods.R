@@ -276,9 +276,10 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       If this value is small, consider running [find_MAP()]
 #'       again with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`.
-#'   21. `acceptance_rate` - only interesting for `optimizer = "MH"`.
-#'       How often was the algorithm accepting the change of permutation
-#'       in an iteration.
+#'   21. `acceptance_rate` - the fraction of eligible MH proposals accepted.
+#'       Counts are pooled across MH stages, including in mixed histories;
+#'       HC contributes to neither count. The value is `NULL` for histories
+#'       without MH stages.
 #'
 #' Both summaries also contain `MLE_available`: whether the sample-size
 #' requirement is met and all projected covariance matrices pass the numerical
@@ -655,8 +656,8 @@ print.summary.gips <- function(x, ...) {
       sep = ""
     )
 
-    if (all(x[["optimization_algorithm_used"]] == "Metropolis_Hastings")) {
-      cat(paste0("\n\nAcceptance rate:\n ", x[["acceptance_rate"]]), sep = "")
+    if (!is.null(x[["acceptance_rate"]])) {
+      cat(paste0("\n\nAcceptance rate (MH proposals):\n ", x[["acceptance_rate"]]), sep = "")
     }
     if (x[["optimization_algorithm_used"]][length(x[["optimization_algorithm_used"]])] != "brute_force") {
       cat("\n\nLog_posteriori calls after the found permutation:\n ",

@@ -291,6 +291,121 @@ test_that("explicit MH restart retains its start when the best and last states d
   expect_equal(as.character(restarted_info$visited_perms[[3]]), "()")
 })
 
+test_that("MH acceptance rate counts proposals without the initial state", {
+  fixture <- mh_boundary_fixture()
+  expect_identical(exp(fixture$log_weights[1] - fixture$log_weights[2]), 0)
+
+  for (save in c(FALSE, TRUE)) {
+    accepted <- run_mh_boundary_segment(fixture$start, save_all_perms = save)
+    rejected <- run_mh_boundary_segment(fixture$identity, save_all_perms = save)
+    expect_equal(attr(accepted, "optimization_info")$acceptance_rate, 1)
+    expect_equal(attr(rejected, "optimization_info")$acceptance_rate, 0)
+  }
+})
+
+test_that("forced moves and blocked returns are excluded from MH acceptance rate", {
+  run_controlled_mh <- function(n_blocked, save) {
+    proposals <- c(
+      list(c(1L, 2L), c(1L, 3L), c(2L, 3L)),
+      rep(list(c(1L, 2L)), n_blocked),
+      list(c(1L, 3L))
+    )
+    proposal_index <- 0L
+    optimizer <- Metropolis_Hastings_optimizer
+    # Override only this copy's dependencies, without changing the namespace
+    # or requiring mocking helpers newer than testthat 3.1.5.
+    environment(optimizer) <- list2env(list(
+      runif_transposition = function(perm_size) {
+        proposal_index <<- proposal_index + 1L
+        proposals[[proposal_index]]
+      },
+      log_posteriori_of_perm = function(perm, ...) {
+        switch(as.character(perm),
+          "()" = 0,
+          "(1,2)" = -1000,
+          "(1,3)" = -2000,
+          "(2,3)" = -2000,
+          -500 # Either 3-cycle.
+        )
+      }
+    ), parent = environment(optimizer))
+
+    # All three initial proposals are rejected; forced-move weights are
+    # exactly c(1, 0, 0). The final, unblocked proposal is always accepted.
+    withr::with_seed(1, optimizer(
+      S = diag(3), number_of_observations = 20,
+      start_perm = gips_perm("()", 3), max_iter = length(proposals) + 1L,
+      save_all_perms = save, show_progress_bar = FALSE
+    ))
+  }
+
+  last_state <- as.character(compose_with_transposition(gips_perm("(1,2)", 3), c(1L, 3L)))
+  for (n_blocked in c(0L, 1L, 3L)) {
+    for (save in c(FALSE, TRUE)) {
+      info <- attr(run_controlled_mh(n_blocked, save), "optimization_info")
+      # Returning to identity would improve the posterior, but is forbidden.
+      # Check the path so the ratio cannot pass without exercising the moves.
+      expect_equal(info$log_posteriori_values,
+        c(rep(0, 3), rep(-1000, n_blocked + 1L), -500)
+      )
+      if (save) {
+        expect_equal(vapply(info$visited_perms, as.character, character(1)),
+          c(rep("()", 3), rep("(1,2)", n_blocked + 1L), last_state)
+        )
+      }
+      expect_equal(info$acceptance_rate, 1 / 4)
+    }
+  }
+})
+
+test_that("MH acceptance rates combine by proposal counts across unequal stages", {
+  fixture <- mh_boundary_fixture()
+  for (save in c(FALSE, TRUE)) {
+    first <- run_mh_boundary_segment(fixture$start, save_all_perms = save)
+    for (optimizer in c("continue", "MH")) {
+      combined <- withr::with_seed(2, suppressMessages(find_MAP(first,
+        optimizer = optimizer, max_iter = 4,
+        save_all_perms = save, show_progress_bar = FALSE
+      )))
+      # One accepted proposal in the first stage, three rejections in the next.
+      expect_equal(attr(combined, "optimization_info")$acceptance_rate, 1 / 4)
+    }
+  }
+})
+
+test_that("HC and BF have no acceptance rate and HC does not affect MH rates", {
+  fixture <- mh_boundary_fixture()
+  hc <- find_MAP(fixture$start, optimizer = "HC", max_iter = Inf,
+    save_all_perms = TRUE, show_progress_bar = FALSE
+  )
+  bf <- find_MAP(fixture$start, optimizer = "BF", show_progress_bar = FALSE)
+  hc_continued <- find_MAP(hc, optimizer = "continue", max_iter = 2,
+    save_all_perms = TRUE, show_progress_bar = FALSE
+  )
+  for (g in list(hc, hc_continued, bf)) {
+    expect_null(attr(g, "optimization_info")$acceptance_rate)
+    result <- summary(g)
+    expect_null(result$acceptance_rate)
+    expect_false(any(grepl("Acceptance rate", capture.output(print(result)), fixed = TRUE)))
+  }
+
+  hc_mh <- run_mh_boundary_segment(hc)
+  expect_equal(attr(hc_mh, "optimization_info")$acceptance_rate, 0)
+  expect_equal(summary(hc_mh)$acceptance_rate, 0)
+  expect_output(print(summary(hc_mh)), "Acceptance rate (MH proposals):", fixed = TRUE)
+
+  mh <- run_mh_boundary_segment(fixture$start)
+  mh_hc <- find_MAP(mh, optimizer = "HC", max_iter = Inf,
+    save_all_perms = TRUE, show_progress_bar = FALSE
+  )
+  expect_equal(attr(mh_hc, "optimization_info")$acceptance_rate, 1)
+  mh_hc_mh <- withr::with_seed(2, suppressMessages(find_MAP(mh_hc,
+    optimizer = "MH", max_iter = 4,
+    save_all_perms = TRUE, show_progress_bar = FALSE
+  )))
+  expect_equal(attr(mh_hc_mh, "optimization_info")$acceptance_rate, 1 / 4)
+})
+
 test_that("removing MH continuation boundaries preserves acceptance rate aggregation", {
   fixture <- mh_boundary_fixture()
   first <- run_mh_boundary_segment(fixture$start)

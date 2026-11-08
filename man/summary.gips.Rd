@@ -130,9 +130,10 @@ could the optimization be stopped and have the same result.
 If this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
 again with \code{optimizer = "continue"}.
 For \code{optimizer = "BF"}, it is \code{NULL}.
-\item \code{acceptance_rate} - only interesting for \code{optimizer = "MH"}.
-How often was the algorithm accepting the change of permutation
-in an iteration.
+\item \code{acceptance_rate} - the fraction of eligible MH proposals accepted.
+Counts are pooled across MH stages, including in mixed histories;
+HC contributes to neither count. The value is \code{NULL} for histories
+without MH stages.
 }
 }
 
