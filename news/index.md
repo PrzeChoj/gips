@@ -82,6 +82,9 @@
 - Posterior trajectory plots now report a clear error recommending the
   logarithmic scale when exponentiation overflows or all values
   underflow to zero.
+- [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) now report actual
+  posterior evaluation counts.
 
 ## gips 1.3.0
 

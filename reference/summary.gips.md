@@ -406,7 +406,7 @@ unclass(summary(g_map))
 #> [1] 8
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.003016949 secs
+#> Time difference of 0.002229452 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
@@ -465,7 +465,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.02257609 secs
+#>  0.01614451 secs
 #> 
 #> Posterior calculations after first reaching the best value:
 #>  18
