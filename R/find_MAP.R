@@ -927,7 +927,10 @@ brute_force_optimizer <- function(
   }
 
   if (return_probabilities) { # calculate exact probabilities
-    probabilities <- calculate_probabilities(all_perms_list, log_posteriori_values, show_progress_bar)
+    probabilities <- calculate_probabilities(
+      all_perms_list, log_posteriori_values, show_progress_bar,
+      groups_are_distinct = length(all_perms_list) == OEIS_A051625[perm_size]
+    )
   } else {
     probabilities <- NULL
   }

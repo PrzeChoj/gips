@@ -161,6 +161,58 @@ test_that("group representatives are calculated once per distinct permutation", 
   expect_equal(probabilities, c("(1,2,3)" = 2 / 3, "(1,2)" = 1 / 3))
 })
 
+test_that("distinct BF groups preserve named probabilities without deduplication", {
+  for (p in 2:4) {
+    perms <- permutations::as.cycle(permutations::allperms(p))
+    if (p >= 3) {
+      perms <- perms[perm_group_generators_list[[p - 2]]]
+    }
+    log_weights <- rep(c(1000, 999, 999), length.out = length(perms))
+
+    expected <- calculate_probabilities(perms, log_weights)
+    actual <- calculate_probabilities(perms, log_weights, groups_are_distinct = TRUE)
+
+    expect_setequal(names(actual), names(expected))
+    expect_equal(actual[names(expected)], expected)
+    expect_equal(sum(actual), 1)
+    expect_true(all(diff(unname(actual)) <= 0))
+  }
+})
+
+test_that("exact probabilities still deduplicate equivalent generators by default", {
+  perms <- permutations::as.cycle(permutations::allperms(3))
+  weights <- c(
+    "()" = 1, "(1,2)" = 2, "(1,3)" = 3, "(2,3)" = 4,
+    "(1,2,3)" = 5, "(1,3,2)" = 5
+  )
+  log_weights <- log(unname(weights[as.character(perms)]))
+  expected <- c("(1,2,3)" = 5, "(2,3)" = 4, "(1,3)" = 3, "(1,2)" = 2, "()" = 1) / 15
+
+  actual <- calculate_probabilities(perms, log_weights)
+
+  expect_length(actual, 5)
+  expect_setequal(names(actual), names(expected))
+  expect_equal(actual[names(expected)], expected)
+})
+
+test_that("distinct BF groups omit the deduplication progress bar", {
+  perms <- permutations::as.cycle(permutations::allperms(3))
+  perms <- perms[perm_group_generators_list[[1]]]
+  log_weights <- rep(0, length(perms))
+
+  for (distinct in c(FALSE, TRUE)) {
+    output <- capture.output(result <- calculate_probabilities(
+      perms, log_weights, show_progress_bar = TRUE,
+      groups_are_distinct = distinct
+    ))
+    expect_length(output, if (distinct) 1 else 2)
+    expect_length(capture.output(result <- calculate_probabilities(
+      perms, log_weights, show_progress_bar = FALSE,
+      groups_are_distinct = distinct
+    )), 0)
+  }
+})
+
 test_that("get_representative examples", {
   p1 <- gips_perm(permutations::as.word(c(2, 1, 3, 6, 4, 5)), 6)
   expected_p <- gips_perm("(1,2)(4,5,6)", 6)

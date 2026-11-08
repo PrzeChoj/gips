@@ -152,7 +152,9 @@ get_coprimes <- function(n) {
 #' @returns A named numeric vector. Names: character representations of permutations.
 #' Elements: exact posterior probabilities of cyclic groups represented by permutations.
 #' @noRd
-calculate_probabilities <- function(perms, log_posteriories, show_progress_bar = FALSE) {
+calculate_probabilities <- function(
+    perms, log_posteriories, show_progress_bar = FALSE,
+    groups_are_distinct = FALSE) {
   if (show_progress_bar) {
     progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 1)
   }
@@ -188,6 +190,14 @@ calculate_probabilities <- function(perms, log_posteriories, show_progress_bar =
     close(progressBar)
   }
 
+
+  if (groups_are_distinct) {
+    names(log_posteriories) <- group_representatives
+    return(sort(
+      change_log_probabilities_unnorm_to_probabilities(log_posteriories),
+      decreasing = TRUE
+    ))
+  }
 
   # get rid of the repeated permutations:
   if (show_progress_bar) {

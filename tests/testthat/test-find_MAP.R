@@ -926,6 +926,36 @@ test_that("find_MAP() with calculate exact probabilities will return probability
   expect_equal(sum(post_probabilities), 1)
 })
 
+test_that("BF keeps deduplication when its permutation count differs from OEIS", {
+  optimizer <- brute_force_optimizer
+  # Exercise the full-permutation path in a small space, without a p = 11 run.
+  environment(optimizer) <- list2env(list(
+    perm_group_generators_list = list(rep(TRUE, factorial(3)))
+  ), parent = environment(optimizer))
+  arguments <- list(
+    S = diag(c(1, 2, 3)), number_of_observations = 20,
+    return_probabilities = TRUE, save_all_perms = TRUE,
+    show_progress_bar = TRUE
+  )
+
+  expected_output <- capture.output(
+    expected_info <- attr(do.call(brute_force_optimizer, arguments), "optimization_info")
+  )
+  actual_output <- capture.output(
+    actual_info <- attr(do.call(optimizer, arguments), "optimization_info")
+  )
+  expect_length(expected_output, 2)
+  expect_length(actual_output, 3)
+  expect_length(expected_info$visited_perms, 5)
+  expect_length(actual_info$visited_perms, 6)
+  expected <- expected_info$post_probabilities
+  actual <- actual_info$post_probabilities
+
+  expect_length(actual, 5)
+  expect_setequal(names(actual), names(expected))
+  expect_equal(actual[names(expected)], expected)
+})
+
 test_that("there is proper number of generators", {
   num_of_generators <- sapply(perm_group_generators_list, sum)
   expect_equal(length(perm_group_generators_list), 8)
