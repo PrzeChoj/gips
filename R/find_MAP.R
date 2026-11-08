@@ -843,14 +843,23 @@ brute_force_optimizer <- function(
   }
 
   if (perm_size > 10) {
-    rlang::warn(c("Optimizer 'brute_force' will take very long time to browse such a big permutational space.",
-      "x" = paste0(
-        "You provided a space with size ", perm_size,
-        "! (factorial), which has ", prod(1:perm_size),
-        " elements."
+    rlang::inform(c("Optimizer 'BF' is not recommended for p > 10 due to its time and memory requirements.",
+      "i" = paste0(
+        "BF will enumerate all ", perm_size,
+        "! = ", prod(1:perm_size), " permutations."
       ),
-      "i" = "Do You want to use other optimizer for such a big space? For example 'Metropolis_Hastings' or 'hill_climbing'?"
+      "i" = "Consider optimizer = 'MH' or optimizer = 'HC'."
     ))
+
+    if (return_probabilities) {
+      rlang::inform(c(
+        "Using `return_probabilities = TRUE` with BF for p > 10 is also not recommended.",
+        "i" = "Identifying and removing repeated cyclic groups adds computational cost.",
+        if (show_progress_bar) {
+          c("i" = "A third progress bar will show removal of repeated cyclic groups.")
+        }
+      ))
+    }
   }
 
   iterations_to_perform <-
