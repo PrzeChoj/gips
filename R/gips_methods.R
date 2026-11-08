@@ -788,18 +788,29 @@ get_n0_and_edited_number_of_observations_from_gips <- function(g) {
   c(n0, edited_number_of_observations)
 }
 
-#' Internal
-#' @return (integer) n0
+#' Get the minimum sample size from a permutation
+#'
+#' Assumes a valid, non-empty `gips_perm` and a non-missing logical scalar
+#' `was_mean_estimated`; inputs are not validated here.
+#'
+#' For cyclic permutation groups, this is equivalent to `max(r * d / k)`
+#' from the structure constants: `k = d`, and the multiplicity `r` at
+#' frequency zero counts all cycles. No other frequency occurs in more cycles,
+#' so `max(r)` is the number of cycles, including fixed points.
+#' A valid `gips_perm` stores each cycle as a list element, so its length
+#' gives the same value without calculating the structure constants.
+#' Add one observation when the mean was estimated.
+#'
+#' @return A numeric scalar n0.
 #' @noRd
 get_n0_from_perm <- function(g_perm, was_mean_estimated) {
-  structure_constants <- get_structure_constants(g_perm)
-  n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
+  n0 <- as.numeric(length(g_perm))
 
   if (was_mean_estimated) { # correction for estimating the mean
     n0 <- n0 + 1
   }
 
-  c(n0)
+  n0
 }
 
 #' Extract the Log-Likelihood for `gips` class

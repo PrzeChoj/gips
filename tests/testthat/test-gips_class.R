@@ -1060,6 +1060,47 @@ test_that("summary.gips() handles a numerically non-PD projection", {
   expect_null(result$likelihood_ratio_test_p_value)
 })
 
+test_that("get_n0_from_perm counts cycles and corrects for an estimated mean", {
+  perms <- list(
+    singleton = gips_perm("()", 1),
+    identity = gips_perm("()", 5),
+    full_cycle = gips_perm("(1,2,3,4,5,6)", 6),
+    mixed_with_fixed_points = gips_perm("(1,2,3)(4,5)", 7)
+  )
+  expected <- c(singleton = 1, identity = 5, full_cycle = 1,
+                mixed_with_fixed_points = 4)
+
+  for (name in names(perms)) {
+    for (was_mean_estimated in c(FALSE, TRUE)) {
+      expect_identical(
+        get_n0_from_perm(perms[[name]], was_mean_estimated),
+        unname(expected[name]) + as.integer(was_mean_estimated),
+        info = name
+      )
+    }
+  }
+})
+
+test_that("get_n0_from_perm agrees with the structure-constant formula", {
+  perms <- list(
+    gips_perm("(1,2,3,4,5)", 5),
+    gips_perm("(1,2,3)(4,5,6)", 6),
+    gips_perm("(1,2,3)(4,5,6,7,8,9)", 9),
+    gips_perm("(1,2)(3,4,5)(6,7,8,9)", 10)
+  )
+
+  for (perm in perms) {
+    constants <- get_structure_constants(perm)
+    reference <- max(constants$r * constants$d / constants$k)
+    for (was_mean_estimated in c(FALSE, TRUE)) {
+      expect_identical(
+        get_n0_from_perm(perm, was_mean_estimated),
+        reference + as.integer(was_mean_estimated)
+      )
+    }
+  }
+})
+
 test_that("summary.gips() returns proper n0 for estimated and unestimated mean", {
   g_no_em <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_em <- gips(S, number_of_observations, was_mean_estimated = TRUE)
