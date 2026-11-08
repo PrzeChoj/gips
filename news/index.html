@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gips</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,51 +44,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.0.9000" id="gips-1309000">gips 1.3.0.9000<a class="anchor" aria-label="anchor" href="#gips-1309000"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.3.1" id="gips-131">gips 1.3.1<a class="anchor" aria-label="anchor" href="#gips-131"></a></h2>
 <div class="section level4">
-<h4 id="update-to-functions-1-3-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-3-0-9000"></a></h4>
+<h4 id="update-to-functions-1-3-1">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-3-1"></a></h4>
 <ul><li>
-<code>find_MAP(return_probabilities = TRUE)</code> is now faster and more accurate for MH. It reuses computed posterior weights and normalizes them over distinct visited cyclic groups instead of estimating probabilities from visit frequencies. The result is conditional on those groups, including after MH continuation or HC followed by MH; BF retains the full posterior (<a href="https://github.com/PrzeChoj/gips/issues/120" class="external-link">#120</a>).</li>
+<code>find_MAP(return_probabilities = TRUE)</code> now normalizes posterior weights over distinct visited cyclic groups for MH instead of using visit frequencies. This is faster and more acurate. See (<a href="https://github.com/PrzeChoj/gips/issues/120" class="external-link">#120</a>).</li>
+<li>Improved performance of BF probability calculations and MH search.</li>
+<li>Input validation now requires exactly symmetric <code>S</code> and <code>D_matrix</code> and rejects <code>p &lt;= 1</code>, incomplete permutations, invalid permutation sizes, and <code>NULL</code> entries in multi-sample <code>D_matrix</code>. Projection and decomposition helpers now also validate permutations.</li>
 <li>
-<code>find_MAP(optimizer = "BF", return_probabilities = TRUE)</code> for <code>p &lt;= 10</code> now skips canonicalization and deduplication and shows two progress bars instead of three. The second bar is now faster.</li>
-<li>MH now reuses cached posterior values for forced moves and skips posterior evaluation for blocked returns.</li>
+<code><a href="../reference/find_MAP.html">find_MAP()</a></code> now rejects further optimization when the last optimizer was BF, including after <code><a href="../reference/forget_perms.html">forget_perms()</a></code>.</li>
 <li>
-<code>S</code> and <code>D_matrix</code> must now be exactly symmetric; approximate symmetry is no longer accepted.</li>
-<li>
-<code>p &lt;= 1</code> is rejected.</li>
-<li>
-<code>plot(type = "n0")</code> now uses a linear y-axis by default and supports all optimization histories.</li>
-<li>
-<code><a href="../reference/gips.html">gips()</a></code> now warns when row and column names differ within a supplied covariance matrix, including matrices in multi-sample input.</li>
+<code>plot(type = "n0")</code> now uses a linear y-axis by default and supports all optimization histories. Logarithmic plots now correctly display values 1 and 2.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bugfixes-1-3-0-9000">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-3-0-9000"></a></h4>
-<ul><li>Corrected the declared minimum R version to 4.0.0 to reflect existing code requirements.</li>
-<li>Fixed compilation of covariance projection code with C++11.</li>
-<li>Improved documentation and examples in function help, vignettes, and the README.</li>
-<li>
-<code><a href="../reference/find_MAP.html">find_MAP()</a></code> now rejects any further optimization when the object’s last optimization used Brute Force, including after <code><a href="../reference/forget_perms.html">forget_perms()</a></code>.</li>
-<li>Fixed duplicated boundary states when continuing MH, including after earlier HC stages.</li>
-<li>Fixed MH acceptance rates to count only eligible proposals.</li>
-<li>Fixed loss of precision for very small likelihood-ratio p-values in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</li>
-<li>Printed summaries now distinguish insufficient observations from projected covariance matrices that are not numerically positive definite.</li>
-<li>The likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now requires at least <code>p</code> effective observations to compare with the unrestricted model.</li>
-<li>
-<code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code>, the likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, and posterior calculations now use Cholesky factorization to check positive definiteness and compute log-determinants.</li>
-<li>
-<code><a href="../reference/gips_perm.html">validate_gips_perm()</a></code> now rejects incomplete permutations and invalid sizes. <code><a href="../reference/gips_perm.html">gips_perm()</a></code> now rejects invalid sizes during construction and correctly handles size-zero identities.</li>
-<li>
-<code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code>, <code><a href="../reference/prepare_orthogonal_matrix.html">prepare_orthogonal_matrix()</a></code>, and <code><a href="../reference/project_matrix.html">project_matrix()</a></code> now validate permutations before calculations.</li>
-<li>When <code>D_matrix</code> is a list (for multi-sample input), it must not contain <code>NULL</code> elements.</li>
-<li>Fixed incorrect posterior comparisons for small non-scalar <code>D_matrix</code> values.</li>
-<li>Fixed rejection of positive-definite prior matrices with small eigenvalues and corrected posterior calculations for nearly scalar priors.</li>
-<li>Fixed <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code> for permutations with gigantic order (above 3e17). Benchmarks also showed approximately 4–11% faster Brute Force search (<code>p = 5–8</code>) (<a href="https://github.com/PrzeChoj/gips/issues/122" class="external-link">#122</a>).</li>
-<li>Fixed logarithmic <code>n0</code> plots hiding values of <code>n0=1</code> and <code>n0=2</code> due to an incorrect lower axis limit.</li>
-<li>Fixed an empty bullet in <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> when no details are displayed.</li>
-<li>Fixed swapped row and column labels in single-sample heatmaps. When only one axis has names, those names are now used to label both axes.</li>
+<h4 id="bugfixes-1-3-1">Bugfixes:<a class="anchor" aria-label="anchor" href="#bugfixes-1-3-1"></a></h4>
+<ul><li>Corrected the declared minimum R version to 4.0.0 to reflect existing code requirements and fixed compilation with C++11.</li>
+<li>Fixed duplicated boundary states when continuing MH, including after HC stages, and corrected MH acceptance rates to count only eligible proposals. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now report actual posterior evaluation counts.</li>
+<li>The likelihood-ratio test in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now requires at least <code>p</code> effective observations and preserves precision for very small p-values.</li>
+<li>Improved positive-definiteness checks and log-determinant calculations in <code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code>, likelihood-ratio tests, and posterior calculations. Summaries now distinguish insufficient observations from projected covariance matrices that are not numerically positive definite.</li>
+<li>Fixed posterior comparisons for small non-scalar <code>D_matrix</code> values, calculations for nearly scalar priors, and rejection of positive-definite priors with small eigenvalues.</li>
+<li>Fixed <code><a href="../reference/get_structure_constants.html">get_structure_constants()</a></code> for permutations with very large order (above 3e17) (<a href="https://github.com/PrzeChoj/gips/issues/122" class="external-link">#122</a>).</li>
+<li>Fixed swapped row and column labels in single-sample heatmaps; names on only one axis now label both axes. <code><a href="../reference/gips.html">gips()</a></code> warns when row and column names differ within a covariance matrix, including in multi-sample input.</li>
 <li>Posterior trajectory plots now report a clear error recommending the logarithmic scale when exponentiation overflows or all values underflow to zero.</li>
-<li>
-<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now report actual posterior evaluation counts.</li>
 </ul></div>
 </div>
     <div class="section level2">
