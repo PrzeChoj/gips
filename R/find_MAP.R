@@ -78,7 +78,8 @@
 #'     Indicate whether or not to show the progress bar:
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 #'   * When `return_probabilities = TRUE`, an additional progress bar shows
-#'       probability calculation.
+#'       probability calculation. For BF with `perm size <= 10`, it tracks
+#'       preparation of probability names.
 #' @param save_all_perms A boolean. `TRUE` indicates saving
 #'     a list of all permutations visited during optimization.
 #'     This can be useful sometimes but needs a lot more RAM.
@@ -935,9 +936,10 @@ brute_force_optimizer <- function(
   }
 
   if (return_probabilities) { # calculate exact probabilities
+    # The prepared generators are canonical; for p = 2 both permutations are too.
     probabilities <- calculate_probabilities(
       all_perms_list, log_posteriori_values, show_progress_bar,
-      groups_are_distinct = length(all_perms_list) == OEIS_A051625[perm_size]
+      perms_are_representatives = length(all_perms_list) == OEIS_A051625[perm_size]
     )
   } else {
     probabilities <- NULL

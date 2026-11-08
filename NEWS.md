@@ -7,8 +7,9 @@
   cyclic groups instead of estimating probabilities from visit frequencies.
   The result is conditional on those groups, including after MH continuation or
   HC followed by MH; BF retains the full posterior (#120).
-* BF now skips redundant group deduplication and its progress bar when using
-  one generator per cyclic group, preserving probability names and values.
+* `find_MAP(optimizer = "BF", return_probabilities = TRUE)` for `p <= 10`
+  now skips canonicalization and deduplication and shows two progress bars
+  instead of three. The second bar is now faster.
 * MH now reuses cached posterior values for forced moves and skips posterior
   evaluation for blocked returns.
 * `S` and `D_matrix` must now be exactly symmetric; approximate symmetry is no longer accepted.

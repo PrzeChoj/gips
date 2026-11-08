@@ -148,13 +148,16 @@ get_coprimes <- function(n) {
 #' @param perms A `permutations::cycle` vector containing all permutations or
 #'     one generator per cyclic group.
 #' @param log_posteriories A vector of log-posterior values aligned with `perms`.
-#' @param show_progress_bar A boolean. Show a progress bar for canonicalization
-#'     and, when `groups_are_distinct = FALSE`, another for deduplication.
-#' @param groups_are_distinct A boolean. If `TRUE`, `perms` is assumed to contain
-#'     exactly one generator per cyclic group. Deduplication and its progress
-#'     bar are skipped, but canonical representatives are still calculated for
-#'     the probability names. With `FALSE` (the default), retain one log weight
-#'     per distinct cyclic group. BF sets this flag using
+#' @param show_progress_bar A boolean. Show a progress bar while preparing
+#'     probability names and, when `perms_are_representatives = FALSE`, another
+#'     for deduplication.
+#' @param perms_are_representatives A boolean. If `TRUE`, `perms` is assumed
+#'     to contain exactly one canonical representative per cyclic group.
+#'     Canonicalization and deduplication are skipped;
+#'     the supplied representatives are used directly for probability names.
+#'     With `FALSE` (the default), calculate canonical representatives and retain
+#'     one log weight per distinct cyclic group. BF uses this shortcut for its
+#'     prepared canonical generators (also for `p = 2`), after checking
 #'     `length(perms) == OEIS_A051625[p]`, where `p` is the permutation size.
 #'
 #' @returns A decreasing named numeric vector of posterior probabilities,
@@ -163,11 +166,7 @@ get_coprimes <- function(n) {
 #' @noRd
 calculate_probabilities <- function(
     perms, log_posteriories, show_progress_bar = FALSE,
-    groups_are_distinct = FALSE) {
-  if (show_progress_bar) {
-    progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 1)
-  }
-
+    perms_are_representatives = FALSE) {
   for (i in 1:19) {
     perms_size <- i
     if (OEIS_A051625[i] == length(perms) || OEIS_A000142[i] == length(perms)) {
@@ -180,6 +179,33 @@ calculate_probabilities <- function(
       "i" = "The length of the permutation vector has to be an element of OEIS sequence A051625 or A000142",
       "x" = paste0("You have the length of permutation vector = ", length(perms))
     )
+  }
+
+  if (perms_are_representatives) {
+    if (show_progress_bar) {
+      progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 0)
+    }
+
+    names(log_posteriories) <- vapply(seq_along(perms), function(i) {
+      perm_name <- as.character(gips_perm_no_checks(perms[i], perms_size))
+      if (show_progress_bar) {
+        utils::setTxtProgressBar(progressBar, i)
+      }
+      perm_name
+    }, character(1))
+
+    if (show_progress_bar) {
+      close(progressBar)
+    }
+
+    return(sort(
+      change_log_probabilities_unnorm_to_probabilities(log_posteriories),
+      decreasing = TRUE
+    ))
+  }
+
+  if (show_progress_bar) {
+    progressBar <- utils::txtProgressBar(min = 0, max = length(perms), initial = 1)
   }
 
   group_representatives <- character(0)
@@ -199,14 +225,6 @@ calculate_probabilities <- function(
     close(progressBar)
   }
 
-
-  if (groups_are_distinct) {
-    names(log_posteriories) <- group_representatives
-    return(sort(
-      change_log_probabilities_unnorm_to_probabilities(log_posteriories),
-      decreasing = TRUE
-    ))
-  }
 
   # get rid of the repeated permutations:
   if (show_progress_bar) {

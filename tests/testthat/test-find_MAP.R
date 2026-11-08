@@ -926,7 +926,7 @@ test_that("find_MAP() with calculate exact probabilities will return probability
   expect_equal(sum(post_probabilities), 1)
 })
 
-test_that("BF keeps deduplication when its permutation count differs from OEIS", {
+test_that("BF keeps canonicalization and deduplication when its count differs from OEIS", {
   optimizer <- brute_force_optimizer
   # Exercise the full-permutation path in a small space, without a p = 11 run.
   environment(optimizer) <- list2env(list(

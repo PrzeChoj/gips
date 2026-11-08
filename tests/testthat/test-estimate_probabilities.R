@@ -161,7 +161,7 @@ test_that("group representatives are calculated once per distinct permutation", 
   expect_equal(probabilities, c("(1,2,3)" = 2 / 3, "(1,2)" = 1 / 3))
 })
 
-test_that("distinct BF groups preserve named probabilities without deduplication", {
+test_that("canonical BF representatives preserve named probabilities", {
   for (p in 2:4) {
     perms <- permutations::as.cycle(permutations::allperms(p))
     if (p >= 3) {
@@ -170,13 +170,52 @@ test_that("distinct BF groups preserve named probabilities without deduplication
     log_weights <- rep(c(1000, 999, 999), length.out = length(perms))
 
     expected <- calculate_probabilities(perms, log_weights)
-    actual <- calculate_probabilities(perms, log_weights, groups_are_distinct = TRUE)
+    actual <- calculate_probabilities(
+      perms, log_weights, perms_are_representatives = TRUE
+    )
 
     expect_setequal(names(actual), names(expected))
     expect_equal(actual[names(expected)], expected)
     expect_equal(sum(actual), 1)
     expect_true(all(diff(unname(actual)) <= 0))
   }
+})
+
+test_that("prepared representatives do not require canonicalization", {
+  perms <- permutations::as.cycle(permutations::allperms(3))
+  perms <- perms[perm_group_generators_list[[1]]]
+  log_weights <- seq_along(perms)
+  expected <- calculate_probabilities(perms, log_weights)
+
+  calculate_from_representatives <- calculate_probabilities
+  environment(calculate_from_representatives) <- list2env(list(
+    get_group_representative = function(perm) {
+      stop("Prepared representatives must not be canonicalized again.")
+    }
+  ), parent = environment(calculate_probabilities))
+
+  actual <- calculate_from_representatives(
+    perms, log_weights, perms_are_representatives = TRUE
+  )
+
+  expect_equal(actual, expected)
+})
+
+test_that("prepared representative names respect permutation display options", {
+  perms <- permutations::as.cycle(permutations::allperms(4))
+  perms <- perms[perm_group_generators_list[[2]]]
+  log_weights <- seq_along(perms)
+
+  withr::with_options(list(
+    perm_set = letters[1:4], comma = FALSE, print_in_length_order = TRUE
+  ), {
+    expected <- calculate_probabilities(perms, log_weights)
+    actual <- calculate_probabilities(
+      perms, log_weights, perms_are_representatives = TRUE
+    )
+
+    expect_equal(actual, expected)
+  })
 })
 
 test_that("exact probabilities still deduplicate equivalent generators by default", {
@@ -195,20 +234,20 @@ test_that("exact probabilities still deduplicate equivalent generators by defaul
   expect_equal(actual[names(expected)], expected)
 })
 
-test_that("distinct BF groups omit the deduplication progress bar", {
+test_that("prepared representatives show one probability naming progress bar", {
   perms <- permutations::as.cycle(permutations::allperms(3))
   perms <- perms[perm_group_generators_list[[1]]]
   log_weights <- rep(0, length(perms))
 
-  for (distinct in c(FALSE, TRUE)) {
+  for (representatives in c(FALSE, TRUE)) {
     output <- capture.output(result <- calculate_probabilities(
       perms, log_weights, show_progress_bar = TRUE,
-      groups_are_distinct = distinct
+      perms_are_representatives = representatives
     ))
-    expect_length(output, if (distinct) 1 else 2)
+    expect_length(output, if (representatives) 1 else 2)
     expect_length(capture.output(result <- calculate_probabilities(
       perms, log_weights, show_progress_bar = FALSE,
-      groups_are_distinct = distinct
+      perms_are_representatives = representatives
     )), 0)
   }
 })
