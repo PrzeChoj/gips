@@ -62,7 +62,8 @@ find_MAP(
 
   A boolean. `TRUE` indicates saving a list of all permutations visited
   during optimization. This can be useful sometimes but needs a lot more
-  RAM.
+  RAM. The `n0` history is saved for every optimizer regardless of this
+  setting and can be displayed with `plot(g_map, type = "n0")`.
 
 - return_probabilities:
 
@@ -301,5 +302,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.02901268 secs
+#>  0.04249239 secs
 ```

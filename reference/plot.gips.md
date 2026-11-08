@@ -50,8 +50,13 @@ plot(
 
   - `"both"` - Shows both trajectories from "all" and "best".
 
-  - `"n0"` - Plots the `n0` values observed during optimization (only
-    for "MH" optimization).
+  - `"n0"` - Plots the `n0` values observed during optimization for any
+    optimizer, including mixed histories. MH records the current state,
+    including repeats after rejected proposals; HC records the starting
+    state and subsequent selected states; BF records every evaluated
+    permutation in enumeration order. The x axis indexes these recorded
+    permutations. The history is available even when
+    `save_all_perms = FALSE`.
 
   - `"block_heatmap"` - Plots a heatmap of the block-diagonal
     representation of `S`. Non-block entries (equal to 0) are white for
