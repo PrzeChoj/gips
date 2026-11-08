@@ -342,6 +342,8 @@ test_that("forced moves and blocked returns are excluded from MH acceptance rate
     ))
     # Forced moves reuse cached weights; blocked returns evaluate nothing.
     expect_equal(evaluated, c("()", "(1,2)", "(1,3)", "(2,3)", last_state))
+    expect_equal(attr(result, "optimization_info")$number_of_log_posteriori_calls, length(evaluated))
+    expect_equal(attr(result, "optimization_info")$log_posteriori_calls_at_best, 1)
     result
   }
 
@@ -398,6 +400,8 @@ test_that("consecutive forced MH moves exclude returns and preserve posterior we
     as.character(compose_with_transposition(gips_perm("(1,2)", 3), e))
   }, character(1))
   expect_equal(evaluated, c("()", "(1,2)", "(1,3)", "(2,3)", cycles))
+  expect_equal(info$number_of_log_posteriori_calls, length(evaluated))
+  expect_equal(info$log_posteriori_calls_at_best, 1)
   states <- vapply(info$visited_perms, as.character, character(1))
   expect_equal(states[1:6], c(rep("()", 3), rep("(1,2)", 3)))
   expect_true(states[7] %in% cycles)
@@ -411,6 +415,107 @@ test_that("consecutive forced MH moves exclude returns and preserve posterior we
   actual <- get_probabilities_from_gips(fit)
   expect_setequal(names(actual), names(expected_probabilities))
   expect_equal(actual[names(expected_probabilities)], expected_probabilities)
+})
+
+# Isolate objective-call accounting from numerical posterior calculations.
+posterior_counter_fixture <- function(transposition = c(1L, 2L),
+                                      identity_log_weight = 0, other_log_weight = -1000) {
+  evaluated <- numeric()
+  goal <- function(perm, ...) {
+    value <- if (as.character(perm) == "()") identity_log_weight else other_log_weight
+    evaluated <<- c(evaluated, value)
+    value
+  }
+  optimizers <- list(
+    Metropolis_Hastings_optimizer = Metropolis_Hastings_optimizer,
+    hill_climbing_optimizer = hill_climbing_optimizer,
+    brute_force_optimizer = brute_force_optimizer
+  )
+  optimizers <- lapply(optimizers, function(optimizer) {
+    environment(optimizer) <- list2env(list(
+      log_posteriori_of_perm = goal,
+      runif_transposition = function(perm_size) transposition
+    ), parent = environment(optimizer))
+    optimizer
+  })
+  find <- find_MAP
+  environment(find) <- list2env(optimizers, parent = environment(find))
+  list(
+    run = function(g, optimizer, max_iter = 6, save = FALSE) {
+      withr::with_seed(1, suppressMessages(find(g,
+        optimizer = optimizer, max_iter = max_iter,
+        save_all_perms = save, show_progress_bar = FALSE
+      )))
+    },
+    values = function() evaluated
+  )
+}
+
+test_that("each optimizer records actual objective calls and the first best evaluation", {
+  for (save in c(FALSE, TRUE)) {
+    for (optimizer in c("MH", "HC", "BF")) {
+      fixture <- posterior_counter_fixture()
+      fit <- fixture$run(gips(diag(3), 20, was_mean_estimated = FALSE),
+        optimizer, save = save
+      )
+      info <- attr(fit, "optimization_info")
+      # MH repeatedly proposes one rejected neighbor, never filling the cache.
+      # HC checks all three neighbors; BF checks all five cyclic groups.
+      expect_length(fixture$values(), c(MH = 2L, HC = 4L, BF = 5L)[[optimizer]])
+      expect_equal(info$number_of_log_posteriori_calls, length(fixture$values()))
+      expect_equal(info$log_posteriori_calls_at_best, which.max(fixture$values()))
+      if (optimizer == "MH") expect_length(info$log_posteriori_values, 6L)
+    }
+  }
+})
+
+test_that("MH continuation and restart count reevaluated boundaries and retain earlier best", {
+  for (save in c(FALSE, TRUE)) {
+    for (optimizer in c("continue", "MH")) {
+      fixture <- posterior_counter_fixture()
+      first <- fixture$run(gips(diag(3), 20, was_mean_estimated = FALSE),
+        "MH", save = save
+      )
+      combined <- fixture$run(first, optimizer, max_iter = 4, save = save)
+      info <- attr(combined, "optimization_info")
+      expect_equal(fixture$values(), c(0, -1000, 0, -1000))
+      expect_equal(info$number_of_log_posteriori_calls, 4)
+      expect_equal(info$log_posteriori_calls_at_best, 1)
+      expect_length(info$log_posteriori_values, if (optimizer == "continue") 9L else 10L)
+    }
+  }
+})
+
+test_that("the best evaluation counter distinguishes small strict improvements", {
+  fixture <- posterior_counter_fixture(identity_log_weight = 5e-8, other_log_weight = 0)
+  fit <- fixture$run(gips(diag(3), 20, perm = "(1,2)", was_mean_estimated = FALSE),
+    "MH", max_iter = 2
+  )
+  expect_equal(fixture$values(), c(0, 5e-8))
+  expect_equal(attr(fit, "optimization_info")$number_of_log_posteriori_calls, 2)
+  expect_equal(attr(fit, "optimization_info")$log_posteriori_calls_at_best, 2)
+})
+
+test_that("mixed histories offset a later best by actual calls and preserve it on ties", {
+  fixture <- posterior_counter_fixture(c(1L, 3L))
+  # MH starts at a swap and accepts an equally weighted 3-cycle.
+  # HC starts from the saved best swap and discovers identity as its first neighbor.
+  mh <- fixture$run(gips(diag(3), 20, perm = "(1,2)", was_mean_estimated = FALSE),
+    "MH", max_iter = 2, save = TRUE
+  )
+  expect_equal(attr(mh, "optimization_info")$log_posteriori_calls_at_best, 1)
+  mixed <- fixture$run(mh, "HC", save = TRUE)
+  info <- attr(mixed, "optimization_info")
+  expect_length(fixture$values(), 9L) # Two MH calls, seven HC calls.
+  expect_equal(info$number_of_log_posteriori_calls, 9)
+  expect_equal(info$log_posteriori_calls_at_best, 4)
+  expect_equal(info$log_posteriori_calls_at_best, which.max(fixture$values()))
+
+  restarted <- fixture$run(mixed, "MH", save = TRUE)
+  info <- attr(restarted, "optimization_info")
+  expect_length(fixture$values(), 11L)
+  expect_equal(info$number_of_log_posteriori_calls, 11)
+  expect_equal(info$log_posteriori_calls_at_best, 4)
 })
 
 test_that("MH acceptance rates combine by proposal counts across unequal stages", {

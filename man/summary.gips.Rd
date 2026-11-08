@@ -118,15 +118,13 @@ See the \strong{Hyperparameters} section of \code{\link[=gips]{gips()}} document
 in order (one could start optimization with "MH", and then
 do an "HC").
 \item \code{did_converge} - a boolean, did the last used algorithm converge.
-\item \code{number_of_log_posteriori_calls} - how many times was
-the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called during
-the optimization.
+\item \code{number_of_log_posteriori_calls} - the number of actual posterior
+evaluations during the recorded optimization.
+For multiple samples, one evaluation computes the joint objective.
 \item \code{whole_optimization_time} - how long was the optimization process;
 the sum of all optimization times (when there were multiple).
-\item \code{log_posteriori_calls_after_best} - how many times was
-the \code{\link[=log_posteriori_of_gips]{log_posteriori_of_gips()}} function called after
-the \code{found_permutation}; in other words, how long ago
-could the optimization be stopped and have the same result.
+\item \code{log_posteriori_calls_after_best} - the number of posterior evaluations
+after the best log-posterior value was first obtained.
 If this value is small, consider running \code{\link[=find_MAP]{find_MAP()}}
 again with \code{optimizer = "continue"}.
 For \code{optimizer = "BF"}, it is \code{NULL}.

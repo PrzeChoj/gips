@@ -714,6 +714,7 @@ test_that("print.gips() works", {
 
   g <- gips(S, number_of_observations, was_mean_estimated = FALSE)
   g_map <- find_MAP(g, 10, show_progress_bar = FALSE, optimizer = "MH")
+  posterior_calls <- attr(g_map, "optimization_info")$number_of_log_posteriori_calls
 
   expect_output(
     print(g),
@@ -725,7 +726,7 @@ test_that("print.gips() works", {
   )
   expect_output(
     print(g_map),
-    "\n - was found after 10 posterior calculations;\n - is"
+    paste0("\n - was found in a search using ", posterior_calls, " posterior calculations;\n - is")
   )
 
   # oneline:
@@ -739,7 +740,7 @@ test_that("print.gips() works", {
   )
   expect_output(
     print(g_map, oneline = TRUE),
-    ": was found after 10 posterior calculations; is"
+    paste0(": was found in a search using ", posterior_calls, " posterior calculations; is")
   )
 })
 
@@ -908,8 +909,8 @@ test_that("summary.gips() works", {
   expect_true(is.null(summary(g4)[["log_posteriori_calls_after_best"]]))
   expect_s3_class(summary(g4)[["start_permutation"]], "gips_perm")
 
-  # proper log_posteriori_calls_after_best:
-  # g_fake started in (1,2,3) and then comed to (1,3,2), which had bigger log_posteriori value, but only a little bigger
+  # Reporting uses the saved first-best evaluation, including when different
+  # generators of the same group have slightly different computed log weights.
   g_fake <- structure(list(structure(list(c(1, 2, 3)), size = 3L, class = "gips_perm")), S = structure(c(
     1, 0, 0, 0, 1, 0, 0, 0, 1
   ), dim = c(3L, 3L)), number_of_observations = 10, delta = 3, D_matrix = structure(c(
@@ -929,6 +930,7 @@ test_that("summary.gips() works", {
     last_perm_log_posteriori = -16.0120977148862, iterations_performed = 2L,
     optimization_algorithm_used = "Metropolis_Hastings", post_probabilities = NULL,
     did_converge = NULL, best_perm_log_posteriori = -16.0120977148862,
+    number_of_log_posteriori_calls = 3, log_posteriori_calls_at_best = 1,
     optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
     whole_optimization_time = structure(0.00564193725585938, class = "difftime", units = "secs"),
     all_n0 = c(2, 3, 2)
@@ -938,6 +940,33 @@ test_that("summary.gips() works", {
     summary(g_fake)[["log_posteriori_calls_after_best"]],
     2
   )
+})
+
+test_that("single and multi-sample reports use saved evaluation counters", {
+  inputs <- list(
+    gips(diag(3), 20, was_mean_estimated = FALSE),
+    gips(list(diag(3), 2 * diag(3)), c(20, 25), was_mean_estimated = FALSE)
+  )
+  for (g in inputs) {
+    fit <- withr::with_seed(1, suppressMessages(find_MAP(g,
+      optimizer = "MH", max_iter = 2, show_progress_bar = FALSE
+    )))
+    # Isolate reporting: six history records must not override the counters.
+    info <- attr(fit, "optimization_info")
+    info$log_posteriori_values <- rep(info$log_posteriori_values, 3L)
+    info$number_of_log_posteriori_calls <- 4
+    info$log_posteriori_calls_at_best <- 2
+    attr(fit, "optimization_info") <- info
+
+    result <- summary(fit)
+    expect_equal(result$number_of_log_posteriori_calls, 4)
+    expect_equal(result$log_posteriori_calls_after_best, 2)
+    expect_output(print(result), "Posterior calculations during optimization:\n 4", fixed = TRUE)
+    expect_output(print(result), "Posterior calculations after first reaching the best value:\n 2", fixed = TRUE)
+    expect_output(print(fit), "a search using 4 posterior calculations", fixed = TRUE)
+    expect_output(print(fit, oneline = TRUE), "a search using 4 posterior calculations", fixed = TRUE)
+    expect_identical(attr(fit, "optimization_info"), info)
+  }
 })
 
 test_that("start_permutation_log_posteriori was calculated correctly", {

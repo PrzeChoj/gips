@@ -87,8 +87,8 @@ print.gips <- function(x, digits = 3, compare_to_original = TRUE,
     }
 
     printing_text <- c(printing_text, paste0(
-      "was found after ",
-      length(attr(x, "optimization_info")[["log_posteriori_values"]]),
+      "was found in a search using ",
+      attr(x, "optimization_info")[["number_of_log_posteriori_calls"]],
       " posterior calculations"
     ))
 
@@ -264,15 +264,13 @@ convert_log_diff_to_str <- function(log_diff, digits) {
 #'       in order (one could start optimization with "MH", and then
 #'       do an "HC").
 #'   17. `did_converge` - a boolean, did the last used algorithm converge.
-#'   18. `number_of_log_posteriori_calls` - how many times was
-#'       the [log_posteriori_of_gips()] function called during
-#'       the optimization.
+#'   18. `number_of_log_posteriori_calls` - the number of actual posterior
+#'       evaluations during the recorded optimization.
+#'       For multiple samples, one evaluation computes the joint objective.
 #'   19. `whole_optimization_time` - how long was the optimization process;
 #'       the sum of all optimization times (when there were multiple).
-#'   20. `log_posteriori_calls_after_best` - how many times was
-#'       the [log_posteriori_of_gips()] function called after
-#'       the `found_permutation`; in other words, how long ago
-#'       could the optimization be stopped and have the same result.
+#'   20. `log_posteriori_calls_after_best` - the number of posterior evaluations
+#'       after the best log-posterior value was first obtained.
 #'       If this value is small, consider running [find_MAP()]
 #'       again with `optimizer = "continue"`.
 #'       For `optimizer = "BF"`, it is `NULL`.
@@ -422,17 +420,16 @@ summary.gips <- function(object, ...) {
     optimization_info <- attr(object, "optimization_info")
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001) # close enough; this is the first generator of the group
-      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
+      log_posteriori_calls_after_best <- optimization_info[["number_of_log_posteriori_calls"]] -
+        optimization_info[["log_posteriori_calls_at_best"]]
       start_permutation <- optimization_info[["start_perm"]]
       start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
     } else {
-      # for brute_force when_was_best is useless.
+      # The after-best statistic is not reported for exhaustive BF searches.
       # Also, the `optimization_info[["visited_perms"]]` is a list, but
         # its elements are not of class `gips_perm`, because it was done with
         # `optimization_info[["visited_perms"]] <- permutations::allperms()`
       # Real original permutation is saved in optimization_info[["original_perm"]]
-      when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
       start_permutation <- optimization_info[["original_perm"]]
       gips_start <- withCallingHandlers(gips(
@@ -467,7 +464,7 @@ summary.gips <- function(object, ...) {
       BIC = suppressWarnings(BIC(object), classes = c("singular_matrix", "likelihood_does_not_exists")), # warning for NA and NULL
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
-      number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
+      number_of_log_posteriori_calls = optimization_info[["number_of_log_posteriori_calls"]],
       whole_optimization_time = optimization_info[["whole_optimization_time"]],
       log_posteriori_calls_after_best = log_posteriori_calls_after_best,
       acceptance_rate = optimization_info[["acceptance_rate"]]
@@ -649,7 +646,7 @@ print.summary.gips <- function(x, ...) {
       )
     }
 
-    cat("\n\nThe number of log_posteriori calls:\n ",
+    cat("\n\nPosterior calculations during optimization:\n ",
       x[["number_of_log_posteriori_calls"]],
       "\n\nOptimization time:\n ", unclass(x[["whole_optimization_time"]]),
       " ", attr(x[["whole_optimization_time"]], "units"),
@@ -660,7 +657,7 @@ print.summary.gips <- function(x, ...) {
       cat(paste0("\n\nAcceptance rate (MH proposals):\n ", x[["acceptance_rate"]]), sep = "")
     }
     if (x[["optimization_algorithm_used"]][length(x[["optimization_algorithm_used"]])] != "brute_force") {
-      cat("\n\nLog_posteriori calls after the found permutation:\n ",
+      cat("\n\nPosterior calculations after first reaching the best value:\n ",
         x[["log_posteriori_calls_after_best"]],
         sep = ""
       )
@@ -718,12 +715,11 @@ summary_gips_mult <- function(object) {
     optimization_info <- attr(object, "optimization_info")
 
     if (optimization_info[["optimization_algorithm_used"]][length(optimization_info[["optimization_algorithm_used"]])] != "brute_force") {
-      when_was_best <- which(abs(optimization_info[["log_posteriori_values"]] - permutation_log_posteriori) < 0.0000001)
-      log_posteriori_calls_after_best <- length(optimization_info[["log_posteriori_values"]]) - when_was_best[1]
+      log_posteriori_calls_after_best <- optimization_info[["number_of_log_posteriori_calls"]] -
+        optimization_info[["log_posteriori_calls_at_best"]]
       start_permutation <- optimization_info[["start_perm"]]
       start_permutation_log_posteriori <- optimization_info[["log_posteriori_values"]][1]
     } else {
-      when_was_best <- NULL
       log_posteriori_calls_after_best <- NULL
       start_permutation <- optimization_info[["original_perm"]]
       gips_start <- withCallingHandlers(gips(
@@ -758,7 +754,7 @@ summary_gips_mult <- function(object) {
       BIC = suppressWarnings(BIC(object)),
       optimization_algorithm_used = optimization_info[["optimization_algorithm_used"]],
       did_converge = optimization_info[["did_converge"]],
-      number_of_log_posteriori_calls = length(optimization_info[["log_posteriori_values"]]),
+      number_of_log_posteriori_calls = optimization_info[["number_of_log_posteriori_calls"]],
       whole_optimization_time = optimization_info[["whole_optimization_time"]],
       log_posteriori_calls_after_best = log_posteriori_calls_after_best,
       acceptance_rate = optimization_info[["acceptance_rate"]],

@@ -484,7 +484,12 @@ Metropolis_Hastings_optimizer <- function(
     D_matrix <- diag(nrow = perm_size)
   }
 
+  number_of_log_posteriori_calls <- 0
+  log_posteriori_calls_at_best <- 0
+  best_evaluated_log_posteriori <- -Inf
+
   my_goal_function <- function(perm, i) {
+    number_of_log_posteriori_calls <<- number_of_log_posteriori_calls + 1
     out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm()`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
@@ -498,6 +503,11 @@ Metropolis_Hastings_optimizer <- function(
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Metropolis Hastings algorithm was stopped after ", i, " iterations.")
       ))
+    }
+
+    if (out_val > best_evaluated_log_posteriori) {
+      best_evaluated_log_posteriori <<- out_val
+      log_posteriori_calls_at_best <<- number_of_log_posteriori_calls
     }
 
     out_val
@@ -608,18 +618,18 @@ Metropolis_Hastings_optimizer <- function(
   log_posteriori_values <- log_posteriori_values[1:(i+1)]
   all_n0 <- all_n0[1:(i+1)]
 
-  function_calls <- length(log_posteriori_values)
-
   optimization_info <- list(
     "acceptance_rate" = acceptance_rate_numerator / acceptance_rate_denominator,
     "acceptance_rate_numerator" = acceptance_rate_numerator,
     "acceptance_rate_denominator" = acceptance_rate_denominator,
+    "number_of_log_posteriori_calls" = number_of_log_posteriori_calls,
+    "log_posteriori_calls_at_best" = log_posteriori_calls_at_best,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) log_posteriori_values else NULL,
     "start_perm" = start_perm,
     "last_perm" = current_perm,
-    "last_perm_log_posteriori" = log_posteriori_values[function_calls],
+    "last_perm_log_posteriori" = log_posteriori_values[length(log_posteriori_values)],
     "iterations_performed" = i,
     "optimization_algorithm_used" = "Metropolis_Hastings",
     "post_probabilities" = NULL, # Calculated by find_MAP() after combining histories.
@@ -675,7 +685,12 @@ hill_climbing_optimizer <- function(
   }
 
 
+  number_of_log_posteriori_calls <- 0
+  log_posteriori_calls_at_best <- 0
+  best_evaluated_log_posteriori <- -Inf
+
   my_goal_function <- function(perm, i) {
+    number_of_log_posteriori_calls <<- number_of_log_posteriori_calls + 1
     out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
@@ -689,6 +704,11 @@ hill_climbing_optimizer <- function(
         "i" = "We think it can only happen for ncol(S) > 500 or for D_matrix with huge values. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Hill Climbing algorithm was stopped after ", i, " iterations.")
       ))
+    }
+
+    if (out_val > best_evaluated_log_posteriori) {
+      best_evaluated_log_posteriori <<- out_val
+      log_posteriori_calls_at_best <<- number_of_log_posteriori_calls
     }
 
     out_val
@@ -769,6 +789,8 @@ hill_climbing_optimizer <- function(
     "acceptance_rate" = NULL,
     "acceptance_rate_numerator" = 0,
     "acceptance_rate_denominator" = 0,
+    "number_of_log_posteriori_calls" = number_of_log_posteriori_calls,
+    "log_posteriori_calls_at_best" = log_posteriori_calls_at_best,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "visited_log_posteriori_values" = if (save_all_perms) goal_function_best_logvalues else NULL,
@@ -850,7 +872,12 @@ brute_force_optimizer <- function(
     D_matrix <- diag(nrow = perm_size)
   }
 
+  number_of_log_posteriori_calls <- 0
+  log_posteriori_calls_at_best <- 0
+  best_evaluated_log_posteriori <- -Inf
+
   my_goal_function <- function(perm, i) {
+    number_of_log_posteriori_calls <<- number_of_log_posteriori_calls + 1
     out_val <- log_posteriori_of_perm(perm, # We recommend to use the `log_posteriori_of_gips()` function. If you really want to use `log_posteriori_of_perm`, remember to edit `number_of_observations` if the mean was estimated!
       S = S, number_of_observations = number_of_observations,
       delta = delta, D_matrix = D_matrix
@@ -864,6 +891,11 @@ brute_force_optimizer <- function(
         "i" = "We think it can only happen for ncol(S) > 500 or for huge D_matrix. If it is not the case for You, please get in touch with us on ISSUE#5.",
         "x" = paste0("The Brute Force algorithm was stopped after ", i, " iterations.")
       ))
+    }
+
+    if (out_val > best_evaluated_log_posteriori) {
+      best_evaluated_log_posteriori <<- out_val
+      log_posteriori_calls_at_best <<- number_of_log_posteriori_calls
     }
 
     out_val
@@ -913,6 +945,8 @@ brute_force_optimizer <- function(
 
   optimization_info <- list(
     "acceptance_rate" = NULL,
+    "number_of_log_posteriori_calls" = number_of_log_posteriori_calls,
+    "log_posteriori_calls_at_best" = log_posteriori_calls_at_best,
     "log_posteriori_values" = log_posteriori_values,
     "visited_perms" = visited_perms,
     "start_perm" = permutations::id,
@@ -964,6 +998,17 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE,
   optimization_info1 <- attr(g1, "optimization_info")
   optimization_info2 <- attr(g2, "optimization_info")
 
+  number_of_log_posteriori_calls <- optimization_info1[["number_of_log_posteriori_calls"]] +
+    optimization_info2[["number_of_log_posteriori_calls"]]
+  # Keep the first evaluation attaining the best value, including on ties.
+  log_posteriori_calls_at_best <- if (
+    optimization_info1[["best_perm_log_posteriori"]] >= optimization_info2[["best_perm_log_posteriori"]]
+  ) {
+    optimization_info1[["log_posteriori_calls_at_best"]]
+  } else {
+    optimization_info1[["number_of_log_posteriori_calls"]] + optimization_info2[["log_posteriori_calls_at_best"]]
+  }
+
   # Pool MH counts independently of saved states and continuation boundaries.
   acceptance_rate_numerator <- optimization_info1[["acceptance_rate_numerator"]] + optimization_info2[["acceptance_rate_numerator"]]
   acceptance_rate_denominator <- optimization_info1[["acceptance_rate_denominator"]] + optimization_info2[["acceptance_rate_denominator"]]
@@ -1003,6 +1048,8 @@ combine_gips <- function(g1, g2, show_progress_bar = FALSE,
 
   optimization_info_new <- list(
     "original_perm" = optimization_info1[["original_perm"]],
+    "number_of_log_posteriori_calls" = number_of_log_posteriori_calls,
+    "log_posteriori_calls_at_best" = log_posteriori_calls_at_best,
     "acceptance_rate" = if (acceptance_rate_denominator > 0) acceptance_rate_numerator / acceptance_rate_denominator else NULL,
     "acceptance_rate_numerator" = acceptance_rate_numerator,
     "acceptance_rate_denominator" = acceptance_rate_denominator,
