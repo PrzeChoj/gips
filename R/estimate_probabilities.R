@@ -145,12 +145,21 @@ get_coprimes <- function(n) {
 #'
 #' We use the "second approach" from the paper.
 #'
-#' @param perms An output of `permutations::allperms()`.
-#' @param log_posteriories A vector of log-posterior values for all `perms`.
-#' @param show_progress_bar A boolean. Indicate whether or not to show two progress bars.
+#' @param perms A `permutations::cycle` vector containing all permutations or
+#'     one generator per cyclic group.
+#' @param log_posteriories A vector of log-posterior values aligned with `perms`.
+#' @param show_progress_bar A boolean. Show a progress bar for canonicalization
+#'     and, when `groups_are_distinct = FALSE`, another for deduplication.
+#' @param groups_are_distinct A boolean. If `TRUE`, `perms` is assumed to contain
+#'     exactly one generator per cyclic group. Deduplication and its progress
+#'     bar are skipped, but canonical representatives are still calculated for
+#'     the probability names. With `FALSE` (the default), retain one log weight
+#'     per distinct cyclic group. BF sets this flag using
+#'     `length(perms) == OEIS_A051625[p]`, where `p` is the permutation size.
 #'
-#' @returns A named numeric vector. Names: character representations of permutations.
-#' Elements: exact posterior probabilities of cyclic groups represented by permutations.
+#' @returns A decreasing named numeric vector of posterior probabilities,
+#'     normalized over the cyclic groups. Names are character representations
+#'     of canonical group generators. Ties have no guaranteed relative order.
 #' @noRd
 calculate_probabilities <- function(
     perms, log_posteriories, show_progress_bar = FALSE,

@@ -77,9 +77,8 @@
 #' @param show_progress_bar A boolean.
 #'     Indicate whether or not to show the progress bar:
 #'   * When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
-#'   * When `return_probabilities = TRUE`, then
-#'       shows an additional progress bar for the time
-#'       when the probabilities are calculated.
+#'   * When `return_probabilities = TRUE`, an additional progress bar shows
+#'       probability calculation.
 #' @param save_all_perms A boolean. `TRUE` indicates saving
 #'     a list of all permutations visited during optimization.
 #'     This can be useful sometimes but needs a lot more RAM.
