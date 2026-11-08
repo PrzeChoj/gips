@@ -83,6 +83,8 @@
 #' @param save_all_perms A boolean. `TRUE` indicates saving
 #'     a list of all permutations visited during optimization.
 #'     This can be useful sometimes but needs a lot more RAM.
+#'     The `n0` history is saved for every optimizer regardless of this setting
+#'     and can be displayed with `plot(g_map, type = "n0")`.
 #' @param return_probabilities A boolean. `TRUE` can only be provided
 #'     when `save_all_perms = TRUE`. For:
 #'   * `optimizer = "MH"` - normalize posterior weights over distinct
@@ -256,7 +258,7 @@ find_MAP <- function(g, max_iter = NA, optimizer = NA,
   n0 <- max(structure_constants[["r"]] * structure_constants[["d"]] / structure_constants[["k"]])
   if (attr(g, "was_mean_estimated")) { # correction for estimating the mean
     n0 <- n0 + 1
-    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1 # when all_n0 is NA, all_n0 + 1 is also an NA
+    attr(gips_optimized, "optimization_info")[["all_n0"]] <- attr(gips_optimized, "optimization_info")[["all_n0"]] + 1
   }
   if (n0 > min(number_of_observations)) {
     if (length(number_of_observations) == 1) {
@@ -702,6 +704,7 @@ hill_climbing_optimizer <- function(
 
   goal_function_best_logvalues[1] <- my_goal_function(current_perm, 0)
   log_posteriori_values[1] <- goal_function_best_logvalues[1]
+  all_n0 <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE)
 
   # main loop
   iteration <- 0
@@ -730,6 +733,7 @@ hill_climbing_optimizer <- function(
     if (best_neighbour_value > goal_function_best_logvalues[iteration]) {
       goal_function_best_logvalues[iteration + 1] <- best_neighbour_value
       current_perm <- best_neighbour
+      all_n0[iteration + 1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE)
       if (save_all_perms) {
         visited_perms[[iteration + 1]] <- best_neighbour
       }
@@ -775,7 +779,7 @@ hill_climbing_optimizer <- function(
     "best_perm_log_posteriori" = goal_function_best_logvalues[iteration],
     "optimization_time" = NA,
     "whole_optimization_time" = NA,
-    "all_n0" = NA
+    "all_n0" = all_n0
   )
 
 
@@ -872,13 +876,16 @@ brute_force_optimizer <- function(
   }
   all_perms_list <- permutations::as.cycle(all_perms_list)
   all_perms_cycles <- unclass(all_perms_list)
-  log_posteriori_values <- sapply(1:length(all_perms_list), function(i) {
+  log_posteriori_values <- numeric(length(all_perms_cycles))
+  all_n0 <- numeric(length(all_perms_cycles))
+  for (i in seq_along(all_perms_cycles)) {
     if (show_progress_bar) {
       utils::setTxtProgressBar(progressBar, i)
     }
     this_perm <- gips_perm_no_checks_from_cycles(all_perms_cycles[[i]], perm_size)
-    my_goal_function(this_perm, i)
-  })
+    log_posteriori_values[i] <- my_goal_function(this_perm, i)
+    all_n0[i] <- get_n0_from_perm(this_perm, was_mean_estimated = FALSE)
+  }
 
   if (show_progress_bar) {
     close(progressBar)
@@ -917,7 +924,7 @@ brute_force_optimizer <- function(
     "best_perm_log_posteriori" = log_posteriori_values[which.max(log_posteriori_values)],
     "optimization_time" = NA,
     "whole_optimization_time" = NA,
-    "all_n0" = NA
+    "all_n0" = all_n0
   )
 
 

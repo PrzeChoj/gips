@@ -314,6 +314,90 @@ test_that("removing MH continuation boundaries preserves acceptance rate aggrega
   )
 })
 
+test_that("HC records n0 for its initial and accepted states without requiring saved permutations", {
+  for (was_mean_estimated in c(FALSE, TRUE)) {
+    for (start_perm in c("(1,2)", "()")) {
+      g <- gips(diag(c(1, 100)), 10000,
+        perm = start_perm, was_mean_estimated = was_mean_estimated
+      )
+      saved <- find_MAP(g, optimizer = "HC", max_iter = Inf,
+        save_all_perms = TRUE, show_progress_bar = FALSE
+      )
+      unsaved <- find_MAP(g, optimizer = "HC", max_iter = Inf,
+        save_all_perms = FALSE, show_progress_bar = FALSE
+      )
+      info <- attr(saved, "optimization_info")
+      expected <- if (start_perm == "(1,2)") c(1, 2) else 2
+
+      # The final unsuccessful HC step must not add a repeated state.
+      expect_equal(info$all_n0, expected + was_mean_estimated)
+      expect_equal(info$all_n0,
+        vapply(info$visited_perms, length, integer(1)) + was_mean_estimated
+      )
+      expect_length(info$all_n0, length(info$visited_log_posteriori_values))
+      expect_equal(attr(unsaved, "optimization_info")$all_n0, info$all_n0)
+      expect_equal(attr(forget_perms(saved), "optimization_info")$all_n0, info$all_n0)
+    }
+  }
+})
+
+test_that("BF records n0 in evaluation order with or without saved permutations", {
+  # p = 2 enumerates every permutation; p = 3 uses prepared group representatives.
+  for (p in c(2L, 3L)) {
+    for (was_mean_estimated in c(FALSE, TRUE)) {
+      g <- gips(diag(seq_len(p)), 20, was_mean_estimated = was_mean_estimated)
+      saved <- find_MAP(g, optimizer = "BF",
+        save_all_perms = TRUE, show_progress_bar = FALSE
+      )
+      unsaved <- find_MAP(g, optimizer = "BF",
+        save_all_perms = FALSE, show_progress_bar = FALSE
+      )
+      info <- attr(saved, "optimization_info")
+      # BF stores permutations::cycle objects, which omit fixed points.
+      cycle_counts <- vapply(seq_along(info$visited_perms), function(i) {
+        length(gips_perm(info$visited_perms[i], p))
+      }, integer(1))
+
+      expect_equal(info$all_n0, cycle_counts + was_mean_estimated)
+      expect_equal(range(info$all_n0), c(1, p) + was_mean_estimated)
+      expect_length(info$all_n0, length(info$log_posteriori_values))
+      expect_equal(attr(unsaved, "optimization_info")$all_n0, info$all_n0)
+      expect_equal(attr(forget_perms(saved), "optimization_info")$all_n0, info$all_n0)
+    }
+  }
+})
+
+test_that("mixed HC and MH histories retain n0 for every saved state", {
+  for (was_mean_estimated in c(FALSE, TRUE)) {
+    g <- gips(diag(c(1, 100)), 10000,
+      perm = "(1,2)", was_mean_estimated = was_mean_estimated
+    )
+    hc <- find_MAP(g, optimizer = "HC", max_iter = Inf,
+      save_all_perms = TRUE, show_progress_bar = FALSE
+    )
+    hc_mh <- run_mh_boundary_segment(hc)
+    mh <- run_mh_boundary_segment(g)
+    mh_hc <- find_MAP(mh, optimizer = "HC", max_iter = Inf,
+      save_all_perms = TRUE, show_progress_bar = FALSE
+    )
+
+    expect_equal(attr(hc_mh, "optimization_info")$all_n0,
+      c(1, 2, 2, 2) + was_mean_estimated
+    )
+    expect_equal(attr(mh_hc, "optimization_info")$all_n0,
+      c(1, 2, 2) + was_mean_estimated
+    )
+    for (result in list(hc_mh, mh_hc)) {
+      info <- attr(result, "optimization_info")
+      expect_false(anyNA(info$all_n0))
+      expect_equal(info$all_n0,
+        vapply(info$visited_perms, length, integer(1)) + was_mean_estimated
+      )
+      expect_length(info$all_n0, length(info$visited_log_posteriori_values))
+    }
+  }
+})
+
 test_that("Handle proper parameters", {
   g1 <- gips(matrix_invariant_by_example_perm, 13, was_mean_estimated = FALSE)
   
@@ -375,9 +459,17 @@ test_that("Handle proper parameters", {
   ))
 
   expect_warning(
-    find_MAP(g1, max_iter = 2, optimizer = "HC", show_progress_bar = FALSE),
+    g_limited <- find_MAP(g1, max_iter = 2, optimizer = "HC",
+      save_all_perms = TRUE, show_progress_bar = FALSE
+    ),
     "Hill Climbing algorithm did not converge in 2 iterations!"
   )
+  limited_info <- attr(g_limited, "optimization_info")
+  expect_length(limited_info$all_n0, 3L)
+  expect_equal(limited_info$all_n0,
+    vapply(limited_info$visited_perms, length, integer(1))
+  )
+  expect_length(limited_info$all_n0, length(limited_info$visited_log_posteriori_values))
   
   
   

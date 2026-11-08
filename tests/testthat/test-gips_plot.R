@@ -11,6 +11,7 @@ test_that("default y scale follows the resolved plot type", {
 
   linear_n0 <- plot(g, type = "n0")
   expect_equal(linear_n0$data$value, c(3, 1, 2))
+  expect_equal(linear_n0$labels$x, "recorded permutation index")
   expect_equal(linear_n0$labels$y, "n0")
   expect_equal(linear_n0$coordinates$limits$y, c(1, 3))
 
@@ -18,6 +19,10 @@ test_that("default y scale follows the resolved plot type", {
   expect_equal(log_n0$data$value, log(c(3, 1, 2)))
   expect_equal(log_n0$labels$y, "log n0")
   expect_equal(log_n0$coordinates$limits$y, c(0, log(3)))
+  expect_equal(
+    plot(g, type = "n0", logarithmic_x = TRUE)$labels$x,
+    "log10 of recorded permutation index"
+  )
 
   for (type in c("all", "best", "both")) {
     expect_equal(
@@ -34,6 +39,49 @@ test_that("default y scale follows the resolved plot type", {
   expect_message(explicit_na <- plot(g, type = NA), "type = 'both'", fixed = TRUE)
   expect_equal(automatic$data, expected$data)
   expect_equal(explicit_na$data, expected$data)
+})
+
+
+test_that("n0 plots retain the complete trajectory for every optimizer history", {
+  g <- gips(diag(4), 10, was_mean_estimated = FALSE)
+  # Fixed histories isolate rendering from optimizer storage and randomness.
+  algorithms <- list(
+    "hill_climbing",
+    "brute_force",
+    c("hill_climbing", "Metropolis_Hastings"),
+    c("Metropolis_Hastings", "hill_climbing"),
+    c("hill_climbing", "Metropolis_Hastings", "hill_climbing")
+  )
+  for (history in algorithms) {
+    attr(g, "optimization_info") <- list(
+      optimization_algorithm_used = history,
+      all_n0 = c(4, 3, 3, 2)
+    )
+    for (logarithmic_y in c(FALSE, TRUE)) {
+      expect_silent(p <- plot(g, type = "n0", logarithmic_y = logarithmic_y))
+      expected <- if (logarithmic_y) log(c(4, 3, 2)) else c(4, 3, 2)
+      expect_equal(p$data$step, c(1L, 2L, 4L))
+      expect_equal(p$data$value, expected)
+      expect_silent(built <- ggplot2::ggplot_build(p))
+      expect_equal(built$data[[1]]$x, c(1, 2, 4))
+      expect_equal(built$data[[1]]$y, expected)
+    }
+  }
+})
+
+test_that("a one-state HC history is drawn as a visible n0 point", {
+  g <- gips(diag(3), 10, was_mean_estimated = FALSE)
+  attr(g, "optimization_info") <- list(
+    optimization_algorithm_used = "hill_climbing",
+    all_n0 = 1
+  )
+  for (logarithmic_y in c(FALSE, TRUE)) {
+    p <- plot(g, type = "n0", logarithmic_y = logarithmic_y)
+    expect_s3_class(p$layers[[1]]$geom, "GeomPoint")
+    expect_silent(built <- ggplot2::ggplot_build(p))
+    expect_equal(built$data[[1]]$x, 1)
+    expect_equal(built$data[[1]]$y, if (logarithmic_y) 0 else 1)
+  }
 })
 
 

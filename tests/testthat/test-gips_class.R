@@ -791,17 +791,14 @@ test_that("plot.gips() works or abords for wrong arguments", {
     "Did you misspell the 'type' argument?"
   )
   
-  # n0 only for M-H
+  # n0 requires an optimization history, including BF histories.
   g1 <- gips(diag(5), 10)
   expect_error(
     plot(g1, type = "n0"),
     "For non-optimized `gips` objects only the `type = 'heatmap', 'MLE' or 'block_heatmap'` can be used."
   )
   g_MAP <- find_MAP(g1, optimizer = "BF", show_progress_bar = FALSE)
-  expect_error(
-    plot(g_MAP, type = "n0"),
-    "`type = 'n0'` can only be used with `gips` objects optimized using the Metropolis-Hastings algorithm"
-  )
+  expect_silent(plot(g_MAP, type = "n0"))
   
   g_MAP_MH <- find_MAP(g1, optimizer = "MH", max_iter = 2, show_progress_bar = FALSE)
   expect_silent(plot(g_MAP_MH, type = "n0"))

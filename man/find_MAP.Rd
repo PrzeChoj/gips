@@ -44,7 +44,9 @@ when the probabilities are calculated.
 
 \item{save_all_perms}{A boolean. \code{TRUE} indicates saving
 a list of all permutations visited during optimization.
-This can be useful sometimes but needs a lot more RAM.}
+This can be useful sometimes but needs a lot more RAM.
+The \code{n0} history is saved for every optimizer regardless of this setting
+and can be displayed with \code{plot(g_map, type = "n0")}.}
 
 \item{return_probabilities}{A boolean. \code{TRUE} can only be provided
 when \code{save_all_perms = TRUE}. For:

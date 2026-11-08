@@ -20,7 +20,12 @@
 #'   * `"all"` - Shows the A Posteriori values for all visited states.
 #'   * `"both"` - Shows both trajectories from "all" and "best".
 #'   * `"n0"` - Plots the `n0` values observed during optimization
-#'       (only for "MH" optimization).
+#'       for any optimizer, including mixed histories. MH records the current
+#'       state, including repeats after rejected proposals; HC records the
+#'       starting state and subsequent selected states; BF records every
+#'       evaluated permutation in enumeration order. The x axis indexes these
+#'       recorded permutations. The history is available even when
+#'       `save_all_perms = FALSE`.
 #'   * `"block_heatmap"` - Plots a heatmap of the block-diagonal representation of `S`.
 #'       Non-block entries (equal to 0) are white for better clarity.
 #'       For more information, see **Block Decomposition - \[1\], Theorem 1**
@@ -191,26 +196,6 @@ plot.gips <- function(x, type = NA,
     ))
   }
   if (type == "n0") {
-    # Check that optimization was done with MH
-    opt_algo <- attr(x, "optimization_info")$optimization_algorithm_used
-    is_mh <- if (length(opt_algo) == 1) {
-      opt_algo == "Metropolis_Hastings"
-    } else {
-      opt_algo[length(opt_algo)] == "Metropolis_Hastings"
-    }
-    
-    if (!is_mh) {
-      rlang::abort(c(
-        "There was a problem identified with the provided arguments:",
-        "i" = "`type = 'n0'` can only be used with `gips` objects optimized using the Metropolis-Hastings algorithm.",
-        "x" = paste0(
-          "Your `gips` object was optimized using: ",
-          paste(opt_algo, collapse = " -> "), "."
-        ),
-        "i" = "Did you mean to use `type = 'all'`, `type = 'best'`, or `type = 'both'` instead?"
-      ))
-    }
-    
     return(plot_gips_n0(
       x,
       logarithmic_y = logarithmic_y, logarithmic_x = logarithmic_x,
@@ -522,11 +507,11 @@ plot_gips_convergence <- function(x, type,
 }
 
 
-#' Plot the n0 trajectory from MH optimization
+#' Plot the recorded n0 values from optimization
 #'
 #' Internal function called by [plot.gips()] for `type = "n0"`.
 #'
-#' @param x A `gips` object (must be optimized with MH).
+#' @param x An optimized `gips` object.
 #' @param logarithmic_y,logarithmic_x Booleans. Sets axes to log scale.
 #' @param color Line color.
 #' @param title_text Plot title.
@@ -549,8 +534,8 @@ plot_gips_n0 <- function(x,
   }
   if (is.null(xlabel)) {
     xlabel <- ifelse(logarithmic_x,
-      "log10 of number of function calls",
-      "number of function calls"
+      "log10 of recorded permutation index",
+      "recorded permutation index"
     )
   }
   if (is.null(color)) color <- "red"
@@ -571,8 +556,16 @@ plot_gips_n0 <- function(x,
 
   df <- deduplicate_step_runs(data.frame(step = seq_len(num_of_steps), value = y_values, label = n0_label))
 
+  trajectory_layer <- if (num_of_steps == 1L) {
+    # TODO (1.4.0): reconsider this case after recording all evaluated HC
+    # candidates and defining how the n0 trajectory uses that history.
+    ggplot2::geom_point()
+  } else {
+    ggplot2::geom_step(linewidth = 1)
+  }
+
   g_plot <- ggplot2::ggplot(df, ggplot2::aes(x = step, y = value, color = label)) +
-    ggplot2::geom_step(linewidth = 1) +
+    trajectory_layer +
     ggplot2::scale_color_manual(values = stats::setNames(color[1], n0_label)) +
     ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) +
     ggplot2::labs(title = title_text, x = xlabel, y = ylabel, color = NULL) +
