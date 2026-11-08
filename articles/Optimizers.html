@@ -645,9 +645,9 @@ and <code>return_probabilities</code>.</p>
 <p>When <code>show_progress_bar = TRUE</code>, <code>gips</code> prints
 “=” characters on the console during optimization. With
 <code>return_probabilities = TRUE</code>, a second progress bar shows
-probability calculation. BF with one generator per cyclic group
-(currently for <span class="math inline">\(p \le 10\)</span>) skips
-removing repeated groups, so there are two bars in total.</p>
+probability calculation. For BF with <span class="math inline">\(p \le
+10\)</span>, this bar tracks preparation of probability names from the
+canonical group representatives.</p>
 <p>The <code>save_all_perms = TRUE</code> will save all visited
 permutations in the outputted object, which significantly increases the
 required RAM. For instance, with <span class="math inline">\(p=150\)</span> and <code>max_iter = 150000</code>,

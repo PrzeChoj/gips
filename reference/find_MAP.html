@@ -101,7 +101,8 @@ section below for more details.</p></dd>
 <dd><p>A boolean.
 Indicate whether or not to show the progress bar:</p><ul><li><p>When <code>max_iter</code> is infinite, <code>show_progress_bar</code> has to be <code>FALSE</code>;</p></li>
 <li><p>When <code>return_probabilities = TRUE</code>, an additional progress bar shows
-probability calculation.</p></li>
+probability calculation. For BF with <code>perm size &lt;= 10</code>, it tracks
+preparation of probability names.</p></li>
 </ul></dd>
 
 
@@ -328,7 +329,7 @@ the math behind the <code>gips</code> package.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  67</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03111029 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.0292995 secs</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

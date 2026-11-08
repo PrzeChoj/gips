@@ -558,9 +558,9 @@ function has three additional logical parameters: `show_progress_bar`,
 
 When `show_progress_bar = TRUE`, `gips` prints “=” characters on the
 console during optimization. With `return_probabilities = TRUE`, a
-second progress bar shows probability calculation. BF with one generator
-per cyclic group (currently for \\p \le 10\\) skips removing repeated
-groups, so there are two bars in total.
+second progress bar shows probability calculation. For BF with \\p \le
+10\\, this bar tracks preparation of probability names from the
+canonical group representatives.
 
 The `save_all_perms = TRUE` will save all visited permutations in the
 outputted object, which significantly increases the required RAM. For

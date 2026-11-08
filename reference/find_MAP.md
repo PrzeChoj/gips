@@ -56,7 +56,8 @@ find_MAP(
   - When `max_iter` is infinite, `show_progress_bar` has to be `FALSE`;
 
   - When `return_probabilities = TRUE`, an additional progress bar shows
-    probability calculation.
+    probability calculation. For BF with `perm size <= 10`, it tracks
+    preparation of probability names.
 
 - save_all_perms:
 
@@ -302,5 +303,5 @@ summary(g_map_BF)
 #>  67
 #> 
 #> Optimization time:
-#>  0.03111029 secs
+#>  0.0292995 secs
 ```
