@@ -199,9 +199,10 @@ statistics of the given `gips` object. Those are:
       again with `optimizer = "continue"`. For `optimizer = "BF"`, it is
       `NULL`.
 
-  21. `acceptance_rate` - only interesting for `optimizer = "MH"`. How
-      often was the algorithm accepting the change of permutation in an
-      iteration.
+  21. `acceptance_rate` - the fraction of eligible MH proposals
+      accepted. Counts are pooled across MH stages, including in mixed
+      histories; HC contributes to neither count. The value is `NULL`
+      for histories without MH stages.
 
 Both summaries also contain `MLE_available`: whether the sample-size
 requirement is met and all projected covariance matrices pass the
@@ -407,13 +408,13 @@ unclass(summary(g_map))
 #> [1] 10
 #> 
 #> $whole_optimization_time
-#> Time difference of 0.001998901 secs
+#> Time difference of 0.004074812 secs
 #> 
 #> $log_posteriori_calls_after_best
 #> [1] 0
 #> 
 #> $acceptance_rate
-#> [1] 0.3
+#> [1] 0.3333333
 #> 
 #> $MLE_available
 #> [1] TRUE
@@ -466,7 +467,7 @@ summary(g_map2)
 #>  76
 #> 
 #> Optimization time:
-#>  0.01514482 secs
+#>  0.03228879 secs
 #> 
 #> Log_posteriori calls after the found permutation:
 #>  18

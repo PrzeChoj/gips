@@ -178,9 +178,10 @@ could the optimization be stopped and have the same result.
 If this value is small, consider running <code><a href="find_MAP.html">find_MAP()</a></code>
 again with <code>optimizer = "continue"</code>.
 For <code>optimizer = "BF"</code>, it is <code>NULL</code>.</p></li>
-<li><p><code>acceptance_rate</code> - only interesting for <code>optimizer = "MH"</code>.
-How often was the algorithm accepting the change of permutation
-in an iteration.</p></li>
+<li><p><code>acceptance_rate</code> - the fraction of eligible MH proposals accepted.
+Counts are pooled across MH stages, including in mixed histories;
+HC contributes to neither count. The value is <code>NULL</code> for histories
+without MH stages.</p></li>
 </ol></li>
 </ul><p>Both summaries also contain <code>MLE_available</code>: whether the sample-size
 requirement is met and all projected covariance matrices pass the numerical
@@ -384,13 +385,13 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $whole_optimization_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.001998901 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time difference of 0.004074812 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $log_posteriori_calls_after_best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $acceptance_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3333333</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $MLE_available</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -443,7 +444,7 @@ matrix on the found permutations space.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization time:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.01514482 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03228879 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log_posteriori calls after the found permutation:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  18</span>

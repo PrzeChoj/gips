@@ -33,6 +33,7 @@
   [`forget_perms()`](https://przechoj.github.io/gips/reference/forget_perms.md).
 - Fixed duplicated boundary states when continuing MH, including after
   earlier HC stages.
+- Fixed MH acceptance rates to count only eligible proposals.
 - Fixed loss of precision for very small likelihood-ratio p-values in
   [`summary()`](https://rdrr.io/r/base/summary.html).
 - Printed summaries now distinguish insufficient observations from
