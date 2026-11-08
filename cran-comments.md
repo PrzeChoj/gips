@@ -9,7 +9,8 @@ in NEWS.md.
 
 ## R CMD check results
 
-Checked gips 1.3.1 with `R CMD check --as-cran --no-manual`
+Checked gips 1.3.1 with
+`devtools::check(remote = TRUE, manual = TRUE)`
 on macOS 27.2 (ARM64), R 4.3.1.
 
 0 errors | 0 warnings | 0 notes
@@ -22,6 +23,9 @@ successfully in all five environments:
 * macOS-latest, R release.
 * windows-latest, R release.
 * ubuntu-latest, R release, R devel and R oldrel-1.
+
+All five environments reported:
+0 errors | 0 warnings | 0 notes
 
 Results: <https://github.com/PrzeChoj/gips/actions/runs/42517049558>
 
