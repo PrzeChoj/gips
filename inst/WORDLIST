@@ -46,6 +46,7 @@ cov
 crossprod
 data's
 data’s
+deduplication
 det
 detectCores
 diag
