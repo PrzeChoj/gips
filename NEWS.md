@@ -2,59 +2,42 @@
 
 ### Update to functions
 
-* `find_MAP(return_probabilities = TRUE)` is now faster and more accurate for MH.
-  It reuses computed posterior weights and normalizes them over distinct visited
-  cyclic groups instead of estimating probabilities from visit frequencies.
-  The result is conditional on those groups, including after MH continuation or
-  HC followed by MH; BF retains the full posterior (#120).
-* `find_MAP(optimizer = "BF", return_probabilities = TRUE)` for `p <= 10`
-  now skips canonicalization and deduplication and shows two progress bars
-  instead of three. The second bar is now faster.
-* MH now reuses cached posterior values for forced moves and skips posterior
-  evaluation for blocked returns.
-* `S` and `D_matrix` must now be exactly symmetric; approximate symmetry is no longer accepted.
-* `p <= 1` is rejected.
+* `find_MAP(return_probabilities = TRUE)` now normalizes posterior weights over
+  distinct visited cyclic groups for MH instead of using visit frequencies.
+  This is faster and more acurate. See (#120).
+* Improved performance of BF probability calculations and MH search.
+* Input validation now requires exactly symmetric `S` and `D_matrix` and rejects
+  `p <= 1`, incomplete permutations, invalid permutation sizes, and `NULL` entries
+  in multi-sample `D_matrix`. Projection and decomposition helpers now also
+  validate permutations.
+* `find_MAP()` now rejects further optimization when the last optimizer was BF,
+  including after `forget_perms()`.
 * `plot(type = "n0")` now uses a linear y-axis by default and supports all
-  optimization histories.
-* `gips()` now warns when row and column names differ within a supplied
-  covariance matrix, including matrices in multi-sample input.
+  optimization histories. Logarithmic plots now correctly display values 1 and 2.
 
 ### Bugfixes:
 
-* Corrected the declared minimum R version to 4.0.0 to reflect existing code requirements.
-* Fixed compilation of covariance projection code with C++11.
-* Improved documentation and examples in function help, vignettes, and the README.
-* `find_MAP()` now rejects any further optimization when the object's last
-  optimization used Brute Force, including after `forget_perms()`.
-* Fixed duplicated boundary states when continuing MH, including after earlier HC stages.
-* Fixed MH acceptance rates to count only eligible proposals.
-* Fixed loss of precision for very small likelihood-ratio p-values in `summary()`.
-* Printed summaries now distinguish insufficient observations from projected
-  covariance matrices that are not numerically positive definite.
+* Corrected the declared minimum R version to 4.0.0 to reflect existing code
+  requirements and fixed compilation with C++11.
+* Fixed duplicated boundary states when continuing MH, including after HC stages,
+  and corrected MH acceptance rates to count only eligible proposals. `print()`
+  and `summary()` now report actual posterior evaluation counts.
 * The likelihood-ratio test in `summary()` now requires at least `p` effective
-  observations to compare with the unrestricted model.
-* `logLik()`, the likelihood-ratio test in `summary()`, and posterior calculations
-  now use Cholesky factorization to check positive definiteness and compute
-  log-determinants.
-* `validate_gips_perm()` now rejects incomplete permutations and invalid sizes.
-  `gips_perm()` now rejects invalid sizes during construction and correctly handles
-  size-zero identities.
-* `get_structure_constants()`, `prepare_orthogonal_matrix()`, and `project_matrix()`
-  now validate permutations before calculations.
-* When `D_matrix` is a list (for multi-sample input), it must not contain `NULL` elements.
-* Fixed incorrect posterior comparisons for small non-scalar `D_matrix` values.
-* Fixed rejection of positive-definite prior matrices with small eigenvalues
-  and corrected posterior calculations for nearly scalar priors.
-* Fixed `get_structure_constants()` for permutations with gigantic order (above 3e17).
-  Benchmarks also showed approximately 4–11% faster Brute Force search (`p = 5–8`) (#122).
-* Fixed logarithmic `n0` plots hiding values of `n0=1` and `n0=2`
-  due to an incorrect lower axis limit.
-* Fixed an empty bullet in `print()` when no details are displayed.
-* Fixed swapped row and column labels in single-sample heatmaps. When only
-  one axis has names, those names are now used to label both axes.
+  observations and preserves precision for very small p-values.
+* Improved positive-definiteness checks and log-determinant calculations in
+  `logLik()`, likelihood-ratio tests, and posterior calculations. Summaries now
+  distinguish insufficient observations from projected covariance matrices that
+  are not numerically positive definite.
+* Fixed posterior comparisons for small non-scalar `D_matrix` values, calculations
+  for nearly scalar priors, and rejection of positive-definite priors with small
+  eigenvalues.
+* Fixed `get_structure_constants()` for permutations with very large order
+  (above 3e17) (#122).
+* Fixed swapped row and column labels in single-sample heatmaps; names on only
+  one axis now label both axes. `gips()` warns when row and column names differ
+  within a covariance matrix, including in multi-sample input.
 * Posterior trajectory plots now report a clear error recommending the
   logarithmic scale when exponentiation overflows or all values underflow to zero.
-* `print()` and `summary()` now report actual posterior evaluation counts.
 
 
 # gips 1.3.0
