@@ -42,6 +42,7 @@ bigr
 canonicalization
 cardinality
 cdot
+chol
 circ
 cov
 crossprod
@@ -49,7 +50,6 @@ data's
 data’s
 deduplication
 det
-detectCores
 diag
 diagonalizes
 doi
@@ -103,4 +103,5 @@ suppressWarnings
 th
 underflows
 unoptimized
+warmup
 withr
