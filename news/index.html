@@ -49,6 +49,7 @@
 <h4 id="update-to-functions-1-3-0-9000">Update to functions<a class="anchor" aria-label="anchor" href="#update-to-functions-1-3-0-9000"></a></h4>
 <ul><li>
 <code>find_MAP(return_probabilities = TRUE)</code> is now faster and more accurate for MH. It reuses computed posterior weights and normalizes them over distinct visited cyclic groups instead of estimating probabilities from visit frequencies. The result is conditional on those groups, including after MH continuation or HC followed by MH; BF retains the full posterior (<a href="https://github.com/PrzeChoj/gips/issues/120" class="external-link">#120</a>).</li>
+<li>MH now reuses cached posterior values for forced moves and skips posterior evaluation for blocked returns.</li>
 <li>
 <code>S</code> and <code>D_matrix</code> must now be exactly symmetric; approximate symmetry is no longer accepted.</li>
 <li>
