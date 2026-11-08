@@ -7,6 +7,8 @@
   cyclic groups instead of estimating probabilities from visit frequencies.
   The result is conditional on those groups, including after MH continuation or
   HC followed by MH; BF retains the full posterior (#120).
+* MH now reuses cached posterior values for forced moves and skips posterior
+  evaluation for blocked returns.
 * `S` and `D_matrix` must now be exactly symmetric; approximate symmetry is no longer accepted.
 * `p <= 1` is rejected.
 * `plot(type = "n0")` now uses a linear y-axis by default and supports all

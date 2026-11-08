@@ -540,17 +540,16 @@ Metropolis_Hastings_optimizer <- function(
     e_string <- paste0(min(e), ",", max(e))
     perm_proposal <- compose_with_transposition(current_perm, e)
 
-    goal_function_perm_proposal <- if (is.null(cache[[e_string]])) {
-      my_goal_function(perm_proposal, i)
-    } else {
-      cache[[e_string]]
-    }
-    
     if (forbidden_string == e_string) {
       goal_function_perm_proposal <- -Inf
     } else {
       # Blocked returns are excluded from the acceptance-rate denominator.
       acceptance_rate_denominator <- acceptance_rate_denominator + 1
+      goal_function_perm_proposal <- if (is.null(cache[[e_string]])) {
+        my_goal_function(perm_proposal, i)
+      } else {
+        cache[[e_string]]
+      }
     }
 
     # if goal_function_perm_proposal > log_posteriori_values[i], then it is true, because Uniformly_drawn_numbers[i] \in [0,1]
@@ -585,8 +584,6 @@ Metropolis_Hastings_optimizer <- function(
       cache_num <- cache_num - max(cache_num)
       probability <- exp(cache_num) / sum(exp(cache_num))
       
-      cache <- list()
-      
       current_perm_character <- sample(names(probability), size = 1, prob = probability)
       forbidden_string <- current_perm_character
       e <- as.numeric(strsplit(current_perm_character, ",")[[1]])
@@ -595,8 +592,10 @@ Metropolis_Hastings_optimizer <- function(
       if (save_all_perms) {
         visited_perms[[i + 1]] <- current_perm
       }
-      log_posteriori_values[i + 1] <- my_goal_function(current_perm, i)
+      # Keep the original log weight, not cache_num shifted for sampling.
+      log_posteriori_values[i + 1] <- cache[[current_perm_character]]
       all_n0[i+1] <- get_n0_from_perm(current_perm, was_mean_estimated = FALSE)
+      cache <- list()
     }
   }
   

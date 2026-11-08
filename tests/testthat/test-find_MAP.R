@@ -311,6 +311,7 @@ test_that("forced moves and blocked returns are excluded from MH acceptance rate
       list(c(1L, 3L))
     )
     proposal_index <- 0L
+    evaluated <- character()
     optimizer <- Metropolis_Hastings_optimizer
     # Override only this copy's dependencies, without changing the namespace
     # or requiring mocking helpers newer than testthat 3.1.5.
@@ -320,7 +321,9 @@ test_that("forced moves and blocked returns are excluded from MH acceptance rate
         proposals[[proposal_index]]
       },
       log_posteriori_of_perm = function(perm, ...) {
-        switch(as.character(perm),
+        key <- as.character(perm)
+        evaluated <<- c(evaluated, key)
+        switch(key,
           "()" = 0,
           "(1,2)" = -1000,
           "(1,3)" = -2000,
@@ -332,11 +335,14 @@ test_that("forced moves and blocked returns are excluded from MH acceptance rate
 
     # All three initial proposals are rejected; forced-move weights are
     # exactly c(1, 0, 0). The final, unblocked proposal is always accepted.
-    withr::with_seed(1, optimizer(
+    result <- withr::with_seed(1, optimizer(
       S = diag(3), number_of_observations = 20,
       start_perm = gips_perm("()", 3), max_iter = length(proposals) + 1L,
       save_all_perms = save, show_progress_bar = FALSE
     ))
+    # Forced moves reuse cached weights; blocked returns evaluate nothing.
+    expect_equal(evaluated, c("()", "(1,2)", "(1,3)", "(2,3)", last_state))
+    result
   }
 
   last_state <- as.character(compose_with_transposition(gips_perm("(1,2)", 3), c(1L, 3L)))
@@ -356,6 +362,55 @@ test_that("forced moves and blocked returns are excluded from MH acceptance rate
       expect_equal(info$acceptance_rate, 1 / 4)
     }
   }
+})
+
+test_that("consecutive forced MH moves exclude returns and preserve posterior weights", {
+  proposals <- list(c(1L, 2L), c(1L, 3L), c(2L, 3L),
+    c(1L, 3L), c(2L, 3L), c(1L, 2L))
+  proposal_index <- 0L
+  evaluated <- character()
+  optimizer <- Metropolis_Hastings_optimizer
+  environment(optimizer) <- list2env(list(
+    runif_transposition = function(perm_size) {
+      proposal_index <<- proposal_index + 1L
+      proposals[[proposal_index]]
+    },
+    log_posteriori_of_perm = function(perm, ...) {
+      key <- as.character(perm)
+      evaluated <<- c(evaluated, key)
+      switch(key, "()" = 0, "(1,2)" = -1000, -2000)
+    }
+  ), parent = environment(optimizer))
+  run <- find_MAP
+  environment(run) <- list2env(list(Metropolis_Hastings_optimizer = optimizer),
+    parent = environment(run))
+
+  # The first full cache forces (1,2). Two rejected 3-cycles do not yet fill
+  # the next cache; only drawing the blocked return triggers the second move.
+  # Either cycle may then be chosen, but not identity.
+  fit <- withr::with_seed(1, suppressMessages(run(
+    gips(diag(3), 20, was_mean_estimated = FALSE),
+    optimizer = "MH", max_iter = 7, save_all_perms = TRUE,
+    return_probabilities = TRUE, show_progress_bar = FALSE
+  )))
+  info <- attr(fit, "optimization_info")
+  cycles <- vapply(list(c(1L, 3L), c(2L, 3L)), function(e) {
+    as.character(compose_with_transposition(gips_perm("(1,2)", 3), e))
+  }, character(1))
+  expect_equal(evaluated, c("()", "(1,2)", "(1,3)", "(2,3)", cycles))
+  states <- vapply(info$visited_perms, as.character, character(1))
+  expect_equal(states[1:6], c(rep("()", 3), rep("(1,2)", 3)))
+  expect_true(states[7] %in% cycles)
+  expected_weights <- c(rep(0, 3), rep(-1000, 3), -2000)
+  expect_equal(info$log_posteriori_values, expected_weights)
+  expect_equal(info$visited_log_posteriori_values, expected_weights)
+
+  # Normalize true weights of the three visited groups, not the shifted
+  # cache or the technical -Inf used to prevent the return to identity.
+  expected_probabilities <- c("()" = 1, "(1,2)" = 0, "(1,2,3)" = 0)
+  actual <- get_probabilities_from_gips(fit)
+  expect_setequal(names(actual), names(expected_probabilities))
+  expect_equal(actual[names(expected_probabilities)], expected_probabilities)
 })
 
 test_that("MH acceptance rates combine by proposal counts across unequal stages", {
