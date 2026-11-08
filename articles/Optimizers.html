@@ -134,21 +134,26 @@ different <span class="math inline">\(\sigma\)</span> follows <a href="https://o
 estimator.</p>
 <p>Brute Force is <strong>only recommended</strong> for small spaces
 (<span class="math inline">\(p \le 10\)</span>). It can also browse
-bigger spaces, but the required time is probably too long. We tested how
-much time it takes to browse with Brute Force (Apple M2), and we show
-the time in the table below:</p>
+bigger spaces, but the required time is probably too long.</p>
+<p>The table below reports one measurement per dimension on an Apple M2,
+using <code>n_reps = 1</code> and <code>n_cores = 1</code>. Runs were
+executed sequentially, each preceded by a BF warmup at <span class="math inline">\(p = 6\)</span>. The recorded optimizer times
+exclude data generation and the warmup and are rounded for display.</p>
 <div id="spoiler_benchmark" style="display:none">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PrzeChoj/gips" class="external-link">gips</a></span><span class="op">)</span></span>
 <span><span class="co"># install.packages("pbmcapply")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kvnkuang/pbmcapply" class="external-link">pbmcapply</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">get_gips_for_p</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">n</span><span class="op">=</span><span class="fl">30</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">get_gips_for_p</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">n</span> <span class="op">=</span> <span class="fl">30</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">S_inv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">p</span>, <span class="va">p</span><span class="op">)</span></span>
 <span>  <span class="va">S_inv</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">:</span><span class="va">p</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span>  <span class="va">S_inv</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="va">p</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">S_inv</span><span class="op">)</span></span>
+<span>  <span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol2inv.html" class="external-link">chol2inv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol</a></span><span class="op">(</span><span class="va">S_inv</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol</a></span><span class="op">(</span><span class="va">Sigma</span><span class="op">)</span></span>
+<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span>  <span class="va">S</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">S</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span> <span class="co"># Ensure exact symmetry for gips().</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/gips.html">gips</a></span><span class="op">(</span><span class="va">S</span>, <span class="va">n</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -163,7 +168,8 @@ the time in the table below:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">g_MAP</span>, <span class="st">"optimization_info"</span><span class="op">)</span><span class="op">$</span><span class="va">optimization_time</span>, units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">benchmark_optimization</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_reps</span> <span class="op">=</span> <span class="fl">2</span>, <span class="va">n_cores</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">benchmark_optimization</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
+<span>    <span class="va">n_reps</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">n_cores</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">make_label</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">optimizer</span>, <span class="va">p</span>, <span class="va">max_iter</span> <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">max_iter</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">optimizer</span>, <span class="st">" p="</span>, <span class="va">p</span><span class="op">)</span></span>
@@ -190,12 +196,22 @@ the time in the table below:</p>
 <span>  </span>
 <span>  <span class="va">jobs</span> <span class="op">&lt;-</span> <span class="va">cases</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">n_reps</span><span class="op">)</span>, <span class="op">]</span></span>
 <span>  <span class="va">jobs</span><span class="op">$</span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_reps</span><span class="op">)</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">jobs</span><span class="op">$</span><span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">1234</span></span>
+<span>  <span class="va">jobs</span><span class="op">$</span><span class="va">seed</span> <span class="op">&lt;-</span> <span class="va">seed</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">jobs</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">jobs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span>  </span>
 <span>  <span class="va">run_one_job</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">job</span> <span class="op">&lt;-</span> <span class="va">jobs</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span></span>
+<span></span>
+<span>    <span class="co"># Warm up each worker on a small problem, outside the recorded timings.</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu">get_time</span><span class="op">(</span></span>
+<span>      p <span class="op">=</span> <span class="fl">6L</span>,</span>
+<span>      optimizer <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">optimizer</span>,</span>
+<span>      max_iter <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">job</span><span class="op">$</span><span class="va">max_iter</span><span class="op">)</span><span class="op">)</span> <span class="cn">NA</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">job</span><span class="op">$</span><span class="va">max_iter</span>, <span class="fl">5L</span><span class="op">)</span>,</span>
+<span>      seed <span class="op">=</span> <span class="fl">1L</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="co"># get_time() resets the seed before generating the measured sample.</span></span>
 <span>    </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>      label <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">label</span>,</span>
@@ -229,7 +245,8 @@ the time in the table below:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">benchmark_results</span> <span class="op">&lt;-</span> <span class="fu">benchmark_optimization</span><span class="op">(</span>n_reps <span class="op">=</span> <span class="fl">7</span>, n_cores <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="co"># For 1.4.0, consider increasing n_reps while keeping runs sequential.</span></span>
+<span><span class="va">benchmark_results</span> <span class="op">&lt;-</span> <span class="fu">benchmark_optimization</span><span class="op">(</span>n_reps <span class="op">=</span> <span class="fl">1</span>, n_cores <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span>
 <span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
 <span></span>
@@ -254,15 +271,15 @@ Show/hide the benchmark code
 </button>
 <table class="table">
 <colgroup>
+<col width="14%">
+<col width="13%">
+<col width="13%">
+<col width="12%">
 <col width="12%">
 <col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="10%">
-<col width="10%">
 <col width="10%">
 <col width="8%">
-<col width="10%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th>p=2</th>
@@ -276,15 +293,15 @@ Show/hide the benchmark code
 <th>p=10</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td>0.0035 sec</td>
-<td>0.008 sec</td>
-<td>0.015 sec</td>
-<td>0.056 sec</td>
-<td>0.25 sec</td>
-<td>1.31 sec</td>
-<td>10.0 sec</td>
-<td>57 sec</td>
-<td>16.9 min</td>
+<td>0.000676 sec</td>
+<td>0.00138 sec</td>
+<td>0.00394 sec</td>
+<td>0.0156 sec</td>
+<td>0.0887 sec</td>
+<td>0.522 sec</td>
+<td>3.86 sec</td>
+<td>31 sec</td>
+<td>5 min</td>
 </tr></tbody>
 </table>
 <div class="section level4">
@@ -429,12 +446,12 @@ process:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ===============================================================================</span></span>
 <span><span class="va">g_map</span></span>
-<span><span class="co">#&gt; The permutation (1,30,6,8,21,59,15,67,5,63,56,70,12,36,69,19,32,22,18,26,3,37,38,2,65,7,62,31,9,17,40,10,35,41,55,64,24,33,61,68,4,11,50,42,16,25,52,51,43,14,49,53,39,48,47,44,66,28,23)(20,45,57,29,58,34,54,27,60,46):</span></span>
-<span><span class="co">#&gt;  - was found in a search using 150 posterior calculations;</span></span>
-<span><span class="co">#&gt;  - is 5.252e+660 times more likely than the () permutation.</span></span></code></pre></div>
+<span><span class="co">#&gt; The permutation (1,30,66,28,63,56,70,23,6,21,59,15,22,67,38,62,31,34,54,27,60,35,46,20,45,69,53,26,5,12,36,57,29,58,9,17,10,41,55,64,24,49,61,68,4,11,50,42,16,25,52,14,33,40,51,7,2,65,43,39,48,47,44,19,32,3,37):</span></span>
+<span><span class="co">#&gt;  - was found in a search using 149 posterior calculations;</span></span>
+<span><span class="co">#&gt;  - is 2.459e+659 times more likely than the () permutation.</span></span></code></pre></div>
 <p>After 150 iterations, the best group found is unimaginably more
 likely than the trivial group generated by the identity permutation
-<code>()</code>: its posterior probability is approximately <span class="math inline">\(10^{661}\)</span> times as large.</p>
+<code>()</code>: its posterior probability is approximately <span class="math inline">\(10^{659}\)</span> times as large.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g_map</span>, type <span class="op">=</span> <span class="st">"best"</span>, logarithmic_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Optimizers_files/figure-html/Metropolis_Hastings_3-1.png" class="r-plt" alt="" width="700"></p>
@@ -630,7 +647,7 @@ continuation:</p>
 <span>  <span class="va">g_map2</span>, <span class="va">g_map</span>, print_output <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The posterior probability of the best group found after 150
-iterations is approximately <span class="math inline">\(10^{227}\)</span> times that of the best group
+iterations is approximately <span class="math inline">\(10^{265}\)</span> times that of the best group
 found after 50 iterations. Keep in mind that the y scale is logarithmic,
 so a visually small increase can represent a large posterior ratio. Use
 the plot to decide whether the best result is stabilizing and whether to
