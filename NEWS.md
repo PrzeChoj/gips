@@ -51,6 +51,7 @@
   one axis has names, those names are now used to label both axes.
 * Posterior trajectory plots now report a clear error recommending the
   logarithmic scale when exponentiation overflows or all values underflow to zero.
+* `print()` and `summary()` now report actual posterior evaluation counts.
 
 
 # gips 1.3.0
