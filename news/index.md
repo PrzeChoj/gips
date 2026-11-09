@@ -2,6 +2,8 @@
 
 ## gips 1.3.1
 
+CRAN release: 2026-11-08
+
 #### Update to functions
 
 - `find_MAP(return_probabilities = TRUE)` now normalizes posterior
